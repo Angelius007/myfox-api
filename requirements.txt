@@ -1,0 +1,8 @@
+# home assistant
+homeassistant>=2024.8.0
+
+# myfox components
+aiohttp>=3.10.1
+attrs>=23.2.0
+jsonpath>=0.82.2
+orjson>=3.10.6
