@@ -10,7 +10,7 @@ from dataclasses import dataclass
 @dataclass
 class MyFoxLightSensor :
     deviceId: int
-    label: setattr
+    label: str
     modelId: int
     modelLabel: str
     light: int

@@ -12,7 +12,7 @@ from dataclasses import dataclass
 @dataclass
 class MyFoxCamera :
     deviceId: int
-    label: setattr
+    label: str
     modelId: int
     modelLabel: str
     hideTimeLine: bool

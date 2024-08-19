@@ -3,11 +3,15 @@ import json
 
 from myfox.myfoxapi import (MyFoxPolicy, MyFoxEntryDataApi, MyFoxApiClient)
 from myfox.myfoxapi_camera import (MyFoxApiCameraClient)
-from myfox.devices.camera import (MyFoxCamera)
 from myfox.myfoxapi_light import (MyFoxApiLightClient)
-from myfox.devices.light import (MyFoxLightSensor)
 from myfox.myfoxapi_security import (MyFoxApiSecurityClient)
 from myfox.myfoxapi_scenario import (MyFoxApiSecenarioClient)
+from myfox.myfoxapi_sensor import (MyFoxApiSensorClient)
+
+from myfox.devices.camera import (MyFoxCamera)
+from myfox.devices.light import (MyFoxLightSensor)
+from myfox.devices.sensor import (MyFoxGenerictSensor, MyFoxDeviceWithState)
+
 
 def writeCache(myfox_info:MyFoxEntryDataApi) :
     f = open("cache.txt", "w")
@@ -104,6 +108,17 @@ def getClientLight(loop = None, myfox_info:MyFoxEntryDataApi = None) -> MyFoxApi
 
     return client
 
+def getClientSenor(loop = None, myfox_info:MyFoxEntryDataApi = None) -> MyFoxApiSensorClient :
+
+    client = MyFoxApiSensorClient(myfox_info)
+
+    if not loop :
+        loop = asyncio.get_event_loop()
+
+    writeCache(client.myfox_info)
+
+    return client
+
 def getClientSecurity(loop = None, myfox_info:MyFoxEntryDataApi = None) -> MyFoxApiSecurityClient :
 
     client = MyFoxApiSecurityClient(myfox_info)
@@ -126,7 +141,7 @@ def getClientScenario(loop = None, myfox_info:MyFoxEntryDataApi = None) -> MyFox
 
     return client
 
-def testClient(loop, client):
+def testClient(loop, client : MyFoxApiClient):
     results = loop.run_until_complete(asyncio.gather(*[client.getInfoSite()]))
     print("results:"+str(results))
 
@@ -137,7 +152,7 @@ def testClient(loop, client):
     #print("results:"+str(results))
     
 
-def testScenario(loop, client):
+def testScenario(loop, client : MyFoxApiSecenarioClient):
     results = loop.run_until_complete(asyncio.gather(*[client.disableScenario(219)]))
     print("results:"+str(results))
     results = loop.run_until_complete(asyncio.gather(*[client.enableScenario(219)]))
@@ -145,7 +160,7 @@ def testScenario(loop, client):
     results = loop.run_until_complete(asyncio.gather(*[client.playScenario(321)]))
     print("results:"+str(results))
 
-def testSecurity(loop, client):
+def testSecurity(loop, client : MyFoxApiSecurityClient):
     results = loop.run_until_complete(asyncio.gather(*[client.getSecurity()]))
     print("results:"+str(results))
     #results = loop.run_until_complete(asyncio.gather(*[client.setSecurity("armed")]))
@@ -155,7 +170,7 @@ def testSecurity(loop, client):
     results = loop.run_until_complete(asyncio.gather(*[client.setSecurity("disarmed")]))
     print("results:"+str(results))
 
-def testCamera(loop, client):
+def testCamera(loop, client : MyFoxApiCameraClient):
     #results = loop.run_until_complete(asyncio.gather(*[client.getCamera()]))
     #print("results:"+str(results))
     #camera = results[0][0]
@@ -176,7 +191,7 @@ def testCamera(loop, client):
     #results = loop.run_until_complete(asyncio.gather(*[client.cameraRecordingStop(camera)]))
     #print("results:"+str(results))
 
-def testLightSensor(loop, client):
+def testLightSensor(loop, client : MyFoxApiLightClient):
     results = loop.run_until_complete(asyncio.gather(*[client.getLightList()]))
     print("results:"+str(results))
     #camera = results[0][0]
@@ -193,6 +208,15 @@ def testLightSensor(loop, client):
     results = loop.run_until_complete(asyncio.gather(*[client.getLightHistory(light)]))
     print("results:"+str(results))
 
+def testGenericSensor(loop, client : MyFoxApiSensorClient):
+    # results = loop.run_until_complete(asyncio.gather(*[client.getSensorList()]))
+    # print("results:"+str(results))
+    results = loop.run_until_complete(asyncio.gather(*[client.getDeviceWithStateList()]))
+    print("results:"+str(results))
+    # device = MyFoxDeviceWithState(123, "device", 0, "xx", "")
+    # results = loop.run_until_complete(asyncio.gather(*[client.getDeviceWithState(device)]))
+    # print("results:"+str(results))
+
 if __name__ == "__main__" :
     print("**** Debut ****")
     asyncio.set_event_loop_policy(MyFoxPolicy())
@@ -206,11 +230,13 @@ if __name__ == "__main__" :
         clientSecurity = getClientSecurity(loop, myfox_info)
         clientCamera = getClientCamera(loop, myfox_info)
         clientLight = getClientLight(loop, myfox_info)
-        testClient(loop, clientScenario)
+        clientSensor = getClientSenor(loop, myfox_info)
+        # testClient(loop, clientScenario)
         # testScenario(loop, clientScenario)
         # testSecurity(loop, clientSecurity)
         # testCamera(loop, clientCamera)
         # testLightSensor(loop, clientLight)
+        testGenericSensor(loop, clientSensor)
 
     finally :
         writeCache(client.myfox_info)

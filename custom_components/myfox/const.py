@@ -44,52 +44,52 @@ MYFOX_CAMERA_SNAP_TAKE="v2/site/%i/device/%i/camera/snapshot/take" #Take a snaps
 MYFOX_LIGHT_LIST = "v2/site/%i/device/data/light/items" #List all light sensor featured devices
 MYFOX_LIGHT_HISTORY = "v2/site/%i/device/%i/data/light" #Get light measures
 # device data other
-# get /site/{siteId}/device/data/other/itemsList all generic sensor featured devices
+MYFOX_DEVICE_OTHER_LIST="v2/site/%i/device/data/other/items" # List all generic sensor featured devices
 # device data state
-# get /site/{siteId}/device/data/state/itemsList devices with state data
-# get /site/{siteId}/device/{deviceId}/data/stateGet device state
+MYFOX_DEVICE_STATE_LIST = "v2/site/%i/device/data/state/items" #List devices with state data
+MYFOX_DEVICE_STATE_GET = "v2/site/%i/device/%i/data/state" #Get device state
 # device data temperature
-# get /site/{siteId}/device/data/temperature/itemsList all temperature sensor featured devices
-# get /site/{siteId}/device/{deviceId}/data/temperatureGet temperature measures
+# get v2/site/%i/device/data/temperature/items #List all temperature sensor featured devices
+# get v2/site/%i/device/{deviceId}/data/temperature #Get temperature measures
 # device gate
-# get /site/{siteId}/device/gate/itemsList gate devices
-# post /site/{siteId}/device/{deviceId}/gate/perform/onePerform action #1
-# post /site/{siteId}/device/{deviceId}/gate/perform/twoPerform action #2
+# get v2/site/%i/device/gate/items #List gate devices
+# post v2/site/%i/device/{deviceId}/gate/perform/one #Perform action #1
+# post v2/site/%i/device/{deviceId}/gate/perform/two #Perform action #2
 # device heater
-# get /site/{siteId}/device/heater/itemsList heater devices
-# get /site/{siteId}/device/heater/items/withthermostatList heater devices with virtuals thermostats
-# post /site/{siteId}/device/{deviceId}/heater/autoSet a thermostat to 'auto' mode
-# post /site/{siteId}/device/{deviceId}/heater/awaySet a thermostat to 'away' mode
-# post /site/{siteId}/device/{deviceId}/heater/boostSet a thermostat to 'boost' mode
-# post /site/{siteId}/device/{deviceId}/heater/ecoSet a heater to 'eco' mode
-# post /site/{siteId}/device/{deviceId}/heater/frostSet a heater to 'frost' mode
-# post /site/{siteId}/device/{deviceId}/heater/offSet a heater to 'off' mode
-# post /site/{siteId}/device/{deviceId}/heater/onSet a heater to 'on' mode
-# post /site/{siteId}/device/{deviceId}/heater/thermostatoffSet a thermostat to 'off' mode
+# get v2/site/%i/device/heater/items #List heater devices
+# get v2/site/%i/device/heater/items/withthermostat #List heater devices with virtuals thermostats
+# post v2/site/%i/device/{deviceId}/heater/auto #Set a thermostat to 'auto' mode
+# post v2/site/%i/device/{deviceId}/heater/away #Set a thermostat to 'away' mode
+# post v2/site/%i/device/{deviceId}/heater/boost #Set a thermostat to 'boost' mode
+# post v2/site/%i/device/{deviceId}/heater/eco #Set a heater to 'eco' mode
+# post v2/site/%i/device/{deviceId}/heater/frost #Set a heater to 'frost' mode
+# post v2/site/%i/device/{deviceId}/heater/off #Set a heater to 'off' mode
+# post v2/site/%i/device/{deviceId}/heater/on #Set a heater to 'on' mode
+# post v2/site/%i/device/{deviceId}/heater/thermostatoff #Set a thermostat to 'off' mode
 # device module
-# get /site/{siteId}/device/module/itemsList module devices
-# post /site/{siteId}/device/{deviceId}/module/perform/onePerform action #1
-# post /site/{siteId}/device/{deviceId}/module/perform/twoPerform action #2
+# get v2/site/%i/device/module/items #List module devices
+# post v2/site/%i/device/{deviceId}/module/perform/one #Perform action #1
+# post v2/site/%i/device/{deviceId}/module/perform/two #Perform action #2
 # device shutter
-# get /site/{siteId}/device/shutter/itemsList shutter devices
-# post /site/{siteId}/device/{deviceId}/shutter/closeClose shutter
-# post /site/{siteId}/device/{deviceId}/shutter/mySet shutter to favorite position
-# post /site/{siteId}/device/{deviceId}/shutter/openOpen shutter
+# get v2/site/%i/device/shutter/items #List shutter devices
+# post v2/site/%i/device/{deviceId}/shutter/close #Close shutter
+# post v2/site/%i/device/{deviceId}/shutter/my #Set shutter to favorite position
+# post v2/site/%i/device/{deviceId}/shutter/open #Open shutter
 # device socket
-# get /site/{siteId}/device/socket/itemsList socket devices
-# post /site/{siteId}/device/{deviceId}/socket/offTurn off a device
-# post /site/{siteId}/device/{deviceId}/socket/onTurn on a device
+# get v2/site/%i/device/socket/items #List socket devices
+# post v2/site/%i/device/{deviceId}/socket/off #Turn off a device
+# post v2/site/%i/device/{deviceId}/socket/on #Turn on a device
 # group electic
-# get /site/{siteId}/group/electric/itemsList groups of type electric
-# post /site/{siteId}/group/{groupId}/electric/offTurn off all electric devices from a group
-# post /site/{siteId}/group/{groupId}/electric/onTurn on all electric devices from a group
+# get v2/site/%i/group/electric/items #List groups of type electric
+# post v2/site/%i/group/{groupId}/electric/off #Turn off all electric devices from a group
+# post v2/site/%i/group/{groupId}/electric/on #Turn on all electric devices from a group
 # group shutter
-# get /site/{siteId}/group/shutter/itemsList groups of type shutter
-# post /site/{siteId}/group/{groupId}/shutter/closeClose all shutters from a group
-# post /site/{siteId}/group/{groupId}/shutter/openOpen all shutters from a group
+# get v2/site/%i/group/shutter/itemsList groups of type shutter
+# post v2/site/%i/group/{groupId}/shutter/close #Close all shutters from a group
+# post v2/site/%i/group/{groupId}/shutter/open #Open all shutters from a group
 # site library
-# get /site/{siteId}/library/image/itemsGet all images taken from a site's cameras
-# get /site/{siteId}/library/video/itemsGet all videos taken from a site's cameras
-# get /site/{siteId}/library/video/{videoId}/playGet video informations for HLS playing
+# get v2/site/%i/library/image/items #Get all images taken from a site's cameras
+# get v2/site/%i/library/video/items #Get all videos taken from a site's cameras
+# get v2/site/%i/library/video/{videoId}/play #Get video informations for HLS playing
 
 
