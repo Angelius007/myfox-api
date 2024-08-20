@@ -90,7 +90,7 @@ class MyFoxApiClient:
                 urlApi = self.getUrlMyFoxApi(path)
                 if not data or KEY_GRANT_TYPE not in data :
                     urlApi = urlApi + "?access_token=" + await self.getToken()
-                    print("Appel : " + urlApi)
+                    _LOGGER.info("Appel : " + urlApi)
                     if method == "POST":
                         resp = await session.post(urlApi, headers=headers) 
                         return await self._get_response(resp, responseClass)
@@ -98,7 +98,7 @@ class MyFoxApiClient:
                         resp = await session.get(urlApi, headers=headers) 
                         return await self._get_response(resp, responseClass)
                 else :
-                    print("Appel : " + urlApi)
+                    _LOGGER.info("Appel : " + urlApi)
                     if method == "POST":
                         resp = await session.post(urlApi, headers=headers, json=data) 
                         return await self._get_response(resp, responseClass)
@@ -113,6 +113,7 @@ class MyFoxApiClient:
                 else :
                     raise exception
             except Exception as exception:
+                _LOGGER.error(exception)
                 print("Error : " + str(exception))
                 raise MyFoxException(exception)
 
@@ -131,6 +132,7 @@ class MyFoxApiClient:
             except MyFoxException as exception:
                 raise exception 
             except Exception as error:
+                _LOGGER.error(error)
                 raise MyFoxException(f"Failed to parse response: {resp.text} Error: {error}")
         
         if resp.status != 200:
@@ -139,7 +141,7 @@ class MyFoxApiClient:
         try:
             binary_resp = await resp.read()
             filename=resp.content_disposition.filename
-            print(filename)
+            _LOGGER.info(filename)
             f = open(filename, "w")
             f.buffer.write(binary_resp)
             f.buffer.flush()
@@ -148,6 +150,7 @@ class MyFoxApiClient:
             return filename
         
         except Exception as error:
+            _LOGGER.error(error)
             raise MyFoxException(f"Failed to parse response: {resp.text} Error: {error}")
     
     async def _get_json_response(self, resp: ClientResponse):
@@ -159,6 +162,7 @@ class MyFoxApiClient:
             except MyFoxException as exception:
                 raise exception 
             except Exception as error:
+                _LOGGER.error(error)
                 raise MyFoxException(f"Failed to parse response: {resp.text} Error: {error}")
         
         if resp.status != 200:
@@ -177,6 +181,7 @@ class MyFoxApiClient:
                 raise MyFoxException(statut, f"Error : {error} - Description: {description}")
 
         except Exception as error:
+            _LOGGER.error(error)
             raise MyFoxException(f"Failed to parse response: {resp.text} Error: {error}")
 
         return json_resp
@@ -184,11 +189,12 @@ class MyFoxApiClient:
     async def login(self) -> bool :
         """ Recuperation des tokens """
         try:
-            data = {KEY_GRANT_TYPE:GRANT_TYPE_PASSWORD, 
-                    KEY_CLIENT_ID:self.myfox_info.client_id, 
-                    KEY_CLIENT_SECRET:self.myfox_info.client_secret,
-                    KEY_MYFOX_USER:self.myfox_info.username,
-                    KEY_MYFOX_PSWD:self.myfox_info.password
+            data = {
+                KEY_GRANT_TYPE:GRANT_TYPE_PASSWORD, 
+                KEY_CLIENT_ID:self.myfox_info.client_id, 
+                KEY_CLIENT_SECRET:self.myfox_info.client_secret,
+                KEY_MYFOX_USER:self.myfox_info.username,
+                KEY_MYFOX_PSWD:self.myfox_info.password
             }
             
             response = await self.callMyFoxApiPost(MYFOX_TOKEN_PATH, data)
@@ -200,16 +206,18 @@ class MyFoxApiClient:
             return True
 
         except Exception as exception:
+            _LOGGER.error(exception)
             print("Error : " + str(exception))
             return False
         
     async def refreshToken(self) -> bool:
         """ Rafraichissement des tokens """
         try:
-            data = {KEY_GRANT_TYPE:GRANT_REFRESH_TOKEN, 
-                    KEY_CLIENT_ID:self.myfox_info.client_id, 
-                    KEY_CLIENT_SECRET:self.myfox_info.client_secret,
-                    KEY_REFRESH_TOKEN:self.myfox_info.refresh_token
+            data = {
+                KEY_GRANT_TYPE:GRANT_REFRESH_TOKEN, 
+                KEY_CLIENT_ID:self.myfox_info.client_id, 
+                KEY_CLIENT_SECRET:self.myfox_info.client_secret,
+                KEY_REFRESH_TOKEN:self.myfox_info.refresh_token
             }
             
             response = await self.callMyFoxApiPost(MYFOX_TOKEN_PATH, data)
@@ -223,6 +231,7 @@ class MyFoxApiClient:
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
+            _LOGGER.error(exception)
             print("Error : " + str(exception))
             return False
 
@@ -234,11 +243,12 @@ class MyFoxApiClient:
             self.myfox_info.refresh_token = response[KEY_REFRESH_TOKEN]
             self.myfox_info.expires_in = response[KEY_EXPIRE_IN]
             self.myfox_info.expires_time = (time.time() + self.myfox_info.expires_in)
-            print(KEY_ACCESS_TOKEN+":"+self.myfox_info.access_token)
-            print(KEY_REFRESH_TOKEN+":"+self.myfox_info.refresh_token)
-            print(KEY_EXPIRE_IN+":"+str(self.myfox_info.expires_in))
-            print("expires_time:"+str(self.myfox_info.expires_time))
+            _LOGGER.debug(KEY_ACCESS_TOKEN+":"+self.myfox_info.access_token)
+            _LOGGER.debug(KEY_REFRESH_TOKEN+":"+self.myfox_info.refresh_token)
+            _LOGGER.debug(KEY_EXPIRE_IN+":"+str(self.myfox_info.expires_in))
+            _LOGGER.debug("expires_time:"+str(self.myfox_info.expires_time))
         except KeyError as key:
+            _LOGGER.error(key)
             print("Error : " + key)
             raise MyFoxException(f"Failed to extract key {key} from response: {response}")
     
@@ -257,6 +267,7 @@ class MyFoxApiClient:
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
+            _LOGGER.error(exception)
             print("Error : " + exception)
             raise MyFoxException(exception)
 
@@ -267,8 +278,10 @@ class MyFoxApiClient:
         expiration = expires_time - current_time
         if expiration <0:
             expiration = 0
+            _LOGGER.info("Token expire")
             print("Token expire")
         else:
+            _LOGGER.info("Expiration du token dans " + str(expiration) + " secondes a " + str(expires_time))
             print("Expiration du token dans " + str(expiration) + " secondes a " + str(expires_time))
         return expiration
 
@@ -281,7 +294,7 @@ class MyFoxApiClient:
 
                 for item in items :
                     self.myfox_info.siteId = item["siteId"]
-                    print("siteId:"+self.myfox_info.siteId)
+                    print("siteId:"+str(self.myfox_info.siteId))
                     break
 
             return self.myfox_info.siteId
@@ -289,6 +302,7 @@ class MyFoxApiClient:
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
+            _LOGGER.error(exception)
             print("Error : " + str(exception))
             raise MyFoxException(exception)
 
@@ -316,5 +330,6 @@ class MyFoxApiClient:
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
+            _LOGGER.error(exception)
             print("Error : " + str(exception))
             raise MyFoxException(exception)

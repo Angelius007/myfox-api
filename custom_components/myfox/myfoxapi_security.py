@@ -28,7 +28,7 @@ class MyFoxApiSecurityClient(MyFoxApiClient) :
         try:
             response = await self.callMyFoxApiPost(MYFOX_SECURITY_SET % (self.myfox_info.siteId , securityLevel))
             # {'status': 'OK', 'timestamp': 1723759985, 'payload': {'request': 'OK'}}
-            return response
+            return (response["payload"]["statusLabel"] == "OK")
 
         except MyFoxException as exception:
             raise exception
