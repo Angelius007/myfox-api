@@ -19,6 +19,9 @@ from myfox.myfoxapi_module import (MyFoxApiModuleClient)
 from myfox.myfoxapi_shutter import (MyFoxApiShutterClient)
 from myfox.myfoxapi_socket import (MyFoxApiSocketClient)
 from myfox.myfoxapi_library import (MyFoxApiLibraryClient)
+from myfox.myfoxapi_group_electric import (MyFoxApiGroupElectricClient)
+from myfox.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
+
 
 from myfox.devices.camera import (MyFoxCamera)
 from myfox.devices.gate import (MyFoxGate)
@@ -29,6 +32,7 @@ from myfox.devices.temperature import (MyFoxTemperatureRecord, MyFoxTemperatureS
 from myfox.devices.shutter import MyFoxShutter
 from myfox.devices.socket import MyFoxSocket
 from myfox.devices.librairie import (MyFoxImage, MyFoxVideo)
+from myfox.devices.group import (MyFoxGroupElectric, MyFoxGroupShutter)
 
 logging.config.fileConfig('logging.conf', None, True)
 _LOGGER = logging.getLogger(__name__)
@@ -222,6 +226,25 @@ class TestClients :
         _LOGGER.info("results:"+str(results))
         #device = MyFoxVideo(2262, "A1 - Lampe séjour", 19, "Prise électrique commandée DIO First")
 
+    def testGroupElectric(loop : AbstractEventLoop, client : MyFoxApiGroupElectricClient):
+        #results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
+        #_LOGGER.info("results:"+str(results))
+        device = MyFoxGroupElectric(24467, "Lampes", "Electrical devices", [])
+        results = loop.run_until_complete(asyncio.gather(*[client.setOff(device)]))
+        _LOGGER.info("results:"+str(results))
+        results = loop.run_until_complete(asyncio.gather(*[client.setOn(device)]))
+        _LOGGER.info("results:"+str(results))
+
+    def testGroupShutter(loop : AbstractEventLoop, client : MyFoxApiGroupShutterClient):
+        #results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
+        #_LOGGER.info("results:"+str(results))
+        device = MyFoxGroupShutter(24389, "Volets Séjour", "Shutters", [])
+        results = loop.run_until_complete(asyncio.gather(*[client.setOpen(device)]))
+        _LOGGER.info("results:"+str(results))
+        results = loop.run_until_complete(asyncio.gather(*[client.setClose(device)]))
+        _LOGGER.info("results:"+str(results))
+
+
 if __name__ == "__main__" :
     _LOGGER.info("**** Debut ****")
     asyncio.set_event_loop_policy(MyFoxPolicy())
@@ -242,7 +265,10 @@ if __name__ == "__main__" :
         # TestClients.testModule(loop, MyFoxApiModuleClient(myfox_info))
         # TestClients.testShutter(loop, MyFoxApiShutterClient(myfox_info))
         # TestClients.testSocket(loop, MyFoxApiSocketClient(myfox_info))
-        TestClients.testLibrairie(loop, MyFoxApiLibraryClient(myfox_info))
+        # TestClients.testLibrairie(loop, MyFoxApiLibraryClient(myfox_info))
+        # TestClients.testGroupElectric(loop, MyFoxApiGroupElectricClient(myfox_info))
+        TestClients.testGroupShutter(loop, MyFoxApiGroupShutterClient(myfox_info))
+
         
 
     finally :

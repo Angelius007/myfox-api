@@ -81,13 +81,11 @@ MYFOX_DEVICE_SOCKET_LIST = "v2/site/%i/device/socket/items" #List socket devices
 MYFOX_DEVICE_SOCKET_ON   = "v2/site/%i/device/%i/socket/on" #Turn on a device post
 MYFOX_DEVICE_SOCKET_OFF  = "v2/site/%i/device/%i/socket/off" #Turn off a device post
 # group electic
-# TODO TODO TODO TODO TODO
 MYFOX_GROUP_ELECTRIC_LIST    = "v2/site/%i/group/electric/items" #List groups of type electric
 MYFOX_GROUP_ELECTRIC_SET_ON  = "v2/site/%i/group/%i/electric/on" #Turn on all electric devices from a group post
 MYFOX_GROUP_ELECTRIC_SET_OFF = "v2/site/%i/group/%i/electric/off" #Turn off all electric devices from a group post
 # group shutter
-# TODO TODO TODO TODO TODO
-MYFOX_GROUP_SHUTTER_LIST      = "v2/site/%i/group/shutter/itemsList" #groups of type shutter
+MYFOX_GROUP_SHUTTER_LIST      = "v2/site/%i/group/shutter/items" #List groups of type shutter
 MYFOX_GROUP_SHUTTER_SET_CLOSE = "v2/site/%i/group/%i/shutter/close" #Close all shutters from a group post
 MYFOX_GROUP_SHUTTER_SET_OPEN  = "v2/site/%i/group/%i/shutter/open" #Open all shutters from a group post
 # site library
