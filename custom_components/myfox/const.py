@@ -56,17 +56,17 @@ MYFOX_DEVICE_GATE_LIST        = "v2/site/%i/device/gate/items" #List gate device
 MYFOX_DEVICE_GATE_PERFORM_ONE = "v2/site/%i/device/%i/gate/perform/one" #Perform action #1 post
 MYFOX_DEVICE_GATE_PERFORM_TWO = "v2/site/%i/device/%i/gate/perform/two" #Perform action #2 post
 # device heater
-# TODO TODO TODO TODO TODO
 MYFOX_DEVICE_HEATER_LIST             = "v2/site/%i/device/heater/items" #List heater devices
-MYFOX_DEVICE_HEATER_WITH_THERMO_LIST = "v2/site/%i/device/heater/items/withthermostat" #List heater devices with virtuals thermostats
-MYFOX_DEVICE_HEATER_SET_THERMO_AUTO  = "v2/site/%i/device/%i/heater/auto" #Set a thermostat to 'auto' mode post
-MYFOX_DEVICE_HEATER_SET_THERMO_AWAY  = "v2/site/%i/device/%i/heater/away" #Set a thermostat to 'away' mode post
-MYFOX_DEVICE_HEATER_SET_THERMO_BOOST = "v2/site/%i/device/%i/heater/boost" #Set a thermostat to 'boost' mode post
-MYFOX_DEVICE_HEATER_SET_THERMO_OFF   = "v2/site/%i/device/%i/heater/thermostatoff" #Set a thermostat to 'off' mode post
 MYFOX_DEVICE_HEATER_SET_ECO          = "v2/site/%i/device/%i/heater/eco" #Set a heater to 'eco' mode post
 MYFOX_DEVICE_HEATER_SET_FROST        = "v2/site/%i/device/%i/heater/frost" #Set a heater to 'frost' mode post
 MYFOX_DEVICE_HEATER_SET_ON           = "v2/site/%i/device/%i/heater/on" #Set a heater to 'on' mode post
 MYFOX_DEVICE_HEATER_SET_OFF          = "v2/site/%i/device/%i/heater/off" #Set a heater to 'off' mode post
+# device heater
+MYFOX_DEVICE_HEATER_THERMO_LIST = "v2/site/%i/device/heater/items/withthermostat" #List heater devices with virtuals thermostats
+MYFOX_DEVICE_HEATER_THERMO_SET_AUTO  = "v2/site/%i/device/%i/heater/auto" #Set a thermostat to 'auto' mode post
+MYFOX_DEVICE_HEATER_THERMO_SET_AWAY  = "v2/site/%i/device/%i/heater/away" #Set a thermostat to 'away' mode post
+MYFOX_DEVICE_HEATER_THERMO_SET_BOOST = "v2/site/%i/device/%i/heater/boost" #Set a thermostat to 'boost' mode post
+MYFOX_DEVICE_HEATER_THERMO_SET_OFF   = "v2/site/%i/device/%i/heater/thermostatoff" #Set a thermostat to 'off' mode post
 # device module
 MYFOX_DEVICE_MODULE_LIST        = "v2/site/%i/device/module/items" #List module devices
 MYFOX_DEVICE_MODULE_PERFORM_ONE = "v2/site/%i/device/%i/module/perform/one" #Perform action #1 post
