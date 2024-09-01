@@ -31,7 +31,7 @@ class MyFoxConfigFlow(ConfigFlow, domain=DOMAIN):
         self.username = None
         self.password = None
         self.site_id = None
-        self.sites: list[MyFoxSite] = field(default_factory=list)
+        self.sites: list[MyFoxSite] = field(default_factory=list[MyFoxSite])
 
         self.config_entry: ConfigEntry | None = None
 
@@ -92,7 +92,7 @@ class MyFoxConfigFlow(ConfigFlow, domain=DOMAIN):
                 KEY_MYFOX_PSWD: self.password,
 
             }
-            return self.async_create_entry(title=self.installation_site, data=data, options=options)
+            return self.async_create_entry(title=device_unique_id, data=data, options=options)
 
         
         site_list = list()
