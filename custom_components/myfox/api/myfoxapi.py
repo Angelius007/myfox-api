@@ -53,7 +53,7 @@ class MyFoxEntryDataApi:
     refresh_token: str = None
     expires_in: int = 0
     expires_time: float = 0.0 
-    site: MyFoxSite = None
+    site: MyFoxSite = MyFoxSite(0)
     sites: list[MyFoxSite] = field(default_factory=list)
 
 class MyFoxPolicy(asyncio.DefaultEventLoopPolicy):
