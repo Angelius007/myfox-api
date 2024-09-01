@@ -1,3 +1,5 @@
+import logging
+
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
 from ..devices.module import MyFoxModule
 
@@ -6,6 +8,7 @@ from .const import (
     MYFOX_DEVICE_MODULE_PERFORM_ONE,
     MYFOX_DEVICE_MODULE_PERFORM_TWO
 )
+_LOGGER = logging.getLogger(__name__)
 
 class MyFoxApiModuleClient(MyFoxApiClient) :
 
@@ -18,6 +21,7 @@ class MyFoxApiModuleClient(MyFoxApiClient) :
         try:
             response = await self.callMyFoxApiGet(MYFOX_DEVICE_MODULE_LIST % (self.myfox_info.site.siteId))
             items = response["payload"]["items"]
+            _LOGGER.debug("getList : %s",str(items))
 
             for item in items :
                 self.module.append(MyFoxModule(item["deviceId"],
@@ -37,6 +41,7 @@ class MyFoxApiModuleClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_MODULE_PERFORM_ONE % (self.myfox_info.site.siteId, device.deviceId))
+            _LOGGER.debug("performeOne : %s",str(response))
 
             return response
 
@@ -50,6 +55,7 @@ class MyFoxApiModuleClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_MODULE_PERFORM_TWO % (self.myfox_info.site.siteId, device.deviceId))
+            _LOGGER.debug("performeTwo : %s",str(response))
 
             return response
 

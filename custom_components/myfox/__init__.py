@@ -83,6 +83,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     myfox_client = MyFoxApiClient(myfox_info)
     
     info_site = await myfox_client.getInfoSite(entry.data[KEY_SITE_ID], True)
+    _LOGGER.info("Chargement du site %s", str(info_site))
      
     if info_site :
         """Recherche des devices."""
@@ -90,37 +91,37 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         hass.data[DOMAIN][entry.entry_id] = {} 
         # cameraCount: int = 0
         if myfox_client.myfox_info.site.cameraCount > 0 :
-            addCamera(hass, entry, myfox_info)
+            await addCamera(hass, entry, myfox_info)
         # gateCount: int = 0
         if myfox_client.myfox_info.site.gateCount > 0 :
-            addGate(hass, entry, myfox_info)
+            await addGate(hass, entry, myfox_info)
         # shutterCount: int = 0
         if myfox_client.myfox_info.site.shutterCount > 0 :
-            addShutter(hass, entry, myfox_info)
+            await addShutter(hass, entry, myfox_info)
         # socketCount: int = 0
         if myfox_client.myfox_info.site.socketCount > 0 :
-            addSocket(hass, entry, myfox_info)
+            await addSocket(hass, entry, myfox_info)
         # moduleCount: int = 0
         if myfox_client.myfox_info.site.moduleCount > 0 :
-            addModule(hass, entry, myfox_info)
+            await addModule(hass, entry, myfox_info)
         # heaterCount: int = 0
         if myfox_client.myfox_info.site.heaterCount > 0 :
-            addHeater(hass, entry, myfox_info)
+            await addHeater(hass, entry, myfox_info)
         # scenarioCount: int = 0
         if myfox_client.myfox_info.site.scenarioCount > 0 :
-            addScenario(hass, entry, myfox_info)
+            await addScenario(hass, entry, myfox_info)
         # deviceStateCount: int = 0
         if myfox_client.myfox_info.site.deviceStateCount > 0 :
-            addDeviceState(hass, entry, myfox_info)
+            await addDeviceState(hass, entry, myfox_info)
         # deviceLightCount: int = 0
         if myfox_client.myfox_info.site.deviceLightCount > 0 :
-            addDeviceLight(hass, entry, myfox_info)
+            await addDeviceLight(hass, entry, myfox_info)
         # deviceDetectorCount: int = 0
         if myfox_client.myfox_info.site.deviceDetectorCount > 0 :
-            addDetectorDevice(hass, entry, myfox_info)
+            await addDetectorDevice(hass, entry, myfox_info)
         # Sondes de temperature
         if myfox_client.myfox_info.site.deviceTemperatureCount > 0 :
-            addTemperatureDevice(hass, entry, myfox_info)
+            await addTemperatureDevice(hass, entry, myfox_info)
 
         await hass.config_entries.async_forward_entry_setups(entry, _PLATFORMS)
         entry.async_on_unload(entry.add_update_listener(update_listener))

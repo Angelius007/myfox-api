@@ -66,13 +66,13 @@ class MyFoxApiClient:
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         self.myfox_info:MyFoxEntryDataApi = myfox_info
         self.client = None
-        self.devices: dict[str, Any] = {}
+        self.devices: dict[str, BaseDevice] = {}
         self.type :  Type[BaseDevice] | None = None
 
     def configure_device(self, deviceId: int, label: str, modelId: int, modelLabel: str):
         """ Configuration device """
         info = self.__create_device_info(deviceId, label, modelId, modelLabel)
-        from myfox.devices.registry import device_by_product
+        from ..devices.registry import device_by_product
         device = None
         # Type indique dans l'implementation de l'api
         if self.type is not None:
@@ -323,15 +323,19 @@ class MyFoxApiClient:
             print("Expiration du token dans " + str(expiration) + " secondes a " + str(expires_time))
         return expiration
 
-    async def getInfoSite(self, siteId:int, forceCall:bool=False) -> list[MyFoxSite]:
+    async def getInfoSite(self, siteId:int, forceCall:bool=False) -> MyFoxSite:
         """ Recuperation info site """
         try:
             sites = await self.getInfoSites(forceCall)
+            _LOGGER.debug("Sites trouves : %s", str(sites))
             for site in sites :
-                if site.siteId == siteId :
+                _LOGGER.debug("Site OK ? id:%s / id site:%s / site trouve : %s", str(siteId), str(site.siteId), str(site))
+                if int(site.siteId) == int(siteId) :
+                    _LOGGER.debug("Site trouve : %s", str(site))
                     self.myfox_info.site = site
                     return site
 
+            _LOGGER.debug("Aucun site trouve avec l'id : %s", str(siteId))
             return None
 
         except MyFoxException as exception:
@@ -345,31 +349,34 @@ class MyFoxApiClient:
         """ Recuperation info site """
         try:
             if self.myfox_info.site is None or self.myfox_info.site.siteId == 0 or forceCall:
+                _LOGGER.debug("Recherches de sites : (Forcage : %s)", str(forceCall))
                 response = await self.callMyFoxApiGet(MYFOX_INFO_SITE_PATH)
                 items = response["payload"]["items"]
 
                 for item in items :
-                    self.myfox_info.site = MyFoxSite(item["siteId"],
+                    self.myfox_info.site = MyFoxSite(int(item["siteId"]),
                                                      item["label"],
                                                      str(item["siteId"]) + " - " + str(item["label"]),
                                                      item["brand"],
                                                      item["timezone"],
                                                      item["AXA"],
-                                                     item["cameraCount"],
-                                                     item["gateCount"],
-                                                     item["shutterCount"],
-                                                     item["socketCount"],
-                                                     item["moduleCount"],
-                                                     item["heaterCount"],
-                                                     item["scenarioCount"],
-                                                     item["deviceTemperatureCount"],
-                                                     item["deviceStateCount"],
-                                                     item["deviceLightCount"],
-                                                     item["deviceDetectorCount"])
+                                                     int(item["cameraCount"]),
+                                                     int(item["gateCount"]),
+                                                     int(item["shutterCount"]),
+                                                     int(item["socketCount"]),
+                                                     int(item["moduleCount"]),
+                                                     int(item["heaterCount"]),
+                                                     int(item["scenarioCount"]),
+                                                     int(item["deviceTemperatureCount"]),
+                                                     int(item["deviceStateCount"]),
+                                                     int(item["deviceLightCount"]),
+                                                     int(item["deviceDetectorCount"]))
                     self.myfox_info.sites.append(self.myfox_info.site)
                     print("site_id:"+str(self.myfox_info.site.siteId))
+                    _LOGGER.debug("Nouveau site : %s", str(self.myfox_info.site))
                     #break
             else :
+                _LOGGER.debug("Site deja connu : %s", str(self.myfox_info.site))
                 self.myfox_info.sites.append(self.myfox_info.site)
 
             return self.myfox_info.sites

@@ -1,3 +1,5 @@
+import logging
+
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
 from ..devices.shutter import MyFoxShutter
 
@@ -7,6 +9,8 @@ from .const import (
     MYFOX_DEVICE_SHUTTER_OPEN,
     MYFOX_DEVICE_SHUTTER_CLOSE
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 class MyFoxApiShutterClient(MyFoxApiClient) :
 
@@ -19,6 +23,7 @@ class MyFoxApiShutterClient(MyFoxApiClient) :
         try:
             response = await self.callMyFoxApiGet(MYFOX_DEVICE_SHUTTER_LIST % (self.myfox_info.site.siteId))
             items = response["payload"]["items"]
+            _LOGGER.debug("getList : %s",str(items))
 
             for item in items :
                 self.module.append(MyFoxShutter(item["deviceId"],
@@ -38,6 +43,7 @@ class MyFoxApiShutterClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_SHUTTER_MY % (self.myfox_info.site.siteId, device.deviceId))
+            _LOGGER.debug("setFavorite : %s",str(response))
 
             return (response["status"] == "OK")
 
@@ -51,6 +57,7 @@ class MyFoxApiShutterClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_SHUTTER_OPEN % (self.myfox_info.site.siteId, device.deviceId))
+            _LOGGER.debug("setOpen : %s",str(response))
 
             return (response["status"] == "OK")
 
@@ -64,6 +71,7 @@ class MyFoxApiShutterClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_SHUTTER_CLOSE % (self.myfox_info.site.siteId, device.deviceId))
+            _LOGGER.debug("setClose : %s",str(response))
 
             return (response["status"] == "OK")
 

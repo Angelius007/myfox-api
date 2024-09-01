@@ -1,3 +1,5 @@
+import logging
+
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
 from ..devices.temperature import MyFoxTemperatureSensor, MyFoxTemperatureRecord
 
@@ -5,6 +7,7 @@ from .const import (
     MYFOX_DEVICE_TEMPERATURE_LIST,
     MYFOX_DEVICE_TEMPERATURE_GET
 )
+_LOGGER = logging.getLogger(__name__)
 
 class MyFoxApiTemperatureClient(MyFoxApiClient) :
 
@@ -19,6 +22,7 @@ class MyFoxApiTemperatureClient(MyFoxApiClient) :
         try:
             response = await self.callMyFoxApiGet(MYFOX_DEVICE_TEMPERATURE_LIST % (self.myfox_info.site.siteId))
             items = response["payload"]["items"]
+            _LOGGER.debug("getList : %s",str(items))
 
             for item in items :
                 self.temperature.append(MyFoxTemperatureSensor(item["deviceId"],
@@ -41,6 +45,7 @@ class MyFoxApiTemperatureClient(MyFoxApiClient) :
         try:
             response = await self.callMyFoxApiGet(MYFOX_DEVICE_TEMPERATURE_GET % (self.myfox_info.site.siteId, device.deviceId))
             items = response["payload"]["items"]
+            _LOGGER.debug("getTemperature : %s",str(items))
 
             for item in items :
                 self.temperatureRecord.append(MyFoxTemperatureRecord(item["recordId"],

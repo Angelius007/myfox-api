@@ -20,6 +20,7 @@ class MyFoxApiSocketClient(MyFoxApiClient) :
         try:
             response = await self.callMyFoxApiGet(MYFOX_DEVICE_SOCKET_LIST % (self.myfox_info.site.siteId))
             items = response["payload"]["items"]
+            _LOGGER.debug("getList : %s",str(items))
 
             for item in items :
                 self.module.append(MyFoxSocket(item["deviceId"],
@@ -39,6 +40,7 @@ class MyFoxApiSocketClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_SOCKET_ON % (self.myfox_info.site.siteId, device.deviceId))
+            _LOGGER.debug("setOn : %s",str(response))
 
             return (response["status"] == "OK")
         
@@ -53,6 +55,7 @@ class MyFoxApiSocketClient(MyFoxApiClient) :
         try:
             _LOGGER.debug("Device : %s", str(device))
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_SOCKET_OFF % (self.myfox_info.site.siteId, device.deviceId))
+            _LOGGER.debug("setOff : %s",str(response))
 
             _LOGGER.debug("Response : %s", str(response))
             return (response["status"] == "OK")

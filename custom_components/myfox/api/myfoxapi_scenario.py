@@ -1,3 +1,5 @@
+import logging
+
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
 from ..devices.scenario import MyFoxScenario
 
@@ -5,7 +7,7 @@ from .const import (
     MYFOX_SCENARIO_ITEMS, MYFOX_SCENARIO_ENABLE, MYFOX_SCENARIO_DISABLE, MYFOX_SCENARIO_PLAY
 )
 
-
+_LOGGER = logging.getLogger(__name__)
 
 class MyFoxApiSecenarioClient(MyFoxApiClient) :
 
@@ -19,6 +21,7 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
         try:
             response = await self.callMyFoxApiGet(MYFOX_SCENARIO_ITEMS % self.myfox_info.site.siteId)
             items = response["payload"]["items"]
+            _LOGGER.debug("getScenarii : %s",str(items))
 
             for item in items :
                 self.scenarii.append(MyFoxScenario(item["scenarioId"],
@@ -38,6 +41,7 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
         """ Enable scenario """
         try:
             response = await self.callMyFoxApiPost(MYFOX_SCENARIO_ENABLE % (self.myfox_info.site.siteId , scenarioId))
+            _LOGGER.debug("enableScenario : %s",str(response))
 
             return response
 
@@ -51,6 +55,7 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
         """ Disable scenario """
         try:
             response = await self.callMyFoxApiPost(MYFOX_SCENARIO_DISABLE % (self.myfox_info.site.siteId , scenarioId))
+            _LOGGER.debug("disableScenario : %s",str(response))
 
             return response
 
@@ -64,6 +69,7 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
         """ Play scenario """
         try:
             response = await self.callMyFoxApiPost(MYFOX_SCENARIO_PLAY % (self.myfox_info.site.siteId , scenarioId))
+            _LOGGER.debug("playScenario : %s",str(response))
 
             return response
 

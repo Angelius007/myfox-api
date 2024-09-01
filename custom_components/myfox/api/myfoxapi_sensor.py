@@ -1,3 +1,5 @@
+import logging
+
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
 from ..devices.sensor import MyFoxGenerictSensor, MyFoxDeviceWithState, MyFoxDeviceWithStateState
 
@@ -6,6 +8,8 @@ from .const import (
     MYFOX_DEVICE_STATE_LIST,
     MYFOX_DEVICE_STATE_GET
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 class MyFoxApiSensorClient(MyFoxApiClient) :
 
@@ -19,6 +23,7 @@ class MyFoxApiSensorClient(MyFoxApiClient) :
         try:
             response = await self.callMyFoxApiGet(MYFOX_DEVICE_OTHER_LIST % (self.myfox_info.site.siteId))
             items = response["payload"]["items"]
+            _LOGGER.debug("getSensorList : %s",str(items))
 
             for item in items :
                 self.sensor.append(MyFoxGenerictSensor(item["deviceId"],
@@ -40,6 +45,7 @@ class MyFoxApiSensorClient(MyFoxApiClient) :
         try:
             response = await self.callMyFoxApiGet(MYFOX_DEVICE_STATE_LIST % (self.myfox_info.site.siteId))
             items = response["payload"]["items"]
+            _LOGGER.debug("getDeviceWithStateList : %s",str(items))
 
             for item in items :
                 self.sensor.append(MyFoxDeviceWithState(item["deviceId"],
@@ -61,6 +67,7 @@ class MyFoxApiSensorClient(MyFoxApiClient) :
         try:
             response = await self.callMyFoxApiGet(MYFOX_DEVICE_STATE_GET % (self.myfox_info.site.siteId, device.deviceId))
             items = response["payload"]["items"]
+            _LOGGER.debug("getDeviceWithState : %s",str(items))
 
             for item in items :
                 self.sensorState.append(MyFoxDeviceWithStateState(item["deviceId"],

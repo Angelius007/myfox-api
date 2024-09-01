@@ -1,3 +1,5 @@
+import logging
+
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
 from ..devices.heater import MyFoxHeater
 
@@ -8,6 +10,8 @@ from .const import (
     MYFOX_DEVICE_HEATER_THERMO_SET_BOOST,
     MYFOX_DEVICE_HEATER_THERMO_SET_OFF
 )
+_LOGGER = logging.getLogger(__name__)
+
 class MyFoxApThermoClient(MyFoxApiClient) :
 
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
@@ -21,6 +25,7 @@ class MyFoxApThermoClient(MyFoxApiClient) :
             response = await self.callMyFoxApiGet(MYFOX_DEVICE_HEATER_THERMO_LIST % (self.myfox_info.site.siteId))
             print(str(response))
             items = response["payload"]["items"]
+            _LOGGER.debug("getList : %s",str(items))
 
             for item in items :
                 if "lastTemperature" in item :
@@ -45,6 +50,7 @@ class MyFoxApThermoClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_HEATER_THERMO_SET_AUTO % (self.myfox_info.site.siteId, device.deviceId))
+            _LOGGER.debug("setAuto : %s",str(response))
 
             return response
 
@@ -58,6 +64,7 @@ class MyFoxApThermoClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_HEATER_THERMO_SET_AWAY % (self.myfox_info.site.siteId, device.deviceId))
+            _LOGGER.debug("setAway : %s",str(response))
 
             return response
 
@@ -71,6 +78,7 @@ class MyFoxApThermoClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_HEATER_THERMO_SET_BOOST % (self.myfox_info.site.siteId, device.deviceId))
+            _LOGGER.debug("setBoost : %s",str(response))
 
             return response
 
@@ -84,6 +92,7 @@ class MyFoxApThermoClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_HEATER_THERMO_SET_OFF % (self.myfox_info.site.siteId, device.deviceId))
+            _LOGGER.debug("setOff : %s",str(response))
 
             return response
 

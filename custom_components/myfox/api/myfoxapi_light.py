@@ -1,9 +1,12 @@
+import logging
+
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
 from ..devices.light import MyFoxLightSensor
 
 from .const import (
     MYFOX_LIGHT_LIST, MYFOX_LIGHT_HISTORY
 )
+_LOGGER = logging.getLogger(__name__)
 
 class MyFoxApiLightClient(MyFoxApiClient) :
 
@@ -16,6 +19,8 @@ class MyFoxApiLightClient(MyFoxApiClient) :
         try:
             response = await self.callMyFoxApiGet(MYFOX_LIGHT_LIST % (self.myfox_info.site.siteId))
             items = response["payload"]["items"]
+            _LOGGER.debug("getLightList : %s",str(items))
+
             for item in items :
                 self.ligth.append(MyFoxLightSensor(item["deviceId"],
                                 item["label"],
@@ -34,6 +39,7 @@ class MyFoxApiLightClient(MyFoxApiClient) :
         """ Mise a jour security site """
         try:
             response = await self.callMyFoxApiGet(MYFOX_LIGHT_HISTORY % (self.myfox_info.site.siteId , light.deviceId))
+            _LOGGER.debug("getLightHistory : %s",str(response))
             # {'status': 'OK', 'timestamp': 1723759985, 'payload': {'request': 'OK'}}
             return response
 

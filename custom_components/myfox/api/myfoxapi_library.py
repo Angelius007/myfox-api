@@ -1,3 +1,5 @@
+import logging
+
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
 from ..devices.librairie import MyFoxImage, MyFoxVideo
 
@@ -6,6 +8,7 @@ from .const import (
     MYFOX_LIBRARY_VIDEO_LIST,
     MYFOX_LIBRARY_VIDEO_PLAY
 )
+_LOGGER = logging.getLogger(__name__)
 
 class MyFoxApiLibraryClient(MyFoxApiClient) :
 
@@ -18,7 +21,7 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
         try:
             response = await self.callMyFoxApiGet(MYFOX_LIBRARY_IMAGE_LIST % (self.myfox_info.site.siteId))
             items = response["payload"]["items"]
-
+            _LOGGER.debug("getImageList : %s",str(items))
             for item in items :
                 self.module.append(MyFoxImage(item["imageId"],
                                             item["cameraId"],
@@ -41,6 +44,7 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
         try:
             response = await self.callMyFoxApiGet(MYFOX_LIBRARY_VIDEO_LIST % (self.myfox_info.site.siteId))
             items = response["payload"]["items"]
+            _LOGGER.debug("getVideoList : %s",str(items))
 
             for item in items :
                 self.module.append(MyFoxVideo(item["videoId"],

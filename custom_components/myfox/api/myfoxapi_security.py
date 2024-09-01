@@ -1,8 +1,12 @@
+import logging
+
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
 
 from .const import (
     MYFOX_SECURITY_GET, MYFOX_SECURITY_SET
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 class MyFoxApiSecurityClient(MyFoxApiClient) :
 
@@ -14,6 +18,7 @@ class MyFoxApiSecurityClient(MyFoxApiClient) :
         try:
             response = await self.callMyFoxApiGet(MYFOX_SECURITY_GET % (self.myfox_info.site.siteId))
             statutSecurity = response["payload"]["statusLabel"]
+            _LOGGER.debug("getSecurity : %s",str(statutSecurity))
             # {'status': 'OK', 'timestamp': 1723759973, 'payload': {'status': 1, 'statusLabel': 'disarmed'}
             return statutSecurity
 
@@ -27,6 +32,7 @@ class MyFoxApiSecurityClient(MyFoxApiClient) :
         """ Mise a jour security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_SECURITY_SET % (self.myfox_info.site.siteId , securityLevel))
+            _LOGGER.debug("setSecurity : %s",str(response))
             # {'status': 'OK', 'timestamp': 1723759985, 'payload': {'request': 'OK'}}
             return (response["payload"]["statusLabel"] == "OK")
 
