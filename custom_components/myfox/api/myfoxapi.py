@@ -53,8 +53,8 @@ class MyFoxEntryDataApi:
     refresh_token: str = None
     expires_in: int = 0
     expires_time: float = 0.0 
-    site: MyFoxSite = MyFoxSite(0)
-    sites: list[MyFoxSite] = field(default_factory=list)
+    site: MyFoxSite = None
+    sites: list[MyFoxSite] = field(default_factory=list[MyFoxSite])
 
 class MyFoxPolicy(asyncio.DefaultEventLoopPolicy):
    def new_event_loop(self):
@@ -326,7 +326,7 @@ class MyFoxApiClient:
     async def getInfoSite(self, forceCall:bool=False) -> list[MyFoxSite]:
         """ Recuperation info site """
         try:
-            if self.myfox_info.site.siteId == 0 or forceCall:
+            if self.myfox_info.site is None or self.myfox_info.site.siteId == 0 or forceCall:
                 response = await self.callMyFoxApiGet(MYFOX_INFO_SITE_PATH)
                 items = response["payload"]["items"]
 
