@@ -122,7 +122,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             addTemperatureDevice(hass, entry, myfox_info)
             
         return True
-    else
+    else :
         return False
 
 async def addCamera(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
