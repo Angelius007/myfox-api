@@ -82,7 +82,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
                                    entry.data[KEY_EXPIRE_TIME])
     myfox_client = MyFoxApiClient(myfox_info)
     
-    info_site = await myfox_client.getInfoSite(entry.data[KEY_SITE_ID])
+    info_site = await myfox_client.getInfoSite(entry.data[KEY_SITE_ID], True)
      
     if info_site :
         """Recherche des devices."""
@@ -121,7 +121,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         # Sondes de temperature
         if myfox_client.myfox_info.site.deviceTemperatureCount > 0 :
             addTemperatureDevice(hass, entry, myfox_info)
-            
+
+        await hass.config_entries.async_forward_entry_setups(entry, _PLATFORMS)
+        entry.async_on_unload(entry.add_update_listener(update_listener))
         return True
     else :
         _LOGGER.warn("Pas de site trouve pour l'identifiant %s",entry.data[KEY_SITE_ID])

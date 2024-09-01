@@ -109,13 +109,14 @@ class MyFoxCache() :
 class TestClients :
 
     def testClient(loop : AbstractEventLoop, client : MyFoxApiClient, forceInit : bool = True):
-        results = loop.run_until_complete(asyncio.gather(*[client.getInfoSites(forceInit)]))
-        _LOGGER.info("results:"+str(results))
+        # results = loop.run_until_complete(asyncio.gather(*[client.getInfoSites(forceInit)]))
+        # _LOGGER.info("results:"+str(results))
+        # site_list = list()
+        # for site in results[0]:
+        #     site_list.append(site.key)
 
-        
-        site_list = list()
-        for site in results[0]:
-            site_list.append(site.key)
+        results = loop.run_until_complete(asyncio.gather(*[client.getInfoSite(1326, forceInit)]))
+        _LOGGER.info("results:"+str(results))
 
         # results = loop.run_until_complete(asyncio.gather(*[client.refreshToken()]))
         #_LOGGER.info("results:"+str(results))
@@ -296,7 +297,7 @@ if __name__ == "__main__" :
     myfox_info = MyFoxCache.getMyFoxEntryDataFromCache()
 
     try :        
-        TestClients.testClient(loop, MyFoxApiClient(myfox_info), False) # , True
+        TestClients.testClient(loop, MyFoxApiClient(myfox_info), True) # , True
         # TestClients.testScenario(loop, MyFoxApiSecenarioClient(myfox_info))
         # TestClients.testSecurity(loop, MyFoxApiSecurityClient(myfox_info))
         # TestClients.testCamera(loop, MyFoxApiCameraClient(myfox_info))
