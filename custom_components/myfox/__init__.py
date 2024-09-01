@@ -11,7 +11,12 @@ from .api.const import (
     KEY_CLIENT_ID,
     KEY_CLIENT_SECRET,
     KEY_MYFOX_USER,
-    KEY_MYFOX_PSWD
+    KEY_MYFOX_PSWD,
+    KEY_ACCESS_TOKEN,
+    KEY_REFRESH_TOKEN,
+    KEY_EXPIRE_IN,
+    KEY_EXPIRE_TIME,
+    KEY_SITE_ID
 )
 from .api.myfoxapi import (
     MyFoxEntryDataApi,
@@ -66,16 +71,20 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     if DOMAIN not in hass.data:
         hass.data[DOMAIN] = {}
-
+    
     myfox_info = MyFoxEntryDataApi(entry.data[KEY_CLIENT_ID],
                                    entry.data[KEY_CLIENT_SECRET],
                                    entry.data[KEY_MYFOX_USER],
-                                   entry.data[KEY_MYFOX_PSWD])
+                                   entry.data[KEY_MYFOX_PSWD],
+                                   entry.data[KEY_ACCESS_TOKEN],
+                                   entry.data[KEY_REFRESH_TOKEN],
+                                   entry.data[KEY_EXPIRE_IN],
+                                   entry.data[KEY_EXPIRE_TIME])
     myfox_client = MyFoxApiClient(myfox_info)
     
-    login_ok = await myfox_client.login()
+    info_site = await myfox_client.getInfoSite(entry.data[KEY_SITE_ID])
      
-    if login_ok :
+    if info_site :
         """Recherche des devices."""
         hass.data[DOMAIN][entry.entry_id] = {} 
         # cameraCount: int = 0
@@ -111,6 +120,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         # Sondes de temperature
         if myfox_client.myfox_info.site.deviceTemperatureCount > 0 :
             addTemperatureDevice(hass, entry, myfox_info)
+            
+        return True
+    else
+        return False
 
 async def addCamera(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """

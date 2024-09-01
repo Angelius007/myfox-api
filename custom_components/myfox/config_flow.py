@@ -12,8 +12,13 @@ from .api.const import (
      KEY_CLIENT_SECRET, 
      KEY_MYFOX_USER, 
      KEY_MYFOX_PSWD,
-     KEY_SITE_ID
+     KEY_SITE_ID,
+     KEY_ACCESS_TOKEN,
+     KEY_REFRESH_TOKEN,
+     KEY_EXPIRE_IN,
+     KEY_EXPIRE_TIME
 )
+
 from .api.myfoxapi import (
     MyFoxEntryDataApi,
     MyFoxApiClient
@@ -26,11 +31,8 @@ class MyFoxConfigFlow(ConfigFlow, domain=DOMAIN):
 
     # Init des variables locales
     def __init__(self) -> None:
-        self.client_id = None
-        self.client_secret = None
-        self.username = None
-        self.password = None
-        self.site_id = None
+        self.myfox_client:MyFoxApiClient = None
+        self.site: MyFoxSite = None
         self.sites: list[MyFoxSite] = field(default_factory=list[MyFoxSite])
 
         self.config_entry: ConfigEntry | None = None
@@ -51,22 +53,16 @@ class MyFoxConfigFlow(ConfigFlow, domain=DOMAIN):
             vol.Required(KEY_MYFOX_PSWD): str
         })
         if info is not None:
-            self.client_id      = info.get(KEY_CLIENT_ID)
-            self.client_secret  = info.get(KEY_CLIENT_SECRET)
-            self.username       = info.get(KEY_MYFOX_USER)
-            self.password       = info.get(KEY_MYFOX_PSWD)
-
-            myfox_info = MyFoxEntryDataApi(self.client_id,
-                                        self.client_secret,
-                                        self.username,
-                                        self.password)
-            myfox_client = MyFoxApiClient(myfox_info)
+            myfox_info = MyFoxEntryDataApi(info.get(KEY_CLIENT_ID),
+                                        info.get(KEY_CLIENT_SECRET),
+                                        info.get(KEY_MYFOX_USER),
+                                        info.get(KEY_MYFOX_PSWD))
+            self.myfox_client = MyFoxApiClient(myfox_info)
             
-            login_ok = await myfox_client.login()
-
+            login_ok = await self.myfox_client.login()
             if login_ok :
                 """Recherche des devices."""
-                self.sites = myfox_client.myfox_info.sites
+                self.sites = self.myfox_client.myfox_info.sites
 
             return await self.async_step_select_site()
 
@@ -78,21 +74,41 @@ class MyFoxConfigFlow(ConfigFlow, domain=DOMAIN):
         """ Selection du site"""
         if info is not None:
             """ sauvegarde du site et de l'entry """
-            self.site_id       = info.get(KEY_SITE_ID)
-            device_unique_id = "myfox-"+self.site_id
+            for site in self.sites:
+                if site.key == info.get(KEY_SITE_ID) :
+                    self.site = site
+            device_unique_id = "myfox-"+str(self.site.siteId)
             
-            await self.async_set_unique_id(device_unique_id)
-            self._abort_if_unique_id_configured()
+            existing_entry = await self.async_set_unique_id(device_unique_id)
             
             options = {}
-            data = {
-                KEY_CLIENT_ID: self.client_id,
-                KEY_CLIENT_SECRET: self.client_secret,
-                KEY_MYFOX_USER: self.username,
-                KEY_MYFOX_PSWD: self.password,
-
-            }
-            return self.async_create_entry(title=device_unique_id, data=data, options=options)
+            if existing_entry:
+                data = existing_entry.data.copy()
+                data[KEY_CLIENT_ID] = self.myfox_client.myfox_info.client_id
+                data[KEY_CLIENT_SECRET] = self.myfox_client.myfox_info.client_secret
+                data[KEY_MYFOX_USER] = self.myfox_client.myfox_info.username
+                data[KEY_MYFOX_PSWD] = self.myfox_client.myfox_info.password
+                data[KEY_ACCESS_TOKEN] = self.myfox_client.myfox_info.access_token
+                data[KEY_REFRESH_TOKEN] = self.myfox_client.myfox_info.refresh_token
+                data[KEY_EXPIRE_IN] = self.myfox_client.myfox_info.expires_in
+                data[KEY_EXPIRE_TIME] = self.myfox_client.myfox_info.expires_time
+                data[KEY_SITE_ID] = str(self.site.siteId)
+                if self.hass.config_entries.async_update_entry(existing_entry, data=data):
+                    await self.hass.config_entries.async_reload(existing_entry.entry_id)
+                return self.async_abort(reason="updated_successfully")
+            else :
+                data = {
+                    KEY_CLIENT_ID: self.myfox_client.myfox_info.client_id,
+                    KEY_CLIENT_SECRET: self.myfox_client.myfox_info.client_secret,
+                    KEY_MYFOX_USER: self.myfox_client.myfox_info.username,
+                    KEY_MYFOX_PSWD: self.myfox_client.myfox_info.password,
+                    KEY_ACCESS_TOKEN: self.myfox_client.myfox_info.access_token,
+                    KEY_REFRESH_TOKEN: self.myfox_client.myfox_info.refresh_token,
+                    KEY_EXPIRE_IN: self.myfox_client.myfox_info.expires_in,
+                    KEY_EXPIRE_TIME: self.myfox_client.myfox_info.expires_time,
+                    KEY_SITE_ID: str(self.site.siteId),
+                }
+                return self.async_create_entry(title=device_unique_id, data=data, options=options)
 
         
         site_list = list()

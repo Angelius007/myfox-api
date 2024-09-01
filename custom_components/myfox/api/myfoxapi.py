@@ -239,7 +239,7 @@ class MyFoxApiClient:
             # save des tokens
             self.saveToken(response)
             # en cas d'absence, recuperation du site
-            await self.getInfoSite()
+            await self.getInfoSites()
 
             return True
 
@@ -262,7 +262,7 @@ class MyFoxApiClient:
             # save des tokens
             self.saveToken(response)
             # en cas d'absence, recuperation du site
-            await self.getInfoSite()
+            await self.getInfoSites()
 
             return True
 
@@ -323,7 +323,25 @@ class MyFoxApiClient:
             print("Expiration du token dans " + str(expiration) + " secondes a " + str(expires_time))
         return expiration
 
-    async def getInfoSite(self, forceCall:bool=False) -> list[MyFoxSite]:
+    async def getInfoSite(self, siteId:int, forceCall:bool=False) -> list[MyFoxSite]:
+        """ Recuperation info site """
+        try:
+            sites = await self.getInfoSites(forceCall)
+            for site in sites :
+                if site.siteId == siteId :
+                    self.myfox_info.site = site
+                    return site
+
+            return None
+
+        except MyFoxException as exception:
+            raise exception
+        except Exception as exception:
+            _LOGGER.error(exception)
+            print("Error : " + str(exception))
+            raise MyFoxException(exception)
+        
+    async def getInfoSites(self, forceCall:bool=False) -> list[MyFoxSite]:
         """ Recuperation info site """
         try:
             if self.myfox_info.site is None or self.myfox_info.site.siteId == 0 or forceCall:

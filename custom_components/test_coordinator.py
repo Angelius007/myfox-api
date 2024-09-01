@@ -109,7 +109,7 @@ class MyFoxCache() :
 class TestClients :
 
     def testClient(loop : AbstractEventLoop, client : MyFoxApiClient, forceInit : bool = True):
-        results = loop.run_until_complete(asyncio.gather(*[client.getInfoSite(forceInit)]))
+        results = loop.run_until_complete(asyncio.gather(*[client.getInfoSites(forceInit)]))
         _LOGGER.info("results:"+str(results))
 
         
