@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from myfox.devices.socket import MyFoxSocket
-from myfox.devices.shutter import MyFoxShutter
+from ..devices.socket import MyFoxSocket
+from ..devices.shutter import MyFoxShutter
 
 #GroupElectric {
 #groupId (integer): The group identifier,

@@ -1,5 +1,5 @@
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from myfox.devices.gate import MyFoxGate
+from ..devices.gate import MyFoxGate
 
 from .const import (
     MYFOX_DEVICE_GATE_LIST,

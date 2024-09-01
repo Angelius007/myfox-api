@@ -1,5 +1,5 @@
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from myfox.devices.temperature import MyFoxTemperatureSensor, MyFoxTemperatureRecord
+from ..devices.temperature import MyFoxTemperatureSensor, MyFoxTemperatureRecord
 
 from .const import (
     MYFOX_DEVICE_TEMPERATURE_LIST,

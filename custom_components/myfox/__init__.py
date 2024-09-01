@@ -7,44 +7,44 @@ from homeassistant.core import HomeAssistant
 from homeassistant.const import (
     Platform,
 )
-from myfox.api.const import (
+from .api.const import (
     KEY_CLIENT_ID,
     KEY_CLIENT_SECRET,
     KEY_MYFOX_USER,
     KEY_MYFOX_PSWD
 )
-from myfox.api.myfoxapi import (
+from .api.myfoxapi import (
     MyFoxEntryDataApi,
     MyFoxApiClient
 )
 
-from myfox.api.myfoxapi_camera import (MyFoxApiCameraClient)
-from myfox.api.myfoxapi_light import (MyFoxApiLightClient)
-from myfox.api.myfoxapi_security import (MyFoxApiSecurityClient)
-from myfox.api.myfoxapi_scenario import (MyFoxApiSecenarioClient)
-from myfox.api.myfoxapi_sensor import (MyFoxApiSensorClient)
-from myfox.api.myfoxapi_temperature import (MyFoxApiTemperatureClient)
-from myfox.api.myfoxapi_gate import (MyFoxApiGateClient)
-from myfox.api.myfoxapi_module import (MyFoxApiModuleClient)
-from myfox.api.myfoxapi_shutter import (MyFoxApiShutterClient)
-from myfox.api.myfoxapi_socket import (MyFoxApiSocketClient)
-from myfox.api.myfoxapi_library import (MyFoxApiLibraryClient)
-from myfox.api.myfoxapi_group_electric import (MyFoxApiGroupElectricClient)
-from myfox.api.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
-from myfox.api.myfoxapi_heater import (MyFoxApHeaterClient)
-from myfox.api.myfoxapi_thermo import (MyFoxApThermoClient)
+from .api.myfoxapi_camera import (MyFoxApiCameraClient)
+from .api.myfoxapi_light import (MyFoxApiLightClient)
+from .api.myfoxapi_security import (MyFoxApiSecurityClient)
+from .api.myfoxapi_scenario import (MyFoxApiSecenarioClient)
+from .api.myfoxapi_sensor import (MyFoxApiSensorClient)
+from .api.myfoxapi_temperature import (MyFoxApiTemperatureClient)
+from .api.myfoxapi_gate import (MyFoxApiGateClient)
+from .api.myfoxapi_module import (MyFoxApiModuleClient)
+from .api.myfoxapi_shutter import (MyFoxApiShutterClient)
+from .api.myfoxapi_socket import (MyFoxApiSocketClient)
+from .api.myfoxapi_library import (MyFoxApiLibraryClient)
+from .api.myfoxapi_group_electric import (MyFoxApiGroupElectricClient)
+from .api.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
+from .api.myfoxapi_heater import (MyFoxApHeaterClient)
+from .api.myfoxapi_thermo import (MyFoxApThermoClient)
 
-from myfox.devices.camera import (MyFoxCamera)
-from myfox.devices.gate import (MyFoxGate)
-from myfox.devices.heater import (MyFoxHeater)
-from myfox.devices.module import (MyFoxModule)
-from myfox.devices.light import (MyFoxLightSensor)
-from myfox.devices.sensor import (MyFoxGenerictSensor, MyFoxDeviceWithState)
-from myfox.devices.temperature import (MyFoxTemperatureRecord, MyFoxTemperatureSensor)
-from myfox.devices.shutter import MyFoxShutter
-from myfox.devices.socket import MyFoxSocket
-from myfox.devices.librairie import (MyFoxImage, MyFoxVideo)
-from myfox.devices.group import (MyFoxGroupElectric, MyFoxGroupShutter)
+from .devices.camera import (MyFoxCamera)
+from .devices.gate import (MyFoxGate)
+from .devices.heater import (MyFoxHeater)
+from .devices.module import (MyFoxModule)
+from .devices.light import (MyFoxLightSensor)
+from .devices.sensor import (MyFoxGenerictSensor, MyFoxDeviceWithState)
+from .devices.temperature import (MyFoxTemperatureRecord, MyFoxTemperatureSensor)
+from .devices.shutter import MyFoxShutter
+from .devices.socket import MyFoxSocket
+from .devices.librairie import (MyFoxImage, MyFoxVideo)
+from .devices.group import (MyFoxGroupElectric, MyFoxGroupShutter)
 
 _LOGGER = logging.getLogger(__name__)
 

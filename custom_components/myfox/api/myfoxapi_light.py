@@ -1,5 +1,5 @@
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from myfox.devices.light import MyFoxLightSensor
+from ..devices.light import MyFoxLightSensor
 
 from .const import (
     MYFOX_LIGHT_LIST, MYFOX_LIGHT_HISTORY

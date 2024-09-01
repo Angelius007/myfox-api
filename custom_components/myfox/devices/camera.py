@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from myfox.devices import  BaseDevice
+from ..devices import  BaseDevice
 
 #Camera {
 #"deviceId": 1027535,

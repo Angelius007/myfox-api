@@ -1,5 +1,5 @@
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from myfox.devices.librairie import MyFoxImage, MyFoxVideo
+from ..devices.librairie import MyFoxImage, MyFoxVideo
 
 from .const import (
     MYFOX_LIBRARY_IMAGE_LIST,

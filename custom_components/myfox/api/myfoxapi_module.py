@@ -1,5 +1,5 @@
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from myfox.devices.module import MyFoxModule
+from ..devices.module import MyFoxModule
 
 from .const import (
     MYFOX_DEVICE_MODULE_LIST,

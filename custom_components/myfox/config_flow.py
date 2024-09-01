@@ -5,20 +5,20 @@ from homeassistant.helpers import selector
 from dataclasses import field
 from typing import Dict, Any
 import voluptuous as vol
-from myfox import (DOMAIN, 
+from . import (DOMAIN, 
                    CONFIG_VERSION)
-from myfox.api.const import (
+from .api.const import (
      KEY_CLIENT_ID, 
      KEY_CLIENT_SECRET, 
      KEY_MYFOX_USER, 
      KEY_MYFOX_PSWD,
      KEY_SITE_ID
 )
-from myfox.api.myfoxapi import (
+from .api.myfoxapi import (
     MyFoxEntryDataApi,
     MyFoxApiClient
 )
-from myfox.devices.site import MyFoxSite
+from .devices.site import MyFoxSite
 
 class MyFoxConfigFlow(ConfigFlow, domain=DOMAIN):
     """ Config """

@@ -1,6 +1,6 @@
 import logging
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from myfox.devices.socket import MyFoxSocket
+from ..devices.socket import MyFoxSocket
 
 from .const import (
     MYFOX_DEVICE_SOCKET_LIST,

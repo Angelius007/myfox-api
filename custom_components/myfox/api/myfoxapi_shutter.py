@@ -1,5 +1,5 @@
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from myfox.devices.shutter import MyFoxShutter
+from ..devices.shutter import MyFoxShutter
 
 from .const import (
     MYFOX_DEVICE_SHUTTER_LIST,

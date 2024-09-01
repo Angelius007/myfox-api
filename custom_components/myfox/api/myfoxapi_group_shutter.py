@@ -1,6 +1,6 @@
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from myfox.devices.group import (MyFoxGroupShutter)
-from myfox.devices.shutter import (MyFoxShutter)
+from ..devices.group import (MyFoxGroupShutter)
+from ..devices.shutter import (MyFoxShutter)
 
 from .const import (
     MYFOX_GROUP_SHUTTER_LIST,

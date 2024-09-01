@@ -14,7 +14,7 @@ from .const import (
     KEY_EXPIRE_IN, KEY_ACCESS_TOKEN, GRANT_TYPE_PASSWORD, GRANT_REFRESH_TOKEN,KEY_EXPIRE_TIME,
 )
 from ..devices import (BaseDevice, DiagnosticDevice, MyFoxDeviceInfo)
-from myfox.devices.site import MyFoxSite
+from ..devices.site import MyFoxSite
 
 #from homeassistant.config_entries import ConfigEntry, ConfigEntryState
 from homeassistant.const import (

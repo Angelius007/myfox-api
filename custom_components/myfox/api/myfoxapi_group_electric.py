@@ -1,6 +1,6 @@
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from myfox.devices.group import (MyFoxGroupElectric)
-from myfox.devices.socket import (MyFoxSocket)
+from ..devices.group import (MyFoxGroupElectric)
+from ..devices.socket import (MyFoxSocket)
 
 
 from .const import (

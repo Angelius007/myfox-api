@@ -1,5 +1,5 @@
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from myfox.devices.sensor import MyFoxGenerictSensor, MyFoxDeviceWithState, MyFoxDeviceWithStateState
+from ..devices.sensor import MyFoxGenerictSensor, MyFoxDeviceWithState, MyFoxDeviceWithStateState
 
 from .const import (
     MYFOX_DEVICE_OTHER_LIST,

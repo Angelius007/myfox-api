@@ -1,5 +1,5 @@
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from myfox.devices.heater import MyFoxHeater
+from ..devices.heater import MyFoxHeater
 
 from .const import (
     MYFOX_DEVICE_HEATER_THERMO_LIST,
