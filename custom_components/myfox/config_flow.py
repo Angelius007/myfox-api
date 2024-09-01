@@ -95,7 +95,10 @@ class MyFoxConfigFlow(ConfigFlow, domain=DOMAIN):
             return self.async_create_entry(title=self.installation_site, data=data, options=options)
 
         
-        site_list = list(self.sites)
+        site_list = list()
+        for site in self.sites:
+            site_list.append(site.key)
+
         SITE_STEP_SCHEMA = vol.Schema({
             vol.Required(KEY_SITE_ID): selector.SelectSelector(
                 selector.SelectSelectorConfig(options=site_list,

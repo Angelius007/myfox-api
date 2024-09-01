@@ -333,6 +333,7 @@ class MyFoxApiClient:
                 for item in items :
                     self.myfox_info.site = MyFoxSite(item["siteId"],
                                                      item["label"],
+                                                     item["siteId"] + " - " + item["label"],
                                                      item["brand"],
                                                      item["timezone"],
                                                      item["AXA"],

@@ -23,6 +23,7 @@ from dataclasses import dataclass
 class MyFoxSite :
     siteId: int
     label: str = ""
+    key: str = ""
     brand : str = ""
     timezone : str = ""
     axa : str = ""
