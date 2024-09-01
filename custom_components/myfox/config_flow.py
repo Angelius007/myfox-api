@@ -96,7 +96,7 @@ class MyFoxConfigFlow(ConfigFlow, domain=DOMAIN):
 
         
         site_list = list()
-        for site in self.sites:
+        for site in self.sites[0]:
             site_list.append(site.key)
 
         SITE_STEP_SCHEMA = vol.Schema({

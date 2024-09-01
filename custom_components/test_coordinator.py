@@ -99,18 +99,23 @@ class MyFoxCache() :
         if "expires_time" in data:
             expires_time = data["expires_time"]
         if "site_id" in data:
-            site_id = data["site_id"]
-        
+            site_id = int(data["site_id"])
+                    
         myfox_info = MyFoxEntryDataApi(client_id, client_secret, myxof_user, myfox_pswd,
-                        access_token, refresh_token, expires_in, expires_time, MyFoxSite(siteId=site_id))
+                        access_token, refresh_token, expires_in, expires_time, MyFoxSite(site_id))
         _LOGGER.info(str(myfox_info))
         return myfox_info
 
 class TestClients :
 
-    def testClient(loop : AbstractEventLoop, client : MyFoxApiClient, forceInit : bool = False):
+    def testClient(loop : AbstractEventLoop, client : MyFoxApiClient, forceInit : bool = True):
         results = loop.run_until_complete(asyncio.gather(*[client.getInfoSite(forceInit)]))
         _LOGGER.info("results:"+str(results))
+
+        
+        site_list = list()
+        for site in results[0]:
+            site_list.append(site.key)
 
         # results = loop.run_until_complete(asyncio.gather(*[client.refreshToken()]))
         #_LOGGER.info("results:"+str(results))

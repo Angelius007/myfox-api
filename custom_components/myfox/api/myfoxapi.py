@@ -54,7 +54,7 @@ class MyFoxEntryDataApi:
     expires_in: int = 0
     expires_time: float = 0.0 
     site: MyFoxSite = None
-    sites: list[MyFoxSite] = field(default_factory=list[MyFoxSite])
+    sites: list[MyFoxSite] = field(default_factory=list[MyFoxSite(0)])
 
 class MyFoxPolicy(asyncio.DefaultEventLoopPolicy):
    def new_event_loop(self):
@@ -333,7 +333,7 @@ class MyFoxApiClient:
                 for item in items :
                     self.myfox_info.site = MyFoxSite(item["siteId"],
                                                      item["label"],
-                                                     item["siteId"] + " - " + item["label"],
+                                                     str(item["siteId"]) + " - " + str(item["label"]),
                                                      item["brand"],
                                                      item["timezone"],
                                                      item["AXA"],
@@ -351,6 +351,8 @@ class MyFoxApiClient:
                     self.myfox_info.sites.append(self.myfox_info.site)
                     print("site_id:"+str(self.myfox_info.site.siteId))
                     #break
+            else :
+                self.myfox_info.sites.append(self.myfox_info.site)
 
             return self.myfox_info.sites
 
