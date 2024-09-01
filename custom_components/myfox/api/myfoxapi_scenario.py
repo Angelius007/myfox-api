@@ -1,5 +1,5 @@
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from .devices.scenario import MyFoxScenario
+from myfox.devices.scenario import MyFoxScenario
 
 from .const import (
     MYFOX_SCENARIO_ITEMS, MYFOX_SCENARIO_ENABLE, MYFOX_SCENARIO_DISABLE, MYFOX_SCENARIO_PLAY
@@ -17,7 +17,7 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
     async def getScenarii(self):
         """ Recuperation scenarios """
         try:
-            response = await self.callMyFoxApiGet(MYFOX_SCENARIO_ITEMS % self.myfox_info.siteId)
+            response = await self.callMyFoxApiGet(MYFOX_SCENARIO_ITEMS % self.myfox_info.site.siteId)
             items = response["payload"]["items"]
 
             for item in items :
@@ -37,7 +37,7 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
     async def enableScenario(self, scenarioId: int):
         """ Enable scenario """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_SCENARIO_ENABLE % (self.myfox_info.siteId , scenarioId))
+            response = await self.callMyFoxApiPost(MYFOX_SCENARIO_ENABLE % (self.myfox_info.site.siteId , scenarioId))
 
             return response
 
@@ -50,7 +50,7 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
     async def disableScenario(self, scenarioId: int):
         """ Disable scenario """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_SCENARIO_DISABLE % (self.myfox_info.siteId , scenarioId))
+            response = await self.callMyFoxApiPost(MYFOX_SCENARIO_DISABLE % (self.myfox_info.site.siteId , scenarioId))
 
             return response
 
@@ -63,7 +63,7 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
     async def playScenario(self, scenarioId: int):
         """ Play scenario """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_SCENARIO_PLAY % (self.myfox_info.siteId , scenarioId))
+            response = await self.callMyFoxApiPost(MYFOX_SCENARIO_PLAY % (self.myfox_info.site.siteId , scenarioId))
 
             return response
 

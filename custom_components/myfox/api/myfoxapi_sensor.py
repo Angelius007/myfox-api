@@ -1,5 +1,5 @@
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from .devices.sensor import MyFoxGenerictSensor, MyFoxDeviceWithState, MyFoxDeviceWithStateState
+from myfox.devices.sensor import MyFoxGenerictSensor, MyFoxDeviceWithState, MyFoxDeviceWithStateState
 
 from .const import (
     MYFOX_DEVICE_OTHER_LIST,
@@ -17,7 +17,7 @@ class MyFoxApiSensorClient(MyFoxApiClient) :
     async def getSensorList(self):
         """ Get security site """
         try:
-            response = await self.callMyFoxApiGet(MYFOX_DEVICE_OTHER_LIST % (self.myfox_info.siteId))
+            response = await self.callMyFoxApiGet(MYFOX_DEVICE_OTHER_LIST % (self.myfox_info.site.siteId))
             items = response["payload"]["items"]
 
             for item in items :
@@ -38,7 +38,7 @@ class MyFoxApiSensorClient(MyFoxApiClient) :
     async def getDeviceWithStateList(self):
         """ Get security site """
         try:
-            response = await self.callMyFoxApiGet(MYFOX_DEVICE_STATE_LIST % (self.myfox_info.siteId))
+            response = await self.callMyFoxApiGet(MYFOX_DEVICE_STATE_LIST % (self.myfox_info.site.siteId))
             items = response["payload"]["items"]
 
             for item in items :
@@ -59,7 +59,7 @@ class MyFoxApiSensorClient(MyFoxApiClient) :
     async def getDeviceWithState(self, device:MyFoxDeviceWithState):
         """ Get security site """
         try:
-            response = await self.callMyFoxApiGet(MYFOX_DEVICE_STATE_GET % (self.myfox_info.siteId, device.deviceId))
+            response = await self.callMyFoxApiGet(MYFOX_DEVICE_STATE_GET % (self.myfox_info.site.siteId, device.deviceId))
             items = response["payload"]["items"]
 
             for item in items :

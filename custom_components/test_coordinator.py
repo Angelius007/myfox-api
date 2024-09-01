@@ -7,22 +7,22 @@ import json
 
 from asyncio import AbstractEventLoop
 
-from myfox.myfoxapi import (MyFoxPolicy, MyFoxEntryDataApi, MyFoxApiClient)
-from myfox.myfoxapi_camera import (MyFoxApiCameraClient)
-from myfox.myfoxapi_light import (MyFoxApiLightClient)
-from myfox.myfoxapi_security import (MyFoxApiSecurityClient)
-from myfox.myfoxapi_scenario import (MyFoxApiSecenarioClient)
-from myfox.myfoxapi_sensor import (MyFoxApiSensorClient)
-from myfox.myfoxapi_temperature import (MyFoxApiTemperatureClient)
-from myfox.myfoxapi_gate import (MyFoxApiGateClient)
-from myfox.myfoxapi_module import (MyFoxApiModuleClient)
-from myfox.myfoxapi_shutter import (MyFoxApiShutterClient)
-from myfox.myfoxapi_socket import (MyFoxApiSocketClient)
-from myfox.myfoxapi_library import (MyFoxApiLibraryClient)
-from myfox.myfoxapi_group_electric import (MyFoxApiGroupElectricClient)
-from myfox.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
-from myfox.myfoxapi_heater import (MyFoxApHeaterClient)
-from myfox.myfoxapi_thermo import (MyFoxApThermoClient)
+from myfox.api.myfoxapi import (MyFoxPolicy, MyFoxEntryDataApi, MyFoxApiClient)
+from myfox.api.myfoxapi_camera import (MyFoxApiCameraClient)
+from myfox.api.myfoxapi_light import (MyFoxApiLightClient)
+from myfox.api.myfoxapi_security import (MyFoxApiSecurityClient)
+from myfox.api.myfoxapi_scenario import (MyFoxApiSecenarioClient)
+from myfox.api.myfoxapi_sensor import (MyFoxApiSensorClient)
+from myfox.api.myfoxapi_temperature import (MyFoxApiTemperatureClient)
+from myfox.api.myfoxapi_gate import (MyFoxApiGateClient)
+from myfox.api.myfoxapi_module import (MyFoxApiModuleClient)
+from myfox.api.myfoxapi_shutter import (MyFoxApiShutterClient)
+from myfox.api.myfoxapi_socket import (MyFoxApiSocketClient)
+from myfox.api.myfoxapi_library import (MyFoxApiLibraryClient)
+from myfox.api.myfoxapi_group_electric import (MyFoxApiGroupElectricClient)
+from myfox.api.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
+from myfox.api.myfoxapi_heater import (MyFoxApHeaterClient)
+from myfox.api.myfoxapi_thermo import (MyFoxApThermoClient)
 
 
 from myfox.devices.camera import (MyFoxCamera)
@@ -36,6 +36,8 @@ from myfox.devices.shutter import MyFoxShutter
 from myfox.devices.socket import MyFoxSocket
 from myfox.devices.librairie import (MyFoxImage, MyFoxVideo)
 from myfox.devices.group import (MyFoxGroupElectric, MyFoxGroupShutter)
+from myfox.devices.site import (MyFoxSite)
+
 
 logging.config.fileConfig('logging.conf', None, True)
 _LOGGER = logging.getLogger(__name__)
@@ -73,7 +75,7 @@ class MyFoxCache() :
             "refresh_token"  : myfox_info.refresh_token,
             "expires_time"   : myfox_info.expires_time,
             "expires_in"     : myfox_info.expires_in,
-            "siteId"         : myfox_info.siteId
+            "site_id"        : myfox_info.site.siteId
         }
         f.write(json.dumps(data))
         f.close()
@@ -96,11 +98,11 @@ class MyFoxCache() :
             expires_in = data["expires_in"]
         if "expires_time" in data:
             expires_time = data["expires_time"]
-        if "siteId" in data:
-            siteId = data["siteId"]
+        if "site_id" in data:
+            site_id = data["site_id"]
         
         myfox_info = MyFoxEntryDataApi(client_id, client_secret, myxof_user, myfox_pswd,
-                        access_token, refresh_token, expires_in, expires_time, siteId)
+                        access_token, refresh_token, expires_in, expires_time, MyFoxSite(siteId=site_id))
         _LOGGER.info(str(myfox_info))
         return myfox_info
 
@@ -183,11 +185,16 @@ class TestClients :
         # _LOGGER.info("results:"+str(results))
 
     def testTemperatureSensor(loop : AbstractEventLoop, client : MyFoxApiTemperatureClient):
-        results = loop.run_until_complete(asyncio.gather(*[client.getTemperatureList()]))
-        _LOGGER.info("results:"+str(results))
-        device = MyFoxTemperatureSensor(65714, "device", 0, "xx", "")
-        results = loop.run_until_complete(asyncio.gather(*[client.getTemperature(device)]))
-        _LOGGER.info("results:"+str(results))
+        results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
+        _LOGGER.info("results:"+str(results[0]))
+
+        for capteur in results[0] :
+            print(str(capteur))
+            #capteur.
+
+        #device = MyFoxTemperatureSensor(65714, "device", 0, "xx", "")
+        #results = loop.run_until_complete(asyncio.gather(*[client.getTemperature(device)]))
+        #_LOGGER.info("results:"+str(results))
 
     def testGate(loop : AbstractEventLoop, client : MyFoxApiGateClient):
         results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
@@ -263,6 +270,8 @@ class TestClients :
     def testThermo(loop : AbstractEventLoop, client : MyFoxApThermoClient):
         results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
         _LOGGER.info("results:"+str(results))
+
+
         #device = MyFoxHeater(66172, "Radiateur Salon", 44, "Module chauffage", "wired", "off")
         #results = loop.run_until_complete(asyncio.gather(*[client.setAuto(device)]))
         #_LOGGER.info("results:"+str(results))
@@ -282,7 +291,7 @@ if __name__ == "__main__" :
     myfox_info = MyFoxCache.getMyFoxEntryDataFromCache()
 
     try :        
-        TestClients.testClient(loop, MyFoxApiClient(myfox_info)) # , True
+        TestClients.testClient(loop, MyFoxApiClient(myfox_info), False) # , True
         # TestClients.testScenario(loop, MyFoxApiSecenarioClient(myfox_info))
         # TestClients.testSecurity(loop, MyFoxApiSecurityClient(myfox_info))
         # TestClients.testCamera(loop, MyFoxApiCameraClient(myfox_info))
@@ -297,7 +306,7 @@ if __name__ == "__main__" :
         # TestClients.testGroupElectric(loop, MyFoxApiGroupElectricClient(myfox_info))
         # TestClients.testGroupShutter(loop, MyFoxApiGroupShutterClient(myfox_info))
         # TestClients.testHeater(loop, MyFoxApHeaterClient(myfox_info))
-        TestClients.testThermo(loop, MyFoxApThermoClient(myfox_info))
+        #TestClients.testThermo(loop, MyFoxApThermoClient(myfox_info))
 
     finally :
         _LOGGER.info("-> Sauvegarde du cache ")

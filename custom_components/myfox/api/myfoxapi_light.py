@@ -1,5 +1,5 @@
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from .devices.light import MyFoxLightSensor
+from myfox.devices.light import MyFoxLightSensor
 
 from .const import (
     MYFOX_LIGHT_LIST, MYFOX_LIGHT_HISTORY
@@ -14,7 +14,7 @@ class MyFoxApiLightClient(MyFoxApiClient) :
     async def getLightList(self):
         """ Get security site """
         try:
-            response = await self.callMyFoxApiGet(MYFOX_LIGHT_LIST % (self.myfox_info.siteId))
+            response = await self.callMyFoxApiGet(MYFOX_LIGHT_LIST % (self.myfox_info.site.siteId))
             items = response["payload"]["items"]
             for item in items :
                 self.ligth.append(MyFoxLightSensor(item["deviceId"],
@@ -33,7 +33,7 @@ class MyFoxApiLightClient(MyFoxApiClient) :
     async def getLightHistory(self, light: MyFoxLightSensor):
         """ Mise a jour security site """
         try:
-            response = await self.callMyFoxApiGet(MYFOX_LIGHT_HISTORY % (self.myfox_info.siteId , light.deviceId))
+            response = await self.callMyFoxApiGet(MYFOX_LIGHT_HISTORY % (self.myfox_info.site.siteId , light.deviceId))
             # {'status': 'OK', 'timestamp': 1723759985, 'payload': {'request': 'OK'}}
             return response
 

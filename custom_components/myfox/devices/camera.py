@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from myfox.devices import  BaseDevice
 
 #Camera {
 #"deviceId": 1027535,
@@ -28,3 +29,7 @@ class MyFoxCamera :
     #"GUID": "0080f0bdd5589177c12f436a39a94c1c",
     #"protocol": "rtmp",
     #"location": "rtmp://tag-shcprtmp-02.ig-1.net/myfox/0080f0bdd5589177c12f436a39a94c1c"
+
+
+class MyFoxCameraDevice(BaseDevice):
+    """ """

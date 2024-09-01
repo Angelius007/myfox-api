@@ -1,5 +1,5 @@
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from .devices.camera import MyFoxCamera
+from myfox.devices.camera import MyFoxCamera
 from .const import (
     MYFOX_CAMERA_LIST, MYFOX_CAMERA_LIVE_START, MYFOX_CAMERA_LIVE_STOP, MYFOX_CAMERA_LIVE_EXTEND,
     MYFOX_CAMERA_PREV_TAKE, MYFOX_CAMERA_REC_START, MYFOX_CAMERA_REC_STOP,
@@ -15,7 +15,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
     async def getCamera(self):
         """ Recuperation scenarios """
         try:
-            response = await self.callMyFoxApiGet(MYFOX_CAMERA_LIST % self.myfox_info.siteId)
+            response = await self.callMyFoxApiGet(MYFOX_CAMERA_LIST % self.myfox_info.site.siteId)
             items = response["payload"]["items"]
 
             for item in items :
@@ -38,7 +38,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
     async def cameraLiveStart(self, camera: MyFoxCamera):
         """ Recuperation scenarios """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_CAMERA_LIVE_START % (self.myfox_info.siteId, camera.deviceId, camera.protocol))
+            response = await self.callMyFoxApiPost(MYFOX_CAMERA_LIVE_START % (self.myfox_info.site.siteId, camera.deviceId, camera.protocol))
             data = response["payload"]
 
             camera.guid = data["GUID"]
@@ -56,7 +56,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
     async def cameraLiveExtend(self, camera: MyFoxCamera):
         """ Recuperation scenarios """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_CAMERA_LIVE_EXTEND % (self.myfox_info.siteId, camera.deviceId))
+            response = await self.callMyFoxApiPost(MYFOX_CAMERA_LIVE_EXTEND % (self.myfox_info.site.siteId, camera.deviceId))
             # data = response["payload"]
 
             return response
@@ -70,7 +70,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
     async def cameraLiveStop(self, camera: MyFoxCamera):
         """ Recuperation scenarios """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_CAMERA_LIVE_STOP % (self.myfox_info.siteId, camera.deviceId))
+            response = await self.callMyFoxApiPost(MYFOX_CAMERA_LIVE_STOP % (self.myfox_info.site.siteId, camera.deviceId))
             # data = response["payload"]
 
             return response
@@ -84,7 +84,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
     async def cameraPreviewTake(self, camera: MyFoxCamera):
         """ Recuperation scenarios """
         try:
-            response = await self.callMyFoxApiBinaryPost(MYFOX_CAMERA_PREV_TAKE % (self.myfox_info.siteId, camera.deviceId))
+            response = await self.callMyFoxApiBinaryPost(MYFOX_CAMERA_PREV_TAKE % (self.myfox_info.site.siteId, camera.deviceId))
 
             return response
 
@@ -97,7 +97,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
     async def cameraSnapshotTake(self, camera: MyFoxCamera):
         """ Recuperation scenarios """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_CAMERA_SNAP_TAKE % (self.myfox_info.siteId, camera.deviceId))
+            response = await self.callMyFoxApiPost(MYFOX_CAMERA_SNAP_TAKE % (self.myfox_info.site.siteId, camera.deviceId))
 
             return response
 
@@ -110,7 +110,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
     async def cameraRecordingStart(self, camera: MyFoxCamera):
         """ Recuperation scenarios """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_CAMERA_REC_START % (self.myfox_info.siteId, camera.deviceId))
+            response = await self.callMyFoxApiPost(MYFOX_CAMERA_REC_START % (self.myfox_info.site.siteId, camera.deviceId))
 
             return response
 
@@ -123,7 +123,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
     async def cameraRecordingStop(self, camera: MyFoxCamera):
         """ Recuperation scenarios """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_CAMERA_REC_STOP % (self.myfox_info.siteId, camera.deviceId))
+            response = await self.callMyFoxApiPost(MYFOX_CAMERA_REC_STOP % (self.myfox_info.site.siteId, camera.deviceId))
 
             return response
 
@@ -136,7 +136,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
     async def cameraShutterOpen(self, camera: MyFoxCamera):
         """ Recuperation scenarios """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_CAMERA_SHUTTER_OPEN % (self.myfox_info.siteId, camera.deviceId))
+            response = await self.callMyFoxApiPost(MYFOX_CAMERA_SHUTTER_OPEN % (self.myfox_info.site.siteId, camera.deviceId))
 
             return response
 
@@ -149,7 +149,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
     async def cameraShutterClose(self, camera: MyFoxCamera):
         """ Recuperation scenarios """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_CAMERA_SHUTTER_CLOSE % (self.myfox_info.siteId, camera.deviceId))
+            response = await self.callMyFoxApiPost(MYFOX_CAMERA_SHUTTER_CLOSE % (self.myfox_info.site.siteId, camera.deviceId))
 
             return response
 

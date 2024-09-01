@@ -1,5 +1,5 @@
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from .devices.shutter import MyFoxShutter
+from myfox.devices.shutter import MyFoxShutter
 
 from .const import (
     MYFOX_DEVICE_SHUTTER_LIST,
@@ -17,7 +17,7 @@ class MyFoxApiShutterClient(MyFoxApiClient) :
     async def getList(self) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiGet(MYFOX_DEVICE_SHUTTER_LIST % (self.myfox_info.siteId))
+            response = await self.callMyFoxApiGet(MYFOX_DEVICE_SHUTTER_LIST % (self.myfox_info.site.siteId))
             items = response["payload"]["items"]
 
             for item in items :
@@ -37,7 +37,7 @@ class MyFoxApiShutterClient(MyFoxApiClient) :
     async def setFavorite(self, device:MyFoxShutter) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_DEVICE_SHUTTER_MY % (self.myfox_info.siteId, device.deviceId))
+            response = await self.callMyFoxApiPost(MYFOX_DEVICE_SHUTTER_MY % (self.myfox_info.site.siteId, device.deviceId))
 
             return (response["status"] == "OK")
 
@@ -50,7 +50,7 @@ class MyFoxApiShutterClient(MyFoxApiClient) :
     async def setOpen(self, device:MyFoxShutter) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_DEVICE_SHUTTER_OPEN % (self.myfox_info.siteId, device.deviceId))
+            response = await self.callMyFoxApiPost(MYFOX_DEVICE_SHUTTER_OPEN % (self.myfox_info.site.siteId, device.deviceId))
 
             return (response["status"] == "OK")
 
@@ -63,7 +63,7 @@ class MyFoxApiShutterClient(MyFoxApiClient) :
     async def setClose(self, device:MyFoxShutter) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_DEVICE_SHUTTER_CLOSE % (self.myfox_info.siteId, device.deviceId))
+            response = await self.callMyFoxApiPost(MYFOX_DEVICE_SHUTTER_CLOSE % (self.myfox_info.site.siteId, device.deviceId))
 
             return (response["status"] == "OK")
 

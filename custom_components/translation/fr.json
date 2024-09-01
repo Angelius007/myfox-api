@@ -1,0 +1,18 @@
+{
+    "title": "Myfox",
+    "config": {
+      "step": {
+        "user": {
+          "data": {
+            "client_id": "Client ID",
+            "client_secret": "Client Secret",
+            "username": "Username",
+            "password": "Password"
+          }
+        }
+      },
+      "abort": {
+        "already_configured": "Alarme déjà configurée"
+      }
+    }
+}

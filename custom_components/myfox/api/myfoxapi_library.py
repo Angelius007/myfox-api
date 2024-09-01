@@ -1,5 +1,5 @@
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from .devices.librairie import MyFoxImage, MyFoxVideo
+from myfox.devices.librairie import MyFoxImage, MyFoxVideo
 
 from .const import (
     MYFOX_LIBRARY_IMAGE_LIST,
@@ -16,7 +16,7 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
     async def getImageList(self) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiGet(MYFOX_LIBRARY_IMAGE_LIST % (self.myfox_info.siteId))
+            response = await self.callMyFoxApiGet(MYFOX_LIBRARY_IMAGE_LIST % (self.myfox_info.site.siteId))
             items = response["payload"]["items"]
 
             for item in items :
@@ -39,7 +39,7 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
     async def getVideoList(self) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiGet(MYFOX_LIBRARY_VIDEO_LIST % (self.myfox_info.siteId))
+            response = await self.callMyFoxApiGet(MYFOX_LIBRARY_VIDEO_LIST % (self.myfox_info.site.siteId))
             items = response["payload"]["items"]
 
             for item in items :
@@ -67,7 +67,7 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
     async def playVideo(self, device:MyFoxVideo) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiBinaryPost(MYFOX_LIBRARY_VIDEO_PLAY % (self.myfox_info.siteId, device.videoId))
+            response = await self.callMyFoxApiBinaryPost(MYFOX_LIBRARY_VIDEO_PLAY % (self.myfox_info.site.siteId, device.videoId))
 
             return response
 

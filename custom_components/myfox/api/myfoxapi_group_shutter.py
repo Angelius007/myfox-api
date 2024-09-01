@@ -1,6 +1,6 @@
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from .devices.group import (MyFoxGroupShutter)
-from .devices.shutter import (MyFoxShutter)
+from myfox.devices.group import (MyFoxGroupShutter)
+from myfox.devices.shutter import (MyFoxShutter)
 
 from .const import (
     MYFOX_GROUP_SHUTTER_LIST,
@@ -17,7 +17,7 @@ class MyFoxApiGroupShutterClient(MyFoxApiClient) :
     async def getList(self) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiGet(MYFOX_GROUP_SHUTTER_LIST % (self.myfox_info.siteId))
+            response = await self.callMyFoxApiGet(MYFOX_GROUP_SHUTTER_LIST % (self.myfox_info.site.siteId))
             print(str(response))
             items = response["payload"]["items"]
             for item in items :
@@ -43,7 +43,7 @@ class MyFoxApiGroupShutterClient(MyFoxApiClient) :
     async def setOpen(self, device:MyFoxGroupShutter) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_GROUP_SHUTTER_SET_OPEN % (self.myfox_info.siteId, device.groupId))
+            response = await self.callMyFoxApiPost(MYFOX_GROUP_SHUTTER_SET_OPEN % (self.myfox_info.site.siteId, device.groupId))
 
             return response
 
@@ -56,7 +56,7 @@ class MyFoxApiGroupShutterClient(MyFoxApiClient) :
     async def setClose(self, device:MyFoxGroupShutter) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_GROUP_SHUTTER_SET_CLOSE % (self.myfox_info.siteId, device.groupId))
+            response = await self.callMyFoxApiPost(MYFOX_GROUP_SHUTTER_SET_CLOSE % (self.myfox_info.site.siteId, device.groupId))
 
             return response
 

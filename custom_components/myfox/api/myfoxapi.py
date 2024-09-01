@@ -4,14 +4,17 @@ import asyncio
 import selectors
 import time
 
+from typing import Any, Type
 from aiohttp import ClientResponse
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
 from .const import (
     DEFAULT_MYFOX_URL_API, MYFOX_TOKEN_PATH, MYFOX_INFO_SITE_PATH,MYFOX_HISTORY_GET,
     KEY_GRANT_TYPE, KEY_CLIENT_ID, KEY_CLIENT_SECRET, KEY_MYFOX_USER, KEY_MYFOX_PSWD, KEY_REFRESH_TOKEN,
-    KEY_EXPIRE_IN, KEY_ACCESS_TOKEN, GRANT_TYPE_PASSWORD, GRANT_REFRESH_TOKEN,
+    KEY_EXPIRE_IN, KEY_ACCESS_TOKEN, GRANT_TYPE_PASSWORD, GRANT_REFRESH_TOKEN,KEY_EXPIRE_TIME,
 )
+from ..devices import (BaseDevice, DiagnosticDevice, MyFoxDeviceInfo)
+from myfox.devices.site import MyFoxSite
 
 #from homeassistant.config_entries import ConfigEntry, ConfigEntryState
 from homeassistant.const import (
@@ -46,11 +49,12 @@ class MyFoxEntryDataApi:
     client_secret: str
     username: str
     password: str
-    access_token: str
-    refresh_token: str
-    expires_in: int 
-    expires_time: float 
-    siteId: int 
+    access_token: str = None
+    refresh_token: str = None
+    expires_in: int = 0
+    expires_time: float = 0.0 
+    site: MyFoxSite = None
+    sites: list[MyFoxSite] = field(default_factory=list)
 
 class MyFoxPolicy(asyncio.DefaultEventLoopPolicy):
    def new_event_loop(self):
@@ -62,6 +66,37 @@ class MyFoxApiClient:
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         self.myfox_info:MyFoxEntryDataApi = myfox_info
         self.client = None
+        self.devices: dict[str, Any] = {}
+        self.type :  Type[BaseDevice] | None = None
+
+    def configure_device(self, deviceId: int, label: str, modelId: int, modelLabel: str):
+        """ Configuration device """
+        info = self.__create_device_info(deviceId, label, modelId, modelLabel)
+        from myfox.devices.registry import device_by_product
+        device = None
+        # Type indique dans l'implementation de l'api
+        if self.type is not None:
+            device = self.type(info)
+        # Si non renseigne, recherche via le deviceId
+        elif str(deviceId) in device_by_product:
+            device = device_by_product[str(deviceId)](info)
+        # Sinon, on positionne en Diagnostic
+        else:
+            device = DiagnosticDevice(info)
+        
+        self.add_device(device)
+
+    def add_device(self, device: BaseDevice):
+        if device :
+            self.devices[str(device.device_info.deviceId)] = device
+
+    def __create_device_info(self, deviceId: int, label: str, modelId: int, modelLabel: str) -> MyFoxDeviceInfo:
+        return MyFoxDeviceInfo(
+                deviceId,
+                label,
+                modelId,
+                modelLabel
+        )
 
     def getUrlMyFoxApi(self, path:str) :
         """ Formattage URL """
@@ -186,6 +221,9 @@ class MyFoxApiClient:
 
         return json_resp
     
+    def stop(self) -> bool:
+        return True
+    
     async def login(self) -> bool :
         """ Recuperation des tokens """
         try:
@@ -201,7 +239,7 @@ class MyFoxApiClient:
             # save des tokens
             self.saveToken(response)
             # en cas d'absence, recuperation du site
-            self.getInfoSite()
+            await self.getInfoSite()
 
             return True
 
@@ -246,7 +284,7 @@ class MyFoxApiClient:
             _LOGGER.debug(KEY_ACCESS_TOKEN+":"+self.myfox_info.access_token)
             _LOGGER.debug(KEY_REFRESH_TOKEN+":"+self.myfox_info.refresh_token)
             _LOGGER.debug(KEY_EXPIRE_IN+":"+str(self.myfox_info.expires_in))
-            _LOGGER.debug("expires_time:"+str(self.myfox_info.expires_time))
+            _LOGGER.debug(KEY_EXPIRE_TIME+":"+str(self.myfox_info.expires_time))
         except KeyError as key:
             _LOGGER.error(key)
             print("Error : " + key)
@@ -285,19 +323,35 @@ class MyFoxApiClient:
             print("Expiration du token dans " + str(expiration) + " secondes a " + str(expires_time))
         return expiration
 
-    async def getInfoSite(self, forceCall:bool=False):
+    async def getInfoSite(self, forceCall:bool=False) -> list[MyFoxSite]:
         """ Recuperation info site """
         try:
-            if self.myfox_info.siteId == 0 or forceCall:
+            if self.myfox_info.site.siteId == 0 or forceCall:
                 response = await self.callMyFoxApiGet(MYFOX_INFO_SITE_PATH)
                 items = response["payload"]["items"]
 
                 for item in items :
-                    self.myfox_info.siteId = item["siteId"]
-                    print("siteId:"+str(self.myfox_info.siteId))
-                    break
+                    self.myfox_info.site = MyFoxSite(item["siteId"],
+                                                     item["label"],
+                                                     item["brand"],
+                                                     item["timezone"],
+                                                     item["AXA"],
+                                                     item["cameraCount"],
+                                                     item["gateCount"],
+                                                     item["shutterCount"],
+                                                     item["socketCount"],
+                                                     item["moduleCount"],
+                                                     item["heaterCount"],
+                                                     item["scenarioCount"],
+                                                     item["deviceTemperatureCount"],
+                                                     item["deviceStateCount"],
+                                                     item["deviceLightCount"],
+                                                     item["deviceDetectorCount"])
+                    self.myfox_info.sites.append(self.myfox_info.site)
+                    print("site_id:"+str(self.myfox_info.site.siteId))
+                    #break
 
-            return self.myfox_info.siteId
+            return self.myfox_info.sites
 
         except MyFoxException as exception:
             raise exception
@@ -310,9 +364,9 @@ class MyFoxApiClient:
         """ Recuperation info site """
         try:
             data = {
-                "siteId": self.myfox_info.siteId
+                "site_id": self.myfox_info.site.siteId
             }
-            response = await self.callMyFoxApiGet(MYFOX_HISTORY_GET % self.myfox_info.siteId, data)
+            response = await self.callMyFoxApiGet(MYFOX_HISTORY_GET % self.myfox_info.site.siteId, data)
             items = response["payload"]["items"]
 
             for item in items :

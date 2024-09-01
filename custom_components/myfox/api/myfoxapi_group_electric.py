@@ -1,6 +1,6 @@
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from .devices.group import (MyFoxGroupElectric)
-from .devices.socket import (MyFoxSocket)
+from myfox.devices.group import (MyFoxGroupElectric)
+from myfox.devices.socket import (MyFoxSocket)
 
 
 from .const import (
@@ -18,7 +18,7 @@ class MyFoxApiGroupElectricClient(MyFoxApiClient) :
     async def getList(self) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiGet(MYFOX_GROUP_ELECTRIC_LIST % (self.myfox_info.siteId))
+            response = await self.callMyFoxApiGet(MYFOX_GROUP_ELECTRIC_LIST % (self.myfox_info.site.siteId))
             print(str(response))
             items = response["payload"]["items"]
             for item in items :
@@ -44,7 +44,7 @@ class MyFoxApiGroupElectricClient(MyFoxApiClient) :
     async def setOn(self, device:MyFoxGroupElectric) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_GROUP_ELECTRIC_SET_ON % (self.myfox_info.siteId, device.groupId))
+            response = await self.callMyFoxApiPost(MYFOX_GROUP_ELECTRIC_SET_ON % (self.myfox_info.site.siteId, device.groupId))
 
             return response
 
@@ -57,7 +57,7 @@ class MyFoxApiGroupElectricClient(MyFoxApiClient) :
     async def setOff(self, device:MyFoxGroupElectric) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_GROUP_ELECTRIC_SET_OFF % (self.myfox_info.siteId, device.groupId))
+            response = await self.callMyFoxApiPost(MYFOX_GROUP_ELECTRIC_SET_OFF % (self.myfox_info.site.siteId, device.groupId))
 
             return response
 
