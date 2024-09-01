@@ -86,6 +86,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
      
     if info_site :
         """Recherche des devices."""
+        _LOGGER.info("Chargement du site")
         hass.data[DOMAIN][entry.entry_id] = {} 
         # cameraCount: int = 0
         if myfox_client.myfox_info.site.cameraCount > 0 :
@@ -123,6 +124,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             
         return True
     else :
+        _LOGGER.warn("Pas de site trouve pour l'identifiant %s",entry.data[KEY_SITE_ID])
         return False
 
 async def addCamera(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
