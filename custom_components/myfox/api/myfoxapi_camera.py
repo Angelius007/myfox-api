@@ -1,5 +1,5 @@
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from ..devices.camera import MyFoxCamera
+from ..devices.camera import MyFoxCamera, MyFoxCameraDevice
 from .const import (
     MYFOX_CAMERA_LIST, MYFOX_CAMERA_LIVE_START, MYFOX_CAMERA_LIVE_STOP, MYFOX_CAMERA_LIVE_EXTEND,
     MYFOX_CAMERA_PREV_TAKE, MYFOX_CAMERA_REC_START, MYFOX_CAMERA_REC_STOP,
@@ -11,6 +11,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
         self.camera = list()
+        self.type = MyFoxCameraDevice
 
     async def getCamera(self):
         """ Recuperation scenarios """

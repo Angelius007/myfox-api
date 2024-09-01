@@ -1,7 +1,7 @@
 import logging
 
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from ..devices.temperature import MyFoxTemperatureSensor, MyFoxTemperatureRecord
+from ..devices.temperature import MyFoxTemperatureSensor, MyFoxTemperatureRecord, MyFoxTemperatureDevice
 
 from .const import (
     MYFOX_DEVICE_TEMPERATURE_LIST,
@@ -15,7 +15,7 @@ class MyFoxApiTemperatureClient(MyFoxApiClient) :
         super().__init__(myfox_info)
         self.temperature = list()
         self.temperatureRecord = list()
-        self.type = MyFoxTemperatureSensor
+        self.type = MyFoxTemperatureDevice
 
     async def getList(self) -> list[MyFoxTemperatureSensor]:
         """ Get security site """

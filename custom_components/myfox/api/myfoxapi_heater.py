@@ -1,5 +1,5 @@
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from ..devices.heater import MyFoxHeater
+from ..devices.heater import MyFoxHeater, MyFoxHeaterDevice
 
 from .const import (
     MYFOX_DEVICE_HEATER_LIST,
@@ -15,6 +15,7 @@ class MyFoxApHeaterClient(MyFoxApiClient) :
         super().__init__(myfox_info)
         self.temperature = list()
         self.temperatureRecord = list()
+        self.type = MyFoxHeaterDevice
 
     async def getList(self) -> list:
         """ Get security site """

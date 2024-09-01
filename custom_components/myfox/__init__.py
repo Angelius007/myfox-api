@@ -123,6 +123,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         if myfox_client.myfox_info.site.deviceTemperatureCount > 0 :
             await addTemperatureDevice(hass, entry, myfox_info)
 
+        new_data = {**entry.data}
+        # mise a jour du token
+        new_data[KEY_ACCESS_TOKEN]  = myfox_info.access_token
+        new_data[KEY_REFRESH_TOKEN] = myfox_info.refresh_token
+        new_data[KEY_EXPIRE_IN]     = myfox_info.expires_in
+        new_data[KEY_EXPIRE_TIME]   = myfox_info.expires_time
+        
+        hass.config_entries.async_update_entry(entry, data=new_data, options=entry.options)
         await hass.config_entries.async_forward_entry_setups(entry, _PLATFORMS)
         entry.async_on_unload(entry.add_update_listener(update_listener))
         return True

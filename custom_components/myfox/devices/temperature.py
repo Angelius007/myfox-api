@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from ..devices import  BaseDevice
 
 #TemperatureSensor {
 #deviceId (integer): The device identifier,
@@ -29,3 +30,8 @@ class MyFoxTemperatureRecord :
     deviceId: int
     celsius: float
     recordedAt: str
+
+@dataclass
+class MyFoxTemperatureDevice(BaseDevice) :
+    """ """
+    sensor:MyFoxTemperatureSensor = None

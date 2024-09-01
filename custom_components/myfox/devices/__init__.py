@@ -28,6 +28,7 @@ class BaseDevice(ABC):
 
     def __init__(self, device_info: MyFoxDeviceInfo):
         super().__init__()
+        self.device_info = device_info
 
     def configure(self, refresh_period: int, diag: bool = False):
         self.data = MyFoxDataHolder(refresh_period, diag)

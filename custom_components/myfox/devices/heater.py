@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from ..devices import  BaseDevice
 
 #Heater {
 #deviceId (integer): The device identifier,
@@ -19,3 +20,8 @@ class MyFoxHeater :
     modeLabel: str
     stateLabel: str
     lastTemperature: float | None = None
+
+@dataclass
+class MyFoxHeaterDevice(BaseDevice) :
+    """ """
+    heater:MyFoxHeater = None

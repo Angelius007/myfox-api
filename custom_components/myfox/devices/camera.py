@@ -31,5 +31,7 @@ class MyFoxCamera :
     #"location": "rtmp://tag-shcprtmp-02.ig-1.net/myfox/0080f0bdd5589177c12f436a39a94c1c"
 
 
+@dataclass
 class MyFoxCameraDevice(BaseDevice):
     """ """
+    camera:MyFoxCamera = None

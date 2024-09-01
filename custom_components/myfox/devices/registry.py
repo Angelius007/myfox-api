@@ -5,10 +5,10 @@ from ..devices import (BaseDevice, DiagnosticDevice,
                        sensor, shutter, socket, temperature)
 
 device_by_product: OrderedDict[str, Type[BaseDevice]] = OrderedDict[str, Type[BaseDevice]]({
-    "5" : camera,
+    "5" : camera.MyFoxCameraDevice,
     #"" : gate,
     #"" : group,
-    "44" : heater,
+    "44" : heater.MyFoxHeaterDevice,
     #"" : librairie,
     #"29" : light,
     #"" : module,
@@ -16,6 +16,6 @@ device_by_product: OrderedDict[str, Type[BaseDevice]] = OrderedDict[str, Type[Ba
     #"" : sensor,
     #"" : shutter,
     #"" : socket,
-    "29" : temperature,
+    "29" : temperature.MyFoxTemperatureDevice,
     "Diagnostic": DiagnosticDevice
 })
