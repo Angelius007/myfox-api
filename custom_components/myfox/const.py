@@ -1,0 +1,3 @@
+
+DOMAIN = "myfox"
+CONFIG_VERSION = 1

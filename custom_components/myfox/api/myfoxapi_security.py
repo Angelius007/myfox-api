@@ -13,6 +13,10 @@ class MyFoxApiSecurityClient(MyFoxApiClient) :
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
 
+    async def getList(self) -> list:
+        """ Miser a jour d'un device """
+        pass
+
     async def getSecurity(self):
         """ Get security site """
         try:

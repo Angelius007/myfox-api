@@ -7,6 +7,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.const import (
     Platform,
 )
+
 from .api.const import (
     KEY_CLIENT_ID,
     KEY_CLIENT_SECRET,
@@ -39,6 +40,8 @@ from .api.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
 from .api.myfoxapi_heater import (MyFoxApHeaterClient)
 from .api.myfoxapi_thermo import (MyFoxApThermoClient)
 
+
+from .devices import (BaseDevice)
 from .devices.camera import (MyFoxCamera)
 from .devices.gate import (MyFoxGate)
 from .devices.heater import (MyFoxHeater)
@@ -51,10 +54,10 @@ from .devices.socket import MyFoxSocket
 from .devices.librairie import (MyFoxImage, MyFoxVideo)
 from .devices.group import (MyFoxGroupElectric, MyFoxGroupShutter)
 
-_LOGGER = logging.getLogger(__name__)
+from .const import (DOMAIN, CONFIG_VERSION)
 
-DOMAIN = "myfox"
-CONFIG_VERSION = 1
+
+_LOGGER = logging.getLogger(__name__)
 
 _PLATFORMS = {
     Platform.NUMBER,
@@ -197,6 +200,7 @@ async def addTemperatureDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_in
 
     if liste_capteur.__len__() > 0 :
         hass.data[DOMAIN][entry.entry_id]["temperature"] = client_themperature
+
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     if not await hass.config_entries.async_unload_platforms(entry, _PLATFORMS):

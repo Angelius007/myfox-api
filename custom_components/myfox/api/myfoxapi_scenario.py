@@ -16,7 +16,7 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
         self.scenarii = list()
 
 
-    async def getScenarii(self):
+    async def getList(self):
         """ Recuperation scenarios """
         try:
             response = await self.callMyFoxApiGet(MYFOX_SCENARIO_ITEMS % self.myfox_info.site.siteId)

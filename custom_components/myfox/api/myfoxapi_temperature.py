@@ -17,7 +17,7 @@ class MyFoxApiTemperatureClient(MyFoxApiClient) :
         self.temperatureRecord = list()
         self.type = MyFoxTemperatureDevice
 
-    async def getList(self) -> list[MyFoxTemperatureSensor]:
+    async def getList(self) -> list[MyFoxTemperatureDevice]:
         """ Get security site """
         try:
             response = await self.callMyFoxApiGet(MYFOX_DEVICE_TEMPERATURE_LIST % (self.myfox_info.site.siteId))
@@ -25,12 +25,13 @@ class MyFoxApiTemperatureClient(MyFoxApiClient) :
             _LOGGER.debug("getList : %s",str(items))
 
             for item in items :
-                self.temperature.append(MyFoxTemperatureSensor(item["deviceId"],
+
+                self.temperature.append(MyFoxTemperatureDevice(MyFoxTemperatureSensor(item["deviceId"],
                                                        item["label"],
                                                        item["modelId"],
                                                        item["modelLabel"],
                                                        item["lastTemperature"],
-                                                       item["lastTemperatureAt"]))
+                                                       item["lastTemperatureAt"])))
 
             return self.temperature
 
@@ -40,6 +41,9 @@ class MyFoxApiTemperatureClient(MyFoxApiClient) :
             print("Error : " + str(exception))
             raise MyFoxException(exception)
     
+    async def updateDevice(self, device:MyFoxTemperatureDevice) :
+        self.getTemperature(device.sensor)
+
     async def getTemperature(self, device:MyFoxTemperatureSensor) -> list:
         """ Get security site """
         try:

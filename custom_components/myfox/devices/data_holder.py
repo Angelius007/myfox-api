@@ -27,10 +27,7 @@ class MyFoxDataHolder:
     def __init__(self, update_period_sec: int, collect_raw: bool = False):
         self.update_period_sec = update_period_sec
         self.__collect_raw = collect_raw
-        self.set = BoundFifoList[dict[str, Any]]()
-        self.set_reply = BoundFifoList[dict[str, Any]]()
-        self.get = BoundFifoList[dict[str, Any]]()
-        self.get_reply = BoundFifoList[dict[str, Any]]()
+
         self.params = dict[str, Any]()
 
         self.raw_data = BoundFifoList[dict[str, Any]]()
@@ -50,26 +47,6 @@ class MyFoxDataHolder:
 
     def set_reply_observable(self) -> Observable[list[dict[str, Any]]]:
         return self.__set_reply_observable
-
-    def add_set_message(self, msg: dict[str, Any]):
-        self.set.append(msg)
-
-    def add_set_reply_message(self, msg: dict[str, Any]):
-        self.set_reply.append(msg)
-        self.__set_reply_observable.on_next(self.set_reply)
-
-    def add_get_message(self, msg: dict[str, Any]):
-        self.get.append(msg)
-
-    def add_get_reply_message(self, msg: dict[str, Any]):
-
-        if "operateType" in msg and msg["operateType"] == "latestQuotas":
-            online = int(msg["data"]["online"])
-            if online == 1:
-                self.update_data({"params": msg["data"]["quotaMap"], "time": utcnow()})
-
-        self.get_reply.append(msg)
-        self.__get_reply_observable.on_next(self.get_reply)
 
 
     def update_to_target_state(self, target_state: dict[str, Any]):

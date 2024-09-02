@@ -1,4 +1,11 @@
 from dataclasses import dataclass
+
+from homeassistant.components.button import ButtonEntity
+from homeassistant.components.number import NumberEntity
+from homeassistant.components.select import SelectEntity
+from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.switch import SwitchEntity
+
 from ..devices import  BaseDevice
 
 #Heater {
@@ -25,3 +32,21 @@ class MyFoxHeater :
 class MyFoxHeaterDevice(BaseDevice) :
     """ """
     heater:MyFoxHeater = None
+
+    def sensors(self, client) -> list[SensorEntity]:
+        return []
+
+    def numbers(self, client) -> list[NumberEntity]:
+        return []
+
+    def switches(self, client) -> list[SwitchEntity]:
+        return []
+
+    def buttons(self, client) -> list[ButtonEntity]:
+        return []
+
+    def selects(self, client) -> list[SelectEntity]:
+        return []
+
+    def texts(self, client) -> list[ButtonEntity]:
+        return []

@@ -13,7 +13,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
         self.camera = list()
         self.type = MyFoxCameraDevice
 
-    async def getCamera(self):
+    async def getList(self):
         """ Recuperation scenarios """
         try:
             response = await self.callMyFoxApiGet(MYFOX_CAMERA_LIST % self.myfox_info.site.siteId)

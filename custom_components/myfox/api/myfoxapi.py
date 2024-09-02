@@ -4,7 +4,8 @@ import asyncio
 import selectors
 import time
 
-from typing import Any, Type
+from abc import abstractmethod
+from typing import Type, Any
 from aiohttp import ClientResponse
 from dataclasses import dataclass, field
 from typing import Optional
@@ -114,7 +115,22 @@ class MyFoxApiClient:
     async def callMyFoxApiBinaryPost(self, path:str, data:str = None):
         """ Appel API en POST """
         return await self.callMyFoxApi(path, data, "POST", "binary")
-    
+        
+    async def updateDevices(self) :
+        """ Mise a jour de chaque device """
+        for device in self.devices :
+            await self.updateDevices(device)
+
+    @abstractmethod
+    async def updateDevice(self, device:BaseDevice) :
+        """ Miser a jour d'un device """
+        pass
+
+    @abstractmethod
+    async def getList(self) -> list[Any]:
+        """ Liste """
+        pass
+
     async def callMyFoxApi(self, path:str, data:str = None, method:str = "POST", responseClass:str = "json"):
         """ Appel API """
         async with aiohttp.ClientSession() as session:

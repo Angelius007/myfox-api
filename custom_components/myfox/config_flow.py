@@ -6,7 +6,7 @@ from dataclasses import field
 from typing import Dict, Any
 import voluptuous as vol
 from . import (DOMAIN, 
-                   CONFIG_VERSION)
+                CONFIG_VERSION)
 from .api.const import (
      KEY_CLIENT_ID, 
      KEY_CLIENT_SECRET, 

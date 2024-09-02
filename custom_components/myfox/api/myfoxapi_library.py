@@ -16,6 +16,10 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
         super().__init__(myfox_info)
         self.module = list()
 
+    async def getList(self) -> list:
+        """ Liste """
+        pass
+
     async def getImageList(self) -> list:
         """ Get security site """
         try:

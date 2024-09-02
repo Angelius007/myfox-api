@@ -10,6 +10,7 @@ from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.switch import SwitchEntity
 
 from .data_holder import MyFoxDataHolder
+
 #from ..api.myfoxapi import MyFoxApiClient 
 
 _LOGGER = logging.getLogger(__name__)
@@ -34,38 +35,45 @@ class BaseDevice(ABC):
         self.data = MyFoxDataHolder(refresh_period, diag)
 
     @abstractmethod
-    def sensors(self, client) -> list[SensorEntity]: # : MyFoxApiClient
+    def sensors(self, client, coordinator) -> list[SensorEntity]: # : MyFoxApiClient
         pass
 
     @abstractmethod
-    def numbers(self, client) -> list[NumberEntity]:
+    def numbers(self, client, coordinator) -> list[NumberEntity]:
         pass
 
     @abstractmethod
-    def switches(self, client) -> list[SwitchEntity]:
+    def switches(self, client, coordinator) -> list[SwitchEntity]:
         pass
 
     @abstractmethod
-    def selects(self, client) -> list[SelectEntity]:
+    def selects(self, client, coordinator) -> list[SelectEntity]:
         pass
 
     @abstractmethod
-    def buttons(self, client) -> list[ButtonEntity]:
+    def buttons(self, client, coordinator) -> list[ButtonEntity]:
+        pass
+
+    @abstractmethod
+    def texts(self, client, coordinator) -> list[ButtonEntity]:
         pass
 
 class DiagnosticDevice(BaseDevice):
 
-    def sensors(self, client) -> list[SensorEntity]:
+    def sensors(self, client, coordinator) -> list[SensorEntity]:
         return []
 
-    def numbers(self, client) -> list[NumberEntity]:
+    def numbers(self, client, coordinator) -> list[NumberEntity]:
         return []
 
-    def switches(self, client) -> list[SwitchEntity]:
+    def switches(self, client, coordinator) -> list[SwitchEntity]:
         return []
 
-    def buttons(self, client) -> list[ButtonEntity]:
+    def buttons(self, client, coordinator) -> list[ButtonEntity]:
         return []
 
-    def selects(self, client) -> list[SelectEntity]:
+    def selects(self, client, coordinator) -> list[SelectEntity]:
+        return []
+    
+    def texts(self, client, coordinator) -> list[ButtonEntity]:
         return []

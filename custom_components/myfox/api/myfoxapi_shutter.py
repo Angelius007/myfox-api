@@ -18,7 +18,7 @@ class MyFoxApiShutterClient(MyFoxApiClient) :
         super().__init__(myfox_info)
         self.module = list()
 
-    async def getList(self) -> list:
+    async def getList(self) -> list[MyFoxShutter]:
         """ Get security site """
         try:
             response = await self.callMyFoxApiGet(MYFOX_DEVICE_SHUTTER_LIST % (self.myfox_info.site.siteId))

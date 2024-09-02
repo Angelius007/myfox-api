@@ -1,5 +1,14 @@
 from dataclasses import dataclass
+
+from homeassistant.components.button import ButtonEntity
+from homeassistant.components.number import NumberEntity
+from homeassistant.components.select import SelectEntity
+from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.switch import SwitchEntity
+
+from ..coordinator.myfox_coordinator import (MyFoxCoordinator)
 from ..devices import  BaseDevice
+from ..sensor import TempSensorEntity
 
 #TemperatureSensor {
 #deviceId (integer): The device identifier,
@@ -35,3 +44,21 @@ class MyFoxTemperatureRecord :
 class MyFoxTemperatureDevice(BaseDevice) :
     """ """
     sensor:MyFoxTemperatureSensor = None
+
+    def sensors(self, client, coordinator) -> list[SensorEntity]:
+        return [TempSensorEntity(client, coordinator, self, "Temperature", "lastTemperature")]
+
+    def numbers(self, client, coordinator) -> list[NumberEntity]:
+        return []
+
+    def switches(self, client, coordinator) -> list[SwitchEntity]:
+        return []
+
+    def buttons(self, client, coordinator) -> list[ButtonEntity]:
+        return []
+
+    def selects(self, client, coordinator) -> list[SelectEntity]:
+        return []
+    
+    def texts(self, client, coordinator) -> list[ButtonEntity]:
+        return []

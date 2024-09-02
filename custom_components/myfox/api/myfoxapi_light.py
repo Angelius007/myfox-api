@@ -14,7 +14,7 @@ class MyFoxApiLightClient(MyFoxApiClient) :
         super().__init__(myfox_info)
         self.ligth = list()
 
-    async def getLightList(self):
+    async def getList(self):
         """ Get security site """
         try:
             response = await self.callMyFoxApiGet(MYFOX_LIGHT_LIST % (self.myfox_info.site.siteId))
