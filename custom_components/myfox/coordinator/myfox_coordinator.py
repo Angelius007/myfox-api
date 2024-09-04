@@ -54,7 +54,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         This method will be called automatically during
         coordinator.async_config_entry_first_refresh.
         """
-        _LOGGER.debug("Client.getList:"+str(self.myfoxApiClient))
+        _LOGGER.debug("Client.getList:"+str(self.myfoxApiClient.__class__))
         await self.myfoxApiClient.getList()
 
     async def _async_update_data(self):
@@ -85,6 +85,8 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 for (deviceid,device) in  self.myfoxApiClient.devices.items() :
                     if int(params[str(deviceid)+"|deviceId"]) == int(deviceid) :
                         device.data.params.update(params)
+
+                _LOGGER.debug("params : %s", str(params))
 
                 return params
         # except ApiAuthError as err:
