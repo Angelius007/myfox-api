@@ -54,7 +54,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         This method will be called automatically during
         coordinator.async_config_entry_first_refresh.
         """
-        _LOGGER.debug(str(self.myfoxApiClient))
+        _LOGGER.debug("Client.getList:"+str(self.myfoxApiClient))
         await self.myfoxApiClient.getList()
 
     async def _async_update_data(self):
