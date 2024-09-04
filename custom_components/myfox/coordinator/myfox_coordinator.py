@@ -85,7 +85,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 for (deviceid,device) in  self.myfoxApiClient.devices.items() :
                     if str(params[str(deviceid)+"|deviceId"]) == str(deviceid) :
                         _LOGGER.debug("device.update : %s", str(deviceid))
-                        device.data.update_data(params)
+                        # device.data.update_data(params)
 
                 _LOGGER.debug("params : %s", str(params))
 
