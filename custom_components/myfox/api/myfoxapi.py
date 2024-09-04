@@ -12,7 +12,8 @@ from typing import Optional
 from .const import (
     DEFAULT_MYFOX_URL_API, MYFOX_TOKEN_PATH, MYFOX_INFO_SITE_PATH,MYFOX_HISTORY_GET,
     KEY_GRANT_TYPE, KEY_CLIENT_ID, KEY_CLIENT_SECRET, KEY_MYFOX_USER, KEY_MYFOX_PSWD, KEY_REFRESH_TOKEN,
-    KEY_EXPIRE_IN, KEY_ACCESS_TOKEN, GRANT_TYPE_PASSWORD, GRANT_REFRESH_TOKEN,KEY_EXPIRE_TIME,
+    KEY_EXPIRE_IN, KEY_ACCESS_TOKEN, GRANT_TYPE_PASSWORD, GRANT_REFRESH_TOKEN,KEY_EXPIRE_TIME,SEUIL_EXPIRE_MIN,
+    CACHE_EXPIRE_IN,
 )
 from ..devices import (BaseDevice, DiagnosticDevice, MyFoxDeviceInfo)
 from ..devices.site import MyFoxSite
@@ -315,7 +316,7 @@ class MyFoxApiClient:
             if expireDelay == 0: # jeton expire
                 await self.login()
                 expireDelay = self.getExpireDelay()
-            elif expireDelay < (5*60): # si jeton valide - de 5 min, on renouvelle
+            elif expireDelay < (SEUIL_EXPIRE_MIN): # si jeton valide - de 5 min, on renouvelle
                 # Token expire, on renouvelle
                 await self.refreshToken()
                 expireDelay = self.getExpireDelay()
@@ -332,7 +333,7 @@ class MyFoxApiClient:
         current_time = time.time()
         expires_time = self.myfox_info.expires_time
         expiration = expires_time - current_time
-        if expiration <0:
+        if expiration < 0:
             expiration = 0
             _LOGGER.info("Token expire")
             print("Token expire")
@@ -340,6 +341,12 @@ class MyFoxApiClient:
             _LOGGER.info("Expiration du token dans " + str(expiration) + " secondes a " + str(expires_time))
             print("Expiration du token dans " + str(expiration) + " secondes a " + str(expires_time))
         return expiration
+
+    def isCacheExpire(self, start_time) -> float :
+        current_time = time.time()
+        expiration = (current_time - start_time)
+        _LOGGER.debug("Expiration cache %s/%s", expiration, CACHE_EXPIRE_IN)
+        return expiration >= CACHE_EXPIRE_IN
 
     async def getInfoSite(self, siteId:int, forceCall:bool=False) -> MyFoxSite:
         """ Recuperation info site """

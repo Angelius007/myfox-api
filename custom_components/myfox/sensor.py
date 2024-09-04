@@ -19,7 +19,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     """ Chargement des switchs """
     for (client_key,client_item) in hass.data[DOMAIN][entry.entry_id].items() :
         client: MyFoxApiClient = client_item
-        _LOGGER.debug("client:"+str(client))
+        _LOGGER.debug("client:"+str(client.__class__))
 
         coordinator = MyFoxCoordinator(hass, client)
         await coordinator.async_config_entry_first_refresh()

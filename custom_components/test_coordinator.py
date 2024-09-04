@@ -195,6 +195,7 @@ class TestClients :
 
     def testTemperatureSensor(loop : AbstractEventLoop, client : MyFoxApiTemperatureClient):
         results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
+        results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
         _LOGGER.info("results:"+str(results[0]))
 
         for capteur in results[0] :
@@ -202,8 +203,8 @@ class TestClients :
             #capteur.
             client.configure_device(capteur["deviceId"],capteur["label"],capteur["modelId"],capteur["modelLabel"])
             #device = MyFoxTemperatureSensor(65714, "device", 0, "xx", "")
-            results = loop.run_until_complete(asyncio.gather(*[client.getTemperature(capteur["deviceId"])]))
-            _LOGGER.info("results:"+str(results))
+            #results = loop.run_until_complete(asyncio.gather(*[client.getTemperature(capteur["deviceId"])]))
+            #_LOGGER.info("results:"+str(results))
 
     def testGate(loop : AbstractEventLoop, client : MyFoxApiGateClient):
         results = loop.run_until_complete(asyncio.gather(*[client.getList()]))

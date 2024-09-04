@@ -18,6 +18,10 @@ KEY_GRANT_TYPE    = "grant_type"
 GRANT_TYPE_PASSWORD = "password"
 GRANT_REFRESH_TOKEN = "refresh_token"
 
+# SEUILS
+SEUIL_EXPIRE_MIN = (5*60) # 5 min
+CACHE_EXPIRE_IN = (10*60) #10 min
+
 # token
 MYFOX_TOKEN_PATH = "oauth2/token"
 # sites
