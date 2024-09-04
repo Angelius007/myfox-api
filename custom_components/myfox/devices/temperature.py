@@ -6,7 +6,6 @@ from homeassistant.components.select import SelectEntity
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.switch import SwitchEntity
 
-from ..coordinator.myfox_coordinator import (MyFoxCoordinator)
 from ..devices import  BaseDevice
 from ..sensor import TempSensorEntity
 
