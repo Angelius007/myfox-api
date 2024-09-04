@@ -6,7 +6,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import DOMAIN
 from .coordinator.myfox_coordinator import (MyFoxCoordinator)
-from api.myfoxapi import (MyFoxApiClient)
+from .api.myfoxapi import (MyFoxApiClient)
 
 _LOGGER = logging.getLogger(__name__)
 
