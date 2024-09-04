@@ -73,11 +73,13 @@ class MyFoxApiClient:
     def configure_device(self, deviceId: int, label: str, modelId: int, modelLabel: str):
         """ Configuration device """
         info = self.__create_device_info(deviceId, label, modelId, modelLabel)
-        from ..devices.registry import device_by_product
+        from ..devices.registry import device_by_product, device_by_model_label
         device = None
         # Type indique dans l'implementation de l'api
         if self.type is not None:
             device = self.type(info)
+        elif modelLabel in device_by_model_label:
+            device = device_by_model_label[str(modelLabel)](info)
         # Si non renseigne, recherche via le deviceId
         elif str(deviceId) in device_by_product:
             device = device_by_product[str(deviceId)](info)

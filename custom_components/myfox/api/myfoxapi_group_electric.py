@@ -1,7 +1,4 @@
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from ..devices.group import (MyFoxGroupElectric)
-from ..devices.socket import (MyFoxSocket)
-
 
 from .const import (
     MYFOX_GROUP_ELECTRIC_LIST,
@@ -21,17 +18,18 @@ class MyFoxApiGroupElectricClient(MyFoxApiClient) :
             response = await self.callMyFoxApiGet(MYFOX_GROUP_ELECTRIC_LIST % (self.myfox_info.site.siteId))
             print(str(response))
             items = response["payload"]["items"]
-            for item in items :
-                group = MyFoxGroupElectric(item["groupId"],
-                                            item["label"],
-                                            item["type"],
-                                            [])
-                for device in item["devices"] :
-                    group.devices.append(MyFoxSocket(device["deviceId"],
-                                                        device["label"],
-                                                        device["modelId"],
-                                                        device["modelLabel"]))
-                self.module.append(group)
+            self.module = items
+            #for item in items :
+            #    group = MyFoxGroupElectric(item["groupId"],
+            #                                item["label"],
+            #                                item["type"],
+            #                                [])
+            #    for device in item["devices"] :
+            #        group.devices.append(MyFoxSocket(device["deviceId"],
+            #                                            device["label"],
+            #                                            device["modelId"],
+            #                                            device["modelLabel"]))
+            #    self.module.append(group)
 
             return self.module
 
@@ -41,10 +39,10 @@ class MyFoxApiGroupElectricClient(MyFoxApiClient) :
             print("Error : " + str(exception))
             raise MyFoxException(exception)
     
-    async def setOn(self, device:MyFoxGroupElectric) -> list:
+    async def setOn(self, groupId:int) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_GROUP_ELECTRIC_SET_ON % (self.myfox_info.site.siteId, device.groupId))
+            response = await self.callMyFoxApiPost(MYFOX_GROUP_ELECTRIC_SET_ON % (self.myfox_info.site.siteId, groupId))
 
             return response
 
@@ -54,10 +52,10 @@ class MyFoxApiGroupElectricClient(MyFoxApiClient) :
             print("Error : " + str(exception))
             raise MyFoxException(exception)
     
-    async def setOff(self, device:MyFoxGroupElectric) -> list:
+    async def setOff(self, groupId:int) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_GROUP_ELECTRIC_SET_OFF % (self.myfox_info.site.siteId, device.groupId))
+            response = await self.callMyFoxApiPost(MYFOX_GROUP_ELECTRIC_SET_OFF % (self.myfox_info.site.siteId, groupId))
 
             return response
 

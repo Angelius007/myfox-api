@@ -20,7 +20,7 @@ from ..api.myfoxapi import (
     MyFoxApiClient
 )
 from ..api.myfoxapi_temperature import (MyFoxApiTemperatureClient)
-from ..devices.temperature import MyFoxTemperatureSensor, MyFoxTemperatureRecord, MyFoxTemperatureDevice
+#from ..devices.temperature import  MyFoxTemperatureDevice
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -74,12 +74,11 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     
                     params = dict[str, Any]()
                     client_temperature:MyFoxApiTemperatureClient = self.myfoxApiClient
-                    for tempe in client_temperature.temperature :
-                        temp:MyFoxTemperatureDevice = tempe
-                        params[str(temp.sensor.deviceId )+"|lastTemperature"] = temp.sensor.lastTemperature 
-                        params[str(temp.sensor.deviceId )+"|lastTemperatureAt"] = temp.sensor.lastTemperatureAt 
-                        params[str(temp.sensor.deviceId )+"|deviceId"] = int(temp.sensor.deviceId) 
-                        _LOGGER.debug("deviceId : %s", str(temp.sensor.deviceId))
+                    for temp in client_temperature.temperature :
+                        params[str(temp["deviceId"] )+"|lastTemperature"] = temp["lastTemperature"] 
+                        params[str(temp["deviceId"] )+"|lastTemperatureAt"] = temp["lastTemperatureAt"] 
+                        params[str(temp["deviceId"] )+"|deviceId"] = int(temp["deviceId"])
+                        _LOGGER.debug("deviceId : %s", str(temp["deviceId"]))
 
                 for (deviceid,device) in  self.myfoxApiClient.devices.items() :
                     if int(params[str(deviceid)+"|deviceId"]) == int(deviceid) :

@@ -1,7 +1,6 @@
 import logging
 
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from ..devices.light import MyFoxLightSensor
 
 from .const import (
     MYFOX_LIGHT_LIST, MYFOX_LIGHT_HISTORY
@@ -20,13 +19,14 @@ class MyFoxApiLightClient(MyFoxApiClient) :
             response = await self.callMyFoxApiGet(MYFOX_LIGHT_LIST % (self.myfox_info.site.siteId))
             items = response["payload"]["items"]
             _LOGGER.debug("getLightList : %s",str(items))
+            self.ligth = items
 
-            for item in items :
-                self.ligth.append(MyFoxLightSensor(item["deviceId"],
-                                item["label"],
-                                item["modelId"],
-                                item["modelLabel"],
-                                item["light"]))
+            #for item in items :
+            #    self.ligth.append(MyFoxLightSensor(item["deviceId"],
+            #                    item["label"],
+            #                    item["modelId"],
+            #                    item["modelLabel"],
+            #                    item["light"]))
             return self.ligth
 
         except MyFoxException as exception:
@@ -35,10 +35,10 @@ class MyFoxApiLightClient(MyFoxApiClient) :
             print("Error : " + str(exception))
             raise MyFoxException(exception)
 
-    async def getLightHistory(self, light: MyFoxLightSensor):
+    async def getLightHistory(self, deviceId:int):
         """ Mise a jour security site """
         try:
-            response = await self.callMyFoxApiGet(MYFOX_LIGHT_HISTORY % (self.myfox_info.site.siteId , light.deviceId))
+            response = await self.callMyFoxApiGet(MYFOX_LIGHT_HISTORY % (self.myfox_info.site.siteId , deviceId))
             _LOGGER.debug("getLightHistory : %s",str(response))
             # {'status': 'OK', 'timestamp': 1723759985, 'payload': {'request': 'OK'}}
             return response

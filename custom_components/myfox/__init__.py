@@ -196,7 +196,7 @@ async def addTemperatureDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_in
     client_themperature = MyFoxApiTemperatureClient(myfox_info)
     liste_capteur = await client_themperature.getList()
     for capteur in liste_capteur :
-        client_themperature.configure_device(capteur.deviceId, capteur.label, capteur.modelId, capteur.modelLabel)
+        client_themperature.configure_device(capteur["deviceId"], capteur["label"], capteur["modelId"], capteur["modelLabel"])
 
     if liste_capteur.__len__() > 0 :
         hass.data[DOMAIN][entry.entry_id]["temperature"] = client_themperature

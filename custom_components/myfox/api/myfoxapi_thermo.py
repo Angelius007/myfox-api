@@ -1,7 +1,6 @@
 import logging
 
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from ..devices.heater import MyFoxHeater
 
 from .const import (
     MYFOX_DEVICE_HEATER_THERMO_LIST,
@@ -19,24 +18,24 @@ class MyFoxApThermoClient(MyFoxApiClient) :
         self.temperature = list()
         self.temperatureRecord = list()
 
-    async def getList(self) -> list[MyFoxHeater]:
+    async def getList(self) -> list:
         """ Get security site """
         try:
             response = await self.callMyFoxApiGet(MYFOX_DEVICE_HEATER_THERMO_LIST % (self.myfox_info.site.siteId))
             print(str(response))
             items = response["payload"]["items"]
             _LOGGER.debug("getList : %s",str(items))
-
-            for item in items :
-                if "lastTemperature" in item :
-                    self.temperature.append(MyFoxHeater(item["deviceId"],
-                                                        item["label"],
-                                                        item["modelId"],
-                                                        item["modelLabel"],
-                                                        item["modeLabel"],
-                                                        item["stateLabel"],
-                                                        item["lastTemperature"])
-                                        )
+            self.temperature = items
+            #for item in items :
+            #    if "lastTemperature" in item :
+            #        self.temperature.append(MyFoxHeater(item["deviceId"],
+            #                                            item["label"],
+            #                                            item["modelId"],
+            #                                            item["modelLabel"],
+            #                                            item["modeLabel"],
+            #                                            item["stateLabel"],
+            #                                            item["lastTemperature"])
+            #                            )
 
             return self.temperature
 
@@ -46,10 +45,10 @@ class MyFoxApThermoClient(MyFoxApiClient) :
             print("Error : " + str(exception))
             raise MyFoxException(exception)
     
-    async def setAuto(self, device:MyFoxHeater) -> list:
+    async def setAuto(self, deviceId:int) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_DEVICE_HEATER_THERMO_SET_AUTO % (self.myfox_info.site.siteId, device.deviceId))
+            response = await self.callMyFoxApiPost(MYFOX_DEVICE_HEATER_THERMO_SET_AUTO % (self.myfox_info.site.siteId, deviceId))
             _LOGGER.debug("setAuto : %s",str(response))
 
             return response
@@ -60,10 +59,10 @@ class MyFoxApThermoClient(MyFoxApiClient) :
             print("Error : " + str(exception))
             raise MyFoxException(exception)
     
-    async def setAway(self, device:MyFoxHeater) -> list:
+    async def setAway(self, deviceId:int) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_DEVICE_HEATER_THERMO_SET_AWAY % (self.myfox_info.site.siteId, device.deviceId))
+            response = await self.callMyFoxApiPost(MYFOX_DEVICE_HEATER_THERMO_SET_AWAY % (self.myfox_info.site.siteId, deviceId))
             _LOGGER.debug("setAway : %s",str(response))
 
             return response
@@ -74,10 +73,10 @@ class MyFoxApThermoClient(MyFoxApiClient) :
             print("Error : " + str(exception))
             raise MyFoxException(exception)
 
-    async def setBoost(self, device:MyFoxHeater) -> list:
+    async def setBoost(self, deviceId:int) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_DEVICE_HEATER_THERMO_SET_BOOST % (self.myfox_info.site.siteId, device.deviceId))
+            response = await self.callMyFoxApiPost(MYFOX_DEVICE_HEATER_THERMO_SET_BOOST % (self.myfox_info.site.siteId, deviceId))
             _LOGGER.debug("setBoost : %s",str(response))
 
             return response
@@ -88,10 +87,10 @@ class MyFoxApThermoClient(MyFoxApiClient) :
             print("Error : " + str(exception))
             raise MyFoxException(exception)
 
-    async def setOff(self, device:MyFoxHeater) -> list:
+    async def setOff(self, deviceId:int) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_DEVICE_HEATER_THERMO_SET_OFF % (self.myfox_info.site.siteId, device.deviceId))
+            response = await self.callMyFoxApiPost(MYFOX_DEVICE_HEATER_THERMO_SET_OFF % (self.myfox_info.site.siteId, deviceId))
             _LOGGER.debug("setOff : %s",str(response))
 
             return response

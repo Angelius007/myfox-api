@@ -1,7 +1,6 @@
 import logging
 
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from ..devices.scenario import MyFoxScenario
 
 from .const import (
     MYFOX_SCENARIO_ITEMS, MYFOX_SCENARIO_ENABLE, MYFOX_SCENARIO_DISABLE, MYFOX_SCENARIO_PLAY
@@ -22,12 +21,13 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
             response = await self.callMyFoxApiGet(MYFOX_SCENARIO_ITEMS % self.myfox_info.site.siteId)
             items = response["payload"]["items"]
             _LOGGER.debug("getScenarii : %s",str(items))
+            self.scenarii = items
 
-            for item in items :
-                self.scenarii.append(MyFoxScenario(item["scenarioId"],
-                                item["label"],
-                                item["typeLabel"],
-                                item["enabled"]))
+            #for item in items :
+            #    self.scenarii.append(MyFoxScenario(item["scenarioId"],
+            #                    item["label"],
+            #                    item["typeLabel"],
+            #                    item["enabled"]))
 
             return self.scenarii
 

@@ -1,7 +1,6 @@
 import logging
 
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from ..devices.shutter import MyFoxShutter
 
 from .const import (
     MYFOX_DEVICE_SHUTTER_LIST,
@@ -18,18 +17,18 @@ class MyFoxApiShutterClient(MyFoxApiClient) :
         super().__init__(myfox_info)
         self.module = list()
 
-    async def getList(self) -> list[MyFoxShutter]:
+    async def getList(self) -> list:
         """ Get security site """
         try:
             response = await self.callMyFoxApiGet(MYFOX_DEVICE_SHUTTER_LIST % (self.myfox_info.site.siteId))
             items = response["payload"]["items"]
             _LOGGER.debug("getList : %s",str(items))
-
-            for item in items :
-                self.module.append(MyFoxShutter(item["deviceId"],
-                                                       item["label"],
-                                                       item["modelId"],
-                                                       item["modelLabel"]))
+            self.module = items
+            #for item in items :
+            #    self.module.append(MyFoxShutter(item["deviceId"],
+            #                                           item["label"],
+            #                                           item["modelId"],
+            #                                           item["modelLabel"]))
 
             return self.module
 
@@ -39,10 +38,10 @@ class MyFoxApiShutterClient(MyFoxApiClient) :
             print("Error : " + str(exception))
             raise MyFoxException(exception)
     
-    async def setFavorite(self, device:MyFoxShutter) -> list:
+    async def setFavorite(self, deviceId:int) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_DEVICE_SHUTTER_MY % (self.myfox_info.site.siteId, device.deviceId))
+            response = await self.callMyFoxApiPost(MYFOX_DEVICE_SHUTTER_MY % (self.myfox_info.site.siteId, deviceId))
             _LOGGER.debug("setFavorite : %s",str(response))
 
             return (response["status"] == "OK")
@@ -53,10 +52,10 @@ class MyFoxApiShutterClient(MyFoxApiClient) :
             print("Error : " + str(exception))
             raise MyFoxException(exception)
     
-    async def setOpen(self, device:MyFoxShutter) -> list:
+    async def setOpen(self, deviceId:int) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_DEVICE_SHUTTER_OPEN % (self.myfox_info.site.siteId, device.deviceId))
+            response = await self.callMyFoxApiPost(MYFOX_DEVICE_SHUTTER_OPEN % (self.myfox_info.site.siteId, deviceId))
             _LOGGER.debug("setOpen : %s",str(response))
 
             return (response["status"] == "OK")
@@ -67,10 +66,10 @@ class MyFoxApiShutterClient(MyFoxApiClient) :
             print("Error : " + str(exception))
             raise MyFoxException(exception)
 
-    async def setClose(self, device:MyFoxShutter) -> list:
+    async def setClose(self, deviceId:int) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_DEVICE_SHUTTER_CLOSE % (self.myfox_info.site.siteId, device.deviceId))
+            response = await self.callMyFoxApiPost(MYFOX_DEVICE_SHUTTER_CLOSE % (self.myfox_info.site.siteId, deviceId))
             _LOGGER.debug("setClose : %s",str(response))
 
             return (response["status"] == "OK")

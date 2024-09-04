@@ -1,7 +1,6 @@
 import logging
 
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from ..devices.module import MyFoxModule
 
 from .const import (
     MYFOX_DEVICE_MODULE_LIST,
@@ -22,12 +21,13 @@ class MyFoxApiModuleClient(MyFoxApiClient) :
             response = await self.callMyFoxApiGet(MYFOX_DEVICE_MODULE_LIST % (self.myfox_info.site.siteId))
             items = response["payload"]["items"]
             _LOGGER.debug("getList : %s",str(items))
+            self.module = items
 
-            for item in items :
-                self.module.append(MyFoxModule(item["deviceId"],
-                                                       item["label"],
-                                                       item["modelId"],
-                                                       item["modelLabel"]))
+            #for item in items :
+            #    self.module.append(MyFoxModule(item["deviceId"],
+            #                                           item["label"],
+            #                                           item["modelId"],
+            #                                           item["modelLabel"]))
 
             return self.module
 
@@ -37,10 +37,10 @@ class MyFoxApiModuleClient(MyFoxApiClient) :
             print("Error : " + str(exception))
             raise MyFoxException(exception)
     
-    async def performeOne(self, device:MyFoxModule) -> list:
+    async def performeOne(self, deviceId:int) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_DEVICE_MODULE_PERFORM_ONE % (self.myfox_info.site.siteId, device.deviceId))
+            response = await self.callMyFoxApiPost(MYFOX_DEVICE_MODULE_PERFORM_ONE % (self.myfox_info.site.siteId, deviceId))
             _LOGGER.debug("performeOne : %s",str(response))
 
             return response
@@ -51,10 +51,10 @@ class MyFoxApiModuleClient(MyFoxApiClient) :
             print("Error : " + str(exception))
             raise MyFoxException(exception)
     
-    async def performeTwo(self, device:MyFoxModule) -> list:
+    async def performeTwo(self, deviceId:int) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_DEVICE_MODULE_PERFORM_TWO % (self.myfox_info.site.siteId, device.deviceId))
+            response = await self.callMyFoxApiPost(MYFOX_DEVICE_MODULE_PERFORM_TWO % (self.myfox_info.site.siteId, deviceId))
             _LOGGER.debug("performeTwo : %s",str(response))
 
             return response

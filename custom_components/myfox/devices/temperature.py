@@ -6,7 +6,7 @@ from homeassistant.components.select import SelectEntity
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.switch import SwitchEntity
 
-from ..devices import  BaseDevice
+from ..devices import  BaseDevice, MyFoxDeviceInfo
 from ..sensor import TempSensorEntity
 
 #TemperatureSensor {
@@ -42,7 +42,9 @@ class MyFoxTemperatureRecord :
 @dataclass
 class MyFoxTemperatureDevice(BaseDevice) :
     """ """
-    sensor:MyFoxTemperatureSensor = None
+
+    def __init__(self, device_info:MyFoxDeviceInfo):
+        super().__init__(device_info)
 
     def sensors(self, client, coordinator) -> list[SensorEntity]:
         return [TempSensorEntity(client, coordinator, self, "Temperature", "lastTemperature")]

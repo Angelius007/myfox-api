@@ -1,5 +1,4 @@
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from ..devices.gate import MyFoxGate
 
 from .const import (
     MYFOX_DEVICE_GATE_LIST,
@@ -11,22 +10,21 @@ class MyFoxApiGateClient(MyFoxApiClient) :
 
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
-        self.temperature = list()
-        self.temperatureRecord = list()
+        self.gate = list()
 
     async def getList(self) -> list:
         """ Get security site """
         try:
             response = await self.callMyFoxApiGet(MYFOX_DEVICE_GATE_LIST % (self.myfox_info.site.siteId))
             items = response["payload"]["items"]
+            self.gate = items
+            #for item in items :
+            #    self.gate.append(MyFoxGate(item["deviceId"],
+            #                                           item["label"],
+            #                                           item["modelId"],
+            #                                           item["modelLabel"]))
 
-            for item in items :
-                self.temperature.append(MyFoxGate(item["deviceId"],
-                                                       item["label"],
-                                                       item["modelId"],
-                                                       item["modelLabel"]))
-
-            return self.temperature
+            return self.gate
 
         except MyFoxException as exception:
             raise exception
@@ -34,10 +32,10 @@ class MyFoxApiGateClient(MyFoxApiClient) :
             print("Error : " + str(exception))
             raise MyFoxException(exception)
     
-    async def performeOne(self, device:MyFoxGate) -> list:
+    async def performeOne(self, deviceId:int) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_DEVICE_GATE_PERFORM_ONE % (self.myfox_info.site.siteId, device.deviceId))
+            response = await self.callMyFoxApiPost(MYFOX_DEVICE_GATE_PERFORM_ONE % (self.myfox_info.site.siteId, deviceId))
 
             return response
 
@@ -47,10 +45,10 @@ class MyFoxApiGateClient(MyFoxApiClient) :
             print("Error : " + str(exception))
             raise MyFoxException(exception)
     
-    async def performeTwo(self, device:MyFoxGate) -> list:
+    async def performeTwo(self, deviceId:int) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_DEVICE_GATE_PERFORM_TWO % (self.myfox_info.site.siteId, device.deviceId))
+            response = await self.callMyFoxApiPost(MYFOX_DEVICE_GATE_PERFORM_TWO % (self.myfox_info.site.siteId, deviceId))
 
             return response
 

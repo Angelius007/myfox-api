@@ -1,6 +1,4 @@
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from ..devices.group import (MyFoxGroupShutter)
-from ..devices.shutter import (MyFoxShutter)
 
 from .const import (
     MYFOX_GROUP_SHUTTER_LIST,
@@ -20,17 +18,18 @@ class MyFoxApiGroupShutterClient(MyFoxApiClient) :
             response = await self.callMyFoxApiGet(MYFOX_GROUP_SHUTTER_LIST % (self.myfox_info.site.siteId))
             print(str(response))
             items = response["payload"]["items"]
-            for item in items :
-                group = MyFoxGroupShutter(item["groupId"],
-                                            item["label"],
-                                            item["type"],
-                                            [])
-                for device in item["devices"] :
-                    group.devices.append(MyFoxShutter(device["deviceId"],
-                                                        device["label"],
-                                                        device["modelId"],
-                                                        device["modelLabel"]))
-                self.module.append(group)
+            self.module = items
+            #for item in items :
+            #    group = MyFoxGroupShutter(item["groupId"],
+            #                                item["label"],
+            #                                item["type"],
+            #                                [])
+            #    for device in item["devices"] :
+            #        group.devices.append(MyFoxShutter(device["deviceId"],
+            #                                            device["label"],
+            #                                            device["modelId"],
+            #                                            device["modelLabel"]))
+            #    self.module.append(group)
 
             return self.module
 
@@ -40,10 +39,10 @@ class MyFoxApiGroupShutterClient(MyFoxApiClient) :
             print("Error : " + str(exception))
             raise MyFoxException(exception)
     
-    async def setOpen(self, device:MyFoxGroupShutter) -> list:
+    async def setOpen(self, groupId:int) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_GROUP_SHUTTER_SET_OPEN % (self.myfox_info.site.siteId, device.groupId))
+            response = await self.callMyFoxApiPost(MYFOX_GROUP_SHUTTER_SET_OPEN % (self.myfox_info.site.siteId, groupId))
 
             return response
 
@@ -53,10 +52,10 @@ class MyFoxApiGroupShutterClient(MyFoxApiClient) :
             print("Error : " + str(exception))
             raise MyFoxException(exception)
     
-    async def setClose(self, device:MyFoxGroupShutter) -> list:
+    async def setClose(self, groupId:int) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiPost(MYFOX_GROUP_SHUTTER_SET_CLOSE % (self.myfox_info.site.siteId, device.groupId))
+            response = await self.callMyFoxApiPost(MYFOX_GROUP_SHUTTER_SET_CLOSE % (self.myfox_info.site.siteId, groupId))
 
             return response
 
