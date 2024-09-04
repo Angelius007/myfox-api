@@ -70,6 +70,8 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 # Grab active context variables to limit data required to be fetched from API
                 # Note: using context is not required if there is no need or ability to limit
                 # data retrieved from API.
+                await self.myfoxApiClient.getList()
+                
                 listening_idx = set(self.async_contexts())
                 _LOGGER.debug("listening_idx : %s", str(listening_idx))
                 if self.myfoxApiClient.__class__ == MyFoxApiTemperatureClient:
