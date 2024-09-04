@@ -17,9 +17,7 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
     """ Chargement des switchs """
-    _LOGGER.debug("haas:" + str(hass.data[DOMAIN][entry.entry_id]))
     for (client_key,client_item) in hass.data[DOMAIN][entry.entry_id].items() :
-        _LOGGER.debug("items:"+str(client_key))
         client: MyFoxApiClient = client_item
         _LOGGER.debug("client:"+str(client))
 
