@@ -43,6 +43,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         )
         self.myfoxApiClient = myfoxApiClient
         #self._device: BaseDevice | None = None
+        _LOGGER.debug("Init " + str(self.name) + " - Client : " + str(self.myfoxApiClient))
 
     async def _async_setup(self):
         """Set up the coordinator
@@ -53,6 +54,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         This method will be called automatically during
         coordinator.async_config_entry_first_refresh.
         """
+        _LOGGER.debug(str(self.myfoxApiClient))
         await self.myfoxApiClient.getList()
 
     async def _async_update_data(self):
