@@ -18,15 +18,15 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
     """ Chargement des switchs """
     for client_item in hass.data[DOMAIN][entry.entry_id].items() :
-        client: MyFoxApiClient = client_item
+        _LOGGER.debug(client_item)
+        client: MyFoxApiClient = hass.data[DOMAIN][entry.entry_id][client_item]
 
         coordinator = MyFoxCoordinator(hass, client)
         await coordinator.async_config_entry_first_refresh()
 
         for (deviceId, device) in client.devices.items():
             async_add_entities(device.sensors(client, coordinator))
-            # async_add_entities(device.sensors(client))
-            # MyEntity(coordinator, idx) for idx, ent in enumerate(coordinator.data)
+
 
 class TempSensorEntity(BaseSensorEntity):
     _attr_device_class = SensorDeviceClass.TEMPERATURE

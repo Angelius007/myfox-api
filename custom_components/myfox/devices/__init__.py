@@ -11,8 +11,6 @@ from homeassistant.components.switch import SwitchEntity
 
 from .data_holder import MyFoxDataHolder
 
-#from ..api.myfoxapi import MyFoxApiClient 
-
 _LOGGER = logging.getLogger(__name__)
 
 @dataclasses.dataclass
@@ -35,7 +33,7 @@ class BaseDevice(ABC):
         self.data = MyFoxDataHolder(refresh_period, diag)
 
     @abstractmethod
-    def sensors(self, client, coordinator) -> list[SensorEntity]: # : MyFoxApiClient
+    def sensors(self, client, coordinator) -> list[SensorEntity]:
         pass
 
     @abstractmethod
