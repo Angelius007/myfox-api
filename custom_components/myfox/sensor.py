@@ -38,7 +38,8 @@ class TempSensorEntity(BaseSensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        self._attr_native_value = self.coordinator.data[self.idx]["value"]
+        _LOGGER.debug("_handle_coordinator_update : %s", self.coordinator.data[self.idx])
+        self._attr_native_value = self.coordinator.data[self.idx] #["value"]
         self.async_write_ha_state()
 
     

@@ -69,21 +69,23 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 # Note: using context is not required if there is no need or ability to limit
                 # data retrieved from API.
                 listening_idx = set(self.async_contexts())
+                _LOGGER.debug("listening_idx : %s", str(listening_idx))
                 if self.myfoxApiClient.__class__ == MyFoxApiTemperatureClient:
                     
                     params = dict[str, Any]()
                     client_temperature:MyFoxApiTemperatureClient = self.myfoxApiClient
                     for tempe in client_temperature.temperature :
                         temp:MyFoxTemperatureDevice = tempe
-                        params["lastTemperature"] = temp.sensor.lastTemperature 
-                        params["lastTemperatureAt"] = temp.sensor.lastTemperatureAt 
-                        params["deviceId"] = temp.sensor.deviceId 
+                        params[str(temp.sensor.deviceId )+"|lastTemperature"] = temp.sensor.lastTemperature 
+                        params[str(temp.sensor.deviceId )+"|lastTemperatureAt"] = temp.sensor.lastTemperatureAt 
+                        params[str(temp.sensor.deviceId )+"|deviceId"] = int(temp.sensor.deviceId) 
+                        _LOGGER.debug("deviceId : %s", str(temp.sensor.deviceId))
 
                 for (deviceid,device) in  self.myfoxApiClient.devices.items() :
-                    if int(params["deviceId"]) == int(deviceid) :
+                    if int(params[str(deviceid)+"|deviceId"]) == int(deviceid) :
                         device.data.params.update(params)
 
-                return await self.myfoxApiClient.fetch_data(listening_idx)
+                return params
         # except ApiAuthError as err:
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
