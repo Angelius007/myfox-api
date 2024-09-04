@@ -20,7 +20,7 @@ class MyFoxAbstractEntity(CoordinatorEntity, Entity):
 
     def __init__(self, client: MyFoxApiClient, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
         super().__init__(coordinator, context=str(device.device_info.deviceId)+"|"+key)
-        self.idx = str(device.device_info.deviceId)+"|"+key
+        self.idx = str(device.device_info.deviceId)+"|"+key 
         self._client: MyFoxApiClient = client
         self._device: BaseDevice = device
         self._attr_name = title
@@ -33,7 +33,7 @@ class MyFoxAbstractEntity(CoordinatorEntity, Entity):
             manufacturer="MyFox",
             name=self._device.device_info.label,
             model=self._device.device_info.modelLabel,
-            serial_number=str(self._device.device_info.modelId),
+            serial_number=str(self._device.device_info.deviceId),
         )
 
 class BaseSensorEntity(SensorEntity, MyFoxAbstractEntity):
