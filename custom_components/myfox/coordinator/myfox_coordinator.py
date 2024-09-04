@@ -80,11 +80,12 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         params[str(temp["deviceId"] )+"|lastTemperature"] = temp["lastTemperature"] 
                         params[str(temp["deviceId"] )+"|lastTemperatureAt"] = temp["lastTemperatureAt"] 
                         params[str(temp["deviceId"] )+"|deviceId"] = int(temp["deviceId"])
-                        _LOGGER.debug("deviceId : %s", str(temp["deviceId"]))
+                        _LOGGER.debug("_async_update_data -> deviceId : %s", str(temp["deviceId"]))
 
                 for (deviceid,device) in  self.myfoxApiClient.devices.items() :
-                    if int(params[str(deviceid)+"|deviceId"]) == int(deviceid) :
-                        device.data.params.update(params)
+                    if str(params[str(deviceid)+"|deviceId"]) == str(deviceid) :
+                        _LOGGER.debug("device.update : %s", str(deviceid))
+                        device.data.update_data(params)
 
                 _LOGGER.debug("params : %s", str(params))
 
