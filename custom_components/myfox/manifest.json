@@ -9,7 +9,10 @@
     "iot_class": "cloud_push",
     "issue_tracker": "https://github.com/Angelius007/ha-myfox-api/issues",
     "requirements": [
-      "attrs>=23.2.0"
+      "aiohttp>=3.10.1",
+      "attrs>=23.2.0",
+      "jsonpath>=0.82.2",
+      "orjson>=3.10.6"
     ],
     "version": "0.0.1"
   }
