@@ -19,7 +19,7 @@ from homeassistant.core import DOMAIN
 class MyFoxAbstractEntity(CoordinatorEntity, Entity):
 
     def __init__(self, client: MyFoxApiClient, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
-        super().__init__(coordinator, context=str(self._device.device_info.deviceId)+"|"+key)
+        super().__init__(coordinator, context=str(device.device_info.deviceId)+"|"+key)
         self.idx = str(self._device.device_info.deviceId)+"|"+key
         self._client: MyFoxApiClient = client
         self._device: BaseDevice = device
