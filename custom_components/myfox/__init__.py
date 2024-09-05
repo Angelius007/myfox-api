@@ -85,7 +85,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
                                    entry.data[KEY_EXPIRE_TIME])
     myfox_client = MyFoxApiClient(myfox_info)
     
-    info_site = await myfox_client.getInfoSite(entry.data[KEY_SITE_ID], True)
+    info_site = await myfox_client.getInfoSite(entry.data[KEY_SITE_ID])
     _LOGGER.info("Chargement du site %s", str(info_site))
      
     if info_site :
@@ -196,7 +196,7 @@ async def addTemperatureDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_in
     client_themperature = MyFoxApiTemperatureClient(myfox_info)
     liste_capteur = await client_themperature.getList()
     for capteur in liste_capteur :
-        _LOGGER.debug("Configuration device " + str(capteur["deviceId"]))
+        _LOGGER.debug("Configuration device " + str(capteur))
         client_themperature.configure_device(capteur["deviceId"], capteur["label"], capteur["modelId"], capteur["modelLabel"])
 
     if liste_capteur.__len__() > 0 :
