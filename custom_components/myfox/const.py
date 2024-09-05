@@ -1,3 +1,3 @@
 
-DOMAIN = "myfox"
+DOMAIN_MYFOX = "myfox"
 CONFIG_VERSION = 1
