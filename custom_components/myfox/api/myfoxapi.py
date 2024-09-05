@@ -354,9 +354,8 @@ class MyFoxApiClient:
         try:
             if self.myfox_info.site is None or self.myfox_info.site.siteId == 0 :
                 sites = await self.getInfoSites(forceCall)
-                _LOGGER.debug("Sites trouves : %s", str(sites))
+
                 for site in sites :
-                    _LOGGER.debug("Site OK ? id:%s / id site:%s / site trouve : %s", str(siteId), str(site.siteId), str(site))
                     if int(site.siteId) == int(siteId) :
                         _LOGGER.debug("Site selectionne : %s", str(site))
                         self.myfox_info.site = site

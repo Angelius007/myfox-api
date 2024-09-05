@@ -51,7 +51,7 @@ class MyFoxTemperatureDevice(BaseDevice) :
         super().__init__(device_info)
 
     def sensors(self, client, coordinator) -> list[SensorEntity]:
-        _LOGGER.debug("Ajout TempSensorEntity / lastTemperature")
+        _LOGGER.debug("Ajout TempSensorEntity / lastTemperature sur device %s", str(self.device_info.deviceId))
         return [TempSensorEntity(client, coordinator, self, "Temperature", "lastTemperature")]
 
     def numbers(self, client, coordinator) -> list[NumberEntity]:
