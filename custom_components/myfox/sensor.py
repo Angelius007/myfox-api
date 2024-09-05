@@ -34,6 +34,13 @@ class TempSensorEntity(BaseSensorEntity):
     _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_native_value = -1
+
+    def __init__(self, client, coordinator:MyFoxCoordinator, device, title: str, key: str):
+        super().__init__(client, coordinator, device, title, key)
+        if self.idx in self.coordinator.data:
+            _LOGGER.debug("init value : %s, %s", self.idx, self.coordinator.data[self.idx])
+            self._attr_native_value = self.coordinator.data[self.idx]
+            self.async_write_ha_state()
     
     @callback
     def _handle_coordinator_update(self) -> None:
