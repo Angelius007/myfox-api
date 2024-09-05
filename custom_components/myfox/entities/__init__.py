@@ -2,6 +2,7 @@ import logging
 
 from homeassistant.helpers.entity import Entity, EntityCategory, DeviceInfo
 from homeassistant.components.button import ButtonEntity
+from homeassistant.components.light  import LightEntity
 from homeassistant.components.number import NumberEntity
 from homeassistant.components.select import SelectEntity
 from homeassistant.components.sensor import SensorEntity
@@ -9,6 +10,7 @@ from homeassistant.components.switch import SwitchEntity
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
 )
+from homeassistant.core import callback
 
 from ..api.myfoxapi import MyFoxApiClient
 from ..devices import BaseDevice
@@ -40,15 +42,25 @@ class MyFoxAbstractEntity(CoordinatorEntity, Entity):
             serial_number=str(self._device.device_info.deviceId),
         )
 
-class BaseSensorEntity(SensorEntity, MyFoxAbstractEntity):
-
+class BaseWithValueEntity(MyFoxAbstractEntity):
     def __init__(self, client: MyFoxApiClient, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
         super().__init__(client, coordinator, device, title, key)
         if self.idx in self.coordinator.data:
             _LOGGER.debug("init value : %s, %s", self.idx, self.coordinator.data[self.idx])
             self._attr_native_value = self.coordinator.data[self.idx]
 
-class BaseNumberEntity(NumberEntity, MyFoxAbstractEntity):
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        if self.idx in self.coordinator.data:
+            _LOGGER.debug("_handle_coordinator_update : %s, %s", self.idx, self.coordinator.data[self.idx])
+            self._attr_native_value = self.coordinator.data[self.idx]
+            self.async_write_ha_state()
+
+class BaseSensorEntity(SensorEntity, BaseWithValueEntity):
+    pass
+
+class BaseNumberEntity(NumberEntity, BaseWithValueEntity):
     pass
 
 class BaseSwitchEntity(SwitchEntity, MyFoxAbstractEntity):
@@ -58,4 +70,7 @@ class BaseSelectEntity(SelectEntity, MyFoxAbstractEntity):
     pass
 
 class BaseButtonEntity(ButtonEntity, MyFoxAbstractEntity):
+    pass
+
+class BaseLightEntity(LightEntity, MyFoxAbstractEntity):
     pass

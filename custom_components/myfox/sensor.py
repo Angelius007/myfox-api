@@ -5,7 +5,6 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (UnitOfTemperature)
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.core import HomeAssistant
-from homeassistant.core import callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (DOMAIN_MYFOX)
@@ -34,13 +33,3 @@ class TempSensorEntity(BaseSensorEntity):
     _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_native_value = -1
-    
-    @callback
-    def _handle_coordinator_update(self) -> None:
-        """Handle updated data from the coordinator."""
-        if self.idx in self.coordinator.data:
-            _LOGGER.debug("_handle_coordinator_update : %s, %s", self.idx, self.coordinator.data[self.idx])
-            self._attr_native_value = self.coordinator.data[self.idx]
-            self.async_write_ha_state()
-
-    
