@@ -24,7 +24,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
         await coordinator.async_config_entry_first_refresh()
 
         for (deviceId, device) in client.devices.items():
-            async_add_entities(device.sensors(client, coordinator))
+            async_add_entities(device.sensors(coordinator))
 
 
 class TempSensorEntity(BaseSensorEntity):

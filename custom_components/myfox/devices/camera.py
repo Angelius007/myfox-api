@@ -44,20 +44,20 @@ class MyFoxCameraDevice(BaseDevice):
     camera:MyFoxCamera = None
 
 
-    def sensors(self, client, coordinator) -> list[SensorEntity]:
+    def sensors(self, coordinator) -> list[SensorEntity]:
         return []
 
-    def numbers(self, client, coordinator) -> list[NumberEntity]:
+    def numbers(self, coordinator) -> list[NumberEntity]:
         return []
 
-    def switches(self, client, coordinator) -> list[SwitchEntity]:
+    def switches(self, coordinator) -> list[SwitchEntity]:
         return []
 
-    def buttons(self, client, coordinator) -> list[ButtonEntity]:
+    def buttons(self, coordinator) -> list[ButtonEntity]:
         return []
 
-    def selects(self, client, coordinator) -> list[SelectEntity]:
+    def selects(self, coordinator) -> list[SelectEntity]:
         return []
 
-    def texts(self, client, coordinator) -> list[ButtonEntity]:
+    def texts(self, coordinator) -> list[ButtonEntity]:
         return []

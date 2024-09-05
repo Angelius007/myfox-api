@@ -23,10 +23,10 @@ _LOGGER = logging.getLogger(__name__)
 
 class MyFoxAbstractEntity(CoordinatorEntity, Entity):
 
-    def __init__(self, client: MyFoxApiClient, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
+    def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
         super().__init__(coordinator, context=str(device.device_info.deviceId)+"|"+key)
         self.idx = str(device.device_info.deviceId)+"|"+key 
-        self._client: MyFoxApiClient = client
+        self._client: MyFoxApiClient = coordinator.myfoxApiClient
         self._device: BaseDevice = device
         self._attr_name = title
         self._attr_unique_id = "MyFox-"+self.idx
@@ -43,8 +43,8 @@ class MyFoxAbstractEntity(CoordinatorEntity, Entity):
         )
 
 class BaseWithValueEntity(MyFoxAbstractEntity):
-    def __init__(self, client: MyFoxApiClient, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
-        super().__init__(client, coordinator, device, title, key)
+    def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
+        super().__init__(coordinator, device, title, key)
         if self.idx in self.coordinator.data:
             _LOGGER.debug("init value : %s, %s", self.idx, self.coordinator.data[self.idx])
             self._attr_native_value = self.coordinator.data[self.idx]

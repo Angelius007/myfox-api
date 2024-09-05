@@ -34,45 +34,45 @@ class BaseDevice(ABC):
         """ """
 
     @abstractmethod
-    def sensors(self, client, coordinator) -> list[SensorEntity]:
+    def sensors(self, coordinator) -> list[SensorEntity]:
         pass
 
     @abstractmethod
-    def numbers(self, client, coordinator) -> list[NumberEntity]:
+    def numbers(self, coordinator) -> list[NumberEntity]:
         pass
 
     @abstractmethod
-    def switches(self, client, coordinator) -> list[SwitchEntity]:
+    def switches(self, coordinator) -> list[SwitchEntity]:
         pass
 
     @abstractmethod
-    def selects(self, client, coordinator) -> list[SelectEntity]:
+    def selects(self, coordinator) -> list[SelectEntity]:
         pass
 
     @abstractmethod
-    def buttons(self, client, coordinator) -> list[ButtonEntity]:
+    def buttons(self, coordinator) -> list[ButtonEntity]:
         pass
 
     @abstractmethod
-    def texts(self, client, coordinator) -> list[ButtonEntity]:
+    def texts(self, coordinator) -> list[ButtonEntity]:
         pass
 
 class DiagnosticDevice(BaseDevice):
 
-    def sensors(self, client, coordinator) -> list[SensorEntity]:
+    def sensors(self, coordinator) -> list[SensorEntity]:
         return []
 
-    def numbers(self, client, coordinator) -> list[NumberEntity]:
+    def numbers(self, coordinator) -> list[NumberEntity]:
         return []
 
-    def switches(self, client, coordinator) -> list[SwitchEntity]:
+    def switches(self, coordinator) -> list[SwitchEntity]:
         return []
 
-    def buttons(self, client, coordinator) -> list[ButtonEntity]:
+    def buttons(self, coordinator) -> list[ButtonEntity]:
         return []
 
-    def selects(self, client, coordinator) -> list[SelectEntity]:
+    def selects(self, coordinator) -> list[SelectEntity]:
         return []
     
-    def texts(self, client, coordinator) -> list[ButtonEntity]:
+    def texts(self, coordinator) -> list[ButtonEntity]:
         return []

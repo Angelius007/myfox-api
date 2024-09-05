@@ -50,21 +50,21 @@ class MyFoxTemperatureDevice(BaseDevice) :
     def __init__(self, device_info:MyFoxDeviceInfo):
         super().__init__(device_info)
 
-    def sensors(self, client, coordinator) -> list[SensorEntity]:
+    def sensors(self, coordinator) -> list[SensorEntity]:
         _LOGGER.debug("Ajout TempSensorEntity / lastTemperature sur device %s", str(self.device_info.deviceId))
-        return [TempSensorEntity(client, coordinator, self, "Temperature", "lastTemperature")]
+        return [TempSensorEntity(coordinator, self, "Temperature", "lastTemperature")]
 
-    def numbers(self, client, coordinator) -> list[NumberEntity]:
+    def numbers(self, coordinator) -> list[NumberEntity]:
         return []
 
-    def switches(self, client, coordinator) -> list[SwitchEntity]:
+    def switches(self, coordinator) -> list[SwitchEntity]:
         return []
 
-    def buttons(self, client, coordinator) -> list[ButtonEntity]:
+    def buttons(self, coordinator) -> list[ButtonEntity]:
         return []
 
-    def selects(self, client, coordinator) -> list[SelectEntity]:
+    def selects(self, coordinator) -> list[SelectEntity]:
         return []
     
-    def texts(self, client, coordinator) -> list[ButtonEntity]:
+    def texts(self, coordinator) -> list[ButtonEntity]:
         return []
