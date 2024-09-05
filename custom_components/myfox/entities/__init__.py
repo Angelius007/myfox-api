@@ -47,7 +47,6 @@ class BaseSensorEntity(SensorEntity, MyFoxAbstractEntity):
         if self.idx in self.coordinator.data:
             _LOGGER.debug("init value : %s, %s", self.idx, self.coordinator.data[self.idx])
             self._attr_native_value = self.coordinator.data[self.idx]
-            self.async_write_ha_state()
 
 class BaseNumberEntity(NumberEntity, MyFoxAbstractEntity):
     pass
