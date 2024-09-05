@@ -75,7 +75,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 listening_idx = set(self.async_contexts())
                 _LOGGER.debug("listening_idx : %s", str(listening_idx))
                 params = dict[str, Any]()
-                if listening_idx.__len__ > 0:
+                if len(listening_idx) > 0:
                     if self.myfoxApiClient.__class__ == MyFoxApiTemperatureClient :
                         
                         client_temperature:MyFoxApiTemperatureClient = self.myfoxApiClient
