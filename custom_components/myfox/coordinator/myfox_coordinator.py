@@ -74,25 +74,29 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 
                 listening_idx = set(self.async_contexts())
                 _LOGGER.debug("listening_idx : %s", str(listening_idx))
-                if self.myfoxApiClient.__class__ == MyFoxApiTemperatureClient:
-                    
-                    params = dict[str, Any]()
-                    client_temperature:MyFoxApiTemperatureClient = self.myfoxApiClient
-                    for temp in client_temperature.temperature :
-                        params[str(temp["deviceId"] )+"|lastTemperature"] = temp["lastTemperature"] 
-                        params[str(temp["deviceId"] )+"|lastTemperatureAt"] = temp["lastTemperatureAt"] 
-                        params[str(temp["deviceId"] )+"|deviceId"] = int(temp["deviceId"])
-                        _LOGGER.debug("_async_update_data -> deviceId : %s", str(temp["deviceId"]))
+                params = dict[str, Any]()
+                if listening_idx.__len__ > 0:
+                    if self.myfoxApiClient.__class__ == MyFoxApiTemperatureClient :
+                        
+                        client_temperature:MyFoxApiTemperatureClient = self.myfoxApiClient
+                        for temp in client_temperature.temperature :
+                            
+                            self.addToParams(params, listening_idx, temp)
 
-                for (deviceid,device) in  self.myfoxApiClient.devices.items() :
-                    if str(params[str(deviceid)+"|deviceId"]) == str(deviceid) :
-                        _LOGGER.debug("device.update : %s", str(deviceid))
-                        # device.data.update_data(params)
+                            #params[str(temp["deviceId"] )+"|lastTemperature"] = temp["lastTemperature"] 
+                            #params[str(temp["deviceId"] )+"|lastTemperatureAt"] = temp["lastTemperatureAt"] 
+                            #params[str(temp["deviceId"] )+"|deviceId"] = int(temp["deviceId"])
+                            #_LOGGER.debug("_async_update_data -> deviceId : %s", str(temp["deviceId"]))
+
+                    #for (deviceid,device) in  self.myfoxApiClient.devices.items() :
+                    #    if str(params[str(deviceid)+"|deviceId"]) == str(deviceid) :
+                    #        _LOGGER.debug("device.update : %s", str(deviceid))
+                    #        device.data.update_data(params)
 
                 _LOGGER.debug("params : %s", str(params))
 
                 return params
-        # except ApiAuthError as err:
+        # except ApiAuthError as err:   
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
         #     raise ConfigEntryAuthFailed from err
@@ -100,3 +104,14 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         #     raise UpdateFailed(f"Error communicating with API: {err}")
         except Exception as err:
             raise UpdateFailed(f"Error with API: {err}")
+        
+    def addToParams(self, params:dict[str, Any], listening_idx:set,temp:Any):
+        """ Ajout des parames de la liste si correspond aux attentes """
+        device_id = temp["deviceId"]
+        for key,val in temp :
+            control_key = str(device_id) + "|" + str(key)
+            if control_key in listening_idx:
+                params[control_key] = val
+                _LOGGER.debug("addToParams -> deviceId(%s) : %s [%s]", str(device_id), control_key, str(val))
+
+        

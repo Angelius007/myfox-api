@@ -29,10 +29,11 @@ class MyFoxAbstractEntity(CoordinatorEntity, Entity):
     @property
     def device_info(self) -> DeviceInfo | None:
         return DeviceInfo(
-            identifiers={(DOMAIN_MYFOX, f"{self._device.device_info.modelId}")},
+            identifiers={(DOMAIN_MYFOX, f"{self._device.device_info.deviceId}")},
             manufacturer="MyFox",
             name=self._device.device_info.label,
             model=self._device.device_info.modelLabel,
+            model_id=self._device.device_info.modelId,
             serial_number=str(self._device.device_info.deviceId),
         )
 

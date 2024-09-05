@@ -385,7 +385,7 @@ class MyFoxApiClient:
                 items = response["payload"]["items"]
 
                 for item in items :
-                    self.myfox_info.site = MyFoxSite(int(item["siteId"]),
+                    site = MyFoxSite(int(item["siteId"]),
                                                     item["label"],
                                                     str(item["siteId"]) + " - " + str(item["label"]),
                                                     item["brand"],
@@ -402,14 +402,13 @@ class MyFoxApiClient:
                                                     int(item["deviceStateCount"]),
                                                     int(item["deviceLightCount"]),
                                                     int(item["deviceDetectorCount"]))
-                    self.myfox_info.sites.append(self.myfox_info.site)
-                    print("site_id:"+str(self.myfox_info.site.siteId))
-                    _LOGGER.debug("Nouveau site : %s", str(self.myfox_info.site))
+                    self.myfox_info.sites.append(site)
+                    print("site_id:"+str(site.siteId))
+                    _LOGGER.debug("Nouveau site : %s", str(site))
                     #break
                 self.infoSites_times = time.time()
             else :
-                _LOGGER.debug("Site deja connu : %s", str(self.myfox_info.site))
-                self.myfox_info.sites.append(self.myfox_info.site)
+                _LOGGER.debug("Sites en cache : %s", str(self.myfox_info.sites))
 
             return self.myfox_info.sites
 
