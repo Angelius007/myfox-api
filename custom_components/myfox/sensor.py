@@ -8,7 +8,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.core import callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import (DOMAIN)
+from .const import (DOMAIN_MYFOX)
 from .api.myfoxapi import (MyFoxApiClient)
 from .coordinator.myfox_coordinator import (MyFoxCoordinator)
 from .entities import BaseSensorEntity
@@ -17,7 +17,7 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
     """ Chargement des switchs """
-    for (client_key,client_item) in hass.data[DOMAIN][entry.entry_id].items() :
+    for (client_key,client_item) in hass.data[DOMAIN_MYFOX][entry.entry_id].items() :
         client: MyFoxApiClient = client_item
         _LOGGER.debug("client:"+str(client.__class__))
 

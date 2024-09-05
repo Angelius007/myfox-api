@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 from typing import Any, List, TypeVar
 
-#import jsonpath_ng.ext as jp
+import jsonpath_ng.ext as jp
 from homeassistant.util import utcnow
 from reactivex import Subject, Observable
 
@@ -52,7 +52,7 @@ class MyFoxDataHolder:
     def update_to_target_state(self, target_state: dict[str, Any]):
         # key can be xpath!
         for key, value in target_state.items():
-            expr = "'"+key+"'" #jp.parse("'"+key+"'")
+            expr = jp.parse("'"+key+"'")
             expr.update(self.params, value)
 
         self.__broadcast()

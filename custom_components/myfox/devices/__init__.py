@@ -9,7 +9,7 @@ from homeassistant.components.select import SelectEntity
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.switch import SwitchEntity
 
-from .data_holder import MyFoxDataHolder
+#from .data_holder import MyFoxDataHolder
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ class MyFoxDeviceInfo:
 
 class BaseDevice(ABC):
 
-    data: MyFoxDataHolder = None
+    #data: MyFoxDataHolder = None
     device_info: MyFoxDeviceInfo = None
 
     def __init__(self, device_info: MyFoxDeviceInfo):
@@ -30,7 +30,8 @@ class BaseDevice(ABC):
         self.device_info = device_info
 
     def configure(self, refresh_period: int, diag: bool = False):
-        self.data = MyFoxDataHolder(refresh_period, diag)
+        #self.data = MyFoxDataHolder(refresh_period, diag)
+        """ """
 
     @abstractmethod
     def sensors(self, client, coordinator) -> list[SensorEntity]:

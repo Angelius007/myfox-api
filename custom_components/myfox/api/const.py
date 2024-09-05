@@ -1,6 +1,6 @@
 from typing import Final
 
-DOMAIN: Final = "myfox"
+DOMAIN_MYFOX: Final = "myfox"
 
 DEFAULT_MYFOX_URL_API = "https://api.myfox.me/"
 

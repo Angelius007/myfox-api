@@ -14,7 +14,7 @@ from ..devices import BaseDevice
 from ..coordinator.myfox_coordinator import (MyFoxCoordinator)
 
 
-from homeassistant.core import DOMAIN
+from ..const import (DOMAIN_MYFOX)
 
 class MyFoxAbstractEntity(CoordinatorEntity, Entity):
 
@@ -29,7 +29,7 @@ class MyFoxAbstractEntity(CoordinatorEntity, Entity):
     @property
     def device_info(self) -> DeviceInfo | None:
         return DeviceInfo(
-            identifiers={(DOMAIN, f"{self._device.device_info.modelId}")},
+            identifiers={(DOMAIN_MYFOX, f"{self._device.device_info.modelId}")},
             manufacturer="MyFox",
             name=self._device.device_info.label,
             model=self._device.device_info.modelLabel,

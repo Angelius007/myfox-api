@@ -5,7 +5,7 @@ from homeassistant.helpers import selector
 from dataclasses import field
 from typing import Dict, Any
 import voluptuous as vol
-from . import (DOMAIN, 
+from . import (DOMAIN_MYFOX, 
                 CONFIG_VERSION)
 from .api.const import (
      KEY_CLIENT_ID, 
@@ -25,7 +25,7 @@ from .api.myfoxapi import (
 )
 from .devices.site import MyFoxSite
 
-class MyFoxConfigFlow(ConfigFlow, domain=DOMAIN):
+class MyFoxConfigFlow(ConfigFlow, domain=DOMAIN_MYFOX):
     """ Config """
     VERSION = CONFIG_VERSION
 

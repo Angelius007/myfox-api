@@ -54,7 +54,7 @@ from .devices.socket import MyFoxSocket
 from .devices.librairie import (MyFoxImage, MyFoxVideo)
 from .devices.group import (MyFoxGroupElectric, MyFoxGroupShutter)
 
-from .const import (DOMAIN, CONFIG_VERSION)
+from .const import (DOMAIN_MYFOX, CONFIG_VERSION)
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -72,8 +72,8 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
-    if DOMAIN not in hass.data:
-        hass.data[DOMAIN] = {}
+    if DOMAIN_MYFOX not in hass.data:
+        hass.data[DOMAIN_MYFOX] = {}
     
     myfox_info = MyFoxEntryDataApi(entry.data[KEY_CLIENT_ID],
                                    entry.data[KEY_CLIENT_SECRET],
@@ -91,7 +91,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     if info_site :
         """Recherche des devices."""
         _LOGGER.info("Chargement du site")
-        hass.data[DOMAIN][entry.entry_id] = {} 
+        hass.data[DOMAIN_MYFOX][entry.entry_id] = {} 
         # cameraCount: int = 0
         if myfox_client.myfox_info.site.cameraCount > 0 :
             await addCamera(hass, entry, myfox_info)
@@ -200,14 +200,14 @@ async def addTemperatureDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_in
         client_themperature.configure_device(capteur["deviceId"], capteur["label"], capteur["modelId"], capteur["modelLabel"])
 
     if liste_capteur.__len__() > 0 :
-        hass.data[DOMAIN][entry.entry_id]["temperature"] = client_themperature
+        hass.data[DOMAIN_MYFOX][entry.entry_id]["temperature"] = client_themperature
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     if not await hass.config_entries.async_unload_platforms(entry, _PLATFORMS):
         return False
 
-    for (type,hassclient) in hass.data[DOMAIN].pop(entry.entry_id).items() :
+    for (type,hassclient) in hass.data[DOMAIN_MYFOX].pop(entry.entry_id).items() :
         client: MyFoxApiClient = hassclient
         client.stop()
     return True
