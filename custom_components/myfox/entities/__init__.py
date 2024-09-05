@@ -1,3 +1,4 @@
+import logging
 
 from homeassistant.helpers.entity import Entity, EntityCategory, DeviceInfo
 from homeassistant.components.button import ButtonEntity
@@ -15,6 +16,8 @@ from ..coordinator.myfox_coordinator import (MyFoxCoordinator)
 
 
 from ..const import (DOMAIN_MYFOX)
+
+_LOGGER = logging.getLogger(__name__)
 
 class MyFoxAbstractEntity(CoordinatorEntity, Entity):
 
@@ -38,7 +41,13 @@ class MyFoxAbstractEntity(CoordinatorEntity, Entity):
         )
 
 class BaseSensorEntity(SensorEntity, MyFoxAbstractEntity):
-    pass
+
+    def __init__(self, client: MyFoxApiClient, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
+        super().__init__(client, coordinator, device, title, key)
+        if self.idx in self.coordinator.data:
+            _LOGGER.debug("init value : %s, %s", self.idx, self.coordinator.data[self.idx])
+            self._attr_native_value = self.coordinator.data[self.idx]
+            self.async_write_ha_state()
 
 class BaseNumberEntity(NumberEntity, MyFoxAbstractEntity):
     pass
