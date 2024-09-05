@@ -25,7 +25,6 @@ class MyFoxApiTemperatureClient(MyFoxApiClient) :
                 response = await self.callMyFoxApiGet(MYFOX_DEVICE_TEMPERATURE_LIST % (self.myfox_info.site.siteId))
                 _LOGGER.debug("getList.response : %s",str(response))
                 items = response["payload"]["items"]
-                _LOGGER.debug("getList : %s",str(items))
 
                 # for item in items :
                 self.temperature = items

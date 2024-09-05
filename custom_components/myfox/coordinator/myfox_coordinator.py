@@ -35,7 +35,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             # Name of the data. For logging purposes.
             name="My coordinator",
             # Polling interval. Will only be polled if there are subscribers.
-            update_interval=timedelta(minutes=5),
+            update_interval=timedelta(minutes=2),
             # Set always_update to `False` if the data returned from the
             # api can be compared via `__eq__` to avoid duplicate updates
             # being dispatched to listeners
@@ -70,12 +70,12 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 # Grab active context variables to limit data required to be fetched from API
                 # Note: using context is not required if there is no need or ability to limit
                 # data retrieved from API.
-                await self.myfoxApiClient.getList()
-                
+                params = dict[str, Any]()
                 listening_idx = set(self.async_contexts())
                 _LOGGER.debug("listening_idx : %s", str(listening_idx))
-                params = dict[str, Any]()
+
                 if len(listening_idx) > 0:
+                    await self.myfoxApiClient.getList()
                     if self.myfoxApiClient.__class__ == MyFoxApiTemperatureClient :
                         
                         client_temperature:MyFoxApiTemperatureClient = self.myfoxApiClient
@@ -108,7 +108,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
     def addToParams(self, params:dict[str, Any], listening_idx:set,temp:Any):
         """ Ajout des parames de la liste si correspond aux attentes """
         device_id = temp["deviceId"]
-        for key,val in temp :
+        for key,val in temp.items() :
             control_key = str(device_id) + "|" + str(key)
             if control_key in listening_idx:
                 params[control_key] = val

@@ -1,6 +1,7 @@
 import logging
 import logging.config
 
+from typing import  Any
 import pytest
 import asyncio
 import json
@@ -284,6 +285,27 @@ class TestClients :
         #_LOGGER.info("results:"+str(results))
         #results = loop.run_until_complete(asyncio.gather(*[client.setOff(66172)]))
         #_LOGGER.info("results:"+str(results))
+    
+    def testSetUpdate() :
+        params = dict[str, Any]()
+        listening_idx = set()
+        listening_idx.add("72625|lastTemperature")
+        listening_idx.add("65714|lastTemperature")
+        temp = dict[str, Any]()
+        temp["deviceId"] = 72625
+        temp["lastTemperature"] = 15.2
+        temp["lastTimeTemperature"] = 125252
+
+        TestClients.addToParams(params, listening_idx, temp)
+
+    def addToParams(params:dict[str, Any], listening_idx:set,temp:Any):
+        """ Ajout des parames de la liste si correspond aux attentes """
+        device_id = temp["deviceId"]
+        for key,val in temp.items() :
+            control_key = str(device_id) + "|" + str(key)
+            if control_key in listening_idx:
+                params[control_key] = val
+                _LOGGER.info("addToParams -> deviceId(%s) : %s [%s]", str(device_id), control_key, str(val))
 
 if __name__ == "__main__" :
     _LOGGER.info("**** Debut ****")
@@ -293,7 +315,9 @@ if __name__ == "__main__" :
     _LOGGER.info("-> Lecture du cache ")
     myfox_info = MyFoxCache.getMyFoxEntryDataFromCache()
 
-    try :        
+    try :
+        """ """
+        TestClients.testSetUpdate()
         #TestClients.testClient(loop, MyFoxApiClient(myfox_info), True) # , True
         # TestClients.testScenario(loop, MyFoxApiSecenarioClient(myfox_info))
         # TestClients.testSecurity(loop, MyFoxApiSecurityClient(myfox_info))
@@ -301,7 +325,7 @@ if __name__ == "__main__" :
         # TestClients.testLightSensor(loop, MyFoxApiLightClient(myfox_info))
         # TestClients.testGenericSensor(loop, MyFoxApiGenericSensorClient(myfox_info))
         # TestClients.testSensor(loop, MyFoxApiSensorClient(myfox_info))
-        TestClients.testTemperatureSensor(loop, MyFoxApiTemperatureClient(myfox_info))
+        # TestClients.testTemperatureSensor(loop, MyFoxApiTemperatureClient(myfox_info))
         # TestClients.testGate(loop, MyFoxApiGateClient(myfox_info))
         # TestClients.testModule(loop, MyFoxApiModuleClient(myfox_info))
         # TestClients.testShutter(loop, MyFoxApiShutterClient(myfox_info))
