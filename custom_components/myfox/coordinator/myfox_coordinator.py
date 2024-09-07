@@ -59,8 +59,8 @@ async def worker(coordinator, queued_action:queue.Queue):
         print(f'Finished {item}')
         queued_action.task_done()
 
-def wrap_async_worker(args):
-    asyncio.run(worker(args))
+def wrap_async_worker(coordinator, queued_action:queue.Queue):
+    asyncio.run(worker(coordinator, queued_action))
 
 class MyFoxCoordinator(DataUpdateCoordinator) :
     """ Corrd inator pour synchro avec les appels API MyFox """
