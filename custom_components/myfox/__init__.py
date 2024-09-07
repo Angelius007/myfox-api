@@ -226,6 +226,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     for (type,hassclient) in coordinator.myfoxApiClient.items() :
         client: MyFoxApiClient = hassclient
         client.stop()
+    coordinator.stop()
     return True
 
 async def update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:

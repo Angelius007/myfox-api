@@ -1,6 +1,6 @@
 import logging
 
-from homeassistant.components.sensor import (SensorDeviceClass, SensorStateClass, SensorEntity)
+from homeassistant.components.sensor import (SensorDeviceClass, SensorStateClass)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (UnitOfTemperature, LIGHT_LUX)
 from homeassistant.helpers.entity import EntityCategory
