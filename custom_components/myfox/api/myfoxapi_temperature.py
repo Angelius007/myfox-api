@@ -1,7 +1,11 @@
 import logging
 import time
+from typing import Type
 
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
+from ..devices import (BaseDevice)
+from ..devices.temperature import (MyFoxTemperatureDevice)
+
 
 from .const import (
     MYFOX_DEVICE_TEMPERATURE_LIST,
@@ -13,6 +17,7 @@ class MyFoxApiTemperatureClient(MyFoxApiClient) :
 
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
+        self.type :  Type[BaseDevice] | None = MyFoxTemperatureDevice
         self.temperature = list()
         self.temperatureRecord = list()
         self.temperature_time = 0

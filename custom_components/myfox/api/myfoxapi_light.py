@@ -1,6 +1,10 @@
 import logging
 
+from typing import Type
+
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
+from ..devices import (BaseDevice)
+from ..devices.light import (MyFoxLightDevice)
 
 from .const import (
     MYFOX_LIGHT_LIST, MYFOX_LIGHT_HISTORY
@@ -11,6 +15,7 @@ class MyFoxApiLightClient(MyFoxApiClient) :
 
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
+        self.type :  Type[BaseDevice] | None = MyFoxLightDevice
         self.ligth = list()
 
     async def getList(self):

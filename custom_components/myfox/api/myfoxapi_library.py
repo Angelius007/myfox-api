@@ -1,6 +1,9 @@
 import logging
 
+from typing import Type
+
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
+from ..devices import (BaseDevice)
 
 from .const import (
     MYFOX_LIBRARY_IMAGE_LIST,
@@ -13,6 +16,7 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
 
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
+        self.type :  Type[BaseDevice] = None
         self.module = list()
 
     async def getList(self) -> list:
