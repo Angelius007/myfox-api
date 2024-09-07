@@ -191,7 +191,7 @@ async def addDeviceLight(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyF
         client_light.configure_device(capteur["deviceId"], capteur["label"], capteur["modelId"], capteur["modelLabel"])
 
     if liste_capteurs.__len__() > 0 :
-        hass.data[DOMAIN_MYFOX][entry.entry_id]["light"] = liste_capteurs
+        hass.data[DOMAIN_MYFOX][entry.entry_id]["light"] = client_light
 
 async def addDetectorDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
