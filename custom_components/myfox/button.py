@@ -6,7 +6,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from . import DOMAIN_MYFOX
+from .const import (DOMAIN_MYFOX)
 from .coordinator.myfox_coordinator import (MyFoxCoordinator)
 from .api.myfoxapi import (MyFoxApiClient)
 from .entities import BaseButtonEntity

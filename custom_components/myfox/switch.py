@@ -4,7 +4,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from . import DOMAIN_MYFOX
+from .const import (DOMAIN_MYFOX)
 from .coordinator.myfox_coordinator import (MyFoxCoordinator)
 from .api.myfoxapi import (MyFoxApiClient)
 
