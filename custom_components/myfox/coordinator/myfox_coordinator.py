@@ -46,7 +46,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
 
         _LOGGER.debug("Init " + str(self.name))
 
-    def add_client(self, hass: HomeAssistant, myfoxApiClient:MyFoxApiClient):
+    def add_client(self, myfoxApiClient:MyFoxApiClient):
         """ Ajout d'un nouveau client """
         # Si le client existe deja, on ajoute les devices au client existant
         if myfoxApiClient.client_key in self.myfoxApiClient :
