@@ -1,4 +1,5 @@
 import logging
+import time
 
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
 
@@ -28,6 +29,7 @@ class MyFoxApiLightClient(MyFoxApiClient) :
                 items = response["payload"]["items"]
                 _LOGGER.debug("getLightList : %s",str(items))
                 self.ligth = items
+                self.light_time = time.time()
 
                 #for item in items :
                 #    self.ligth.append(MyFoxLightSensor(item["deviceId"],

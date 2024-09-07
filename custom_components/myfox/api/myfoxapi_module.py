@@ -1,4 +1,5 @@
 import logging
+import time
 
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
 
@@ -30,6 +31,7 @@ class MyFoxApiModuleClient(MyFoxApiClient) :
                 items = response["payload"]["items"]
                 _LOGGER.debug("getList : %s",str(items))
                 self.module = items
+                self.module_time = time.time()
 
                 #for item in items :
                 #    self.module.append(MyFoxModule(item["deviceId"],

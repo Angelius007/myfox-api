@@ -1,4 +1,5 @@
 import logging
+import time
 
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
 
@@ -29,6 +30,7 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
                 items = response["payload"]["items"]
                 _LOGGER.debug("getScenarii : %s",str(items))
                 self.scenarii = items
+                self.scenarii_time = time.time()
 
                 #for item in items :
                 #    self.scenarii.append(MyFoxScenario(item["scenarioId"],

@@ -1,4 +1,5 @@
 import logging
+import time
 
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
 
@@ -33,6 +34,7 @@ class MyFoxApiSensorClient(MyFoxApiClient) :
                 items = response["payload"]["items"]
                 _LOGGER.debug("getDeviceWithStateList : %s",str(items))
                 self.sensor = items
+                self.sensor_time = time.time()
                 #for item in items :
                 #    self.sensor.append(MyFoxDeviceWithState(item["deviceId"],
                 #                                           item["label"],
@@ -58,6 +60,7 @@ class MyFoxApiSensorClient(MyFoxApiClient) :
                 items = response["payload"]["items"]
                 _LOGGER.debug("getDeviceWithState : %s",str(items))
                 self.sensorState = items
+                self.sensorState_time = time.time()
                 #for item in items :
                 #    self.sensorState.append(MyFoxDeviceWithStateState(item["deviceId"],
                 #                                           item["stateLabel"]))

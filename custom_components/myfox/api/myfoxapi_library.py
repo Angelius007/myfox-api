@@ -1,6 +1,5 @@
 import logging
 
-
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
 
 from .const import (

@@ -1,4 +1,5 @@
 import logging
+import time
 
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
 
@@ -33,6 +34,7 @@ class MyFoxApThermoClient(MyFoxApiClient) :
                 items = response["payload"]["items"]
                 _LOGGER.debug("getList : %s",str(items))
                 self.temperature = items
+                self.temperature_time = time.time()
                 #for item in items :
                 #    if "lastTemperature" in item :
                 #        self.temperature.append(MyFoxHeater(item["deviceId"],

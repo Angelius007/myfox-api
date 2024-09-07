@@ -1,4 +1,5 @@
 import logging
+import time
 
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
 
@@ -24,6 +25,7 @@ class MyFoxApiGateClient(MyFoxApiClient) :
                 response = await self.callMyFoxApiGet(MYFOX_DEVICE_GATE_LIST % (self.myfox_info.site.siteId))
                 items = response["payload"]["items"]
                 self.gate = items
+                self.gate_time = time.time()
                 #for item in items :
                 #    self.gate.append(MyFoxGate(item["deviceId"],
                 #                                           item["label"],

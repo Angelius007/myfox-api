@@ -1,4 +1,5 @@
 import logging
+import time
 
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
 
@@ -29,6 +30,7 @@ class MyFoxApiGenericSensorClient(MyFoxApiClient) :
                 items = response["payload"]["items"]
                 _LOGGER.debug("getSensorList : %s",str(items))
                 self.sensor = items
+                self.sensor_time = time.time()
 
                 #for item in items :
                 #    self.sensor.append(MyFoxGenerictSensor(item["deviceId"],

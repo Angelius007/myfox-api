@@ -1,4 +1,5 @@
 import logging
+import time
 
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
 from .const import (
@@ -23,6 +24,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
                 response = await self.callMyFoxApiGet(MYFOX_CAMERA_LIST % self.myfox_info.site.siteId)
                 items = response["payload"]["items"]
                 self.camera = items
+                self.camera_time = time.time()
                 #for item in items :
                 #    self.camera.append(MyFoxCamera(item["deviceId"],
                 #                    item["label"],

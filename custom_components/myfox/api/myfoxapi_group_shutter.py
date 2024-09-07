@@ -1,4 +1,5 @@
 import logging
+import time
 
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
 
@@ -25,6 +26,7 @@ class MyFoxApiGroupShutterClient(MyFoxApiClient) :
                 print(str(response))
                 items = response["payload"]["items"]
                 self.module = items
+                self.module_time = time.time()
                 #for item in items :
                 #    group = MyFoxGroupShutter(item["groupId"],
                 #                                item["label"],
