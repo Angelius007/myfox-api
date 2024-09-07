@@ -1,5 +1,7 @@
 import logging
 import async_timeout
+import asyncio
+
 from datetime import timedelta
 from typing import Any, List, TypeVar
 
@@ -57,6 +59,9 @@ async def worker(coordinator, queued_action:queue.Queue):
         print(f'Finished {item}')
         queued_action.task_done()
 
+def wrap_async_worker(args):
+    asyncio.run(worker(args))
+
 class MyFoxCoordinator(DataUpdateCoordinator) :
     """ Corrd inator pour synchro avec les appels API MyFox """
 
@@ -79,7 +84,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         self.queued_action = queue.Queue()
 
         # Turn-on the worker thread.
-        threading.Thread(target=worker,  args=(self, self.queued_action), daemon=True).start()
+        threading.Thread(target=wrap_async_worker,  args=(self, self.queued_action), daemon=True).start()
         _LOGGER.debug("Init " + str(self.name))
 
 

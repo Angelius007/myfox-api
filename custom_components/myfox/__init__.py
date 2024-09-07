@@ -160,7 +160,7 @@ async def addGate(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntry
 async def addShutter(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Shutter")
-    addClientToCoordinator(hass, entry, MyFoxApiShutterClient(myfox_info))
+    await addClientToCoordinator(hass, entry, MyFoxApiShutterClient(myfox_info))
 
 async def addSocket(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
@@ -191,7 +191,7 @@ async def addDeviceLight(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyF
     """ """
     _LOGGER.debug("Add Light Device")
     #client_light = MyFoxApiLightClient(myfox_info)
-    addClientToCoordinator(hass, entry, MyFoxApiLightClient(myfox_info))
+    await addClientToCoordinator(hass, entry, MyFoxApiLightClient(myfox_info))
 
     #liste_capteurs = await client_light.getList()
     #for capteur in liste_capteurs :
@@ -210,7 +210,7 @@ async def addDetectorDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_info:
 async def addTemperatureDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     _LOGGER.debug("Add Temperature Device")
     #client_themperature = MyFoxApiTemperatureClient(myfox_info)
-    addClientToCoordinator(hass, entry, MyFoxApiTemperatureClient(myfox_info))
+    await addClientToCoordinator(hass, entry, MyFoxApiTemperatureClient(myfox_info))
     #liste_capteurs = await client_themperature.getList()
     #for capteur in liste_capteurs :
     #    _LOGGER.debug("Configuration device " + str(capteur))
