@@ -205,15 +205,15 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         """ """
                         if device_action == "open" :
                             """ On """
-                            action_ok = await client_shutter.setOpen(device_id)
+                            action_ok = await client_shutter.setOpen(int(device_id))
                             break
                         elif device_action == "close" :
                             """ off """
-                            action_ok = await client_shutter.setClose(device_id)
+                            action_ok = await client_shutter.setClose(int(device_id))
                             break
                         elif device_action == "my" :
                             """ favorite """
-                            action_ok = await client_shutter.setFavorite(device_id)
+                            action_ok = await client_shutter.setFavorite(int(device_id))
                             break
                         else :
                             """ inconnu """
