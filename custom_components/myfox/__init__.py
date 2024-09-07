@@ -222,7 +222,7 @@ async def addTemperatureDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_in
 
 async def addClientToCoordinator(hass: HomeAssistant, entry: ConfigEntry, client:MyFoxApiClient) :
     """" """
-    _LOGGER.debug("Add Client")
+    _LOGGER.debug("-> Get devices")
     liste_capteurs = await client.getList()
     for capteur in liste_capteurs :
         _LOGGER.debug("Configuration device " + str(capteur))
