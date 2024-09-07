@@ -1,4 +1,18 @@
+import logging
+
 from dataclasses import dataclass
+
+from homeassistant.components.button import ButtonEntity
+from homeassistant.components.number import NumberEntity
+from homeassistant.components.select import SelectEntity
+from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.switch import SwitchEntity
+
+from ..devices import  BaseDevice, MyFoxDeviceInfo
+from ..sensor import TempSensorEntity
+from ..sensor import LightSensorEntity
+
+_LOGGER = logging.getLogger(__name__)
 
 # GenericSensor {
 # deviceId (integer): The device identifier,
@@ -35,3 +49,30 @@ class MyFoxDeviceWithState :
 class MyFoxDeviceWithStateState :
     deviceId: int
     stateLabel : str
+
+
+@dataclass
+class MyFoxSensorDevice(BaseDevice) :
+    """" """
+    def __init__(self, device_info:MyFoxDeviceInfo):
+        super().__init__(device_info)
+
+    def sensors(self, coordinator) -> list[SensorEntity]:
+        _LOGGER.debug("Ajout Sensors sur device %s", str(self.device_info.deviceId))
+        return [TempSensorEntity(coordinator, self, "Temperature", "lastTemperature"),
+                LightSensorEntity(coordinator, self, "Luminosité", "light")]
+
+    def numbers(self, coordinator) -> list[NumberEntity]:
+        return []
+
+    def switches(self, coordinator) -> list[SwitchEntity]:
+        return []
+
+    def buttons(self, coordinator) -> list[ButtonEntity]:
+        return []
+
+    def selects(self, coordinator) -> list[SelectEntity]:
+        return []
+    
+    def texts(self, coordinator) -> list[ButtonEntity]:
+        return []

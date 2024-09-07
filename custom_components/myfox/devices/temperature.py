@@ -8,7 +8,7 @@ from homeassistant.components.select import SelectEntity
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.switch import SwitchEntity
 
-from ..devices import  BaseDevice, MyFoxDeviceInfo
+from ..devices import BaseDevice, MyFoxDeviceInfo
 from ..sensor import TempSensorEntity
 
 _LOGGER = logging.getLogger(__name__)

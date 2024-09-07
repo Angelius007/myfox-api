@@ -2,7 +2,7 @@ import logging
 
 from homeassistant.components.sensor import (SensorDeviceClass, SensorStateClass, SensorEntity)
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import (UnitOfTemperature)
+from homeassistant.const import (UnitOfTemperature, LIGHT_LUX)
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -33,3 +33,12 @@ class TempSensorEntity(BaseSensorEntity):
     _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_native_value = -1
+
+
+class LightSensorEntity(BaseSensorEntity):
+    _attr_device_class = SensorDeviceClass.ILLUMINANCE
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
+    _attr_native_unit_of_measurement = LIGHT_LUX
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_native_value = -1
+

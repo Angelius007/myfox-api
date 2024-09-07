@@ -20,6 +20,7 @@ from ..api.myfoxapi import (
     MyFoxApiClient
 )
 from ..api.myfoxapi_temperature import (MyFoxApiTemperatureClient)
+from ..api.myfoxapi_light import (MyFoxApiLightClient)
 #from ..devices.temperature import  MyFoxTemperatureDevice
 
 _LOGGER = logging.getLogger(__name__)
@@ -82,6 +83,13 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     
                     client_temperature:MyFoxApiTemperatureClient = self.myfoxApiClient
                     for temp in client_temperature.temperature :
+                        self.addToParams(params, listening_idx, temp)
+
+                # cas d'un client temperature
+                if self.myfoxApiClient.__class__ == MyFoxApiLightClient :
+                    
+                    client_light:MyFoxApiLightClient = self.myfoxApiClient
+                    for temp in client_light.ligth :
                         self.addToParams(params, listening_idx, temp)
 
             _LOGGER.debug("params : %s", str(params))

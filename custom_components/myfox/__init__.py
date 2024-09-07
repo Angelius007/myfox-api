@@ -184,7 +184,14 @@ async def addDeviceState(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyF
 async def addDeviceLight(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Light Device")
-    pass
+    client_light = MyFoxApiLightClient(myfox_info)
+    liste_capteurs = client_light.getList()
+    for capteur in liste_capteurs :
+        _LOGGER.debug("Configuration device " + str(capteur))
+        client_light.configure_device(capteur["deviceId"], capteur["label"], capteur["modelId"], capteur["modelLabel"])
+
+    if liste_capteurs.__len__() > 0 :
+        hass.data[DOMAIN_MYFOX][entry.entry_id]["light"] = liste_capteurs
 
 async def addDetectorDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
@@ -194,12 +201,12 @@ async def addDetectorDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_info:
 async def addTemperatureDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     _LOGGER.debug("Add Temperature Device")
     client_themperature = MyFoxApiTemperatureClient(myfox_info)
-    liste_capteur = await client_themperature.getList()
-    for capteur in liste_capteur :
+    liste_capteurs = await client_themperature.getList()
+    for capteur in liste_capteurs :
         _LOGGER.debug("Configuration device " + str(capteur))
         client_themperature.configure_device(capteur["deviceId"], capteur["label"], capteur["modelId"], capteur["modelLabel"])
 
-    if liste_capteur.__len__() > 0 :
+    if liste_capteurs.__len__() > 0 :
         hass.data[DOMAIN_MYFOX][entry.entry_id]["temperature"] = client_themperature
 
 

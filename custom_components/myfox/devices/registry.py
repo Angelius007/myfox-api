@@ -14,6 +14,8 @@ device_by_product: OrderedDict[str, Type[BaseDevice]] = OrderedDict[str, Type[Ba
 device_by_model_label: OrderedDict[str, Type[BaseDevice]] = OrderedDict[str, Type[BaseDevice]]({
     "Panasonic BL-C131" : camera.MyFoxCameraDevice,
     "Module chauffage" : heater.MyFoxHeaterDevice,
-    "Capteur température & luminosité" : temperature.MyFoxTemperatureDevice,
+    "Capteur température & luminosité" : sensor.MyFoxSensorDevice,
+    "Capteur température" : temperature.MyFoxTemperatureDevice,
+    "Capteur luminosité" : light.MyFoxLightDevice,
     "Diagnostic": DiagnosticDevice
 })
