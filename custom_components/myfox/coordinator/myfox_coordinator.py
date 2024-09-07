@@ -87,23 +87,23 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 _LOGGER.debug("listening_idx : %s", str(listening_idx))
 
                 # Si vide, alors init donc deja charge via _async_setup
-                if len(listening_idx) > 0:
-                    for (client_key,myfoxApiClient) in self.myfoxApiClient.items() :
+                for (client_key,myfoxApiClient) in self.myfoxApiClient.items() :
+                    if len(listening_idx) > 0:
                         _LOGGER.debug("Client[%s].getList:%s",str(client_key),str(myfoxApiClient.__class__))
                         await myfoxApiClient.getList()
-                        # cas d'un client temperature
-                        if myfoxApiClient.__class__ == MyFoxApiTemperatureClient :
-                            
-                            client_temperature:MyFoxApiTemperatureClient = myfoxApiClient
-                            for temp in client_temperature.temperature :
-                                self.addToParams(params, listening_idx, temp)
+                    # cas d'un client temperature
+                    if myfoxApiClient.__class__ == MyFoxApiTemperatureClient :
+                        
+                        client_temperature:MyFoxApiTemperatureClient = myfoxApiClient
+                        for temp in client_temperature.temperature :
+                            self.addToParams(params, listening_idx, temp)
 
-                        # cas d'un client light
-                        if myfoxApiClient.__class__ == MyFoxApiLightClient :
-                            
-                            client_light:MyFoxApiLightClient = myfoxApiClient
-                            for temp in client_light.ligth :
-                                self.addToParams(params, listening_idx, temp)
+                    # cas d'un client light
+                    if myfoxApiClient.__class__ == MyFoxApiLightClient :
+                        
+                        client_light:MyFoxApiLightClient = myfoxApiClient
+                        for temp in client_light.ligth :
+                            self.addToParams(params, listening_idx, temp)
 
             _LOGGER.debug("params : %s", str(params))
 
