@@ -71,6 +71,7 @@ class MyFoxApiClient:
         self.client = None
         self.devices: dict[str, BaseDevice] = {}
         self.infoSites_times = 0
+        self.cache_expire_in = CACHE_EXPIRE_IN
 
     def configure_device(self, deviceId: int, label: str, modelId: int, modelLabel: str):
         """ Configuration device """
@@ -347,8 +348,8 @@ class MyFoxApiClient:
     def isCacheExpire(self, start_time) -> float :
         current_time = time.time()
         expiration = (current_time - start_time)
-        _LOGGER.debug("Expiration cache %s/%s", expiration, CACHE_EXPIRE_IN)
-        return expiration >= CACHE_EXPIRE_IN
+        _LOGGER.debug("Expiration cache [%s / %s]", expiration, self.cache_expire_in)
+        return expiration >= self.cache_expire_in
 
     async def getInfoSite(self, siteId:int, forceCall:bool=False) -> MyFoxSite:
         """ Recuperation info site """

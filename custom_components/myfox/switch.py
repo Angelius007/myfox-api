@@ -15,7 +15,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     coordinator:MyFoxCoordinator = hass.data[DOMAIN_MYFOX][entry.entry_id]
     for (client_key,client_item) in coordinator.myfoxApiClient.items() :
         client: MyFoxApiClient = client_item
-        _LOGGER.debug("client:"+str(client.__class__))
 
         for (deviceId, device) in client.devices.items():
             async_add_entities(device.switches(coordinator))
