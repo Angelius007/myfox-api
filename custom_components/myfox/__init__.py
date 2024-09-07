@@ -185,7 +185,7 @@ async def addDeviceLight(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyF
     """ """
     _LOGGER.debug("Add Light Device")
     client_light = MyFoxApiLightClient(myfox_info)
-    liste_capteurs = client_light.getList()
+    liste_capteurs = await client_light.getList()
     for capteur in liste_capteurs :
         _LOGGER.debug("Configuration device " + str(capteur))
         client_light.configure_device(capteur["deviceId"], capteur["label"], capteur["modelId"], capteur["modelLabel"])
