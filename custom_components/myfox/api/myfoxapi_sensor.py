@@ -13,9 +13,16 @@ class MyFoxApiSensorClient(MyFoxApiClient) :
 
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
+        self.client_key = "sensor"
         self.sensor = list()
         self.sensorState = list()
-    
+
+    def stop(self) -> bool:
+        super().stop()
+        self.sensor.clear()
+        self.sensorState.clear()
+        return True
+
     async def getList(self):
         """ Get security site """
         try:

@@ -39,6 +39,7 @@ from .api.myfoxapi_group_electric import (MyFoxApiGroupElectricClient)
 from .api.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
 from .api.myfoxapi_heater import (MyFoxApHeaterClient)
 from .api.myfoxapi_thermo import (MyFoxApThermoClient)
+from .coordinator.myfox_coordinator import (MyFoxCoordinator)
 
 
 from .devices import (BaseDevice)
@@ -91,7 +92,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     if info_site :
         """Recherche des devices."""
         _LOGGER.info("Chargement du site")
-        hass.data[DOMAIN_MYFOX][entry.entry_id] = {} 
+
+        coordinator = MyFoxCoordinator(hass)
+        hass.data[DOMAIN_MYFOX][entry.entry_id] = coordinator
         # cameraCount: int = 0
         if myfox_client.myfox_info.site.cameraCount > 0 :
             await addCamera(hass, entry, myfox_info)
@@ -125,6 +128,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         # Sondes de temperature
         if myfox_client.myfox_info.site.deviceTemperatureCount > 0 :
             await addTemperatureDevice(hass, entry, myfox_info)
+
+        # prepa coordinator
+        await coordinator.async_config_entry_first_refresh()
 
         new_data = {**entry.data}
         # mise a jour du token
@@ -191,7 +197,8 @@ async def addDeviceLight(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyF
         client_light.configure_device(capteur["deviceId"], capteur["label"], capteur["modelId"], capteur["modelLabel"])
 
     if liste_capteurs.__len__() > 0 :
-        hass.data[DOMAIN_MYFOX][entry.entry_id]["light"] = client_light
+        coordinator:MyFoxCoordinator = hass.data[DOMAIN_MYFOX][entry.entry_id]
+        coordinator.add_client(client_light)
 
 async def addDetectorDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
@@ -207,14 +214,16 @@ async def addTemperatureDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_in
         client_themperature.configure_device(capteur["deviceId"], capteur["label"], capteur["modelId"], capteur["modelLabel"])
 
     if liste_capteurs.__len__() > 0 :
-        hass.data[DOMAIN_MYFOX][entry.entry_id]["temperature"] = client_themperature
+        coordinator:MyFoxCoordinator = hass.data[DOMAIN_MYFOX][entry.entry_id]
+        coordinator.add_client(client_themperature)
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     if not await hass.config_entries.async_unload_platforms(entry, _PLATFORMS):
         return False
 
-    for (type,hassclient) in hass.data[DOMAIN_MYFOX].pop(entry.entry_id).items() :
+    coordinator:MyFoxCoordinator = hass.data[DOMAIN_MYFOX].pop(entry.entry_id)
+    for (type,hassclient) in coordinator.myfoxApiClient.items() :
         client: MyFoxApiClient = hassclient
         client.stop()
     return True

@@ -67,6 +67,7 @@ class MyFoxApiClient:
 
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         self.myfox_info:MyFoxEntryDataApi = myfox_info
+        self.client_key = "generic"
         self.client = None
         self.devices: dict[str, BaseDevice] = {}
         self.type :  Type[BaseDevice] | None = None

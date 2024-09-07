@@ -28,13 +28,13 @@ _LOGGER = logging.getLogger(__name__)
 class MyFoxCoordinator(DataUpdateCoordinator) :
     """ Corrd inator pour synchro avec les appels API MyFox """
     
-    def __init__(self, hass: HomeAssistant, myfoxApiClient:MyFoxApiClient):
+    def __init__(self, hass: HomeAssistant):
         """Initialize my coordinator."""
         super().__init__(
             hass,
             _LOGGER,
             # Name of the data. For logging purposes.
-            name="My coordinator",
+            name="MyFox coordinator",
             # Polling interval. Will only be polled if there are subscribers.
             update_interval=timedelta(minutes=2),
             # Set always_update to `False` if the data returned from the
@@ -42,9 +42,19 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             # being dispatched to listeners
             always_update=True
         )
-        self.myfoxApiClient = myfoxApiClient
-        #self._device: BaseDevice | None = None
-        _LOGGER.debug("Init " + str(self.name) + " - Client : " + str(self.myfoxApiClient.__class__))
+        self.myfoxApiClient =  dict[str, MyFoxApiClient]()
+
+        _LOGGER.debug("Init " + str(self.name))
+
+    def add_client(self, hass: HomeAssistant, myfoxApiClient:MyFoxApiClient):
+        """ Ajout d'un nouveau client """
+        # Si le client existe deja, on ajoute les devices au client existant
+        if myfoxApiClient.client_key in self.myfoxApiClient :
+            for deviceId,device in myfoxApiClient.devices.items() :
+                self.myfoxApiClient[myfoxApiClient.client_key].devices[deviceId] = device
+        # Sinon, on ajoute le client directement
+        else :
+            self.myfoxApiClient[myfoxApiClient.client_key] = myfoxApiClient
 
     async def _async_setup(self):
         """Set up the coordinator
@@ -55,8 +65,9 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         This method will be called automatically during
         coordinator.async_config_entry_first_refresh.
         """
-        _LOGGER.debug("Client.getList:"+str(self.myfoxApiClient.__class__))
-        await self.myfoxApiClient.getList()
+        for (client_key,myfoxApiClient) in self.myfoxApiClient.items() :
+            _LOGGER.debug("Client[%s].getList:%s",str(client_key),str(myfoxApiClient.__class__))
+            await myfoxApiClient.getList()
 
     async def _async_update_data(self):
         """Fetch data from API endpoint.
@@ -77,20 +88,22 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
 
                 # Si vide, alors init donc deja charge via _async_setup
                 if len(listening_idx) > 0:
-                    await self.myfoxApiClient.getList()
-                # cas d'un client temperature
-                if self.myfoxApiClient.__class__ == MyFoxApiTemperatureClient :
-                    
-                    client_temperature:MyFoxApiTemperatureClient = self.myfoxApiClient
-                    for temp in client_temperature.temperature :
-                        self.addToParams(params, listening_idx, temp)
+                    for (client_key,myfoxApiClient) in self.myfoxApiClient.items() :
+                        _LOGGER.debug("Client[%s].getList:%s",str(client_key),str(myfoxApiClient.__class__))
+                        await myfoxApiClient.getList()
+                        # cas d'un client temperature
+                        if myfoxApiClient.__class__ == MyFoxApiTemperatureClient :
+                            
+                            client_temperature:MyFoxApiTemperatureClient = myfoxApiClient
+                            for temp in client_temperature.temperature :
+                                self.addToParams(params, listening_idx, temp)
 
-                # cas d'un client temperature
-                if self.myfoxApiClient.__class__ == MyFoxApiLightClient :
-                    
-                    client_light:MyFoxApiLightClient = self.myfoxApiClient
-                    for temp in client_light.ligth :
-                        self.addToParams(params, listening_idx, temp)
+                        # cas d'un client light
+                        if myfoxApiClient.__class__ == MyFoxApiLightClient :
+                            
+                            client_light:MyFoxApiLightClient = myfoxApiClient
+                            for temp in client_light.ligth :
+                                self.addToParams(params, listening_idx, temp)
 
             _LOGGER.debug("params : %s", str(params))
 

@@ -12,6 +12,11 @@ class MyFoxApiSecurityClient(MyFoxApiClient) :
 
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
+        self.client_key = "security"
+
+    def stop(self) -> bool:
+        super().stop()
+        return True
 
     async def getList(self) -> list:
         """ Miser a jour d'un device """

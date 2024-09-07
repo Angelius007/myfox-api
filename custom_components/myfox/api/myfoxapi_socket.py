@@ -12,8 +12,14 @@ class MyFoxApiSocketClient(MyFoxApiClient) :
 
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
+        self.client_key = "socket"
         self.module = list()
 
+    def stop(self) -> bool:
+        super().stop()
+        self.module.clear()
+        return True
+    
     async def getList(self) -> list:
         """ Get security site """
         try:

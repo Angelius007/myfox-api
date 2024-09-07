@@ -17,12 +17,21 @@ class MyFoxApiTemperatureClient(MyFoxApiClient) :
 
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
+        self.client_key = "temperature"
         self.type :  Type[BaseDevice] | None = MyFoxTemperatureDevice
         self.temperature = list()
         self.temperatureRecord = list()
         self.temperature_time = 0
         self.temperatureRecord_time = 0
 
+    def stop(self) -> bool:
+        super().stop()
+        self.temperature.clear()
+        self.temperatureRecord.clear()
+        self.temperature_time = 0
+        self.temperatureRecord_time = 0
+        return True
+    
     async def getList(self) -> list:
         """ Get security site """
         try:

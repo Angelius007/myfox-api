@@ -13,7 +13,12 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
         self.scenarii = list()
+        self.client_key = "scenario"
 
+    def stop(self) -> bool:
+        super().stop()
+        self.scenarii.clear()
+        return True
 
     async def getList(self):
         """ Recuperation scenarios """

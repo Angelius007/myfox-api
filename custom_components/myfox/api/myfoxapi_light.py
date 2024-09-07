@@ -17,6 +17,12 @@ class MyFoxApiLightClient(MyFoxApiClient) :
         super().__init__(myfox_info)
         self.type :  Type[BaseDevice] | None = MyFoxLightDevice
         self.ligth = list()
+        self.client_key = "light"
+
+    def stop(self) -> bool:
+        super().stop()
+        self.ligth.clear()
+        return True
 
     async def getList(self):
         """ Get security site """

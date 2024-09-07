@@ -12,12 +12,10 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
     """ Chargement des switchs """
-    for (client_key,client_item) in hass.data[DOMAIN_MYFOX][entry.entry_id].items() :
+    coordinator:MyFoxCoordinator = hass.data[DOMAIN_MYFOX][entry.entry_id]
+    for (client_key,client_item) in coordinator.myfoxApiClient.items() :
         client: MyFoxApiClient = client_item
         _LOGGER.debug("client:"+str(client.__class__))
-
-        coordinator = MyFoxCoordinator(hass, client)
-        await coordinator.async_config_entry_first_refresh()
 
         for (deviceId, device) in client.devices.items():
             async_add_entities(device.buttons(coordinator))

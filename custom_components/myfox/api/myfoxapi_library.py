@@ -18,6 +18,7 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
         super().__init__(myfox_info)
         self.type :  Type[BaseDevice] = None
         self.module = list()
+        self.client_key = "librarie"
 
     async def getList(self) -> list:
         """ Liste """

@@ -14,6 +14,12 @@ class MyFoxApiModuleClient(MyFoxApiClient) :
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
         self.module = list()
+        self.client_key = "module"
+
+    def stop(self) -> bool:
+        super().stop()
+        self.module.clear()
+        return True
 
     async def getList(self) -> list:
         """ Get security site """
