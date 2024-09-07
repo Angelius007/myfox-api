@@ -17,32 +17,34 @@ class MyFoxApThermoClient(MyFoxApiClient) :
         super().__init__(myfox_info)
         self.client_key = "thermo"
         self.temperature = list()
-        self.temperatureRecord = list()
+        self.temperature_time = 0
 
     def stop(self) -> bool:
         super().stop()
         self.temperature.clear()
-        self.temperatureRecord.clear()
         return True
 
     async def getList(self) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiGet(MYFOX_DEVICE_HEATER_THERMO_LIST % (self.myfox_info.site.siteId))
-            print(str(response))
-            items = response["payload"]["items"]
-            _LOGGER.debug("getList : %s",str(items))
-            self.temperature = items
-            #for item in items :
-            #    if "lastTemperature" in item :
-            #        self.temperature.append(MyFoxHeater(item["deviceId"],
-            #                                            item["label"],
-            #                                            item["modelId"],
-            #                                            item["modelLabel"],
-            #                                            item["modeLabel"],
-            #                                            item["stateLabel"],
-            #                                            item["lastTemperature"])
-            #                            )
+            if self.isCacheExpire(self.temperature_time) :
+                response = await self.callMyFoxApiGet(MYFOX_DEVICE_HEATER_THERMO_LIST % (self.myfox_info.site.siteId))
+                print(str(response))
+                items = response["payload"]["items"]
+                _LOGGER.debug("getList : %s",str(items))
+                self.temperature = items
+                #for item in items :
+                #    if "lastTemperature" in item :
+                #        self.temperature.append(MyFoxHeater(item["deviceId"],
+                #                                            item["label"],
+                #                                            item["modelId"],
+                #                                            item["modelLabel"],
+                #                                            item["modeLabel"],
+                #                                            item["stateLabel"],
+                #                                            item["lastTemperature"])
+                #                            )
+            else :
+                _LOGGER.debug("MyFoxApThermoClient.getList -> Cache ")
 
             return self.temperature
 

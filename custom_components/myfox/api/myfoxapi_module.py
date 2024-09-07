@@ -13,8 +13,9 @@ class MyFoxApiModuleClient(MyFoxApiClient) :
 
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
-        self.module = list()
         self.client_key = "module"
+        self.module = list()
+        self.module_time = 0
 
     def stop(self) -> bool:
         super().stop()
@@ -24,16 +25,19 @@ class MyFoxApiModuleClient(MyFoxApiClient) :
     async def getList(self) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiGet(MYFOX_DEVICE_MODULE_LIST % (self.myfox_info.site.siteId))
-            items = response["payload"]["items"]
-            _LOGGER.debug("getList : %s",str(items))
-            self.module = items
+            if self.isCacheExpire(self.module_time) :
+                response = await self.callMyFoxApiGet(MYFOX_DEVICE_MODULE_LIST % (self.myfox_info.site.siteId))
+                items = response["payload"]["items"]
+                _LOGGER.debug("getList : %s",str(items))
+                self.module = items
 
-            #for item in items :
-            #    self.module.append(MyFoxModule(item["deviceId"],
-            #                                           item["label"],
-            #                                           item["modelId"],
-            #                                           item["modelLabel"]))
+                #for item in items :
+                #    self.module.append(MyFoxModule(item["deviceId"],
+                #                                           item["label"],
+                #                                           item["modelId"],
+                #                                           item["modelLabel"]))
+            else :
+                _LOGGER.debug("MyFoxApiModuleClient.getList -> Cache ")
 
             return self.module
 

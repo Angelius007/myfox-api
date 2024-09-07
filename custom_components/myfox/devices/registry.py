@@ -11,6 +11,14 @@ device_by_product: OrderedDict[str, Type[BaseDevice]] = OrderedDict[str, Type[Ba
     "Diagnostic": DiagnosticDevice
 })
 
+device_by_client_key: OrderedDict[str, Type[BaseDevice]] = OrderedDict[str, Type[BaseDevice]]({
+    "camera" : camera.MyFoxCameraDevice,
+    "thermo" : heater.MyFoxHeaterDevice,
+    "temperature" : temperature.MyFoxTemperatureDevice,
+    "light" : light.MyFoxLightDevice,
+    "generic": DiagnosticDevice
+})
+
 device_by_model_label: OrderedDict[str, Type[BaseDevice]] = OrderedDict[str, Type[BaseDevice]]({
     "Panasonic BL-C131" : camera.MyFoxCameraDevice,
     "Module chauffage" : heater.MyFoxHeaterDevice,

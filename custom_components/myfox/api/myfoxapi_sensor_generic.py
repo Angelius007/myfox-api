@@ -14,6 +14,7 @@ class MyFoxApiGenericSensorClient(MyFoxApiClient) :
         super().__init__(myfox_info)
         self.client_key = "generic_sensor"
         self.sensor = list()
+        self.sensor_time = 0
 
     def stop(self) -> bool:
         super().stop()
@@ -23,17 +24,20 @@ class MyFoxApiGenericSensorClient(MyFoxApiClient) :
     async def getList(self):
         """ Get security site """
         try:
-            response = await self.callMyFoxApiGet(MYFOX_DEVICE_OTHER_LIST % (self.myfox_info.site.siteId))
-            items = response["payload"]["items"]
-            _LOGGER.debug("getSensorList : %s",str(items))
-            self.sensor = items
+            if self.isCacheExpire(self.sensor_time) :
+                response = await self.callMyFoxApiGet(MYFOX_DEVICE_OTHER_LIST % (self.myfox_info.site.siteId))
+                items = response["payload"]["items"]
+                _LOGGER.debug("getSensorList : %s",str(items))
+                self.sensor = items
 
-            #for item in items :
-            #    self.sensor.append(MyFoxGenerictSensor(item["deviceId"],
-            #                                           item["label"],
-            #                                           item["modelId"],
-            #                                           item["modelLabel"],
-            #                                           item["state"]))
+                #for item in items :
+                #    self.sensor.append(MyFoxGenerictSensor(item["deviceId"],
+                #                                           item["label"],
+                #                                           item["modelId"],
+                #                                           item["modelLabel"],
+                #                                           item["state"]))
+            else :
+                _LOGGER.debug("MyFoxApiGenericSensorClient.getList -> Cache ")
 
             return self.sensor
 

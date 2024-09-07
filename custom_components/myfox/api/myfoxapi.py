@@ -5,7 +5,7 @@ import selectors
 import time
 
 from abc import abstractmethod
-from typing import Type, Any
+from typing import Any
 from aiohttp import ClientResponse
 from dataclasses import dataclass, field
 from typing import Optional
@@ -70,17 +70,17 @@ class MyFoxApiClient:
         self.client_key = "generic"
         self.client = None
         self.devices: dict[str, BaseDevice] = {}
-        self.type :  Type[BaseDevice] | None = None
         self.infoSites_times = 0
 
     def configure_device(self, deviceId: int, label: str, modelId: int, modelLabel: str):
         """ Configuration device """
         info = self.__create_device_info(deviceId, label, modelId, modelLabel)
-        from ..devices.registry import device_by_product, device_by_model_label
+        from ..devices.registry import device_by_product, device_by_model_label, client_key
         device = None
         # Type indique dans l'implementation de l'api
-        if self.type is not None:
-            device = self.type(info)
+        if self.client_key in client_key:
+            device = client_key[str(self.client_key)](info)
+        # Sinon, recherche par modele
         elif modelLabel in device_by_model_label:
             device = device_by_model_label[str(modelLabel)](info)
         # Si non renseigne, recherche via le deviceId

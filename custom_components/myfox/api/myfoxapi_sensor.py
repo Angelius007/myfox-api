@@ -15,7 +15,9 @@ class MyFoxApiSensorClient(MyFoxApiClient) :
         super().__init__(myfox_info)
         self.client_key = "sensor"
         self.sensor = list()
+        self.sensor_time = 0
         self.sensorState = list()
+        self.sensorState_time = 0
 
     def stop(self) -> bool:
         super().stop()
@@ -26,16 +28,19 @@ class MyFoxApiSensorClient(MyFoxApiClient) :
     async def getList(self):
         """ Get security site """
         try:
-            response = await self.callMyFoxApiGet(MYFOX_DEVICE_STATE_LIST % (self.myfox_info.site.siteId))
-            items = response["payload"]["items"]
-            _LOGGER.debug("getDeviceWithStateList : %s",str(items))
-            self.sensor = items
-            #for item in items :
-            #    self.sensor.append(MyFoxDeviceWithState(item["deviceId"],
-            #                                           item["label"],
-            #                                           item["modelId"],
-            #                                           item["modelLabel"],
-            #                                           item["stateLabel"]))
+            if self.isCacheExpire(self.sensor_time) :
+                response = await self.callMyFoxApiGet(MYFOX_DEVICE_STATE_LIST % (self.myfox_info.site.siteId))
+                items = response["payload"]["items"]
+                _LOGGER.debug("getDeviceWithStateList : %s",str(items))
+                self.sensor = items
+                #for item in items :
+                #    self.sensor.append(MyFoxDeviceWithState(item["deviceId"],
+                #                                           item["label"],
+                #                                           item["modelId"],
+                #                                           item["modelLabel"],
+                #                                           item["stateLabel"]))
+            else :
+                _LOGGER.debug("MyFoxApiSensorClient.getList -> Cache ")
 
             return self.sensor
 
@@ -48,13 +53,16 @@ class MyFoxApiSensorClient(MyFoxApiClient) :
     async def getDeviceWithState(self, deviceId:int):
         """ Get security site """
         try:
-            response = await self.callMyFoxApiGet(MYFOX_DEVICE_STATE_GET % (self.myfox_info.site.siteId, deviceId))
-            items = response["payload"]["items"]
-            _LOGGER.debug("getDeviceWithState : %s",str(items))
-            self.sensorState = items
-            #for item in items :
-            #    self.sensorState.append(MyFoxDeviceWithStateState(item["deviceId"],
-            #                                           item["stateLabel"]))
+            if self.isCacheExpire(self.sensorState_time) :
+                response = await self.callMyFoxApiGet(MYFOX_DEVICE_STATE_GET % (self.myfox_info.site.siteId, deviceId))
+                items = response["payload"]["items"]
+                _LOGGER.debug("getDeviceWithState : %s",str(items))
+                self.sensorState = items
+                #for item in items :
+                #    self.sensorState.append(MyFoxDeviceWithStateState(item["deviceId"],
+                #                                           item["stateLabel"]))
+            else :
+                _LOGGER.debug("MyFoxApiSensorClient.getDeviceWithState -> Cache ")
 
             return self.sensorState
 

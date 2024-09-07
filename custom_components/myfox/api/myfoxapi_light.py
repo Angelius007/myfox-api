@@ -1,10 +1,6 @@
 import logging
 
-from typing import Type
-
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from ..devices import (BaseDevice)
-from ..devices.light import (MyFoxLightDevice)
 
 from .const import (
     MYFOX_LIGHT_LIST, MYFOX_LIGHT_HISTORY
@@ -15,9 +11,9 @@ class MyFoxApiLightClient(MyFoxApiClient) :
 
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
-        self.type :  Type[BaseDevice] | None = MyFoxLightDevice
-        self.ligth = list()
         self.client_key = "light"
+        self.ligth = list()
+        self.light_time = 0
 
     def stop(self) -> bool:
         super().stop()
@@ -27,17 +23,21 @@ class MyFoxApiLightClient(MyFoxApiClient) :
     async def getList(self):
         """ Get security site """
         try:
-            response = await self.callMyFoxApiGet(MYFOX_LIGHT_LIST % (self.myfox_info.site.siteId))
-            items = response["payload"]["items"]
-            _LOGGER.debug("getLightList : %s",str(items))
-            self.ligth = items
+            if self.isCacheExpire(self.light_time) :
+                response = await self.callMyFoxApiGet(MYFOX_LIGHT_LIST % (self.myfox_info.site.siteId))
+                items = response["payload"]["items"]
+                _LOGGER.debug("getLightList : %s",str(items))
+                self.ligth = items
 
-            #for item in items :
-            #    self.ligth.append(MyFoxLightSensor(item["deviceId"],
-            #                    item["label"],
-            #                    item["modelId"],
-            #                    item["modelLabel"],
-            #                    item["light"]))
+                #for item in items :
+                #    self.ligth.append(MyFoxLightSensor(item["deviceId"],
+                #                    item["label"],
+                #                    item["modelId"],
+                #                    item["modelLabel"],
+                #                    item["light"]))
+            else :
+                _LOGGER.debug("MyFoxApiLightClient.getList -> Cache ")
+
             return self.ligth
 
         except MyFoxException as exception:

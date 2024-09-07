@@ -1,3 +1,5 @@
+import logging
+
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
 
 from .const import (
@@ -5,31 +7,37 @@ from .const import (
     MYFOX_GROUP_SHUTTER_SET_CLOSE,
     MYFOX_GROUP_SHUTTER_SET_OPEN
 )
+_LOGGER = logging.getLogger(__name__)
 
 class MyFoxApiGroupShutterClient(MyFoxApiClient) :
 
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
+        self.client_key = "group_shutter"
         self.module = list()
+        self.module_time = 0
 
     async def getList(self) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiGet(MYFOX_GROUP_SHUTTER_LIST % (self.myfox_info.site.siteId))
-            print(str(response))
-            items = response["payload"]["items"]
-            self.module = items
-            #for item in items :
-            #    group = MyFoxGroupShutter(item["groupId"],
-            #                                item["label"],
-            #                                item["type"],
-            #                                [])
-            #    for device in item["devices"] :
-            #        group.devices.append(MyFoxShutter(device["deviceId"],
-            #                                            device["label"],
-            #                                            device["modelId"],
-            #                                            device["modelLabel"]))
-            #    self.module.append(group)
+            if self.isCacheExpire(self.module_time) :
+                response = await self.callMyFoxApiGet(MYFOX_GROUP_SHUTTER_LIST % (self.myfox_info.site.siteId))
+                print(str(response))
+                items = response["payload"]["items"]
+                self.module = items
+                #for item in items :
+                #    group = MyFoxGroupShutter(item["groupId"],
+                #                                item["label"],
+                #                                item["type"],
+                #                                [])
+                #    for device in item["devices"] :
+                #        group.devices.append(MyFoxShutter(device["deviceId"],
+                #                                            device["label"],
+                #                                            device["modelId"],
+                #                                            device["modelLabel"]))
+                #    self.module.append(group)
+            else :
+                _LOGGER.debug("MyFoxApiGroupShutterClient.getList -> Cache ")
 
             return self.module
 

@@ -1,32 +1,38 @@
+import logging
+
 from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
-from ..devices.camera import MyFoxCamera, MyFoxCameraDevice
 from .const import (
     MYFOX_CAMERA_LIST, MYFOX_CAMERA_LIVE_START, MYFOX_CAMERA_LIVE_STOP, MYFOX_CAMERA_LIVE_EXTEND,
     MYFOX_CAMERA_PREV_TAKE, MYFOX_CAMERA_REC_START, MYFOX_CAMERA_REC_STOP,
     MYFOX_CAMERA_SHUTTER_OPEN, MYFOX_CAMERA_SHUTTER_CLOSE, MYFOX_CAMERA_SNAP_TAKE
 )
+_LOGGER = logging.getLogger(__name__)
 
 class MyFoxApiCameraClient(MyFoxApiClient) :
 
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
+        self.client_key = "camera"
         self.camera = list()
-        self.type = MyFoxCameraDevice
+        self.camera_time = 0
 
     async def getList(self):
         """ Recuperation scenarios """
         try:
-            response = await self.callMyFoxApiGet(MYFOX_CAMERA_LIST % self.myfox_info.site.siteId)
-            items = response["payload"]["items"]
-            self.camera = items
-            #for item in items :
-            #    self.camera.append(MyFoxCamera(item["deviceId"],
-            #                    item["label"],
-            #                    item["modelId"],
-            #                    item["modelLabel"],
-            #                    item["hideTimeLine"],
-            #                    item["resolutionHeight"],
-            #                    item["resolutionWidth"]))
+            if self.isCacheExpire(self.camera_time) :
+                response = await self.callMyFoxApiGet(MYFOX_CAMERA_LIST % self.myfox_info.site.siteId)
+                items = response["payload"]["items"]
+                self.camera = items
+                #for item in items :
+                #    self.camera.append(MyFoxCamera(item["deviceId"],
+                #                    item["label"],
+                #                    item["modelId"],
+                #                    item["modelLabel"],
+                #                    item["hideTimeLine"],
+                #                    item["resolutionHeight"],
+                #                    item["resolutionWidth"]))
+            else :
+                _LOGGER.debug("MyFoxApiCameraClient.getList -> Cache ")
 
             return self.camera
 

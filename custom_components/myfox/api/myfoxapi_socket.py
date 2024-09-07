@@ -14,6 +14,7 @@ class MyFoxApiSocketClient(MyFoxApiClient) :
         super().__init__(myfox_info)
         self.client_key = "socket"
         self.module = list()
+        self.module_time = 0
 
     def stop(self) -> bool:
         super().stop()
@@ -23,17 +24,21 @@ class MyFoxApiSocketClient(MyFoxApiClient) :
     async def getList(self) -> list:
         """ Get security site """
         try:
-            response = await self.callMyFoxApiGet(MYFOX_DEVICE_SOCKET_LIST % (self.myfox_info.site.siteId))
-            items = response["payload"]["items"]
-            _LOGGER.debug("getList : %s",str(items))
-            self.module = items
+            if self.isCacheExpire(self.module_time) :
+                response = await self.callMyFoxApiGet(MYFOX_DEVICE_SOCKET_LIST % (self.myfox_info.site.siteId))
+                items = response["payload"]["items"]
+                _LOGGER.debug("getList : %s",str(items))
+                self.module = items
 
-            #for item in items :
-            #    self.module.append(MyFoxSocket(item["deviceId"],
-            #                                           item["label"],
-            #                                           item["modelId"],
-            #                                           item["modelLabel"]))
+                #for item in items :
+                #    self.module.append(MyFoxSocket(item["deviceId"],
+                #                                           item["label"],
+                #                                           item["modelId"],
+                #                                           item["modelLabel"]))
 
+            else :
+                _LOGGER.debug("MyFoxApiSocketClient.getList -> Cache ")
+                
             return self.module
 
         except MyFoxException as exception:

@@ -12,8 +12,9 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
 
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
-        self.scenarii = list()
         self.client_key = "scenario"
+        self.scenarii = list()
+        self.scenarii_time = 0
 
     def stop(self) -> bool:
         super().stop()
@@ -23,16 +24,19 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
     async def getList(self):
         """ Recuperation scenarios """
         try:
-            response = await self.callMyFoxApiGet(MYFOX_SCENARIO_ITEMS % self.myfox_info.site.siteId)
-            items = response["payload"]["items"]
-            _LOGGER.debug("getScenarii : %s",str(items))
-            self.scenarii = items
+            if self.isCacheExpire(self.scenarii_time) :
+                response = await self.callMyFoxApiGet(MYFOX_SCENARIO_ITEMS % self.myfox_info.site.siteId)
+                items = response["payload"]["items"]
+                _LOGGER.debug("getScenarii : %s",str(items))
+                self.scenarii = items
 
-            #for item in items :
-            #    self.scenarii.append(MyFoxScenario(item["scenarioId"],
-            #                    item["label"],
-            #                    item["typeLabel"],
-            #                    item["enabled"]))
+                #for item in items :
+                #    self.scenarii.append(MyFoxScenario(item["scenarioId"],
+                #                    item["label"],
+                #                    item["typeLabel"],
+                #                    item["enabled"]))
+            else :
+                _LOGGER.debug("MyFoxApiSecenarioClient.getList -> Cache ")
 
             return self.scenarii
 
