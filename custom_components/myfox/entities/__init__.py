@@ -108,7 +108,6 @@ class DictStateBaseSelectEntity(BaseSelectEntity):
             self._options_dict = options
         if self._options_dict :
             self._attr_options = list(self._options_dict.keys())
-        self._attr_current_option: str | None
 
     def setOptions(self, options: dict[str, str]) :
         self._options_dict = options
@@ -140,9 +139,6 @@ class DictStateBaseSelectEntity(BaseSelectEntity):
         """Handle the button press."""
         coordinator:MyFoxCoordinator = self.coordinator
         await coordinator.selectOption(self.idx, self.getOptionValue(option))
-
-    def current_option(self) -> str | None:
-        return self._attr_current_option
     
 class BaseButtonEntity(ButtonEntity, MyFoxAbstractEntity):
     def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
