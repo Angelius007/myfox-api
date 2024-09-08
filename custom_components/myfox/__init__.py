@@ -214,13 +214,18 @@ async def addClientToCoordinator(hass: HomeAssistant, entry: ConfigEntry, client
     for capteur in liste_capteurs :
         _LOGGER.debug("Configuration device " + str(capteur))
         deviceId = 0
+        scenarioId = 0
         label = ""
         modelId = 0
         modelLabel = ""
+        typeLabel = ""
+        enabled = ""
         if "deviceId" in capteur :
             deviceId = capteur["deviceId"]
         elif "groupId" in capteur :
             deviceId = capteur["groupId"]
+        if "scenarioId" in capteur :
+            scenarioId = capteur["scenarioId"]
         if "label" in capteur :
             label = capteur["label"]
         if "modelId" in capteur :
@@ -229,8 +234,15 @@ async def addClientToCoordinator(hass: HomeAssistant, entry: ConfigEntry, client
             modelLabel = capteur["modelLabel"]
         elif "type" in capteur :
             modelLabel = capteur["type"]
+        if "typeLabel" in capteur :
+            typeLabel = capteur["typeLabel"]
+        if "enabled" in capteur :
+            enabled = capteur["enabled"]
 
-        client.configure_device(deviceId, label, modelId, modelLabel)
+        if deviceId > 0 :
+            client.configure_device(deviceId, label, modelId, modelLabel)
+        if scenarioId > 0 :
+            client.configure_scene(scenarioId, label, typeLabel, enabled)
 
     if liste_capteurs.__len__() > 0 :
         coordinator:MyFoxCoordinator = hass.data[DOMAIN_MYFOX][entry.entry_id]
