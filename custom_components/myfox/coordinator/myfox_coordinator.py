@@ -26,6 +26,8 @@ from ..api.myfoxapi import (
 )
 from ..api.myfoxapi_shutter import (MyFoxApiShutterClient)
 from ..api.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
+from ..api.myfoxapi_socket import (MyFoxApiSocketClient)
+from ..api.myfoxapi_group_electric import (MyFoxApiGroupElectricClient)
 from ..api.myfoxapi_temperature import (MyFoxApiTemperatureClient)
 from ..api.myfoxapi_light import (MyFoxApiLightClient)
 #from ..devices.temperature import  MyFoxTemperatureDevice
@@ -200,43 +202,80 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             # recherche du client et du device
             for (client_key,myfoxApiClient) in self.myfoxApiClient.items() :
                 if myfoxApiClient.__class__ == MyFoxApiShutterClient :
-                    client_shutter:MyFoxApiShutterClient = myfoxApiClient
+                    client:MyFoxApiShutterClient = myfoxApiClient
                     # verification device
-                    if device_id in client_shutter.devices :
+                    if device_id in client.devices :
                         """ """
                         if device_action == "open" :
                             """ open """
-                            action_ok = await client_shutter.setOpen(int(device_id))
+                            action_ok = await client.setOpen(int(device_id))
                             break
                         elif device_action == "close" :
                             """ close """
-                            action_ok = await client_shutter.setClose(int(device_id))
+                            action_ok = await client.setClose(int(device_id))
                             break
                         elif device_action == "my" :
                             """ favorite """
-                            action_ok = await client_shutter.setFavorite(int(device_id))
+                            action_ok = await client.setFavorite(int(device_id))
                             break
                         else :
                             """ inconnu """
                             _LOGGER.error("Action %s  non reconnue pour le device %s", str(device_action), str(device_id))
                     _LOGGER.debug("Action %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok) )
-                if myfoxApiClient.__class__ == MyFoxApiGroupShutterClient :
-                    client_shutter:MyFoxApiGroupShutterClient = myfoxApiClient
+                elif myfoxApiClient.__class__ == MyFoxApiGroupShutterClient :
+                    client:MyFoxApiGroupShutterClient = myfoxApiClient
                     # verification device
-                    if device_id in client_shutter.devices :
+                    if device_id in client.devices :
                         """ """
                         if device_action == "open" :
                             """ open """
-                            action_ok = await client_shutter.setOpen(int(device_id))
+                            action_ok = await client.setOpen(int(device_id))
                             break
                         elif device_action == "close" :
                             """ close """
-                            action_ok = await client_shutter.setClose(int(device_id))
+                            action_ok = await client.setClose(int(device_id))
                             break
                         else :
                             """ inconnu """
                             _LOGGER.error("Action %s  non reconnue pour le device %s", str(device_action), str(device_id))
                     _LOGGER.debug("Action %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok) )
+                elif myfoxApiClient.__class__ == MyFoxApiSocketClient :
+                    client:MyFoxApiSocketClient = myfoxApiClient
+                    # verification device
+                    if device_id in client.devices :
+                        """ """
+                        if device_action == "on" :
+                            """ on """
+                            action_ok = await client.setOn(int(device_id))
+                            break
+                        elif device_action == "off" :
+                            """ off """
+                            action_ok = await client.setOff(int(device_id))
+                            break
+                        else :
+                            """ inconnu """
+                            _LOGGER.error("Action %s  non reconnue pour le device %s", str(device_action), str(device_id))
+                    _LOGGER.debug("Action %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok) )
+                elif myfoxApiClient.__class__ == MyFoxApiGroupElectricClient :
+                    client:MyFoxApiGroupElectricClient = myfoxApiClient
+                    # verification device
+                    if device_id in client.devices :
+                        """ """
+                        if device_action == "on" :
+                            """ on """
+                            action_ok = await client.setOn(int(device_id))
+                            break
+                        elif device_action == "off" :
+                            """ off """
+                            action_ok = await client.setOff(int(device_id))
+                            break
+                        else :
+                            """ inconnu """
+                            _LOGGER.error("Action %s  non reconnue pour le device %s", str(device_action), str(device_id))
+                    _LOGGER.debug("Action %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok) )
+                else :
+                    """ inconnu """
+                    _LOGGER.error("Action %s  non reconnue pour le device %s", str(device_action), str(device_id))
             return action_ok
         except Exception as err:
             raise UpdateFailed(f"Error with API: {err}")
