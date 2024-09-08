@@ -59,8 +59,8 @@ class MyFoxSensorDevice(BaseDevice) :
 
     def sensors(self, coordinator) -> list[SensorEntity]:
         _LOGGER.debug("Ajout Sensors sur device %s", str(self.device_info.deviceId))
-        return [TempSensorEntity(coordinator, self, "Temperature", "lastTemperature"),
-                LightSensorEntity(coordinator, self, "Luminosité", "light")]
+        return [TempSensorEntity(coordinator, self, f"Temperature {self.device_info.label}", "lastTemperature"),
+                LightSensorEntity(coordinator, self, f"Luminosité {self.device_info.label}", "light")]
 
     def numbers(self, coordinator) -> list[NumberEntity]:
         return []

@@ -36,7 +36,7 @@ class MyFoxLightDevice(BaseDevice) :
 
     def sensors(self, coordinator) -> list[SensorEntity]:
         _LOGGER.debug("Ajout LightSensorEntity / light sur device %s", str(self.device_info.deviceId))
-        return [LightSensorEntity(coordinator, self, "Luminosité", "light")]
+        return [LightSensorEntity(coordinator, self, f"Luminosité {self.device_info.label}", "light")]
 
     def numbers(self, coordinator) -> list[NumberEntity]:
         return []
