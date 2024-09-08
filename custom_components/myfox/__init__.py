@@ -167,7 +167,7 @@ async def addShutter(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEn
 async def addSocket(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Socket")
-    await addClientToCoordinator(hass, entry, MyFoxSocket(myfox_info))
+    await addClientToCoordinator(hass, entry, MyFoxApiSocketClient(myfox_info))
     _LOGGER.debug("Add Group Socket")
     await addClientToCoordinator(hass, entry, MyFoxApiGroupElectricClient(myfox_info))
 
