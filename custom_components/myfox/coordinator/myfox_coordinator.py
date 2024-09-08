@@ -228,8 +228,8 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                             break
                         else :
                             """ inconnu """
-                            _LOGGER.error("Action %s  non reconnue pour le device %s", str(device_action), str(device_id))
-                    _LOGGER.debug("Action %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok) )
+                            _LOGGER.error("pressButton %s  non reconnue pour le device %s", str(device_action), str(device_id))
+                    _LOGGER.debug("pressButton %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok) )
                 elif myfoxApiClient.__class__ == MyFoxApiGroupShutterClient :
                     client:MyFoxApiGroupShutterClient = myfoxApiClient
                     # verification device
@@ -245,8 +245,8 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                             break
                         else :
                             """ inconnu """
-                            _LOGGER.error("Action %s  non reconnue pour le device %s", str(device_action), str(device_id))
-                    _LOGGER.debug("Action %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok) )
+                            _LOGGER.error("pressButton %s  non reconnue pour le device %s", str(device_action), str(device_id))
+                    _LOGGER.debug("pressButton %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok) )
                 elif myfoxApiClient.__class__ == MyFoxApiSocketClient :
                     client:MyFoxApiSocketClient = myfoxApiClient
                     # verification device
@@ -262,8 +262,8 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                             break
                         else :
                             """ inconnu """
-                            _LOGGER.error("Action %s  non reconnue pour le device %s", str(device_action), str(device_id))
-                    _LOGGER.debug("Action %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok) )
+                            _LOGGER.error("pressButton %s  non reconnue pour le device %s", str(device_action), str(device_id))
+                    _LOGGER.debug("pressButton %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok) )
                 elif myfoxApiClient.__class__ == MyFoxApiGroupElectricClient :
                     client:MyFoxApiGroupElectricClient = myfoxApiClient
                     # verification device
@@ -279,19 +279,19 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                             break
                         else :
                             """ inconnu """
-                            _LOGGER.error("Action %s  non reconnue pour le device %s", str(device_action), str(device_id))
-                    _LOGGER.debug("Action %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok) )
+                            _LOGGER.error("pressButton %s  non reconnue pour le device %s", str(device_action), str(device_id))
+                    _LOGGER.debug("pressButton %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok) )
                 else :
                     """ inconnu """
-                    _LOGGER.error("Action %s  non reconnue pour le device %s", str(device_action), str(device_id))
+                    _LOGGER.error("pressButton %s  non reconnue pour le device %s", str(device_action), str(device_id))
             return action_ok
         except Exception as err:
             raise UpdateFailed(f"Error with API: {err}")
 
     async def selectOption(self, idx:str, option:str) -> bool :
-        """ Appuis sur un bouton et transmission au bon client """
+        """ Selection option et transmission au bon client """
         try:
-            _LOGGER.debug("Press button : %s from %s", idx, str(self.name))
+            _LOGGER.debug("Select Option : %s/%s from %s", idx, option, str(self.name))
             valeurs = idx.split("|", 2)
             device_id = valeurs[0]
             device_option = valeurs[1]
@@ -302,6 +302,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 if myfoxApiClient.__class__ == MyFoxApiHeaterClient :
                     client:MyFoxApiHeaterClient = myfoxApiClient
                     # verification device
+                    _LOGGER.debug("selectOption %s for %s", str(device_action), str(device_option) )
                     if device_id in client.devices :
                         """ """
                         if device_action == "on" and device_option == "state" :
@@ -322,11 +323,11 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                             break
                         else :
                             """ inconnu """
-                            _LOGGER.error("Action %s  non reconnue pour le device %s", str(device_action), str(device_id))
-                    _LOGGER.debug("Action %s pour le volet %s : %s", str(device_action), str(idx), str(action_ok) )
+                            _LOGGER.error("selectOption %s  non reconnue pour le device %s", str(device_action), str(device_id))
+                    _LOGGER.debug("selectOption %s pour le volet %s : %s", str(device_action), str(idx), str(action_ok) )
                 else :
                     """ inconnu """
-                    _LOGGER.error("Action %s  non reconnue pour le device %s", str(device_action), str(idx))
+                    _LOGGER.error("selectOption %s  non reconnue pour le device %s", str(device_action), str(idx))
             return action_ok
         except Exception as err:
             raise UpdateFailed(f"Error with API: {err}")
