@@ -29,14 +29,14 @@ class HeaterSelectEntity(DictStateBaseSelectEntity):
 
     @property
     def icon(self) -> str | None:
-        if self._attr_current_option in HEATER_OPTIONS:
-            if self._attr_current_option == "on": 
+        if self.current_option() in HEATER_OPTIONS:
+            if self.current_option() == "on": 
                 return "mdi:radiator"
-            elif self._attr_current_option == "eco": 
+            elif self.current_option() == "eco": 
                 return "mdi:radiator"
-            elif self._attr_current_option == "off": 
+            elif self.current_option() == "off": 
                 return "mdi:radiator-off"
-            elif self._attr_current_option == "frost": 
+            elif self.current_option() == "frost": 
                 return "mdi:radiator-disabled"
             else:
                 return "mdi:radiator-disabled"
