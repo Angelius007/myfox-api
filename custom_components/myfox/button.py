@@ -27,7 +27,29 @@ class ShutterButtonEntity(BaseButtonEntity):
     _attr_device_class = ButtonDeviceClass.IDENTIFY
     _attr_entity_category = EntityCategory.DIAGNOSTIC
 
+    @property
+    def icon(self) -> str | None:
+        if self.idx.endswith("open"):
+            return "mdi:window-shutter-open"
+        elif self.idx.endswith("close"):
+            return "mdi:window-shutter"
+        elif self.idx.endswith("my"):
+            return "mdi:window-shutter-auto"
+        else :
+            return "mdi:eye"
+
+
 class SocketButtonEntity(BaseButtonEntity):
     """ """
     _attr_device_class = ButtonDeviceClass.IDENTIFY
     _attr_entity_category = EntityCategory.DIAGNOSTIC
+
+    @property
+    def icon(self) -> str | None:
+        if self.idx.endswith("on"):
+            return "mdi:toggle-switch-variant"
+        elif self.idx.endswith("off"):
+            return "mdi:toggle-switch-variant-off"
+        else :
+            return "mdi:eye"
+    
