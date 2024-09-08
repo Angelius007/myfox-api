@@ -13,11 +13,11 @@ ALERTE_OPTIONS = {
 }
 
 LIGHT_OPTIONS = {
-    "LVL0 (0)": 0,
-    "LVL1 (1)": 1,
-    "LVL2 (2)": 2,
-    "Lumière du jour (3)": 3,
-    "Lumière basse (4)": 4,
-    "Pénombre (5)": 5,
-    "Obscurité (6)": 6,
+    "Inconnu (0)": 0,
+    "Pleine lumière": 1,
+    "Lumière du jour": 2,
+    "Inconnu (3)": 3,
+    "Lumière basse": 4,
+    "Pénombre": 5,
+    "Obscurité": 6,
 }
