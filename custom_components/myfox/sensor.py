@@ -6,7 +6,6 @@ from homeassistant.const import (UnitOfTemperature)
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.const import (STATE_OK, STATE_PROBLEM, STATE_UNAVAILABLE)
 
 from .const import (DOMAIN_MYFOX, ALERTE_OPTIONS, ONLINE_OPTIONS, LIGHT_OPTIONS)
 from .api.myfoxapi import (MyFoxApiClient)
@@ -83,14 +82,10 @@ class AlerteSateSensorEntity(DictStateBaseSensorEntity):
     def icon(self) -> str | None:
         if self._attr_native_value in ALERTE_OPTIONS:
             if self._attr_native_value == "OK": 
-                self._attr_state = STATE_OK
                 return "mdi:check-circle"
             elif self._attr_native_value == "ALERTE": 
-                self._attr_state = STATE_PROBLEM
                 return "mdi:alert"
             else:
-                self._attr_state = STATE_UNAVAILABLE
                 return "mdi:bell-outline"
         else :
-            self._attr_state = STATE_UNAVAILABLE
             return "mdi:eye"
