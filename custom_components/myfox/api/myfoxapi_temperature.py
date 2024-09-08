@@ -1,7 +1,8 @@
 import logging
 import time
 
-from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
+from .myfoxapi_exception import (MyFoxException)
+from .myfoxapi import (MyFoxApiClient, MyFoxEntryDataApi )
 
 
 

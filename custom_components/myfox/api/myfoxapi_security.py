@@ -1,6 +1,7 @@
 import logging
 
-from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
+from .myfoxapi_exception import (MyFoxException)
+from .myfoxapi import (MyFoxApiClient, MyFoxEntryDataApi )
 
 from .const import (
     MYFOX_SECURITY_GET, MYFOX_SECURITY_SET

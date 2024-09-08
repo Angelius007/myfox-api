@@ -17,6 +17,7 @@ from .const import (
 )
 from ..devices import (BaseDevice, DiagnosticDevice, MyFoxDeviceInfo)
 from ..devices.site import MyFoxSite
+from .myfoxapi_exception import (MyFoxException, InvalidTokenMyFoxException)
 
 #from homeassistant.config_entries import ConfigEntry, ConfigEntryState
 from homeassistant.const import (
@@ -24,22 +25,6 @@ from homeassistant.const import (
 )
 
 _LOGGER = logging.getLogger(__name__)
-
-class MyFoxException(Exception):
-    def __init__(
-        self,
-        status: Optional[int] = None,
-        message: str = "") -> None:
-
-        if status is not None:
-            self.status = status
-        else:
-            self.status = 0
-        self.message = message
-
-class InvalidTokenMyFoxException(MyFoxException) :
-    """Client token expire or invalid """
-
 
 @dataclass
 class MyFoxEntryData:
@@ -169,6 +154,8 @@ class MyFoxApiClient:
                     return self.callMyFoxApi(path, data, method)
                 else :
                     raise exception
+            except MyFoxException as exception:
+                raise exception
             except Exception as exception:
                 _LOGGER.error(exception)
                 print("Error : " + str(exception))
@@ -264,7 +251,8 @@ class MyFoxApiClient:
             await self.getInfoSites()
 
             return True
-
+        except MyFoxException as exception:
+            raise exception 
         except Exception as exception:
             _LOGGER.error(exception)
             print("Error : " + str(exception))

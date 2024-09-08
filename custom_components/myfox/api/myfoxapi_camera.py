@@ -1,7 +1,8 @@
 import logging
 import time
 
-from .myfoxapi import (MyFoxApiClient, MyFoxException, MyFoxEntryDataApi )
+from .myfoxapi_exception import (MyFoxException)
+from .myfoxapi import (MyFoxApiClient,  MyFoxEntryDataApi )
 from .const import (
     MYFOX_CAMERA_LIST, MYFOX_CAMERA_LIVE_START, MYFOX_CAMERA_LIVE_STOP, MYFOX_CAMERA_LIVE_EXTEND,
     MYFOX_CAMERA_PREV_TAKE, MYFOX_CAMERA_REC_START, MYFOX_CAMERA_REC_STOP,

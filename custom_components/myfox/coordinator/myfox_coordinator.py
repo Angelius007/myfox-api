@@ -17,6 +17,7 @@ from homeassistant.helpers.update_coordinator import (
 from ..api.myfoxapi import (
     MyFoxApiClient
 )
+from ..api.myfoxapi_exception import (MyFoxException)
 from ..api.myfoxapi_shutter import (MyFoxApiShutterClient)
 from ..api.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
 from ..api.myfoxapi_socket import (MyFoxApiSocketClient)
@@ -114,7 +115,10 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         """
         for (client_key,myfoxApiClient) in self.myfoxApiClient.items() :
             _LOGGER.debug("Client[%s].getList:%s",str(client_key),str(myfoxApiClient.__class__))
-            await myfoxApiClient.getList()
+            try:
+                await myfoxApiClient.getList()
+            except MyFoxException as exception:
+                _LOGGER.error(exception)
 
     async def _async_update_data(self):
         """Fetch data from API endpoint.
@@ -137,8 +141,11 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 # Si vide, alors init donc deja charge via _async_setup
                 for (client_key,myfoxApiClient) in self.myfoxApiClient.items() :
                     if len(listening_idx) > 0:
-                        _LOGGER.debug("Client[%s].getList:%s",str(client_key),str(myfoxApiClient.__class__))
-                        await myfoxApiClient.getList()
+                        try:
+                            _LOGGER.debug("Client[%s].getList:%s",str(client_key),str(myfoxApiClient.__class__))
+                            await myfoxApiClient.getList()
+                        except MyFoxException as exception:
+                            _LOGGER.error(exception)
                     # cas d'un client temperature
                     if myfoxApiClient.__class__ == MyFoxApiTemperatureClient :
                         
@@ -201,12 +208,12 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         
     async def pressButton(self, idx:str) -> bool :
         """ Appuis sur un bouton et transmission au bon client """
+        action_ok = False
         try:
             _LOGGER.debug("Press button : %s from %s", idx, str(self.name))
             valeurs = idx.split("|", 2)
             device_id = valeurs[0]
             device_action = valeurs[1]
-            action_ok = False
             # recherche du client et du device
             for (client_key,myfoxApiClient) in self.myfoxApiClient.items() :
                 if myfoxApiClient.__class__ == MyFoxApiShutterClient :
@@ -283,18 +290,21 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             _LOGGER.debug("pressButton %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok) )
 
             return action_ok
+        except MyFoxException as exception:
+            _LOGGER.error(exception)
+            return action_ok
         except Exception as err:
             raise UpdateFailed(f"Error with API: {err}")
 
     async def selectOption(self, idx:str, option:str) -> bool :
         """ Selection option et transmission au bon client """
+        action_ok = False
         try:
             _LOGGER.debug("Select Option : %s/%s from %s", idx, option, str(self.name))
             valeurs = idx.split("|", 2)
             device_id = valeurs[0]
             device_option = valeurs[1]
             device_action = option
-            action_ok = False
             # recherche du client et du device
             for (client_key,myfoxApiClient) in self.myfoxApiClient.items() :
                 if myfoxApiClient.__class__ == MyFoxApiHeaterClient :
@@ -324,6 +334,9 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                             _LOGGER.error("selectOption '%s' non reconnue pour le device %s", str(device_action), str(device_id))
             _LOGGER.debug("selectOption %s pour le radiateur %s : %s", str(device_action), str(idx), str(action_ok) )
 
+            return action_ok
+        except MyFoxException as exception:
+            _LOGGER.error(exception)
             return action_ok
         except Exception as err:
             raise UpdateFailed(f"Error with API: {err}")
