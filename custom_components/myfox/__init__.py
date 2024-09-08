@@ -66,7 +66,8 @@ _PLATFORMS = {
     Platform.SELECT,
     Platform.SENSOR,
     Platform.SWITCH,
-    Platform.BUTTON
+    Platform.BUTTON,
+    Platform.SCENE
 }
 
 async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):

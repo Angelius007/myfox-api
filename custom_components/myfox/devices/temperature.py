@@ -2,14 +2,10 @@ import logging
 
 from dataclasses import dataclass
 
-from homeassistant.components.button import ButtonEntity
-from homeassistant.components.number import NumberEntity
-from homeassistant.components.select import SelectEntity
 from homeassistant.components.sensor import SensorEntity
-from homeassistant.components.switch import SwitchEntity
 
 from ..devices import BaseDevice, MyFoxDeviceInfo
-from ..sensor import TempSensorEntity
+from ..entities.entities_sensor import TempSensorEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -53,18 +49,3 @@ class MyFoxTemperatureDevice(BaseDevice) :
     def sensors(self, coordinator) -> list[SensorEntity]:
         _LOGGER.debug("Ajout TempSensorEntity / lastTemperature sur device %s", str(self.device_info.deviceId))
         return [TempSensorEntity(coordinator, self, f"Temperature {self.device_info.label}", "lastTemperature")]
-
-    def numbers(self, coordinator) -> list[NumberEntity]:
-        return []
-
-    def switches(self, coordinator) -> list[SwitchEntity]:
-        return []
-
-    def buttons(self, coordinator) -> list[ButtonEntity]:
-        return []
-
-    def selects(self, coordinator) -> list[SelectEntity]:
-        return []
-    
-    def texts(self, coordinator) -> list[ButtonEntity]:
-        return []

@@ -1,15 +1,12 @@
 import dataclasses
-import json
 import logging
-from abc import ABC, abstractmethod
+from abc import ABC
 
 from homeassistant.components.button import ButtonEntity
 from homeassistant.components.number import NumberEntity
 from homeassistant.components.select import SelectEntity
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.switch import SwitchEntity
-
-#from .data_holder import MyFoxDataHolder
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -22,7 +19,6 @@ class MyFoxDeviceInfo:
 
 class BaseDevice(ABC):
 
-    #data: MyFoxDataHolder = None
     device_info: MyFoxDeviceInfo = None
 
     def __init__(self, device_info: MyFoxDeviceInfo):
@@ -33,30 +29,24 @@ class BaseDevice(ABC):
         #self.data = MyFoxDataHolder(refresh_period, diag)
         """ """
 
-    @abstractmethod
     def sensors(self, coordinator) -> list[SensorEntity]:
-        pass
+        return []
 
-    @abstractmethod
     def numbers(self, coordinator) -> list[NumberEntity]:
-        pass
+        return []
 
-    @abstractmethod
     def switches(self, coordinator) -> list[SwitchEntity]:
-        pass
+        return []
 
-    @abstractmethod
     def selects(self, coordinator) -> list[SelectEntity]:
-        pass
+        return []
 
-    @abstractmethod
     def buttons(self, coordinator) -> list[ButtonEntity]:
-        pass
+        return []
 
-    @abstractmethod
     def texts(self, coordinator) -> list[ButtonEntity]:
-        pass
-
+        return []
+    
 class DiagnosticDevice(BaseDevice):
 
     def sensors(self, coordinator) -> list[SensorEntity]:

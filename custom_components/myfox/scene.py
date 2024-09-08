@@ -11,10 +11,10 @@ from .api.myfoxapi import (MyFoxApiClient)
 _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
-    """ Chargement des switchs """
+    """ Chargement des scenes """
     coordinator:MyFoxCoordinator = hass.data[DOMAIN_MYFOX][entry.entry_id]
     for (client_key,client_item) in coordinator.myfoxApiClient.items() :
         client: MyFoxApiClient = client_item
 
         for (deviceId, device) in client.devices.items():
-            async_add_entities(device.buttons(coordinator))
+            async_add_entities(device.scenes(coordinator))
