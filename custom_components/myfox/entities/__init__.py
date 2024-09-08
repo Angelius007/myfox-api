@@ -99,6 +99,7 @@ class BaseSwitchEntity(SwitchEntity, MyFoxAbstractEntity):
     pass
 
 class BaseSelectEntity(SelectEntity, BaseWithValueEntity):
+    pass
 
 class DictStateBaseSelectEntity(BaseSelectEntity):
     def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str, options: dict[str, str]=None):
