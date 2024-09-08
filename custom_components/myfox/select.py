@@ -1,8 +1,6 @@
 import logging
 
-from homeassistant.components.select import (SelectEntity)
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.helpers.entity import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -23,19 +21,21 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
             async_add_entities(device.selects(coordinator))
 
 class HeaterSelectEntity(DictStateBaseSelectEntity):
-    _attr_device_class = SelectEntity
-    _attr_entity_category = EntityCategory.CONFIG
     _options_dict: dict[str, str] = HEATER_OPTIONS
 
     @property
     def icon(self) -> str | None:
-        if self.state() == "on": 
-            return "mdi:radiator"
-        elif self.state() == "eco": 
-            return "mdi:radiator"
-        elif self.state() == "off": 
-            return "mdi:radiator-off"
-        elif self.state() == "frost": 
-            return "mdi:radiator-disabled"
-        else:
+        current_option = self._attr_current_option
+        if current_option in HEATER_OPTIONS:
+            if current_option == "on": 
+                return "mdi:radiator"
+            elif current_option == "eco": 
+                return "mdi:radiator"
+            elif current_option == "off": 
+                return "mdi:radiator-off"
+            elif current_option == "frost": 
+                return "mdi:radiator-disabled"
+            else:
+                return "mdi:radiator-disabled"
+        else :
             return "mdi:radiator-disabled"
