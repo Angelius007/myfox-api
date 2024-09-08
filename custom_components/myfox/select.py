@@ -34,13 +34,13 @@ class HeaterSensorEntity(DictStateStrBaseSensorEntity):
     @property
     def icon(self) -> str | None:
         if self._attr_native_value in HEATER_OPTIONS:
-            if self._attr_native_value == "on": 
+            if self._attr_native_value == "ON": 
                 return "mdi:radiator"
-            elif self._attr_native_value == "eco": 
-                return "mdi:radiator"
-            elif self._attr_native_value == "off": 
+            elif self._attr_native_value == "OFF": 
                 return "mdi:radiator-off"
-            elif self._attr_native_value == "frost": 
+            elif self._attr_native_value == "Mode ECO": 
+                return "mdi:radiator"
+            elif self._attr_native_value == "Hors GEL": 
                 return "mdi:radiator-disabled"
             else:
                 return "mdi:radiator-disabled"
@@ -61,13 +61,13 @@ class HeaterSelectEntity(DictStateBaseSelectEntity):
     def icon(self) -> str | None:
         current_option = self.current_option()
         if current_option in HEATER_OPTIONS:
-            if current_option == "on": 
+            if current_option == "ON": 
                 return "mdi:radiator"
-            elif current_option == "eco": 
-                return "mdi:radiator"
-            elif current_option == "off": 
+            elif current_option == "OFF": 
                 return "mdi:radiator-off"
-            elif current_option == "frost": 
+            elif current_option == "Mode ECO": 
+                return "mdi:radiator"
+            elif current_option == "Hors GEL": 
                 return "mdi:radiator-disabled"
             else:
                 return "mdi:radiator-disabled"
