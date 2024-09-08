@@ -283,7 +283,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     _LOGGER.debug("pressButton %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok) )
                 else :
                     """ inconnu """
-                    _LOGGER.error("pressButton %s  non reconnue pour le device %s", str(device_action), str(device_id))
+                    _LOGGER.error("pressButton %s aucun client pour le device %s", str(device_action), str(device_id))
             return action_ok
         except Exception as err:
             raise UpdateFailed(f"Error with API: {err}")
@@ -302,7 +302,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 if myfoxApiClient.__class__ == MyFoxApiHeaterClient :
                     client:MyFoxApiHeaterClient = myfoxApiClient
                     # verification device
-                    _LOGGER.debug("selectOption %s for %s", str(device_action), str(device_option) )
+                    _LOGGER.debug("selectOption '%s' for '%s'", str(device_action), str(device_option) )
                     if device_id in client.devices :
                         """ """
                         if device_action == "on" and device_option == "state" :
@@ -323,11 +323,11 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                             break
                         else :
                             """ inconnu """
-                            _LOGGER.error("selectOption %s  non reconnue pour le device %s", str(device_action), str(device_id))
-                    _LOGGER.debug("selectOption %s pour le volet %s : %s", str(device_action), str(idx), str(action_ok) )
+                            _LOGGER.error("selectOption '%s' non reconnue pour le device %s", str(device_action), str(device_id))
+                    _LOGGER.debug("selectOption %s pour le radiateur %s : %s", str(device_action), str(idx), str(action_ok) )
                 else :
                     """ inconnu """
-                    _LOGGER.error("selectOption %s  non reconnue pour le device %s", str(device_action), str(idx))
+                    _LOGGER.error("selectOption %s aucun client pour le device %s", str(device_action), str(device_id))
             return action_ok
         except Exception as err:
             raise UpdateFailed(f"Error with API: {err}")
