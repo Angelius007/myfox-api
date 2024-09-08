@@ -1,7 +1,9 @@
 import logging
 
+from homeassistant.components.sensor import (SensorDeviceClass)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .api.myfoxapi import (MyFoxApiClient)
@@ -22,6 +24,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
             async_add_entities(device.selects(coordinator))
 
 class HeaterSensorEntity(DictStateStrBaseSensorEntity):
+    _attr_device_class = SensorDeviceClass.ENUM
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
     _options_dict: dict[str, str] = HEATER_OPTIONS
 
     def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str, options: dict[str, str]=None):

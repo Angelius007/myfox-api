@@ -89,3 +89,4 @@ class AlerteSateSensorEntity(DictStateBaseSensorEntity):
                 return "mdi:bell-outline"
         else :
             return "mdi:eye"
+            
