@@ -69,24 +69,27 @@ class DictStateBaseSensorEntity(BaseSensorEntity):
     def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str, options: dict[str, int]=None):
         super().__init__(coordinator, device, title, key)
         if options :
-            self.__options_dict = options
-        if self.__options_dict :
-            self._attr_options = list(self.__options_dict.keys())
+            self._options_dict = options
+        if self._options_dict :
+            self._attr_options = list(self._options_dict.keys())
 
     def setOptions(self, options: dict[str, int]) :
-        self.__options_dict = options
-        self._attr_options = list(self.__options_dict.keys())
+        self._options_dict = options
+        self._attr_options = list(self._options_dict.keys())
 
     def options_dict(self) -> dict[str, int]:
-        return self.__options_dict
+        return self._options_dict
     
     def _update_value(self, val: Any) -> bool:
-        ival = int(val)
-        lval = [k for k, v in self.__options_dict.items() if v == ival]
-        if len(lval) == 1:
-            self._attr_native_value = lval[0]
-            return True
-        else:
+        if self._options_dict :
+            ival = int(val)
+            lval = [k for k, v in self._options_dict.items() if v == ival]
+            if len(lval) == 1:
+                self._attr_native_value = lval[0]
+                return True
+            else:
+                return False
+        else :
             return False
 
 class BaseNumberEntity(NumberEntity, BaseWithValueEntity):
