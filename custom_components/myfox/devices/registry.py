@@ -13,6 +13,7 @@ device_by_product: OrderedDict[str, Type[BaseDevice]] = OrderedDict[str, Type[Ba
 device_by_client_key: OrderedDict[str, Type[BaseDevice]] = OrderedDict[str, Type[BaseDevice]]({
     "camera"                : camera.MyFoxCameraDevice,
     "thermo"                : heater.MyFoxHeaterDevice,
+    "heater"                : heater.MyFoxHeaterDevice,
     "shutter"               : shutter.MyFoxShuttereDevice,
     "group_shutter"         : shutter.MyFoxShuttereDevice,
     "temperature"           : temperature.MyFoxTemperatureDevice,
