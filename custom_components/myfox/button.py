@@ -26,3 +26,8 @@ class ShutterButtonEntity(BaseButtonEntity):
     """ """
     _attr_device_class = ButtonDeviceClass.IDENTIFY
     _attr_entity_category = EntityCategory.DIAGNOSTIC
+
+class SocketButtonEntity(BaseButtonEntity):
+    """ """
+    _attr_device_class = ButtonDeviceClass.IDENTIFY
+    _attr_entity_category = EntityCategory.DIAGNOSTIC

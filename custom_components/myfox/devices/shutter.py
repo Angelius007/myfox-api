@@ -11,6 +11,7 @@ from homeassistant.components.switch import SwitchEntity
 from ..devices import BaseDevice, MyFoxDeviceInfo
 from ..button import ShutterButtonEntity
 
+_LOGGER = logging.getLogger(__name__)
 #Shutter {
 #deviceId (integer): The device identifier,
 #label (string): The device label,
@@ -24,8 +25,6 @@ class MyFoxShutter :
     label: str
     modelId: int
     modelLabel: str
-
-_LOGGER = logging.getLogger(__name__)
 
 @dataclass
 class MyFoxShuttereDevice(BaseDevice) :
