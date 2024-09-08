@@ -49,8 +49,6 @@ class BaseWithValueEntity(MyFoxAbstractEntity):
         if self.idx in self.coordinator.data:
             statutok=self._update_value(coordinator.data[self.idx])
             _LOGGER.debug("init value : %s, %s : %s", self.idx, self.coordinator.data[self.idx], str(statutok))
-            if statutok :
-                self.async_write_ha_state()
             
     def _update_value(self, val: Any) -> bool:
         self._attr_native_value = self.coordinator.data[self.idx]
