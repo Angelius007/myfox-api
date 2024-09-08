@@ -35,19 +35,16 @@ class TempSensorEntity(BaseSensorEntity):
 class LightSensorEntity(DictStateBaseSensorEntity):
     _attr_device_class = SensorDeviceClass.ENUM
     _attr_entity_category = EntityCategory.DIAGNOSTIC
-    _attr_state_class = SensorStateClass.MEASUREMENT
     _options_dict: dict[str, int] = LIGHT_OPTIONS
 
 
 class OnlineSateSensorEntity(DictStateBaseSensorEntity):
     _attr_device_class = SensorDeviceClass.ENUM
     _attr_entity_category = EntityCategory.DIAGNOSTIC
-    _attr_state_class = SensorStateClass.MEASUREMENT
     _options_dict: dict[str, int] = ONLINE_OPTIONS
 
 
 class AlerteSateSensorEntity(DictStateBaseSensorEntity):
     _attr_device_class = SensorDeviceClass.ENUM
     _attr_entity_category = EntityCategory.DIAGNOSTIC
-    _attr_state_class = SensorStateClass.MEASUREMENT
     _options_dict: dict[str, int] = ALERTE_OPTIONS
