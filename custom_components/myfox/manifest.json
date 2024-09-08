@@ -1,13 +1,13 @@
 {
     "domain": "myfox",
-    "name": "Myfox-API",
+    "name": "Myfox",
     "codeowners": [
       "@Angelius007"
     ],
     "config_flow": true,
-    "documentation": "https://github.com/Angelius007/ha-myfox-api",
+    "documentation": "https://github.com/Angelius007/myfox-api",
     "iot_class": "cloud_push",
-    "issue_tracker": "https://github.com/Angelius007/ha-myfox-api/issues",
+    "issue_tracker": "https://github.com/Angelius007/myfox-api/issues",
     "requirements": [
       "aiohttp>=3.10.1",
       "attrs>=23.2.0",

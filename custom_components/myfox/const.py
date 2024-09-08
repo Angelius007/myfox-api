@@ -21,3 +21,10 @@ LIGHT_OPTIONS = {
     "Pénombre": 5,
     "Obscurité": 6,
 }
+
+HEATER_OPTIONS = {
+    "ON": "on",
+    "OFF": "off",
+    "Mode ECO": "eco",
+    "Hors GEL": "frost",
+}

@@ -1,3 +1,5 @@
+import logging
+
 from dataclasses import dataclass
 
 from homeassistant.components.button import ButtonEntity
@@ -7,6 +9,8 @@ from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.switch import SwitchEntity
 
 from ..devices import  BaseDevice
+from ..select import HeaterSelectEntity
+_LOGGER = logging.getLogger(__name__)
 
 #Heater {
 #deviceId (integer): The device identifier,
@@ -46,7 +50,8 @@ class MyFoxHeaterDevice(BaseDevice) :
         return []
 
     def selects(self, coordinator) -> list[SelectEntity]:
-        return []
+        _LOGGER.debug("Ajout HeaterSelectEntity sur device %s", str(self.device_info.deviceId))
+        return [HeaterSelectEntity(coordinator, self, f"Consigne {self.device_info.label}", "state")]
 
     def texts(self, coordinator) -> list[ButtonEntity]:
         return []

@@ -1,0 +1,16 @@
+homeassistant:
+
+  # Customize entities matching a pattern
+  customize_glob:
+    "sensor.etat_incendie_*":
+      templates: 
+        icon_color: >
+          if (state == "ALERTE") return 'red';
+          if (state == "OK") return 'green';
+          return '';
+    "sensor.etat_*":
+      templates: 
+        icon_color: >
+          if (state == "ALERTE") return 'red';
+          if (state == "OK") return 'green';
+          return '';

@@ -38,7 +38,7 @@ from .api.myfoxapi_socket import (MyFoxApiSocketClient)
 from .api.myfoxapi_library import (MyFoxApiLibraryClient)
 from .api.myfoxapi_group_electric import (MyFoxApiGroupElectricClient)
 from .api.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
-from .api.myfoxapi_heater import (MyFoxApHeaterClient)
+from .api.myfoxapi_heater import (MyFoxApiHeaterClient)
 from .api.myfoxapi_thermo import (MyFoxApThermoClient)
 from .coordinator.myfox_coordinator import (MyFoxCoordinator)
 
@@ -180,7 +180,7 @@ async def addModule(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEnt
 async def addHeater(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Heater")
-    pass
+    await addClientToCoordinator(hass, entry, MyFoxApiHeaterClient(myfox_info))
 
 async def addScenario(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """

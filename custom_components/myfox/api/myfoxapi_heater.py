@@ -12,7 +12,7 @@ from .const import (
 )
 _LOGGER = logging.getLogger(__name__)
 
-class MyFoxApHeaterClient(MyFoxApiClient) :
+class MyFoxApiHeaterClient(MyFoxApiClient) :
 
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
@@ -38,7 +38,7 @@ class MyFoxApHeaterClient(MyFoxApiClient) :
                 #                                        item["stateLabel"])
                 #                            )
             else :
-                _LOGGER.debug("MyFoxApHeaterClient.getList -> Cache ")
+                _LOGGER.debug("MyFoxApiHeaterClient.getList -> Cache ")
 
             return self.heater
 

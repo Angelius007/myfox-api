@@ -9,19 +9,12 @@ import threading
 import queue
 
 from homeassistant.core import HomeAssistant
-from homeassistant.components.light import LightEntity
-from homeassistant.core import callback
-from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import (
-    CoordinatorEntity,
     DataUpdateCoordinator,
     UpdateFailed,
 )
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from ..devices import (BaseDevice)
 from ..api.myfoxapi import (
-    MyFoxEntryDataApi,
     MyFoxApiClient
 )
 from ..api.myfoxapi_shutter import (MyFoxApiShutterClient)
@@ -31,7 +24,7 @@ from ..api.myfoxapi_group_electric import (MyFoxApiGroupElectricClient)
 from ..api.myfoxapi_temperature import (MyFoxApiTemperatureClient)
 from ..api.myfoxapi_light import (MyFoxApiLightClient)
 from ..api.myfoxapi_sensor_alerte import (MyFoxApiAlerteSensorClient)
-#from ..devices.temperature import  MyFoxTemperatureDevice
+from ..api.myfoxapi_heater import (MyFoxApiHeaterClient)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -149,24 +142,30 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # cas d'un client temperature
                     if myfoxApiClient.__class__ == MyFoxApiTemperatureClient :
                         
-                        lcient:MyFoxApiTemperatureClient = myfoxApiClient
-                        for temp in lcient.temperature :
+                        client:MyFoxApiTemperatureClient = myfoxApiClient
+                        for temp in client.temperature :
                             self.addToParams(params, listening_idx, temp)
 
                     # cas d'un client light
                     if myfoxApiClient.__class__ == MyFoxApiLightClient :
                         
-                        lcient:MyFoxApiLightClient = myfoxApiClient
-                        for temp in lcient.ligth :
+                        client:MyFoxApiLightClient = myfoxApiClient
+                        for temp in client.ligth :
                             self.addToParams(params, listening_idx, temp)
                     
                     # cas d'un client sensor alert
                     if myfoxApiClient.__class__ == MyFoxApiAlerteSensorClient :
                         
-                        lcient:MyFoxApiAlerteSensorClient = myfoxApiClient
-                        for temp in lcient.sensor :
+                        client:MyFoxApiAlerteSensorClient = myfoxApiClient
+                        for temp in client.sensor :
                             self.addToParams(params, listening_idx, temp)
-                    
+
+                    # cas d'un client heater
+                    if myfoxApiClient.__class__ == MyFoxApiHeaterClient :
+                        
+                        client:MyFoxApiHeaterClient = myfoxApiClient
+                        for temp in client.heater :
+                            self.addToParams(params, listening_idx, temp)
 
             _LOGGER.debug("params : %s", str(params))
 
@@ -285,6 +284,49 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 else :
                     """ inconnu """
                     _LOGGER.error("Action %s  non reconnue pour le device %s", str(device_action), str(device_id))
+            return action_ok
+        except Exception as err:
+            raise UpdateFailed(f"Error with API: {err}")
+
+    async def selectOption(self, idx:str, option:str) -> bool :
+        """ Appuis sur un bouton et transmission au bon client """
+        try:
+            _LOGGER.debug("Press button : %s from %s", idx, str(self.name))
+            valeurs = idx.split("|", 2)
+            device_id = valeurs[0]
+            device_option = valeurs[1]
+            device_action = option
+            action_ok = False
+            # recherche du client et du device
+            for (client_key,myfoxApiClient) in self.myfoxApiClient.items() :
+                if myfoxApiClient.__class__ == MyFoxApiHeaterClient :
+                    client:MyFoxApiHeaterClient = myfoxApiClient
+                    # verification device
+                    if device_id in client.devices :
+                        """ """
+                        if device_action == "on" and device_option == "state" :
+                            """ on """
+                            action_ok = await client.setOn(int(device_id))
+                            break
+                        elif device_action == "off" and device_option == "state" :
+                            """ off """
+                            action_ok = await client.setOff(int(device_id))
+                            break
+                        elif device_action == "eco" and device_option == "state" :
+                            """ eco """
+                            action_ok = await client.setEco(int(device_id))
+                            break
+                        elif device_action == "frost" and device_option == "state" :
+                            """ frost """
+                            action_ok = await client.setFrost(int(device_id))
+                            break
+                        else :
+                            """ inconnu """
+                            _LOGGER.error("Action %s  non reconnue pour le device %s", str(device_action), str(device_id))
+                    _LOGGER.debug("Action %s pour le volet %s : %s", str(device_action), str(idx), str(action_ok) )
+                else :
+                    """ inconnu """
+                    _LOGGER.error("Action %s  non reconnue pour le device %s", str(device_action), str(idx))
             return action_ok
         except Exception as err:
             raise UpdateFailed(f"Error with API: {err}")

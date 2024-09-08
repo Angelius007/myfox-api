@@ -23,7 +23,7 @@ from myfox.api.myfoxapi_socket import (MyFoxApiSocketClient)
 from myfox.api.myfoxapi_library import (MyFoxApiLibraryClient)
 from myfox.api.myfoxapi_group_electric import (MyFoxApiGroupElectricClient)
 from myfox.api.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
-from myfox.api.myfoxapi_heater import (MyFoxApHeaterClient)
+from myfox.api.myfoxapi_heater import (MyFoxApiHeaterClient)
 from myfox.api.myfoxapi_thermo import (MyFoxApThermoClient)
 
 
@@ -260,7 +260,7 @@ class TestClients :
         results = loop.run_until_complete(asyncio.gather(*[client.setClose(24389)]))
         _LOGGER.info("results:"+str(results))
 
-    def testHeater(loop : AbstractEventLoop, client : MyFoxApHeaterClient):
+    def testHeater(loop : AbstractEventLoop, client : MyFoxApiHeaterClient):
         #results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
         #_LOGGER.info("results:"+str(results))
         results = loop.run_until_complete(asyncio.gather(*[client.setEco(66172)]))
@@ -333,7 +333,7 @@ if __name__ == "__main__" :
         # TestClients.testLibrairie(loop, MyFoxApiLibraryClient(myfox_info))
         # TestClients.testGroupElectric(loop, MyFoxApiGroupElectricClient(myfox_info))
         # TestClients.testGroupShutter(loop, MyFoxApiGroupShutterClient(myfox_info))
-        # TestClients.testHeater(loop, MyFoxApHeaterClient(myfox_info))
+        # TestClients.testHeater(loop, MyFoxApiHeaterClient(myfox_info))
         #TestClients.testThermo(loop, MyFoxApThermoClient(myfox_info))
 
     finally :
