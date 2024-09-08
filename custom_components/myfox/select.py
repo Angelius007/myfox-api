@@ -22,7 +22,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 
 class HeaterSelectEntity(DictStateBaseSelectEntity):
     _options_dict: dict[str, str] = HEATER_OPTIONS
-    _attr_current_option: str | None
 
     @property
     def icon(self) -> str | None:
