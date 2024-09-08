@@ -47,9 +47,9 @@ class BaseWithValueEntity(MyFoxAbstractEntity):
     def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
         super().__init__(coordinator, device, title, key)
         if self.idx in self.coordinator.data:
-            _LOGGER.debug("init value : %s, %s", self.idx, self.coordinator.data[self.idx])
-            self._update_value(coordinator.data[self.idx])
-
+            statutok=self._update_value(coordinator.data[self.idx])
+            _LOGGER.debug("init value : %s, %s : %s", self.idx, self.coordinator.data[self.idx], str(statutok))
+            
     def _update_value(self, val: Any) -> bool:
         self._attr_native_value = self.coordinator.data[self.idx]
         return True
@@ -127,6 +127,7 @@ class DictStateBaseSelectEntity(BaseSelectEntity):
         if self._options_dict :
             sval = str(val)
             lval = [k for k, v in self._options_dict.items() if v == sval]
+            _LOGGER.debug("lval:%s",str(lval))
             if len(lval) == 1:
                 self._attr_current_option = lval[0]
                 return True
