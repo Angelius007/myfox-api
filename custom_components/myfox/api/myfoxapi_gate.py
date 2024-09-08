@@ -46,8 +46,12 @@ class MyFoxApiGateClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_GATE_PERFORM_ONE % (self.myfox_info.site.siteId, deviceId))
-
-            return response
+            _LOGGER.debug("Response : %s", str(response))
+            
+            statut_ok =  ("status" in response and response["status"] == "OK")
+            if statut_ok :
+                self.gate_time = 0
+            return statut_ok
 
         except MyFoxException as exception:
             raise exception
@@ -59,8 +63,12 @@ class MyFoxApiGateClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_GATE_PERFORM_TWO % (self.myfox_info.site.siteId, deviceId))
-
-            return response
+            _LOGGER.debug("Response : %s", str(response))
+            
+            statut_ok =  ("status" in response and response["status"] == "OK")
+            if statut_ok :
+                self.gate_time = 0
+            return statut_ok
 
         except MyFoxException as exception:
             raise exception

@@ -53,8 +53,12 @@ class MyFoxApiGroupShutterClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_GROUP_SHUTTER_SET_OPEN % (self.myfox_info.site.siteId, groupId))
-
-            return response
+            _LOGGER.debug("Response : %s", str(response))
+            
+            statut_ok =  ("status" in response and response["status"] == "OK")
+            if statut_ok :
+                self.module_time = 0
+            return statut_ok
 
         except MyFoxException as exception:
             raise exception
@@ -66,8 +70,12 @@ class MyFoxApiGroupShutterClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_GROUP_SHUTTER_SET_CLOSE % (self.myfox_info.site.siteId, groupId))
-
-            return response
+            _LOGGER.debug("Response : %s", str(response))
+            
+            statut_ok =  ("status" in response and response["status"] == "OK")
+            if statut_ok :
+                self.module_time = 0
+            return statut_ok
 
         except MyFoxException as exception:
             raise exception

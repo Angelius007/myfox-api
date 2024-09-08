@@ -52,9 +52,12 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
         """ Enable scenario """
         try:
             response = await self.callMyFoxApiPost(MYFOX_SCENARIO_ENABLE % (self.myfox_info.site.siteId , scenarioId))
-            _LOGGER.debug("enableScenario : %s",str(response))
-
-            return response
+            _LOGGER.debug("Response : %s", str(response))
+            
+            statut_ok =  ("status" in response and response["status"] == "OK")
+            if statut_ok :
+                self.scenarii_time = 0
+            return statut_ok
 
         except MyFoxException as exception:
             raise exception
@@ -66,9 +69,12 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
         """ Disable scenario """
         try:
             response = await self.callMyFoxApiPost(MYFOX_SCENARIO_DISABLE % (self.myfox_info.site.siteId , scenarioId))
-            _LOGGER.debug("disableScenario : %s",str(response))
-
-            return response
+            _LOGGER.debug("Response : %s", str(response))
+            
+            statut_ok =  ("status" in response and response["status"] == "OK")
+            if statut_ok :
+                self.scenarii_time = 0
+            return statut_ok
 
         except MyFoxException as exception:
             raise exception
@@ -80,9 +86,12 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
         """ Play scenario """
         try:
             response = await self.callMyFoxApiPost(MYFOX_SCENARIO_PLAY % (self.myfox_info.site.siteId , scenarioId))
-            _LOGGER.debug("playScenario : %s",str(response))
-
-            return response
+            _LOGGER.debug("Response : %s", str(response))
+            
+            statut_ok =  ("status" in response and response["status"] == "OK")
+            if statut_ok :
+                self.scenarii_time = 0
+            return statut_ok
 
         except MyFoxException as exception:
             raise exception

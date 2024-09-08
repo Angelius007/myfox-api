@@ -55,9 +55,12 @@ class MyFoxApiShutterClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_SHUTTER_MY % (self.myfox_info.site.siteId, deviceId))
-            _LOGGER.debug("setFavorite : %s",str(response))
-
-            return (response["status"] == "OK")
+            _LOGGER.debug("Response : %s", str(response))
+            
+            statut_ok =  ("status" in response and response["status"] == "OK")
+            if statut_ok :
+                self.module_time = 0
+            return statut_ok
 
         except MyFoxException as exception:
             raise exception
@@ -69,9 +72,12 @@ class MyFoxApiShutterClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_SHUTTER_OPEN % (self.myfox_info.site.siteId, deviceId))
-            _LOGGER.debug("setOpen : %s",str(response))
-
-            return (response["status"] == "OK")
+            _LOGGER.debug("Response : %s", str(response))
+            
+            statut_ok =  ("status" in response and response["status"] == "OK")
+            if statut_ok :
+                self.module_time = 0
+            return statut_ok
 
         except MyFoxException as exception:
             raise exception
@@ -83,9 +89,12 @@ class MyFoxApiShutterClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_SHUTTER_CLOSE % (self.myfox_info.site.siteId, deviceId))
-            _LOGGER.debug("setClose : %s",str(response))
-
-            return (response["status"] == "OK")
+            _LOGGER.debug("Response : %s", str(response))
+            
+            statut_ok =  ("status" in response and response["status"] == "OK")
+            if statut_ok :
+                self.module_time = 0
+            return statut_ok
 
         except MyFoxException as exception:
             raise exception

@@ -52,8 +52,12 @@ class MyFoxApiHeaterClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_HEATER_SET_ECO % (self.myfox_info.site.siteId, deviceId))
-
-            return response
+            _LOGGER.debug("Response : %s", str(response))
+            
+            statut_ok =  ("status" in response and response["status"] == "OK")
+            if statut_ok :
+                self.heater_time = 0
+            return statut_ok
 
         except MyFoxException as exception:
             raise exception
@@ -65,8 +69,12 @@ class MyFoxApiHeaterClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_HEATER_SET_FROST % (self.myfox_info.site.siteId, deviceId))
-
-            return response
+            _LOGGER.debug("Response : %s", str(response))
+            
+            statut_ok =  ("status" in response and response["status"] == "OK")
+            if statut_ok :
+                self.heater_time = 0
+            return statut_ok
 
         except MyFoxException as exception:
             raise exception
@@ -78,8 +86,12 @@ class MyFoxApiHeaterClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_HEATER_SET_ON % (self.myfox_info.site.siteId, deviceId))
-
-            return response
+            _LOGGER.debug("Response : %s", str(response))
+            
+            statut_ok =  ("status" in response and response["status"] == "OK")
+            if statut_ok :
+                self.heater_time = 0
+            return statut_ok
 
         except MyFoxException as exception:
             raise exception
@@ -91,8 +103,12 @@ class MyFoxApiHeaterClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_HEATER_SET_OFF % (self.myfox_info.site.siteId, deviceId))
+            _LOGGER.debug("Response : %s", str(response))
 
-            return response
+            statut_ok =  ("status" in response and response["status"] == "OK")
+            if statut_ok :
+                self.heater_time = 0
+            return statut_ok
 
         except MyFoxException as exception:
             raise exception

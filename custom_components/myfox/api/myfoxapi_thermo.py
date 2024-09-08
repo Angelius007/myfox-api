@@ -60,9 +60,12 @@ class MyFoxApThermoClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_HEATER_THERMO_SET_AUTO % (self.myfox_info.site.siteId, deviceId))
-            _LOGGER.debug("setAuto : %s",str(response))
-
-            return response
+            _LOGGER.debug("Response : %s", str(response))
+            
+            statut_ok =  ("status" in response and response["status"] == "OK")
+            if statut_ok :
+                self.temperature_time = 0
+            return statut_ok
 
         except MyFoxException as exception:
             raise exception
@@ -74,9 +77,12 @@ class MyFoxApThermoClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_HEATER_THERMO_SET_AWAY % (self.myfox_info.site.siteId, deviceId))
-            _LOGGER.debug("setAway : %s",str(response))
-
-            return response
+            _LOGGER.debug("Response : %s", str(response))
+            
+            statut_ok =  ("status" in response and response["status"] == "OK")
+            if statut_ok :
+                self.temperature_time = 0
+            return statut_ok
 
         except MyFoxException as exception:
             raise exception
@@ -88,9 +94,12 @@ class MyFoxApThermoClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_HEATER_THERMO_SET_BOOST % (self.myfox_info.site.siteId, deviceId))
-            _LOGGER.debug("setBoost : %s",str(response))
-
-            return response
+            _LOGGER.debug("Response : %s", str(response))
+            
+            statut_ok =  ("status" in response and response["status"] == "OK")
+            if statut_ok :
+                self.temperature_time = 0
+            return statut_ok
 
         except MyFoxException as exception:
             raise exception
@@ -102,9 +111,12 @@ class MyFoxApThermoClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_HEATER_THERMO_SET_OFF % (self.myfox_info.site.siteId, deviceId))
-            _LOGGER.debug("setOff : %s",str(response))
-
-            return response
+            _LOGGER.debug("Response : %s", str(response))
+            
+            statut_ok =  ("status" in response and response["status"] == "OK")
+            if statut_ok :
+                self.temperature_time = 0
+            return statut_ok
 
         except MyFoxException as exception:
             raise exception

@@ -53,9 +53,12 @@ class MyFoxApiSocketClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_SOCKET_ON % (self.myfox_info.site.siteId, deviceId))
-            _LOGGER.debug("setOn : %s",str(response))
-
-            return (response["status"] == "OK")
+            _LOGGER.debug("Response : %s", str(response))
+            
+            statut_ok =  ("status" in response and response["status"] == "OK")
+            if statut_ok :
+                self.module_time = 0
+            return statut_ok
         
         except MyFoxException as exception:
             raise exception
@@ -68,10 +71,12 @@ class MyFoxApiSocketClient(MyFoxApiClient) :
         try:
             _LOGGER.debug("Device : %s", str(deviceId))
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_SOCKET_OFF % (self.myfox_info.site.siteId, deviceId))
-            _LOGGER.debug("setOff : %s",str(response))
-
             _LOGGER.debug("Response : %s", str(response))
-            return (response["status"] == "OK")
+            
+            statut_ok =  ("status" in response and response["status"] == "OK")
+            if statut_ok :
+                self.module_time = 0
+            return statut_ok
 
         except MyFoxException as exception:
             raise exception
