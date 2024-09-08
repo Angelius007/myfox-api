@@ -313,19 +313,19 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     _LOGGER.debug("selectOption '%s' for '%s'", str(device_action), str(device_option) )
                     if device_id in client.devices :
                         """ """
-                        if device_action == "on" and device_option == "stateLabel" :
+                        if device_action == "on" :
                             """ on """
                             action_ok = await client.setOn(int(device_id))
                             break
-                        elif device_action == "off" and device_option == "stateLabel" :
+                        elif device_action == "off" :
                             """ off """
                             action_ok = await client.setOff(int(device_id))
                             break
-                        elif device_action == "eco" and device_option == "stateLabel" :
+                        elif device_action == "eco" :
                             """ eco """
                             action_ok = await client.setEco(int(device_id))
                             break
-                        elif device_action == "frost" and device_option == "stateLabel" :
+                        elif device_action == "frost" :
                             """ frost """
                             action_ok = await client.setFrost(int(device_id))
                             break
@@ -334,6 +334,18 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                             _LOGGER.error("selectOption '%s' non reconnue pour le device %s", str(device_action), str(device_id))
             _LOGGER.debug("selectOption %s pour le radiateur %s : %s", str(device_action), str(idx), str(action_ok) )
 
+            if action_ok :
+                params = dict[str, Any]()
+                listening_idx = set()
+                listening_idx.add(idx)
+                valeurs = list()
+                valeur = dict[str, Any]()
+                valeur["deviceId"] = device_id
+                valeur[device_option] = device_action
+                valeurs.append(valeur)
+                self.addToParams(params, listening_idx,valeur)
+                self.async_set_updated_data(params)
+                
             return action_ok
         except MyFoxException as exception:
             _LOGGER.error(exception)
