@@ -52,7 +52,7 @@ class MyFoxHeaterDevice(BaseDevice) :
 
     def selects(self, coordinator) -> list[SelectEntity]:
         _LOGGER.debug("Ajout HeaterSelectEntity sur device %s", str(self.device_info.deviceId))
-        return [HeaterSelectEntity(coordinator, self, f"Consigne {self.device_info.label}", "state")]
+        return [HeaterSelectEntity(coordinator, self, f"Consigne {self.device_info.label}", "stateLabel")]
 
     def texts(self, coordinator) -> list[ButtonEntity]:
         return []

@@ -280,10 +280,8 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         else :
                             """ inconnu """
                             _LOGGER.error("pressButton %s  non reconnue pour le device %s", str(device_action), str(device_id))
-                    _LOGGER.debug("pressButton %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok) )
-                else :
-                    """ inconnu """
-                    _LOGGER.error("pressButton %s aucun client pour le device %s", str(device_action), str(device_id))
+            _LOGGER.debug("pressButton %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok) )
+
             return action_ok
         except Exception as err:
             raise UpdateFailed(f"Error with API: {err}")
@@ -305,29 +303,27 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     _LOGGER.debug("selectOption '%s' for '%s'", str(device_action), str(device_option) )
                     if device_id in client.devices :
                         """ """
-                        if device_action == "on" and device_option == "state" :
+                        if device_action == "on" and device_option == "stateLabel" :
                             """ on """
                             action_ok = await client.setOn(int(device_id))
                             break
-                        elif device_action == "off" and device_option == "state" :
+                        elif device_action == "off" and device_option == "stateLabel" :
                             """ off """
                             action_ok = await client.setOff(int(device_id))
                             break
-                        elif device_action == "eco" and device_option == "state" :
+                        elif device_action == "eco" and device_option == "stateLabel" :
                             """ eco """
                             action_ok = await client.setEco(int(device_id))
                             break
-                        elif device_action == "frost" and device_option == "state" :
+                        elif device_action == "frost" and device_option == "stateLabel" :
                             """ frost """
                             action_ok = await client.setFrost(int(device_id))
                             break
                         else :
                             """ inconnu """
                             _LOGGER.error("selectOption '%s' non reconnue pour le device %s", str(device_action), str(device_id))
-                    _LOGGER.debug("selectOption %s pour le radiateur %s : %s", str(device_action), str(idx), str(action_ok) )
-                else :
-                    """ inconnu """
-                    _LOGGER.error("selectOption %s aucun client pour le device %s", str(device_action), str(device_id))
+            _LOGGER.debug("selectOption %s pour le radiateur %s : %s", str(device_action), str(idx), str(action_ok) )
+
             return action_ok
         except Exception as err:
             raise UpdateFailed(f"Error with API: {err}")
