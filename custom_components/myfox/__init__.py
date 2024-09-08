@@ -29,6 +29,7 @@ from .api.myfoxapi_light import (MyFoxApiLightClient)
 from .api.myfoxapi_security import (MyFoxApiSecurityClient)
 from .api.myfoxapi_scenario import (MyFoxApiSecenarioClient)
 from .api.myfoxapi_sensor import (MyFoxApiSensorClient)
+from .api.myfoxapi_sensor_alerte import (MyFoxApiAlerteSensorClient)
 from .api.myfoxapi_temperature import (MyFoxApiTemperatureClient)
 from .api.myfoxapi_gate import (MyFoxApiGateClient)
 from .api.myfoxapi_module import (MyFoxApiModuleClient)
@@ -199,7 +200,7 @@ async def addDeviceLight(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyF
 async def addDetectorDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Detector Device")
-    pass
+    await addClientToCoordinator(hass, entry, MyFoxApiAlerteSensorClient(myfox_info))
 
 async def addTemperatureDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     _LOGGER.debug("Add Temperature Device")

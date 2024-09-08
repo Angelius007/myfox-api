@@ -14,7 +14,7 @@ from myfox.api.myfoxapi_light import (MyFoxApiLightClient)
 from myfox.api.myfoxapi_security import (MyFoxApiSecurityClient)
 from myfox.api.myfoxapi_scenario import (MyFoxApiSecenarioClient)
 from myfox.api.myfoxapi_sensor import (MyFoxApiSensorClient)
-from myfox.api.myfoxapi_sensor_generic import (MyFoxApiGenericSensorClient)
+from custom_components.myfox.api.myfoxapi_sensor_alerte import (MyFoxApiAlerteSensorClient)
 from myfox.api.myfoxapi_temperature import (MyFoxApiTemperatureClient)
 from myfox.api.myfoxapi_gate import (MyFoxApiGateClient)
 from myfox.api.myfoxapi_module import (MyFoxApiModuleClient)
@@ -184,7 +184,7 @@ class TestClients :
         results = loop.run_until_complete(asyncio.gather(*[client.getLightHistory(65714)]))
         _LOGGER.info("results:"+str(results))
 
-    def testGenericSensor(loop : AbstractEventLoop, client : MyFoxApiGenericSensorClient):
+    def testGenericSensor(loop : AbstractEventLoop, client : MyFoxApiAlerteSensorClient):
         results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
         _LOGGER.info("results:"+str(results))
 
@@ -323,7 +323,7 @@ if __name__ == "__main__" :
         # TestClients.testSecurity(loop, MyFoxApiSecurityClient(myfox_info))
         # TestClients.testCamera(loop, MyFoxApiCameraClient(myfox_info))
         # TestClients.testLightSensor(loop, MyFoxApiLightClient(myfox_info))
-        # TestClients.testGenericSensor(loop, MyFoxApiGenericSensorClient(myfox_info))
+        # TestClients.testGenericSensor(loop, MyFoxApiAlerteSensorClient(myfox_info))
         # TestClients.testSensor(loop, MyFoxApiSensorClient(myfox_info))
         # TestClients.testTemperatureSensor(loop, MyFoxApiTemperatureClient(myfox_info))
         # TestClients.testGate(loop, MyFoxApiGateClient(myfox_info))

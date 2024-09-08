@@ -9,8 +9,7 @@ from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.switch import SwitchEntity
 
 from ..devices import  BaseDevice, MyFoxDeviceInfo
-from ..sensor import TempSensorEntity
-from ..sensor import LightSensorEntity
+from ..sensor import AlerteSateSensorEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -52,15 +51,14 @@ class MyFoxDeviceWithStateState :
 
 
 @dataclass
-class MyFoxSensorDevice(BaseDevice) :
+class MyFoxAlerteSensorDevice(BaseDevice) :
     """" """
     def __init__(self, device_info:MyFoxDeviceInfo):
         super().__init__(device_info)
 
     def sensors(self, coordinator) -> list[SensorEntity]:
         _LOGGER.debug("Ajout Sensors sur device %s", str(self.device_info.deviceId))
-        return [TempSensorEntity(coordinator, self, f"Temperature {self.device_info.label}", "lastTemperature"),
-                LightSensorEntity(coordinator, self, f"Luminosité {self.device_info.label}", "light")]
+        return [AlerteSateSensorEntity(coordinator, self, f"Etat {self.device_info.label}", "state")]
 
     def numbers(self, coordinator) -> list[NumberEntity]:
         return []

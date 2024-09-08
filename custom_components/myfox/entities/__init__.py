@@ -1,4 +1,5 @@
 import logging
+from typing import Any
 
 from homeassistant.helpers.entity import Entity, EntityCategory, DeviceInfo
 from homeassistant.components.button import ButtonEntity
@@ -47,18 +48,46 @@ class BaseWithValueEntity(MyFoxAbstractEntity):
         super().__init__(coordinator, device, title, key)
         if self.idx in self.coordinator.data:
             _LOGGER.debug("init value : %s, %s", self.idx, self.coordinator.data[self.idx])
-            self._attr_native_value = self.coordinator.data[self.idx]
+            self._update_value(coordinator.data[self.idx])
 
+    def _update_value(self, val: Any) -> bool:
+        self._attr_native_value = self.coordinator.data[self.idx]
+        return True
+        
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         if self.idx in self.coordinator.data:
             _LOGGER.debug("_handle_coordinator_update : %s, %s", self.idx, self.coordinator.data[self.idx])
-            self._attr_native_value = self.coordinator.data[self.idx]
-            self.async_write_ha_state()
+            if self._update_value(self.coordinator.data[self.idx]) :
+                self.async_write_ha_state()
 
 class BaseSensorEntity(SensorEntity, BaseWithValueEntity):
     pass
+
+class DictStateBaseSensorEntity(BaseSensorEntity):
+    def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str, options: dict[str, int]=None):
+        super().__init__(coordinator, device, title, key)
+        if options :
+            self.__options_dict = options
+        if self.__options_dict :
+            self._attr_options = list(self.__options_dict.keys())
+
+    def setOptions(self, options: dict[str, int]) :
+        self.__options_dict = options
+        self._attr_options = list(self.__options_dict.keys())
+
+    def options_dict(self) -> dict[str, int]:
+        return self.__options_dict
+    
+    def _update_value(self, val: Any) -> bool:
+        ival = int(val)
+        lval = [k for k, v in self.__options_dict.items() if v == ival]
+        if len(lval) == 1:
+            self._attr_native_value = lval[0]
+            return True
+        else:
+            return False
 
 class BaseNumberEntity(NumberEntity, BaseWithValueEntity):
     pass

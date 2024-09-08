@@ -9,11 +9,11 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-class MyFoxApiGenericSensorClient(MyFoxApiClient) :
+class MyFoxApiAlerteSensorClient(MyFoxApiClient) :
 
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
-        self.client_key = "generic_sensor"
+        self.client_key = "alerte_state_sensor"
         self.sensor = list()
         self.sensor_time = 0
 
@@ -39,7 +39,7 @@ class MyFoxApiGenericSensorClient(MyFoxApiClient) :
                 #                                           item["modelLabel"],
                 #                                           item["state"]))
             else :
-                _LOGGER.debug("MyFoxApiGenericSensorClient.getList -> Cache ")
+                _LOGGER.debug("MyFoxApiAlerteSensorClient.getList -> Cache ")
 
             return self.sensor
 

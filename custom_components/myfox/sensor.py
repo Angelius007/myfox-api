@@ -7,10 +7,10 @@ from homeassistant.helpers.entity import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import (DOMAIN_MYFOX)
+from .const import (DOMAIN_MYFOX,ALERTE_OPTIONS,ONLINE_OPTIONS)
 from .api.myfoxapi import (MyFoxApiClient)
 from .coordinator.myfox_coordinator import (MyFoxCoordinator)
-from .entities import BaseSensorEntity
+from .entities import BaseSensorEntity,DictStateBaseSensorEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -39,3 +39,16 @@ class LightSensorEntity(BaseSensorEntity):
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_native_value = -1
 
+
+class OnlineSateSensorEntity(DictStateBaseSensorEntity):
+    _attr_device_class = SensorDeviceClass.ENUM
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_options: dict[str, int] = ONLINE_OPTIONS
+
+
+class AlerteSateSensorEntity(DictStateBaseSensorEntity):
+    _attr_device_class = SensorDeviceClass.ENUM
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_options: dict[str, int] = ALERTE_OPTIONS
