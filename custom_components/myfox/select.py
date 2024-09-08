@@ -29,7 +29,7 @@ class HeaterSelectEntity(DictStateBaseSelectEntity):
         self._attr_current_option = None
         
     def current_option(self) -> str | None:
-        return super().current_option()
+        return self._attr_current_option
     
     @property
     def icon(self) -> str | None:
