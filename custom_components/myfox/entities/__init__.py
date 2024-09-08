@@ -127,9 +127,9 @@ class DictStateBaseSelectEntity(BaseSelectEntity):
         if self._options_dict :
             sval = str(val)
             lval = [k for k, v in self._options_dict.items() if v == sval]
-            _LOGGER.debug("lval:%s",str(lval))
             if len(lval) == 1:
                 self._attr_current_option = lval[0]
+                _LOGGER.debug("lval:%s",str(self._attr_current_option))
                 return True
             else:
                 return False
