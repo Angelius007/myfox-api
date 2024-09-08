@@ -8,7 +8,7 @@ from .api.myfoxapi import (MyFoxApiClient)
 from .const import (DOMAIN_MYFOX, HEATER_OPTIONS)
 from .coordinator.myfox_coordinator import (MyFoxCoordinator)
 from .devices import BaseDevice
-from .entities import DictStateBaseSelectEntity
+from .entities import DictStateBaseSelectEntity,DictStateStrBaseSensorEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -21,6 +21,28 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
         for (deviceId, device) in client.devices.items():
             async_add_entities(device.selects(coordinator))
 
+class HeaterSensorEntity(DictStateStrBaseSensorEntity):
+    _options_dict: dict[str, str] = HEATER_OPTIONS
+
+    def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str, options: dict[str, str]=None):
+        super().__init__(coordinator, device, title, key, options)
+    
+    @property
+    def icon(self) -> str | None:
+        if self._attr_native_value in HEATER_OPTIONS:
+            if self._attr_native_value == "on": 
+                return "mdi:radiator"
+            elif self._attr_native_value == "eco": 
+                return "mdi:radiator"
+            elif self._attr_native_value == "off": 
+                return "mdi:radiator-off"
+            elif self._attr_native_value == "frost": 
+                return "mdi:radiator-disabled"
+            else:
+                return "mdi:radiator-disabled"
+        else :
+            return "mdi:radiator-disabled"
+        
 class HeaterSelectEntity(DictStateBaseSelectEntity):
     _options_dict: dict[str, str] = HEATER_OPTIONS
 

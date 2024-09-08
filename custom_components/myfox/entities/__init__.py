@@ -91,6 +91,33 @@ class DictStateBaseSensorEntity(BaseSensorEntity):
                 return False
         else :
             return False
+        
+class DictStateStrBaseSensorEntity(BaseSensorEntity):
+    def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str, options: dict[str, str]=None):
+        super().__init__(coordinator, device, title, key)
+        if options :
+            self._options_dict = options
+        if self._options_dict :
+            self._attr_options = list(self._options_dict.keys())
+
+    def setOptions(self, options: dict[str, str]) :
+        self._options_dict = options
+        self._attr_options = list(self._options_dict.keys())
+
+    def options_dict(self) -> dict[str, str]:
+        return self._options_dict
+    
+    def _update_value(self, val: Any) -> bool:
+        if self._options_dict :
+            ival = str(val)
+            lval = [k for k, v in self._options_dict.items() if v == ival]
+            if len(lval) == 1:
+                self._attr_native_value = lval[0]
+                return True
+            else:
+                return False
+        else :
+            return False
 
 class BaseNumberEntity(NumberEntity, BaseWithValueEntity):
     pass
