@@ -23,9 +23,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 class HeaterSelectEntity(DictStateBaseSelectEntity):
     _options_dict: dict[str, str] = HEATER_OPTIONS
 
+    def current_option(self) -> str | None:
+        return super().current_option()
+    
     @property
     def icon(self) -> str | None:
-        current_option = self._attr_current_option
+        current_option = self.current_option()
         if current_option in HEATER_OPTIONS:
             if current_option == "on": 
                 return "mdi:radiator"

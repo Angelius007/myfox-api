@@ -99,10 +99,9 @@ class BaseSwitchEntity(SwitchEntity, MyFoxAbstractEntity):
     pass
 
 class BaseSelectEntity(SelectEntity, BaseWithValueEntity):
-    _attr_current_option: str | None
 
     def current_option(self) -> str | None:
-        return self._attr_current_option
+        return super().current_option()
 
 class DictStateBaseSelectEntity(BaseSelectEntity):
     def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str, options: dict[str, str]=None):
@@ -142,6 +141,9 @@ class DictStateBaseSelectEntity(BaseSelectEntity):
         """Handle the button press."""
         coordinator:MyFoxCoordinator = self.coordinator
         await coordinator.selectOption(self.idx, self.getOptionValue(option))
+    
+    def current_option(self) -> str | None:
+        return super().current_option()
     
 class BaseButtonEntity(ButtonEntity, MyFoxAbstractEntity):
     def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
