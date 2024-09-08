@@ -4,9 +4,10 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from .api.myfoxapi import (MyFoxApiClient)
 from .const import (DOMAIN_MYFOX, HEATER_OPTIONS)
 from .coordinator.myfox_coordinator import (MyFoxCoordinator)
-from .api.myfoxapi import (MyFoxApiClient)
+from .devices import BaseDevice
 from .entities import DictStateBaseSelectEntity
 
 _LOGGER = logging.getLogger(__name__)
@@ -23,6 +24,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 class HeaterSelectEntity(DictStateBaseSelectEntity):
     _options_dict: dict[str, str] = HEATER_OPTIONS
 
+    def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str, options: dict[str, str]=None):
+        super().__init__(coordinator, device, title, key, options)
+        self._attr_current_option = None
+        
     def current_option(self) -> str | None:
         return super().current_option()
     
