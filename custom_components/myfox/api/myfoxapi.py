@@ -15,6 +15,7 @@ from .const import (
     KEY_EXPIRE_IN, KEY_ACCESS_TOKEN, GRANT_TYPE_PASSWORD, GRANT_REFRESH_TOKEN,KEY_EXPIRE_TIME,SEUIL_EXPIRE_MIN,
     CACHE_EXPIRE_IN,
 )
+from ..scenes import (BaseScene, DiagnosticScene, MyFoxSceneInfo)
 from ..devices import (BaseDevice, DiagnosticDevice, MyFoxDeviceInfo)
 from ..devices.site import MyFoxSite
 from .myfoxapi_exception import (MyFoxException, InvalidTokenMyFoxException)
@@ -55,6 +56,7 @@ class MyFoxApiClient:
         self.client_key = "generic"
         self.client = None
         self.devices: dict[str, BaseDevice] = {}
+        self.scenes: dict[str, BaseScene] = {}
         self.infoSites_times = 0
         self.cache_expire_in = CACHE_EXPIRE_IN
 
@@ -89,7 +91,32 @@ class MyFoxApiClient:
                 modelId,
                 modelLabel
         )
+    def configure_scene(self, scenarioId: int, label: str, typeLabel: str, enabled: str):
+        """ Configuration device """
+        info = self.__create_scene_info(scenarioId, label, typeLabel, enabled)
+        from ..scenes.registry import scene_by_client_key
+        scene = None
+        # Type indique dans l'implementation de l'api
+        if self.client_key in scene_by_client_key:
+            scene = scene_by_client_key[str(self.client_key)](info)
+        # Sinon, on positionne en Diagnostic
+        else:
+            scene = DiagnosticScene(info)
+        _LOGGER.debug("New scene : %s",str(scene))
+        self.add_scene(scene)
 
+    def add_scene(self, scene: BaseScene):
+        if scene :
+            self.scenes[str(scene.scene_info.scenarioId)] = scene
+
+    def __create_scene_info(self, scenarioId: int, label: str, typeLabel: str, enabled: str) -> MyFoxSceneInfo:
+        return MyFoxSceneInfo(
+                scenarioId,
+                label,
+                typeLabel,
+                enabled
+        )
+    
     def getUrlMyFoxApi(self, path:str) :
         """ Formattage URL """
         url = f"{DEFAULT_MYFOX_URL_API}{path}"

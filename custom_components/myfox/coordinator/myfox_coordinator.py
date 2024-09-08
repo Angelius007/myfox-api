@@ -26,6 +26,7 @@ from ..api.myfoxapi_temperature import (MyFoxApiTemperatureClient)
 from ..api.myfoxapi_light import (MyFoxApiLightClient)
 from ..api.myfoxapi_sensor_alerte import (MyFoxApiAlerteSensorClient)
 from ..api.myfoxapi_heater import (MyFoxApiHeaterClient)
+from ..api.myfoxapi_scenario import MyFoxApiSecenarioClient
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -174,6 +175,13 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         for temp in client.heater :
                             self.addToParams(params, listening_idx, temp)
 
+                    # cas d'un client heater
+                    if myfoxApiClient.__class__ == MyFoxApiSecenarioClient :
+                        
+                        client:MyFoxApiSecenarioClient = myfoxApiClient
+                        for temp in client.scenarii :
+                            self.addToParams(params, listening_idx, temp)
+
             _LOGGER.debug("params : %s", str(params))
 
             return params
@@ -188,12 +196,20 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         
     def addToParams(self, params:dict[str, Any], listening_idx:set,temp:Any):
         """ Ajout des parames de la liste si correspond aux attentes """
-        device_id = temp["deviceId"]
-        for key,val in temp.items() :
-            control_key = str(device_id) + "|" + str(key)
-            if control_key in listening_idx or len(listening_idx) == 0 :
-                params[control_key] = val
-                _LOGGER.debug("addToParams -> deviceId(%s) : %s [%s]", str(device_id), control_key, str(val))
+        if "deviceId" in temp :
+            device_id = temp["deviceId"]
+            for key,val in temp.items() :
+                control_key = str(device_id) + "|" + str(key)
+                if control_key in listening_idx or len(listening_idx) == 0 :
+                    params[control_key] = val
+                    _LOGGER.debug("addToParams -> deviceId(%s) : %s [%s]", str(device_id), control_key, str(val))
+        elif "scenarioId" in temp :
+            scene_id = temp["scenarioId"]
+            for key,val in temp.items() :
+                control_key = str(scene_id) + "|" + str(key)
+                if control_key in listening_idx or len(listening_idx) == 0 :
+                    params[control_key] = val
+                    _LOGGER.debug("addToParams -> scenarioId(%s) : %s [%s]", str(scene_id), control_key, str(val))
 
     def deferredPressButton(self, idx:str) :
         """ deferred press """
