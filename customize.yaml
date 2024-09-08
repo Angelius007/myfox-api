@@ -4,13 +4,49 @@ homeassistant:
   customize_glob:
     "sensor.etat_incendie_*":
       templates: 
+        icon: >
+          if (state == "ALERTE") return 'mdi:alert';
+          if (state == "OK")     return 'mdi:check-circle';
+          return 'mdi:bell-outline';
         icon_color: >
           if (state == "ALERTE") return 'red';
-          if (state == "OK") return 'green';
+          if (state == "OK")     return 'green';
+          return '';
+        color: >
+          if (state == "ALERTE") return 'red';
+          if (state == "OK")     return 'green';
           return '';
     "sensor.etat_*":
       templates: 
+        icon: >
+          if (state == "ALERTE") return 'mdi:alert';
+          if (state == "OK")     return 'mdi:check-circle';
+          return 'mdi:bell-outline';
         icon_color: >
-          if (state == "ALERTE") return 'red';
-          if (state == "OK") return 'green';
+          if (state === 'ALERTE4) return 'red';
+          if (state === 'OK')     return 'green';
+          return '';
+        color: >
+          if (state === 'ALERTE') return 'red';
+          if (state === 'OK')     return 'green';
+          return '';
+    "sensor.etat_radiateur*":
+      templates: 
+        icon: >
+          if (state === 'ON')       return 'mdi:radiator';
+          if (state === 'Mode ECO') return 'mdi:radiator';
+          if (state === 'Hors GEL') return 'mdi:radiator-disabled';
+          if (state === 'OFF')      return 'mdi:radiator-off';
+          return 'mdi:radiator-disabled';
+        icon_color: >
+          if (state === 'ON')       return 'red';
+          if (state === 'Mode ECO') return 'orange';
+          if (state === 'Hors GEL') return 'yellow';
+          if (state === 'OFF')      return 'green';
+          return '';
+        color: >
+          if (state === 'ON')       return 'red';
+          if (state === 'Mode ECO') return 'orange';
+          if (state === 'Hors GEL') return 'yellow';
+          if (state === 'OFF')      return 'green';
           return '';
