@@ -108,6 +108,7 @@ class DictStateBaseSelectEntity(BaseSelectEntity):
             self._options_dict = options
         if self._options_dict :
             self._attr_options = list(self._options_dict.keys())
+        self._attr_current_option: str | None
 
     def setOptions(self, options: dict[str, str]) :
         self._options_dict = options
@@ -128,7 +129,7 @@ class DictStateBaseSelectEntity(BaseSelectEntity):
             sval = str(val)
             lval = [k for k, v in self._options_dict.items() if v == sval]
             if len(lval) == 1:
-                super()._attr_current_option = lval[0]
+                self._attr_current_option = lval[0]
                 return True
             else:
                 return False
@@ -141,7 +142,7 @@ class DictStateBaseSelectEntity(BaseSelectEntity):
         await coordinator.selectOption(self.idx, self.getOptionValue(option))
 
     def current_option(self) -> str | None:
-        return super().current_option()
+        return self._attr_current_option
     
 class BaseButtonEntity(ButtonEntity, MyFoxAbstractEntity):
     def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
