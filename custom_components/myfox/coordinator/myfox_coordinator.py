@@ -313,6 +313,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             raise UpdateFailed(f"Error with API: {err}")
 
     async def processScenario(self) -> bool :
+        _LOGGER.debug("processScenario : Not ready")
         pass
 
     async def selectOption(self, idx:str, option:str) -> bool :
