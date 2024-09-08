@@ -1,3 +1,4 @@
+
 homeassistant:
 
   # Customize entities matching a pattern
@@ -5,28 +6,20 @@ homeassistant:
     "sensor.etat_incendie_*":
       templates: 
         icon: >
-          if (state == "ALERTE") return 'mdi:alert';
-          if (state == "OK")     return 'mdi:check-circle';
+          if (state == 'ALERTE') return 'mdi:alert';
+          if (state == 'OK')     return 'mdi:check-circle';
           return 'mdi:bell-outline';
         icon_color: >
-          if (state == "ALERTE") return 'red';
-          if (state == "OK")     return 'green';
+          if (state == 'ALERTE') return 'red';
+          if (state == 'OK')     return 'green';
           return '';
-        color: >
-          if (state == "ALERTE") return 'red';
-          if (state == "OK")     return 'green';
-          return '';
-    "sensor.etat_*":
+    "sensor.etat_congelateur*":
       templates: 
         icon: >
-          if (state == "ALERTE") return 'mdi:alert';
-          if (state == "OK")     return 'mdi:check-circle';
+          if (state == 'ALERTE') return 'mdi:alert';
+          if (state == 'OK')     return 'mdi:check-circle';
           return 'mdi:bell-outline';
         icon_color: >
-          if (state === 'ALERTE4) return 'red';
-          if (state === 'OK')     return 'green';
-          return '';
-        color: >
           if (state === 'ALERTE') return 'red';
           if (state === 'OK')     return 'green';
           return '';
@@ -44,9 +37,33 @@ homeassistant:
           if (state === 'Hors GEL') return 'yellow';
           if (state === 'OFF')      return 'green';
           return '';
-        color: >
-          if (state === 'ON')       return 'red';
-          if (state === 'Mode ECO') return 'orange';
-          if (state === 'Hors GEL') return 'yellow';
-          if (state === 'OFF')      return 'green';
-          return '';
+    "button.ouverture_volet*":
+      templates: 
+        icon: >
+          return 'mdi:window-shutter-open';
+        icon_color: >
+          return 'green';
+    "button.fermeture_volet*":
+      templates: 
+        icon: >
+          return 'mdi:window-shutter';
+        icon_color: >
+          return 'red';
+    "button.favorite_volet*":
+      templates: 
+        icon: >
+          return 'mdi:window-shutter-auto';
+        icon_color: >
+          return 'red';
+    "button.on_*":
+      templates: 
+        icon: >
+          return 'mdi:toggle-switch-variant';
+        icon_color: >
+          return 'green';
+    "button.off_*":
+      templates: 
+        icon: >
+          return 'mdi:toggle-switch-variant-off';
+        icon_color: >
+          return 'red';

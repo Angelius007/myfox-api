@@ -1,0 +1,3 @@
+resources:
+  - url: /hacsfiles/custom-ui/custom-ui.js
+    type: module

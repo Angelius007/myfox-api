@@ -53,24 +53,24 @@ class LightSensorEntity(DictStateBaseSensorEntity):
             else:
                 return "mdi:weather-sunny-off"
         else :
-            return "mdi:eye"
+            return "mdi:weather-sunny-off"
 
 class OnlineSateSensorEntity(DictStateBaseSensorEntity):
     _attr_device_class = SensorDeviceClass.ENUM
     _attr_entity_category = EntityCategory.DIAGNOSTIC
     _options_dict: dict[str, int] = ONLINE_OPTIONS
 
-    #@property
-    #def icon(self) -> str | None:
-    #    if self._attr_native_value in ONLINE_OPTIONS:
-    #        if self._attr_native_value == "Online": 
-    #            return "mdi:toggle-switch"
-    #        elif self._attr_native_value == "Offline": 
-    #            return "mdi:toggle-switch-off"
-    #        else:
-    #            return "mdi:toggle-switch-off-outline"
-    #    else :
-    #        return "mdi:eye"
+    @property
+    def icon(self) -> str | None:
+        if self._attr_native_value in ONLINE_OPTIONS:
+            if self._attr_native_value == "Online": 
+                return "mdi:toggle-switch"
+            elif self._attr_native_value == "Offline": 
+                return "mdi:toggle-switch-off"
+            else:
+                return "mdi:toggle-switch-off-outline"
+        else :
+            return "mdi:toggle-switch-off-outline"
 
 
 class AlerteSateSensorEntity(DictStateBaseSensorEntity):
@@ -78,15 +78,15 @@ class AlerteSateSensorEntity(DictStateBaseSensorEntity):
     _attr_entity_category = EntityCategory.DIAGNOSTIC
     _options_dict: dict[str, int] = ALERTE_OPTIONS
 
-    #@property
-    #def icon(self) -> str | None:
-    #    if self._attr_native_value in ALERTE_OPTIONS:
-    #        if self._attr_native_value == "OK": 
-    #            return "mdi:check-circle"
-    #        elif self._attr_native_value == "ALERTE": 
-    #            return "mdi:alert"
-    #        else:
-    #            return "mdi:bell-outline"
-    #    else :
-    #        return "mdi:eye"
+    @property
+    def icon(self) -> str | None:
+        if self._attr_native_value in ALERTE_OPTIONS:
+            if self._attr_native_value == "OK": 
+                return "mdi:check-circle"
+            elif self._attr_native_value == "ALERTE": 
+                return "mdi:alert"
+            else:
+                return "mdi:bell-outline"
+        else :
+            return "mdi:bell-outline"
             
