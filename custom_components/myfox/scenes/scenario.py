@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from homeassistant.components.scene import Scene
 
 from . import BaseScene, MyFoxSceneInfo
-from ..entities.entities_scene import BaseSceneEntity
+from ..entities.entities_scene import ActivabledSceneEntity,OnDemandSceneEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -30,5 +30,8 @@ class MyFoxScenarioDevice(BaseScene) :
 
     def scenes(self, coordinator) -> list[Scene]:
         _LOGGER.debug("Ajout ScenarioScene sur scene %s", str(self.scene_info.scenarioId))
-        return [BaseSceneEntity(coordinator, self, f"Scenario {self.scene_info.label}", "scene")]
+        if self.scene_info.typeLabel == "onDemand" :
+            return [OnDemandSceneEntity(coordinator, self, f"Scenario {self.scene_info.label}", self.scene_info.typeLabel)]
+        if self.scene_info.typeLabel == "scheduled" or self.scene_info.enabled == "onEvent" or self.scene_info.enabled == "simulation" :
+            return [ActivabledSceneEntity(coordinator, self, f"Scenario {self.scene_info.label}", self.scene_info.typeLabel)]
     

@@ -312,6 +312,9 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         except Exception as err:
             raise UpdateFailed(f"Error with API: {err}")
 
+    async def processScenario(self) -> bool :
+        pass
+
     async def selectOption(self, idx:str, option:str) -> bool :
         """ Selection option et transmission au bon client """
         action_ok = False

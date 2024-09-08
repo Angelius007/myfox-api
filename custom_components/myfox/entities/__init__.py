@@ -2,14 +2,13 @@ import logging
 from typing import Any
 
 from homeassistant.helpers.entity import Entity, DeviceInfo
-from homeassistant.components.number import NumberEntity
-from homeassistant.components.switch import SwitchEntity
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
 )
 from homeassistant.core import callback
 
 from ..devices import BaseDevice
+from ..scenes import BaseScene
 from ..coordinator.myfox_coordinator import (MyFoxCoordinator)
 
 
@@ -60,9 +59,26 @@ class BaseWithValueEntity(MyFoxAbstractDeviceEntity):
             if self._update_value(self.coordinator.data[self.idx]) :
                 self.async_write_ha_state()
 
+## ////////////////////////////////////////////////////////////////////////////
+## SCENES
+## ////////////////////////////////////////////////////////////////////////////
 
-class BaseNumberEntity(NumberEntity, BaseWithValueEntity):
-    pass
+class MyFoxAbstractSceneEntity(CoordinatorEntity, Entity):
 
-class BaseSwitchEntity(SwitchEntity, MyFoxAbstractDeviceEntity):
-    pass
+    def __init__(self, coordinator:MyFoxCoordinator, scene: BaseScene, title: str, key: str):
+        super().__init__(coordinator, context=str(scene.scene_info.scenarioId)+"|"+key)
+        self.idx = str(scene.scene_info.scenarioId)+"|"+key 
+        self._scene: BaseScene = scene
+        self._attr_name = title
+        self._attr_unique_id = "MyFox-"+self.idx
+
+    @property
+    def device_info(self) -> DeviceInfo | None:
+        return DeviceInfo(
+            identifiers={(DOMAIN_MYFOX, f"{self._scene.scene_info.scenarioId}-{self._scene.scene_info.typeLabel}")},
+            manufacturer="MyFox",
+            name=self._scene.scene_info.label,
+            model=self._scene.scene_info.typeLabel,
+            serial_number=str(self._scene.scene_info.scenarioId),
+        )
+    
