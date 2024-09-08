@@ -25,6 +25,7 @@ from ..api.myfoxapi import (
     MyFoxApiClient
 )
 from ..api.myfoxapi_shutter import (MyFoxApiShutterClient)
+from ..api.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
 from ..api.myfoxapi_temperature import (MyFoxApiTemperatureClient)
 from ..api.myfoxapi_light import (MyFoxApiLightClient)
 #from ..devices.temperature import  MyFoxTemperatureDevice
@@ -204,16 +205,33 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     if device_id in client_shutter.devices :
                         """ """
                         if device_action == "open" :
-                            """ On """
+                            """ open """
                             action_ok = await client_shutter.setOpen(int(device_id))
                             break
                         elif device_action == "close" :
-                            """ off """
+                            """ close """
                             action_ok = await client_shutter.setClose(int(device_id))
                             break
                         elif device_action == "my" :
                             """ favorite """
                             action_ok = await client_shutter.setFavorite(int(device_id))
+                            break
+                        else :
+                            """ inconnu """
+                            _LOGGER.error("Action %s  non reconnue pour le device %s", str(device_action), str(device_id))
+                    _LOGGER.debug("Action %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok) )
+                if myfoxApiClient.__class__ == MyFoxApiGroupShutterClient :
+                    client_shutter:MyFoxApiGroupShutterClient = myfoxApiClient
+                    # verification device
+                    if device_id in client_shutter.devices :
+                        """ """
+                        if device_action == "open" :
+                            """ open """
+                            action_ok = await client_shutter.setOpen(int(device_id))
+                            break
+                        elif device_action == "close" :
+                            """ close """
+                            action_ok = await client_shutter.setClose(int(device_id))
                             break
                         else :
                             """ inconnu """

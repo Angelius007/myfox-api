@@ -161,7 +161,9 @@ async def addShutter(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEn
     """ """
     _LOGGER.debug("Add Shutter")
     await addClientToCoordinator(hass, entry, MyFoxApiShutterClient(myfox_info))
-
+    _LOGGER.debug("Add Group Shutter")
+    await addClientToCoordinator(hass, entry, MyFoxApiGroupShutterClient(myfox_info))
+    
 async def addSocket(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Socket")
@@ -190,17 +192,7 @@ async def addDeviceState(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyF
 async def addDeviceLight(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Light Device")
-    #client_light = MyFoxApiLightClient(myfox_info)
     await addClientToCoordinator(hass, entry, MyFoxApiLightClient(myfox_info))
-
-    #liste_capteurs = await client_light.getList()
-    #for capteur in liste_capteurs :
-    ##    _LOGGER.debug("Configuration device " + str(capteur))
-    #   client_light.configure_device(capteur["deviceId"], capteur["label"], capteur["modelId"], capteur["modelLabel"])
-
-    #if liste_capteurs.__len__() > 0 :
-    #    coordinator:MyFoxCoordinator = hass.data[DOMAIN_MYFOX][entry.entry_id]
-    #    coordinator.add_client(client_light)
 
 async def addDetectorDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
@@ -209,16 +201,7 @@ async def addDetectorDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_info:
 
 async def addTemperatureDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     _LOGGER.debug("Add Temperature Device")
-    #client_themperature = MyFoxApiTemperatureClient(myfox_info)
     await addClientToCoordinator(hass, entry, MyFoxApiTemperatureClient(myfox_info))
-    #liste_capteurs = await client_themperature.getList()
-    #for capteur in liste_capteurs :
-    #    _LOGGER.debug("Configuration device " + str(capteur))
-    #    client_themperature.configure_device(capteur["deviceId"], capteur["label"], capteur["modelId"], capteur["modelLabel"])
-
-    #if liste_capteurs.__len__() > 0 :
-    #    coordinator:MyFoxCoordinator = hass.data[DOMAIN_MYFOX][entry.entry_id]
-    #    coordinator.add_client(client_themperature)
 
 async def addClientToCoordinator(hass: HomeAssistant, entry: ConfigEntry, client:MyFoxApiClient) :
     """" """
@@ -226,7 +209,24 @@ async def addClientToCoordinator(hass: HomeAssistant, entry: ConfigEntry, client
     liste_capteurs = await client.getList()
     for capteur in liste_capteurs :
         _LOGGER.debug("Configuration device " + str(capteur))
-        client.configure_device(capteur["deviceId"], capteur["label"], capteur["modelId"], capteur["modelLabel"])
+        deviceId = 0
+        label = ""
+        modelId = 0
+        modelLabel = ""
+        if "deviceId" in capteur :
+            deviceId = capteur["deviceId"]
+        elif "groupId" in capteur :
+            deviceId = capteur["groupId"]
+        if "label" in capteur :
+            label = capteur["label"]
+        if "modelId" in capteur :
+            modelId = capteur["modelId"]
+        if "modelLabel" in capteur :
+            modelLabel = capteur["modelLabel"]
+        elif "type" in capteur :
+            modelLabel = capteur["type"]
+
+        client.configure_device(deviceId, label, modelId, modelLabel)
 
     if liste_capteurs.__len__() > 0 :
         coordinator:MyFoxCoordinator = hass.data[DOMAIN_MYFOX][entry.entry_id]

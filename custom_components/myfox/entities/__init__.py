@@ -34,7 +34,7 @@ class MyFoxAbstractEntity(CoordinatorEntity, Entity):
     @property
     def device_info(self) -> DeviceInfo | None:
         return DeviceInfo(
-            identifiers={(DOMAIN_MYFOX, f"{self._device.device_info.deviceId}")},
+            identifiers={(DOMAIN_MYFOX, f"{self._device.device_info.deviceId+"-"+self._device.device_info.modelLabel}")},
             manufacturer="MyFox",
             name=self._device.device_info.label,
             model=self._device.device_info.modelLabel,

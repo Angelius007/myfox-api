@@ -90,7 +90,7 @@ class MyFoxApiClient:
         # Sinon, on positionne en Diagnostic
         else:
             device = DiagnosticDevice(info)
-        
+        _LOGGER.debug("New device : %s",str(device))
         self.add_device(device)
 
     def add_device(self, device: BaseDevice):
