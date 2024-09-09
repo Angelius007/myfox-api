@@ -30,11 +30,11 @@ class MyFoxScenarioDevice(BaseScene) :
         super().__init__(scene_info)
 
     def switches(self, coordinator) -> list[SwitchEntity]:
-        _LOGGER.debug("Ajout ActivabledSceneEntity sur scene %s", str(self.scene_info.scenarioId))
         if self.scene_info.typeLabel == "scheduled" or self.scene_info.enabled == "onEvent" or self.scene_info.enabled == "simulation" :
+            _LOGGER.debug("Ajout ActivabledSceneEntity sur scene %s", str(self.scene_info.scenarioId))
             return [ActivabledSceneEntity(coordinator, self, f"Scenario {self.scene_info.label}", self.scene_info.typeLabel)]
     
     def scenes(self, coordinator) -> list[Scene]:
-        _LOGGER.debug("Ajout OnDemandSceneEntity sur scene %s", str(self.scene_info.scenarioId))
         if self.scene_info.typeLabel == "onDemand" :
+            _LOGGER.debug("Ajout OnDemandSceneEntity sur scene %s", str(self.scene_info.scenarioId))
             return [OnDemandSceneEntity(coordinator, self, f"Scenario {self.scene_info.label}", self.scene_info.typeLabel)]    
