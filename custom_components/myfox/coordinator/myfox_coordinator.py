@@ -322,7 +322,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             if myfoxApiClient.__class__ == MyFoxApiSecenarioClient :
                 client:MyFoxApiSecenarioClient = myfoxApiClient
                 if scenario_id in client.scenes :
-                    action_ok = await client.playScenario(scenario_id)
+                    action_ok = await client.playScenario(int(scenario_id))
                     break
         _LOGGER.debug("playScenario %s : %s", str(idx), str(action_ok) )
 
@@ -349,7 +349,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             if myfoxApiClient.__class__ == MyFoxApiSecenarioClient :
                 client:MyFoxApiSecenarioClient = myfoxApiClient
                 if scenario_id in client.scenes :
-                    action_ok = await client.enableScenario(scenario_id)
+                    action_ok = await client.enableScenario(int(scenario_id))
                     break
         _LOGGER.debug("enableScenario %s : %s", str(idx), str(action_ok) )
 
@@ -376,7 +376,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             if myfoxApiClient.__class__ == MyFoxApiSecenarioClient :
                 client:MyFoxApiSecenarioClient = myfoxApiClient
                 if scenario_id in client.scenes :
-                    action_ok = await client.disableScenario(scenario_id)
+                    action_ok = await client.disableScenario(int(scenario_id))
                     break
         _LOGGER.debug("disableScenario %s : %s", str(idx), str(action_ok) )
 
