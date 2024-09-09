@@ -4,7 +4,7 @@ from typing import Any
 
 from homeassistant.components.scene import Scene
 from homeassistant.components.switch import SwitchEntity
-from ..entities import MyFoxAbstractSceneEntity
+from ..entities import MyFoxAbstractSceneEntity, BaseSceneWithValueEntity
 from ..coordinator.myfox_coordinator import (MyFoxCoordinator)
 from ..scenes import BaseScene
 
@@ -23,7 +23,7 @@ class BaseSceneEntity(Scene, MyFoxAbstractSceneEntity):
         coordinator:MyFoxCoordinator = self.coordinator
         await coordinator.playScenario(self.idx)
 
-class BaseSwitchEntity(SwitchEntity, MyFoxAbstractSceneEntity):
+class BaseSwitchEntity(SwitchEntity, BaseSceneWithValueEntity):
     def __init__(self, coordinator:MyFoxCoordinator, device: BaseScene, title: str, key: str):
         super().__init__(coordinator, device, title, key)
 

@@ -82,3 +82,21 @@ class MyFoxAbstractSceneEntity(CoordinatorEntity, Entity):
             serial_number=str(self._scene.scene_info.scenarioId),
         )
     
+class BaseSceneWithValueEntity(MyFoxAbstractSceneEntity):
+    def __init__(self, coordinator:MyFoxCoordinator, scene: BaseScene, title: str, key: str):
+        super().__init__(coordinator, scene, title, key)
+        if self.idx in self.coordinator.data:
+            statutok=self._update_value(coordinator.data[self.idx])
+            _LOGGER.debug("init value : %s, %s : %s", self.idx, self.coordinator.data[self.idx], str(statutok))
+            
+    def _update_value(self, val: Any) -> bool:
+        self._attr_native_value = self.coordinator.data[self.idx]
+        return True
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        if self.idx in self.coordinator.data:
+            _LOGGER.debug("_handle_coordinator_update : %s, %s", self.idx, self.coordinator.data[self.idx])
+            if self._update_value(self.coordinator.data[self.idx]) :
+                self.async_write_ha_state()
