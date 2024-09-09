@@ -18,3 +18,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 
         for (deviceId, device) in client.devices.items():
             async_add_entities(device.switches(coordinator))
+
+        for (scenarioId, scene) in client.scenes.items():
+            async_add_entities(scene.switches(coordinator))

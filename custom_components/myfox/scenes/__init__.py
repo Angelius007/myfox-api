@@ -3,6 +3,7 @@ import logging
 from abc import ABC
 
 from homeassistant.components.scene import Scene
+from homeassistant.components.switch import SwitchEntity
 
 #from .data_holder import MyFoxDataHolder
 
@@ -23,10 +24,16 @@ class BaseScene(ABC):
         super().__init__()
         self.scene_info = scene_info
 
+    def switches(self, coordinator) -> list[SwitchEntity]:
+        return []
+    
     def scenes(self, coordinator) -> list[Scene]:
         return []
     
 class DiagnosticScene(BaseScene):
 
+    def switches(self, coordinator) -> list[SwitchEntity]:
+        return []
+    
     def scenes(self, coordinator) -> list[Scene]:
         return []

@@ -3,6 +3,7 @@ import logging
 from typing import Any
 
 from homeassistant.components.scene import Scene
+from homeassistant.components.switch import SwitchEntity
 from ..entities import MyFoxAbstractSceneEntity
 from ..coordinator.myfox_coordinator import (MyFoxCoordinator)
 from ..scenes import BaseScene
@@ -20,10 +21,24 @@ class BaseSceneEntity(Scene, MyFoxAbstractSceneEntity):
     async def async_activate(self, **kwargs: Any) -> None:
         """Handle the button press."""
         coordinator:MyFoxCoordinator = self.coordinator
-        await coordinator.processScenario()
+        await coordinator.playScenario(self.idx)
+
+class BaseSwitchEntity(SwitchEntity, MyFoxAbstractSceneEntity):
+    def __init__(self, coordinator:MyFoxCoordinator, device: BaseScene, title: str, key: str):
+        super().__init__(coordinator, device, title, key)
+
+    async def async_turn_on(self, **kwargs: Any) -> None:
+        """Turn the entity on."""
+        coordinator:MyFoxCoordinator = self.coordinator
+        await coordinator.enableScenario(self.idx)
+        
+    async def async_turn_off(self, **kwargs: Any) -> None:
+        """Turn the entity off."""
+        coordinator:MyFoxCoordinator = self.coordinator
+        await coordinator.disableScenario(self.idx)
 
 class OnDemandSceneEntity(BaseSceneEntity) :
     """ """
 
-class ActivabledSceneEntity(BaseSceneEntity) :
+class ActivabledSceneEntity(BaseSwitchEntity) :
     """ """

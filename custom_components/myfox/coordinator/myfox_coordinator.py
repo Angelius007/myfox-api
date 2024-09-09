@@ -312,9 +312,86 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         except Exception as err:
             raise UpdateFailed(f"Error with API: {err}")
 
-    async def processScenario(self) -> bool :
-        _LOGGER.debug("processScenario : Not ready")
-        pass
+    async def playScenario(self, idx:str) -> bool :
+        _LOGGER.debug("playScenario : %s from %s", idx, str(self.name))
+        valeurs = idx.split("|", 2)
+        scenario_id = valeurs[0]
+        scenario_type = valeurs[1]
+        action_ok = False
+        for (client_key,myfoxApiClient) in self.myfoxApiClient.items() :
+            if myfoxApiClient.__class__ == MyFoxApiSecenarioClient :
+                client:MyFoxApiSecenarioClient = myfoxApiClient
+                if scenario_id in client.scenes :
+                    action_ok = await client.playScenario(scenario_id)
+                    break
+        _LOGGER.debug("playScenario %s : %s", str(idx), str(action_ok) )
+
+        if action_ok :
+            params = dict[str, Any]()
+            listening_idx = set()
+            listening_idx.add(idx)
+            valeurs = list()
+            valeur = dict[str, Any]()
+            valeur["scenarioId"] = scenario_id
+            valeur["typeLabel "] = scenario_type
+            valeur["enabled"] = "None"
+            valeurs.append(valeur)
+            self.addToParams(params, listening_idx, valeur)
+            self.async_set_updated_data(params)
+
+    async def enableScenario(self, idx:str) -> bool :
+        _LOGGER.debug("enableScenario : %s from %s", idx, str(self.name))
+        valeurs = idx.split("|", 2)
+        scenario_id = valeurs[0]
+        scenario_type = valeurs[1]
+        action_ok = False
+        for (client_key,myfoxApiClient) in self.myfoxApiClient.items() :
+            if myfoxApiClient.__class__ == MyFoxApiSecenarioClient :
+                client:MyFoxApiSecenarioClient = myfoxApiClient
+                if scenario_id in client.scenes :
+                    action_ok = await client.enableScenario(scenario_id)
+                    break
+        _LOGGER.debug("enableScenario %s : %s", str(idx), str(action_ok) )
+
+        if action_ok :
+            params = dict[str, Any]()
+            listening_idx = set()
+            listening_idx.add(idx)
+            valeurs = list()
+            valeur = dict[str, Any]()
+            valeur["scenarioId"] = scenario_id
+            valeur["typeLabel "] = scenario_type
+            valeur["enabled"] = "True"
+            valeurs.append(valeur)
+            self.addToParams(params, listening_idx, valeur)
+            self.async_set_updated_data(params)
+
+    async def disableScenario(self, idx:str) -> bool :
+        _LOGGER.debug("disableScenario : %s from %s", idx, str(self.name))
+        valeurs = idx.split("|", 2)
+        scenario_id = valeurs[0]
+        scenario_type = valeurs[1]
+        action_ok = False
+        for (client_key,myfoxApiClient) in self.myfoxApiClient.items() :
+            if myfoxApiClient.__class__ == MyFoxApiSecenarioClient :
+                client:MyFoxApiSecenarioClient = myfoxApiClient
+                if scenario_id in client.scenes :
+                    action_ok = await client.disableScenario(scenario_id)
+                    break
+        _LOGGER.debug("disableScenario %s : %s", str(idx), str(action_ok) )
+
+        if action_ok :
+            params = dict[str, Any]()
+            listening_idx = set()
+            listening_idx.add(idx)
+            valeurs = list()
+            valeur = dict[str, Any]()
+            valeur["scenarioId"] = scenario_id
+            valeur["typeLabel "] = scenario_type
+            valeur["enabled"] = "False"
+            valeurs.append(valeur)
+            self.addToParams(params, listening_idx, valeur)
+            self.async_set_updated_data(params)
 
     async def selectOption(self, idx:str, option:str) -> bool :
         """ Selection option et transmission au bon client """
@@ -363,7 +440,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 valeur["deviceId"] = device_id
                 valeur[device_option] = device_action
                 valeurs.append(valeur)
-                self.addToParams(params, listening_idx,valeur)
+                self.addToParams(params, listening_idx, valeur)
                 self.async_set_updated_data(params)
                 
             return action_ok
