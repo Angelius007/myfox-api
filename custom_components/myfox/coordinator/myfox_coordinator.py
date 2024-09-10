@@ -203,7 +203,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 if control_key in listening_idx or len(listening_idx) == 0 :
                     params[control_key] = val
                     _LOGGER.debug("addToParams -> deviceId(%s) : %s [%s]", str(device_id), control_key, str(val))
-        elif "scenarioId" in temp :
+        if "scenarioId" in temp :
             scene_id = temp["scenarioId"]
             for key,val in temp.items() :
                 control_key = str(scene_id) + "|" + str(key)
@@ -330,12 +330,10 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             params = dict[str, Any]()
             listening_idx = set()
             listening_idx.add(idx)
-            valeurs = list()
             valeur = dict[str, Any]()
             valeur["scenarioId"] = scenario_id
             valeur["typeLabel "] = scenario_type
             valeur["enabled"] = "None"
-            valeurs.append(valeur)
             self.addToParams(params, listening_idx, valeur)
             self.async_set_updated_data(params)
 
@@ -357,12 +355,10 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             params = dict[str, Any]()
             listening_idx = set()
             listening_idx.add(idx)
-            valeurs = list()
             valeur = dict[str, Any]()
             valeur["scenarioId"] = scenario_id
             valeur["typeLabel "] = scenario_type
             valeur["enabled"] = "True"
-            valeurs.append(valeur)
             self.addToParams(params, listening_idx, valeur)
             self.async_set_updated_data(params)
 
@@ -384,12 +380,10 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             params = dict[str, Any]()
             listening_idx = set()
             listening_idx.add(idx)
-            valeurs = list()
             valeur = dict[str, Any]()
             valeur["scenarioId"] = scenario_id
             valeur["typeLabel "] = scenario_type
             valeur["enabled"] = "False"
-            valeurs.append(valeur)
             self.addToParams(params, listening_idx, valeur)
             self.async_set_updated_data(params)
 
@@ -435,11 +429,9 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 params = dict[str, Any]()
                 listening_idx = set()
                 listening_idx.add(idx)
-                valeurs = list()
                 valeur = dict[str, Any]()
                 valeur["deviceId"] = device_id
                 valeur[device_option] = device_action
-                valeurs.append(valeur)
                 self.addToParams(params, listening_idx, valeur)
                 self.async_set_updated_data(params)
                 
