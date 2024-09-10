@@ -7,7 +7,6 @@ from homeassistant.components.sensor import SensorEntity
 
 from ..devices import BaseDevice, MyFoxDeviceInfo
 from ..entities.entities_select import HeaterSelectEntity
-from ..entities.entities_sensor import HeaterSensorEntity
 _LOGGER = logging.getLogger(__name__)
 
 #Heater {
@@ -37,8 +36,7 @@ class MyFoxHeaterDevice(BaseDevice) :
         super().__init__(device_info)
 
     def sensors(self, coordinator) -> list[SensorEntity]:
-        _LOGGER.debug("Ajout HeaterSensorEntity sur device %s", str(self.device_info.deviceId))
-        return [HeaterSensorEntity(coordinator, self, f"Etat {self.device_info.label}", "stateLabel")]
+        return []
 
     def selects(self, coordinator) -> list[SelectEntity]:
         _LOGGER.debug("Ajout HeaterSelectEntity sur device %s", str(self.device_info.deviceId))

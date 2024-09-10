@@ -23,20 +23,6 @@ homeassistant:
           if (state === 'ALERTE') return 'red';
           if (state === 'OK')     return 'green';
           return '';
-    "sensor.etat_radiateur*":
-      templates: 
-        icon: >
-          if (state === 'ON')       return 'mdi:radiator';
-          if (state === 'Mode ECO') return 'mdi:radiator';
-          if (state === 'Hors GEL') return 'mdi:radiator-disabled';
-          if (state === 'OFF')      return 'mdi:radiator-off';
-          return 'mdi:radiator-disabled';
-        icon_color: >
-          if (state === 'ON')       return 'red';
-          if (state === 'Mode ECO') return 'orange';
-          if (state === 'Hors GEL') return 'yellow';
-          if (state === 'OFF')      return 'green';
-          return '';
     "select.consigne_radiateur*":
       templates: 
         icon: >
