@@ -27,6 +27,10 @@ class BaseSwitchEntity(SwitchEntity, BaseSceneWithValueEntity):
     def __init__(self, coordinator:MyFoxCoordinator, device: BaseScene, title: str, key: str):
         super().__init__(coordinator, device, title, key)
 
+    def _update_value(self, val: Any) -> bool:
+        self._attr_is_on = bool(self.coordinator.data[self.idx])
+        return True
+        
     async def async_turn_on(self, **kwargs: Any) -> None:
         """Turn the entity on."""
         coordinator:MyFoxCoordinator = self.coordinator
