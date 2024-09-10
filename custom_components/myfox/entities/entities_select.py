@@ -20,6 +20,7 @@ class DictStateBaseSelectEntity(BaseSelectEntity):
             self._options_dict = options
         if self._options_dict :
             self._attr_options = list(self._options_dict.keys())
+        self._attr_current_option = None
 
     def setOptions(self, options: dict[str, str]) :
         self._options_dict = options
@@ -59,14 +60,10 @@ class HeaterSelectEntity(DictStateBaseSelectEntity):
 
     def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str, options: dict[str, str]=None):
         super().__init__(coordinator, device, title, key, options)
-        self._attr_current_option = None
-        
-    def current_option(self) -> str | None:
-        return self._attr_current_option
     
     @property
     def icon(self) -> str | None:
-        current_option = self.current_option()
+        current_option = self.state()
         if current_option in HEATER_OPTIONS:
             if current_option == "ON": 
                 return "mdi:radiator"
