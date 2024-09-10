@@ -20,7 +20,6 @@ class DictStateBaseSelectEntity(BaseSelectEntity):
             self._options_dict = options
         if self._options_dict :
             self._attr_options = list(self._options_dict.keys())
-        #self._attr_current_option = None
 
     def setOptions(self, options: dict[str, str]) :
         self._options_dict = options
@@ -41,7 +40,6 @@ class DictStateBaseSelectEntity(BaseSelectEntity):
             sval = str(val)
             lval = [k for k, v in self._options_dict.items() if v == sval]
             if len(lval) == 1:
-                _LOGGER.debug("-> Mise a jour select : %s",lval[0])
                 self.current_option = lval[0]
                 return True
             else:

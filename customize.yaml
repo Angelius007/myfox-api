@@ -37,6 +37,20 @@ homeassistant:
           if (state === 'Hors GEL') return 'yellow';
           if (state === 'OFF')      return 'green';
           return '';
+    "select.consigne_radiateur*":
+      templates: 
+        icon: >
+          if (state === 'ON')       return 'mdi:radiator';
+          if (state === 'Mode ECO') return 'mdi:radiator';
+          if (state === 'Hors GEL') return 'mdi:radiator-disabled';
+          if (state === 'OFF')      return 'mdi:radiator-off';
+          return 'mdi:radiator-disabled';
+        icon_color: >
+          if (state === 'ON')       return 'red';
+          if (state === 'Mode ECO') return 'orange';
+          if (state === 'Hors GEL') return 'yellow';
+          if (state === 'OFF')      return 'green';
+          return '';
     "button.ouverture_volet*":
       templates: 
         icon: >
@@ -70,12 +84,12 @@ homeassistant:
     "switch.scenario_*":
       templates: 
         icon: >
-          if (state == 'True' or state == 'on')      return 'mdi:toggle-switch-variant';
-          if (state == 'False' or state == 'off')    return 'mdi:toggle-switch-variant-off';
+          if (state === 'True' or state === 'on')      return 'mdi:toggle-switch-variant';
+          if (state === 'False' or state === 'off')    return 'mdi:toggle-switch-variant-off';
           return 'mdi:gesture-tap';
         icon_color: >
-          if (state == 'True' or state == 'on')      return 'green';
-          if (state == 'False' or state == 'off')    return 'red';
+          if (state === 'True' or state === 'on')      return 'green';
+          if (state === 'False' or state === 'off')    return 'red';
           return '';
     "switch.scenario_1*":
       templates: 
