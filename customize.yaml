@@ -67,3 +67,19 @@ homeassistant:
           return 'mdi:toggle-switch-variant-off';
         icon_color: >
           return 'red';
+    "switch.scenario_*":
+      templates: 
+        icon: >
+          if (state == 'True' or state == 'on')      return 'mdi:toggle-switch-variant';
+          if (state == 'False' or state == 'off')    return 'mdi:toggle-switch-variant-off';
+          return 'mdi:gesture-tap';
+        icon_color: >
+          if (state == 'True' or state == 'on')      return 'green';
+          if (state == 'False' or state == 'off')    return 'red';
+          return '';
+    "switch.scenario_1*":
+      templates: 
+        icon: >
+          return 'mdi:toggle-switch-variant-off';
+        icon_color: >
+          return 'red';

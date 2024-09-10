@@ -358,7 +358,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             valeur = dict[str, Any]()
             valeur["scenarioId"] = scenario_id
             valeur["typeLabel "] = scenario_type
-            valeur["enabled"] = "True"
+            valeur["enabled"] = True
             self.addToParams(params, listening_idx, valeur)
             self.async_set_updated_data(params)
 
@@ -383,7 +383,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             valeur = dict[str, Any]()
             valeur["scenarioId"] = scenario_id
             valeur["typeLabel "] = scenario_type
-            valeur["enabled"] = "False"
+            valeur["enabled"] = False
             self.addToParams(params, listening_idx, valeur)
             self.async_set_updated_data(params)
 
