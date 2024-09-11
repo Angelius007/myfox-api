@@ -1,3 +1,5 @@
+import logging
+
 from homeassistant.config_entries import ConfigFlow, ConfigEntry, OptionsFlow
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers import selector
@@ -25,6 +27,8 @@ from .api.myfoxapi import (
 )
 from .devices.site import MyFoxSite
 
+_LOGGER = logging.getLogger(__name__)
+
 class MyFoxConfigFlow(ConfigFlow, domain=DOMAIN_MYFOX):
     """ Config """
     VERSION = CONFIG_VERSION
@@ -51,7 +55,8 @@ class MyFoxConfigFlow(ConfigFlow, domain=DOMAIN_MYFOX):
     async def async_step_reconfigure(self, user_input: dict[str, Any] | None = None): 
         if "entry_id" in self.context and self.context["entry_id"] :
             unique_id = self.context["entry_id"] #.replace(self.PREFIX_ENTRY, "")
-            existing_entry = await self.async_set_unique_id(unique_id, raise_on_progress=False)
+            _LOGGER.debug("Entry trouvee : %s",unique_id)
+            existing_entry = await self.hass.config_entries.async_get_entry(unique_id)
             if existing_entry:
                 data = existing_entry.data.copy()
                 if KEY_CLIENT_ID in data:
@@ -68,7 +73,8 @@ class MyFoxConfigFlow(ConfigFlow, domain=DOMAIN_MYFOX):
                     self.refresh_token = data[KEY_REFRESH_TOKEN]
                 if KEY_SITE_ID in data:
                     self.siteId = data[KEY_SITE_ID]
-
+        else :
+            _LOGGER.debug("Entry non trouvee dans le context [%s]",str(self.context))
         return await self.async_step_user()
 
     # 1er step
