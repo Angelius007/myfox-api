@@ -13,11 +13,6 @@ class BaseButtonEntity(ButtonEntity, MyFoxAbstractDeviceEntity):
     def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
         super().__init__(coordinator, device, title, key)
 
-    def press(self) -> None:
-        """Handle the button press."""
-        coordinator:MyFoxCoordinator = self.coordinator
-        coordinator.deferredPressButton(self.idx)
-
     async def async_press(self) -> None:
         """Handle the button press."""
         coordinator:MyFoxCoordinator = self.coordinator

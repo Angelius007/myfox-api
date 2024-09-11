@@ -152,11 +152,14 @@ class MyFoxConfigFlow(ConfigFlow, domain=DOMAIN_MYFOX):
 
         
         site_list = list()
+        default_site = None
         for site in self.sites:
             site_list.append(site.key)
+            if self.siteId and int(self.siteId) == int(site.siteId) :
+                default_site = site 
 
         SITE_STEP_SCHEMA = vol.Schema({
-            vol.Required(KEY_SITE_ID, default=self.siteId): selector.SelectSelector(
+            vol.Required(KEY_SITE_ID, default=default_site): selector.SelectSelector(
                 selector.SelectSelectorConfig(options=site_list,
                                                 mode=selector.SelectSelectorMode.DROPDOWN))
         })

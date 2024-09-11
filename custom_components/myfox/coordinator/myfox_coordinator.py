@@ -44,23 +44,6 @@ class BoundFifoList(List):
         while len(self) >= self.maxlen:
             self.pop()
 
-async def worker(coordinator, queued_action:queue.Queue):
-    continue_processing = True
-    
-    while continue_processing:
-        item = queued_action.get()
-        print(f'Working on {item}')
-        # arret du process
-        if "stop" in item :
-            continue_processing = False
-        elif "pressButton" in item :
-            await coordinator.pressButton(item["pressButton"])
-
-        print(f'Finished {item}')
-        queued_action.task_done()
-
-def wrap_async_worker(coordinator, queued_action:queue.Queue):
-    asyncio.run(worker(coordinator, queued_action))
 
 class MyFoxCoordinator(DataUpdateCoordinator) :
     """ Corrd inator pour synchro avec les appels API MyFox """
@@ -80,21 +63,12 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             always_update=True
         )
         self.myfoxApiClient =  dict[str, MyFoxApiClient]()
-        self.deferredPressButtonAction = BoundFifoList[dict[str, Any]]()
-        self.queued_action = queue.Queue()
 
-        # Turn-on the worker thread.
-        threading.Thread(target=wrap_async_worker,  args=(self, self.queued_action), daemon=True).start()
         _LOGGER.debug("Init " + str(self.name))
 
 
     def stop(self) :
         """ Arret des process """
-        msg = dict[str, Any]
-        action="stop"
-        msg[action] = action
-        self.queued_action.put(msg)
-        self.queued_action.join()
 
     def add_client(self, myfoxApiClient:MyFoxApiClient):
         """ Ajout d'un nouveau client """
@@ -219,17 +193,6 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 if control_key in listening_idx or len(listening_idx) == 0 :
                     params[control_key] = val
                     _LOGGER.debug("addToParams -> scenarioId(%s) : %s [%s]", str(scene_id), control_key, str(val))
-
-    def deferredPressButton(self, idx:str) :
-        """ deferred press """
-        try:
-            _LOGGER.debug("Deferred Press button : %s from %s", idx, str(self.name))
-            msg = dict[str, Any]
-            action="pressButton"
-            msg[action] = idx
-            self.queued_action.put(msg)
-        except Exception as err:
-            raise UpdateFailed(f"Error with API: {err}")
         
     async def pressButton(self, idx:str) -> bool :
         """ Appuis sur un bouton et transmission au bon client """
