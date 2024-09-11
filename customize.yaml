@@ -37,13 +37,13 @@ homeassistant:
           if (state === 'Hors GEL') return 'yellow';
           if (state === 'OFF')      return 'green';
           return '';
-    "select.alarme_myfox*":
+    "select.alarme*":
       templates: 
         icon: >
-          if (state === 'Disarmed' or state === '1')    return 'mdi:radiator';
-          if (state === 'Partial' or state === '2')     return 'mdi:radiator';
-          if (state === 'Armed' or state === '4')       return 'mdi:radiator-disabled';
-          return 'mdi:radiator-disabled';
+          if (state === 'Disarmed' or state === '1')    return 'mdi:shield-outline';
+          if (state === 'Partial' or state === '2')     return 'mdi:shield-half-full';
+          if (state === 'Armed' or state === '4')       return 'mdi:shield-check';
+          return 'mdi:security';
         icon_color: >
           if (state === 'Disarmed' or state === '1')    return 'greed';
           if (state === 'Partial' or state === '2')     return 'orange';
