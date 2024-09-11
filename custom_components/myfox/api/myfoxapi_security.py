@@ -24,7 +24,7 @@ class MyFoxApiSecurityClient(MyFoxApiClient) :
     async def getList(self) -> list:
         """ Generation d'une entite fictive pour l'alarme """
         if self.isCacheExpire(self.security_time) :
-            statusLabel = self.getSecurity()
+            statusLabel = await self.getSecurity()
             self.security.clear()
             self.security.append({'deviceId': self.myfox_info.site.siteId,
                                 'label': 'Alarme MyFox', 
