@@ -24,13 +24,14 @@ class MyFoxApiSecurityClient(MyFoxApiClient) :
     async def getList(self) -> list:
         """ Generation d'une entite fictive pour l'alarme """
         if self.isCacheExpire(self.security_time) :
-            statusLabel = await self.getSecurity()
+            statutSecurity = await self.getSecurity()
             self.security.clear()
             self.security.append({'deviceId': self.myfox_info.site.siteId,
                                 'label': 'Alarme MyFox', 
                                 'modelId': 99, 
                                 'modelLabel': 'Alarme MyFox',
-                                "statusLabel" : statusLabel})
+                                "status" : statutSecurity.status,
+                                "statusLabel" : statutSecurity.statusLabel})
         else :
             _LOGGER.debug("MyFoxApiSecurityClient.getList -> Cache ")
         return self.security
@@ -39,7 +40,7 @@ class MyFoxApiSecurityClient(MyFoxApiClient) :
         """ Get security site """
         try:
             response = await self.callMyFoxApiGet(MYFOX_SECURITY_GET % (self.myfox_info.site.siteId))
-            statutSecurity = response["payload"]["statusLabel"]
+            statutSecurity = response["payload"]
             _LOGGER.debug("getSecurity : %s",str(statutSecurity))
             # {'status': 'OK', 'timestamp': 1723759973, 'payload': {'status': 1, 'statusLabel': 'disarmed'}
             # 1 : disarmed
