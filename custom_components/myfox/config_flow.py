@@ -56,7 +56,7 @@ class MyFoxConfigFlow(ConfigFlow, domain=DOMAIN_MYFOX):
         if "entry_id" in self.context and self.context["entry_id"] :
             unique_id = self.context["entry_id"] #.replace(self.PREFIX_ENTRY, "")
             _LOGGER.debug("Entry trouvee : %s",unique_id)
-            existing_entry = await self.hass.config_entries.async_get_entry(unique_id)
+            existing_entry = self.hass.config_entries.async_get_entry(unique_id)
             if existing_entry:
                 data = existing_entry.data.copy()
                 if KEY_CLIENT_ID in data:
