@@ -40,14 +40,14 @@ homeassistant:
     "select.alarme*":
       templates: 
         icon: >
-          if (state === 'Disarmed' or state === '1')    return 'mdi:shield-outline';
-          if (state === 'Partial' or state === '2')     return 'mdi:shield-half-full';
-          if (state === 'Armed' or state === '4')       return 'mdi:shield-check';
+          if (state === 'Disarmed')    return 'mdi:shield-outline';
+          if (state === 'Partial')     return 'mdi:shield-half-full';
+          if (state === 'Armed')       return 'mdi:shield-check';
           return 'mdi:security';
         icon_color: >
-          if (state === 'Disarmed' or state === '1')    return 'greed';
-          if (state === 'Partial' or state === '2')     return 'orange';
-          if (state === 'Armed' or state === '4')       return 'red';
+          if (state === 'Disarmed')    return 'greed';
+          if (state === 'Partial')     return 'orange';
+          if (state === 'Armed')       return 'red';
           return '';
     "button.ouverture_volet*":
       templates: 
@@ -89,9 +89,3 @@ homeassistant:
           if (state === 'True' or state === 'on')      return 'green';
           if (state === 'False' or state === 'off')    return 'red';
           return '';
-    "switch.scenario_1*":
-      templates: 
-        icon: >
-          return 'mdi:toggle-switch-variant-off';
-        icon_color: >
-          return 'red';
