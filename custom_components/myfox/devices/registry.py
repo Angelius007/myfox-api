@@ -1,7 +1,7 @@
 from typing import Type, OrderedDict
 
 from ..devices import (BaseDevice, DiagnosticDevice, 
-                       camera, gate, group, heater,
+                       camera, gate, group, heater, alarme,
                        librairie, light, module, sensor, shutter, socket, temperature)
 
 device_by_product: OrderedDict[str, Type[BaseDevice]] = OrderedDict[str, Type[BaseDevice]]({
@@ -21,6 +21,7 @@ device_by_client_key: OrderedDict[str, Type[BaseDevice]] = OrderedDict[str, Type
     "socket"                : socket.MyFoxSocketDevice,
     "group_electric"        : socket.MyFoxSocketDevice,
     "alerte_state_sensor"   : sensor.MyFoxAlerteSensorDevice,
+    "security"              : alarme.MyFoxAlarmeDevice,
     "generic"               : DiagnosticDevice
 })
 
@@ -34,5 +35,6 @@ device_by_model_label: OrderedDict[str, Type[BaseDevice]] = OrderedDict[str, Typ
     "Prise électrique commandée"            : socket.MyFoxSocketDevice,
     "Prise électrique commandée DIO First"  : socket.MyFoxSocketDevice,
     "Electrical devices"                    : socket.MyFoxSocketDevice,
-"Diagnostic"                                : DiagnosticDevice
+    "Alarme MyFox"                          : alarme.MyFoxAlarmeDevice,
+    "Diagnostic"                            : DiagnosticDevice
 })
