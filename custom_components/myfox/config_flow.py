@@ -193,13 +193,16 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
+        cache_expire_in_param = CACHE_EXPIRE_IN
+        if KEY_CACHE_EXPIRE_IN in self.config_entry.options:
+            cache_expire_in_param = int(self.config_entry.options.get(KEY_CACHE_EXPIRE_IN))
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema(
                 {
                     vol.Required(
                         KEY_CACHE_EXPIRE_IN,
-                        default=self.config_entry.options.get(KEY_CACHE_EXPIRE_IN),
+                        default=cache_expire_in_param,
                     ): int
                 }
             ),
