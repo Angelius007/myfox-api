@@ -48,7 +48,7 @@ class MyFoxConfigFlow(ConfigFlow, domain=DOMAIN_MYFOX):
         self.config_entry: ConfigEntry | None = None
 
     # Step pour relancer la conf
-    async def async_step_reconfigure_user(self, user_input: dict[str, Any] | None = None): 
+    async def async_step_reconfigure(self, user_input: dict[str, Any] | None = None): 
         if "entry_id" in self.context and self.context["entry_id"] :
             unique_id = self.context["entry_id"] #.replace(self.PREFIX_ENTRY, "")
             existing_entry = await self.async_set_unique_id(unique_id, raise_on_progress=False)
