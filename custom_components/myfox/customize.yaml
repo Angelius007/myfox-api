@@ -1,6 +1,4 @@
 
-homeassistant:
-
   # Customize entities matching a pattern
   customize_glob:
     "sensor.etat_incendie_*":
