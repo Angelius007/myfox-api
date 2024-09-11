@@ -200,7 +200,7 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
                     vol.Required(
                         KEY_CACHE_EXPIRE_IN,
                         default=self.config_entry.options.get(KEY_CACHE_EXPIRE_IN),
-                    ): bool
+                    ): int
                 }
             ),
         )
