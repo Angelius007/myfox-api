@@ -64,7 +64,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         )
         self.myfoxApiClient =  dict[str, MyFoxApiClient]()
 
-        _LOGGER.debug("Init " + str(self.name))
+        _LOGGER.info("Init " + str(self.name))
 
 
     def stop(self) :
@@ -103,7 +103,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         so entities can quickly look up their data.
         """
         try:
-            _LOGGER.debug("Load data from : %s", str(self.name))
+            _LOGGER.info("Load data from : %s", str(self.name))
             # Note: asyncio.TimeoutError and aiohttp.ClientError are already
             # handled by the data update coordinator.
             async with async_timeout.timeout(10):
@@ -198,7 +198,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         """ Appuis sur un bouton et transmission au bon client """
         action_ok = False
         try:
-            _LOGGER.debug("Press button : %s from %s", idx, str(self.name))
+            _LOGGER.info("Press button : %s from %s", idx, str(self.name))
             valeurs = idx.split("|", 2)
             device_id = valeurs[0]
             device_action = valeurs[1]
@@ -285,7 +285,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             raise UpdateFailed(f"Error with API: {err}")
 
     async def playScenario(self, idx:str) -> bool :
-        _LOGGER.debug("playScenario : %s from %s", idx, str(self.name))
+        _LOGGER.info("playScenario : %s from %s", idx, str(self.name))
         valeurs = idx.split("|", 2)
         scenario_id = valeurs[0]
         scenario_type = valeurs[1]
@@ -310,7 +310,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             self.async_set_updated_data(params)
 
     async def enableScenario(self, idx:str) -> bool :
-        _LOGGER.debug("enableScenario : %s from %s", idx, str(self.name))
+        _LOGGER.info("enableScenario : %s from %s", idx, str(self.name))
         valeurs = idx.split("|", 2)
         scenario_id = valeurs[0]
         scenario_type = valeurs[1]
@@ -335,7 +335,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             self.async_set_updated_data(params)
 
     async def disableScenario(self, idx:str) -> bool :
-        _LOGGER.debug("disableScenario : %s from %s", idx, str(self.name))
+        _LOGGER.info("disableScenario : %s from %s", idx, str(self.name))
         valeurs = idx.split("|", 2)
         scenario_id = valeurs[0]
         scenario_type = valeurs[1]
@@ -363,7 +363,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         """ Selection option et transmission au bon client """
         action_ok = False
         try:
-            _LOGGER.debug("Select Option : %s/%s from %s", idx, option, str(self.name))
+            _LOGGER.info("Select Option : %s/%s from %s", idx, option, str(self.name))
             valeurs = idx.split("|", 2)
             device_id = valeurs[0]
             device_option = valeurs[1]

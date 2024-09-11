@@ -87,3 +87,15 @@
           if (state === 'True' or state === 'on')      return 'green';
           if (state === 'False' or state === 'off')    return 'red';
           return '';
+    "scene.*on":
+      templates: 
+        icon: >
+          return 'mdi:toggle-switch-variant';
+        icon_color: >
+          return 'green';
+    "scene.*off":
+      templates: 
+        icon: >
+          return 'mdi:toggle-switch-variant-off';
+        icon_color: >
+          return 'red';
