@@ -6,20 +6,20 @@
         "data": {
           "client_id": "Client ID",
           "client_secret": "Client Secret",
-          "username": "Username",
-          "password": "Password"
+          "username": "Utilisateur",
+          "password": "Mot de passe"
         }
       }
     },
     "abort": {
-      "already_configured": "Alarm already configured"
+      "already_configured": "Alarme déjà configurée"
     }
   },
   "options": {
     "step": {
       "init": {
         "data": {
-          "cache_expires_in": "Cache duration"
+          "cache_expires_in": "Durée du cache"
         }
       }
     }

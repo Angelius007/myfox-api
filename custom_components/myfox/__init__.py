@@ -17,10 +17,13 @@ from .api.const import (
     KEY_REFRESH_TOKEN,
     KEY_EXPIRE_IN,
     KEY_EXPIRE_TIME,
-    KEY_SITE_ID
+    KEY_SITE_ID,
+    KEY_CACHE_EXPIRE_IN,
+    CACHE_EXPIRE_IN
 )
 from .api.myfoxapi import (
     MyFoxEntryDataApi,
+    MyFoxOptionsDataApi,
     MyFoxApiClient
 )
 
@@ -41,20 +44,6 @@ from .api.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
 from .api.myfoxapi_heater import (MyFoxApiHeaterClient)
 from .api.myfoxapi_thermo import (MyFoxApThermoClient)
 from .coordinator.myfox_coordinator import (MyFoxCoordinator)
-
-
-from .devices import (BaseDevice)
-from .devices.camera import (MyFoxCamera)
-from .devices.gate import (MyFoxGate)
-from .devices.heater import (MyFoxHeater)
-from .devices.module import (MyFoxModule)
-from .devices.light import (MyFoxLightSensor)
-from .devices.sensor import (MyFoxGenerictSensor, MyFoxDeviceWithState)
-from .devices.temperature import (MyFoxTemperatureRecord, MyFoxTemperatureSensor)
-from .devices.shutter import MyFoxShutter
-from .devices.socket import MyFoxSocket
-from .devices.librairie import (MyFoxImage, MyFoxVideo)
-from .devices.group import (MyFoxGroupElectric, MyFoxGroupShutter)
 
 from .const import (DOMAIN_MYFOX, CONFIG_VERSION)
 
@@ -86,6 +75,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
                                    entry.data[KEY_REFRESH_TOKEN],
                                    entry.data[KEY_EXPIRE_IN],
                                    entry.data[KEY_EXPIRE_TIME])
+    options = MyFoxOptionsDataApi()
+    if KEY_CACHE_EXPIRE_IN in entry.options :
+        options.cache_time = entry.options[KEY_CACHE_EXPIRE_IN]
+    else :
+        options.cache_time = CACHE_EXPIRE_IN
+    myfox_info.options = options
+
     myfox_client = MyFoxApiClient(myfox_info)
     
     info_site = await myfox_client.getInfoSite(entry.data[KEY_SITE_ID])

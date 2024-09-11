@@ -13,7 +13,6 @@ from .const import (
     DEFAULT_MYFOX_URL_API, MYFOX_TOKEN_PATH, MYFOX_INFO_SITE_PATH,MYFOX_HISTORY_GET,
     KEY_GRANT_TYPE, KEY_CLIENT_ID, KEY_CLIENT_SECRET, KEY_MYFOX_USER, KEY_MYFOX_PSWD, KEY_REFRESH_TOKEN,
     KEY_EXPIRE_IN, KEY_ACCESS_TOKEN, GRANT_TYPE_PASSWORD, GRANT_REFRESH_TOKEN,KEY_EXPIRE_TIME,SEUIL_EXPIRE_MIN,
-    CACHE_EXPIRE_IN,
 )
 from ..scenes import (BaseScene, DiagnosticScene, MyFoxSceneInfo)
 from ..devices import (BaseDevice, DiagnosticDevice, MyFoxDeviceInfo)
@@ -32,6 +31,10 @@ class MyFoxEntryData:
     platforms: list[Platform]
 
 @dataclass
+class MyFoxOptionsDataApi:
+    cache_time:int = 0
+
+@dataclass
 class MyFoxEntryDataApi:
     client_id: str
     client_secret: str
@@ -43,6 +46,7 @@ class MyFoxEntryDataApi:
     expires_time: float = 0.0 
     site: MyFoxSite = None
     sites: list[MyFoxSite] = field(default_factory=list[MyFoxSite(0)])
+    options: MyFoxOptionsDataApi = None
 
 class MyFoxPolicy(asyncio.DefaultEventLoopPolicy):
    def new_event_loop(self):
@@ -58,7 +62,7 @@ class MyFoxApiClient:
         self.devices: dict[str, BaseDevice] = {}
         self.scenes: dict[str, BaseScene] = {}
         self.infoSites_times = 0
-        self.cache_expire_in = CACHE_EXPIRE_IN
+        self.cache_expire_in = myfox_info.options.cache_time
 
     def configure_device(self, deviceId: int, label: str, modelId: int, modelLabel: str):
         """ Configuration device """

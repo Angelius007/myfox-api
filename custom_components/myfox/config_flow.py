@@ -3,6 +3,7 @@ import logging
 from homeassistant.config_entries import ConfigFlow, ConfigEntry, OptionsFlow
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers import selector
+from homeassistant.core import callback
 
 from dataclasses import field
 from typing import Dict, Any
@@ -18,7 +19,9 @@ from .api.const import (
      KEY_ACCESS_TOKEN,
      KEY_REFRESH_TOKEN,
      KEY_EXPIRE_IN,
-     KEY_EXPIRE_TIME
+     KEY_EXPIRE_TIME,
+     KEY_CACHE_EXPIRE_IN,
+     CACHE_EXPIRE_IN
 )
 
 from .api.myfoxapi import (
@@ -121,8 +124,8 @@ class MyFoxConfigFlow(ConfigFlow, domain=DOMAIN_MYFOX):
             
             existing_entry = await self.async_set_unique_id(device_unique_id)
             
-            options = {}
             if existing_entry:
+                options = existing_entry.options.copy()
                 data = existing_entry.data.copy()
                 data[KEY_CLIENT_ID] = self.myfox_client.myfox_info.client_id
                 data[KEY_CLIENT_SECRET] = self.myfox_client.myfox_info.client_secret
@@ -133,10 +136,13 @@ class MyFoxConfigFlow(ConfigFlow, domain=DOMAIN_MYFOX):
                 data[KEY_EXPIRE_IN] = self.myfox_client.myfox_info.expires_in
                 data[KEY_EXPIRE_TIME] = self.myfox_client.myfox_info.expires_time
                 data[KEY_SITE_ID] = str(self.site.siteId)
-                if self.hass.config_entries.async_update_entry(existing_entry, data=data):
+                if self.hass.config_entries.async_update_entry(existing_entry, data=data, options=options):
                     await self.hass.config_entries.async_reload(existing_entry.entry_id)
                 return self.async_abort(reason="updated_successfully")
             else :
+                options = {
+                    KEY_CACHE_EXPIRE_IN : CACHE_EXPIRE_IN
+                }
                 data = {
                     KEY_CLIENT_ID: self.myfox_client.myfox_info.client_id,
                     KEY_CLIENT_SECRET: self.myfox_client.myfox_info.client_secret,
@@ -166,5 +172,35 @@ class MyFoxConfigFlow(ConfigFlow, domain=DOMAIN_MYFOX):
         
         return self.async_show_form(
             step_id="select_site", data_schema=SITE_STEP_SCHEMA)
+    
+    @staticmethod
+    @callback
+    def async_get_options_flow(
+        config_entry: ConfigEntry,
+    ) -> OptionsFlow:
+        """ Create the options flow. """
+        return MyFoxOptionsFlowHandler(config_entry)
 
+class MyFoxOptionsFlowHandler(OptionsFlow):
+    def __init__(self, config_entry: ConfigEntry) -> None:
+        """ Initialize options flow. """
+        self.config_entry = config_entry
 
+    async def async_step_init(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        """ Manage the options. """
+        if user_input is not None:
+            return self.async_create_entry(title="", data=user_input)
+
+        return self.async_show_form(
+            step_id="init",
+            data_schema=vol.Schema(
+                {
+                    vol.Required(
+                        KEY_CACHE_EXPIRE_IN,
+                        default=self.config_entry.options.get(KEY_CACHE_EXPIRE_IN),
+                    ): bool
+                }
+            ),
+        )
