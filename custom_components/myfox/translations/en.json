@@ -7,7 +7,9 @@
           "client_id": "Client ID",
           "client_secret": "Client Secret",
           "username": "Username",
-          "password": "Password"
+          "password": "Password",
+          "access_token" : "Token d'accès",
+          "refresh_token" : "Token de refresh"
         }
       }
     },

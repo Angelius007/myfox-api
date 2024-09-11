@@ -89,7 +89,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
      
     if info_site :
         """Recherche des devices."""
-        _LOGGER.info("Chargement du site")
 
         coordinator = MyFoxCoordinator(hass)
         hass.data[DOMAIN_MYFOX][entry.entry_id] = coordinator
