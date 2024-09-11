@@ -438,15 +438,15 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     _LOGGER.debug("selectOption '%s' for '%s'", str(device_action), str(device_option) )
                     if device_id in client.devices :
                         """ """
-                        if device_action == "1" or device_action == "Disarmed" :
+                        if device_action == "Disarmed" or int(device_action) == 1 :
                             """ on """
                             action_ok = await client.setSecurity(int(device_id))
                             break
-                        elif device_action == "2" or device_action == "Partial" :
+                        elif device_action == "Partial" or int(device_action) == 2 :
                             """ off """
                             action_ok = await client.setSecurity(int(device_id))
                             break
-                        elif device_action == "4" or device_action == "Armed" :
+                        elif device_action == "Armed" or int(device_action) == 4 :
                             """ eco """
                             action_ok = await client.setSecurity(int(device_id))
                             break
