@@ -148,6 +148,14 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                             await myfoxApiClient.getList()
                         except MyFoxException as exception:
                             _LOGGER.error(exception)
+
+                    # cas d'un client security
+                    if myfoxApiClient.__class__ == MyFoxApiSecurityClient :
+                        
+                        client:MyFoxApiSecurityClient = myfoxApiClient
+                        for temp in client.security :
+                            self.addToParams(params, listening_idx, temp)
+
                     # cas d'un client temperature
                     if myfoxApiClient.__class__ == MyFoxApiTemperatureClient :
                         
