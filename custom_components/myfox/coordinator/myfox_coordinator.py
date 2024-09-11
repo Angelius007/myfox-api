@@ -27,6 +27,7 @@ from ..api.myfoxapi_light import (MyFoxApiLightClient)
 from ..api.myfoxapi_sensor_alerte import (MyFoxApiAlerteSensorClient)
 from ..api.myfoxapi_heater import (MyFoxApiHeaterClient)
 from ..api.myfoxapi_scenario import MyFoxApiSecenarioClient
+from ..api.myfoxapi_security import MyFoxApiSecurityClient
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -423,7 +424,28 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         else :
                             """ inconnu """
                             _LOGGER.error("selectOption '%s' non reconnue pour le device %s", str(device_action), str(device_id))
-            _LOGGER.debug("selectOption %s pour le radiateur %s : %s", str(device_action), str(idx), str(action_ok) )
+                elif myfoxApiClient.__class__ == MyFoxApiSecurityClient :
+                    client:MyFoxApiSecurityClient = myfoxApiClient
+                    # verification device
+                    _LOGGER.debug("selectOption '%s' for '%s'", str(device_action), str(device_option) )
+                    if device_id in client.devices :
+                        """ """
+                        if device_action == "1" or device_action == "Disarmed" :
+                            """ on """
+                            action_ok = await client.setSecurity(int(device_id))
+                            break
+                        elif device_action == "2" or device_action == "Partial" :
+                            """ off """
+                            action_ok = await client.setSecurity(int(device_id))
+                            break
+                        elif device_action == "4" or device_action == "Armed" :
+                            """ eco """
+                            action_ok = await client.setSecurity(int(device_id))
+                            break
+                        else :
+                            """ inconnu """
+                            _LOGGER.error("selectOption '%s' non reconnue pour le device %s", str(device_action), str(device_id))
+            _LOGGER.debug("selectOption %s pour %s : %s", str(device_action), str(idx), str(action_ok) )
 
             if action_ok :
                 params = dict[str, Any]()

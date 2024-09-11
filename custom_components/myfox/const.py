@@ -28,3 +28,9 @@ HEATER_OPTIONS = {
     "Mode ECO": "eco",
     "Hors GEL": "frost",
 }
+
+SECURITY_OPTIONS = {
+    "Disarmed": 1,
+    "Partial": 2,
+    "Armed": 4
+}

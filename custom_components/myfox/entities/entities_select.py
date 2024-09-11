@@ -4,7 +4,7 @@ from typing import Any
 from homeassistant.components.select import SelectEntity
 
 from . import BaseWithValueEntity
-from ..const import (HEATER_OPTIONS)
+from ..const import (HEATER_OPTIONS, SECURITY_OPTIONS)
 from ..devices import BaseDevice
 from ..coordinator.myfox_coordinator import (MyFoxCoordinator)
 
@@ -52,8 +52,6 @@ class DictStateBaseSelectEntity(BaseSelectEntity):
         coordinator:MyFoxCoordinator = self.coordinator
         await coordinator.selectOption(self.idx, self.getOptionValue(option))
 
-
-        
 class HeaterSelectEntity(DictStateBaseSelectEntity):
     _options_dict: dict[str, str] = HEATER_OPTIONS
 
@@ -75,3 +73,23 @@ class HeaterSelectEntity(DictStateBaseSelectEntity):
                 return "mdi:radiator-disabled"
         else :
             return "mdi:radiator-disabled"
+
+class SecuritySelectEntity(DictStateBaseSelectEntity):
+    _options_dict: dict[str, str] = SECURITY_OPTIONS
+
+    def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str, options: dict[str, str]=None):
+        super().__init__(coordinator, device, title, key, options)
+    
+    @property
+    def icon(self) -> str | None:
+        if self.current_option in SECURITY_OPTIONS:
+            if self.current_option == "Disarmed": 
+                return "mdi:shield-outline"
+            elif self.current_option == "Partial": 
+                return "mdi:shield-half-full"
+            elif self.current_option == "Armed": 
+                return "mdi:shield-check"
+            else:
+                return "mdi:security"
+        else :
+            return "mdi:security"

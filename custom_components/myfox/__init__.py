@@ -97,6 +97,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
         coordinator = MyFoxCoordinator(hass)
         hass.data[DOMAIN_MYFOX][entry.entry_id] = coordinator
+        
+        # add Alarme
+        await addSecurity(hass, entry, myfox_info)
         # cameraCount: int = 0
         if myfox_client.myfox_info.site.cameraCount > 0 :
             await addCamera(hass, entry, myfox_info)
@@ -146,7 +149,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         entry.async_on_unload(entry.add_update_listener(update_listener))
         return True
     else :
-        _LOGGER.warn("Pas de site trouve pour l'identifiant %s",entry.data[KEY_SITE_ID])
+        _LOGGER.warning("Pas de site trouve pour l'identifiant %s",entry.data[KEY_SITE_ID])
         return False
 
 async def addCamera(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
@@ -159,6 +162,11 @@ async def addGate(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntry
     _LOGGER.debug("Add Gate")
     pass
 
+async def addSecurity(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
+    """ """
+    _LOGGER.debug("Add Security")
+    await addClientToCoordinator(hass, entry, MyFoxApiSecurityClient(myfox_info))
+    
 async def addShutter(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Shutter")
