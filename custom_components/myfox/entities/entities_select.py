@@ -20,7 +20,7 @@ class DictStateBaseSelectEntity(BaseSelectEntity):
             self._options_dict = options
         if self._options_dict :
             self._attr_options = list(self._options_dict.keys())
-        self._attr_current_option = None
+        self._attr_current_option = self.current_option
 
     def setOptions(self, options: dict[str, int]) :
         self._options_dict = options
