@@ -8,8 +8,8 @@
           "client_secret": "Client Secret",
           "username": "Utilisateur",
           "password": "Mot de passe",
-          "access_token" : "Access token",
-          "refresh_token" : "Refresh token"
+          "access_token" : "Token d'accès",
+          "refresh_token" : "Token de refresh"
         }
       }
     },
