@@ -26,6 +26,7 @@ from .api.const import (
 
 from .api.myfoxapi import (
     MyFoxEntryDataApi,
+    MyFoxOptionsDataApi,
     MyFoxApiClient
 )
 from .devices.site import MyFoxSite
@@ -86,20 +87,20 @@ class MyFoxConfigFlow(ConfigFlow, domain=DOMAIN_MYFOX):
             vol.Required(KEY_CLIENT_ID, default=self.client_id): str,
             vol.Required(KEY_CLIENT_SECRET, default=self.client_secret): str,
             vol.Required(KEY_MYFOX_USER, default=self.username): str,
-            vol.Required(KEY_MYFOX_PSWD, default=self.password): str,
-            vol.Optional(KEY_ACCESS_TOKEN, default=self.access_token): str,
-            vol.Optional(KEY_REFRESH_TOKEN, default=self.refresh_token): str,
+            vol.Required(KEY_MYFOX_PSWD, default=self.password): str
         })
         if info is not None:
             myfox_info = MyFoxEntryDataApi(info.get(KEY_CLIENT_ID),
                                         info.get(KEY_CLIENT_SECRET),
                                         info.get(KEY_MYFOX_USER),
                                         info.get(KEY_MYFOX_PSWD))
-            if KEY_ACCESS_TOKEN in info :
-                myfox_info.access_token = info.get(KEY_ACCESS_TOKEN)
-            if KEY_REFRESH_TOKEN in info :
-                myfox_info.refresh_token = info.get(KEY_REFRESH_TOKEN)
-            
+            if self.access_token :
+                myfox_info.access_token = self.access_token
+            if self.refresh_token :
+                myfox_info.refresh_token = self.refresh_token
+            options = MyFoxOptionsDataApi()
+            options.cache_time = CACHE_EXPIRE_IN
+            myfox_info.options = options
             self.myfox_client = MyFoxApiClient(myfox_info)
             
             login_ok = await self.myfox_client.login()
