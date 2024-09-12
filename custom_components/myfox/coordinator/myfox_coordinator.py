@@ -61,7 +61,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         )
         self.myfoxApiClient =  dict[str, MyFoxApiClient]()
 
-        _LOGGER.info("Init " + str(self.name))
+        _LOGGER.info("Init " + str(self.name) + " avec un pooling de " + str(pooling_frequency) + " minutes")
 
 
     def stop(self) :
