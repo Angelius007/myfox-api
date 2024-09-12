@@ -25,6 +25,7 @@ from ..api.myfoxapi_sensor_alerte import (MyFoxApiAlerteSensorClient)
 from ..api.myfoxapi_heater import (MyFoxApiHeaterClient)
 from ..api.myfoxapi_scenario import MyFoxApiSecenarioClient
 from ..api.myfoxapi_security import MyFoxApiSecurityClient
+from ..api.myfoxapi_camera import MyFoxApiCameraClient
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -431,3 +432,34 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             return action_ok
         except Exception as err:
             raise UpdateFailed(f"Error with API: {err}")
+
+    async def cameraPreviewTake(self, idx:str) -> bytes :
+        """ Selection option et transmission au bon client """
+        retour_byte:bytes = None
+        try:
+            _LOGGER.info("cameraPreviewTake : %s from %s", idx, str(self.name))
+            valeurs = idx.split("|", 2)
+            device_id = valeurs[0]
+            device_option = valeurs[1]
+            # recherche du client et du device
+            for (client_key,myfoxApiClient) in self.myfoxApiClient.items() :
+                if myfoxApiClient.__class__ == MyFoxApiCameraClient :
+                    client:MyFoxApiCameraClient = myfoxApiClient
+                    # verification device
+                    _LOGGER.debug("cameraPreviewTake  for '%s'", str(device_option) )
+                    if device_id in client.devices :
+                        """ """
+                        """ on """
+                        retour_byte = await client.cameraPreviewTake(int(device_id))
+                        break
+
+            _LOGGER.debug("cameraPreviewTake pour %s ", str(idx))
+
+                
+            return retour_byte
+        except MyFoxException as exception:
+            _LOGGER.error(exception)
+            return retour_byte
+        except Exception as err:
+            raise UpdateFailed(f"Error with API: {err}")
+

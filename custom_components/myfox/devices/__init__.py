@@ -2,6 +2,7 @@ import dataclasses
 import logging
 from abc import ABC
 
+from homeassistant.components.camera import Camera
 from homeassistant.components.button import ButtonEntity
 from homeassistant.components.number import NumberEntity
 from homeassistant.components.select import SelectEntity
@@ -45,6 +46,9 @@ class BaseDevice(ABC):
         return []
 
     def texts(self, coordinator) -> list[ButtonEntity]:
+        return []
+
+    def cameras(self, coordinator) -> list[Camera]:
         return []
     
 class DiagnosticDevice(BaseDevice):

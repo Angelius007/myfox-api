@@ -156,7 +156,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 async def addCamera(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Camera")
-    pass
+    await addClientToCoordinator(hass, entry, MyFoxApiCameraClient(myfox_info))
 
 async def addGate(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
