@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from homeassistant.components.camera import Camera
 
-from ..devices import  BaseDevice
+from ..devices import BaseDevice, MyFoxDeviceInfo
 from ..entities.entities_camera import BaseCameraEntity
 
 #Camera {
@@ -38,7 +38,8 @@ class MyFoxCamera :
 @dataclass
 class MyFoxCameraDevice(BaseDevice):
     """ """
-    camera:MyFoxCamera = None
+    def __init__(self, device_info:MyFoxDeviceInfo):
+        super().__init__(device_info)
 
     def cameras(self, coordinator) -> list[Camera]:
         return [BaseCameraEntity(coordinator, self, self.device_info.label, "camera")]

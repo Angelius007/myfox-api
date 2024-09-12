@@ -53,6 +53,9 @@ class BaseDevice(ABC):
     
 class DiagnosticDevice(BaseDevice):
 
+    def __init__(self, device_info: MyFoxDeviceInfo):
+        super().__init__()
+
     def sensors(self, coordinator) -> list[SensorEntity]:
         return []
 
