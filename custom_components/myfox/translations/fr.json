@@ -21,7 +21,8 @@
     "step": {
       "init": {
         "data": {
-          "cache_expires_in": "Durée du cache"
+          "cache_expires_in": "Durée du cache (en secondees)",
+          "pool_interval_minutes": "Fréquence de pooling (en minutes)"
         }
       }
     }

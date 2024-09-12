@@ -33,6 +33,7 @@ class MyFoxEntryData:
 @dataclass
 class MyFoxOptionsDataApi:
     cache_time:int = 0
+    pooling_frequency:int = 0
 
 @dataclass
 class MyFoxEntryDataApi:

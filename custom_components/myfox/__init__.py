@@ -19,7 +19,9 @@ from .api.const import (
     KEY_EXPIRE_TIME,
     KEY_SITE_ID,
     KEY_CACHE_EXPIRE_IN,
-    CACHE_EXPIRE_IN
+    CACHE_EXPIRE_IN,
+     POOLING_INTERVAL_DEF,
+     KEY_POOLING_INTERVAL
 )
 from .api.myfoxapi import (
     MyFoxEntryDataApi,
@@ -80,6 +82,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         options.cache_time = entry.options[KEY_CACHE_EXPIRE_IN]
     else :
         options.cache_time = CACHE_EXPIRE_IN
+    if KEY_POOLING_INTERVAL in entry.options :
+        options.pooling_frequency = entry.options[KEY_POOLING_INTERVAL]
+    else :
+        options.pooling_frequency = POOLING_INTERVAL_DEF
     myfox_info.options = options
 
     myfox_client = MyFoxApiClient(myfox_info)
@@ -90,7 +96,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     if info_site :
         """Recherche des devices."""
 
-        coordinator = MyFoxCoordinator(hass)
+        coordinator = MyFoxCoordinator(hass, options.pooling_frequency)
         hass.data[DOMAIN_MYFOX][entry.entry_id] = coordinator
         
         # add Alarme

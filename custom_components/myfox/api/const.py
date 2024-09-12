@@ -19,7 +19,9 @@ GRANT_TYPE_PASSWORD = "password"
 GRANT_REFRESH_TOKEN = "refresh_token"
 
 # SEUILS
+KEY_POOLING_INTERVAL:str = "pool_interval_minutes"
 KEY_CACHE_EXPIRE_IN:str = "cache_expires_in"
+POOLING_INTERVAL_DEF:int    = 2 # 2 min
 SEUIL_EXPIRE_MIN:int    = (5*60) # 5 min
 CACHE_EXPIRE_IN:int     = (10*60) #10 min
 

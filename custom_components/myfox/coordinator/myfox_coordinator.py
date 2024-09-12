@@ -1,13 +1,10 @@
 import logging
 import async_timeout
-import asyncio
 
 from datetime import timedelta
 from typing import Any, List, TypeVar
 
-import threading
-import queue
-
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
@@ -48,7 +45,7 @@ class BoundFifoList(List):
 class MyFoxCoordinator(DataUpdateCoordinator) :
     """ Corrd inator pour synchro avec les appels API MyFox """
 
-    def __init__(self, hass: HomeAssistant):
+    def __init__(self, hass: HomeAssistant,  pooling_frequency: int):
         """Initialize my coordinator."""
         super().__init__(
             hass,
@@ -56,7 +53,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             # Name of the data. For logging purposes.
             name="MyFox coordinator",
             # Polling interval. Will only be polled if there are subscribers.
-            update_interval=timedelta(minutes=2),
+            update_interval=timedelta(minutes=pooling_frequency),
             # Set always_update to `False` if the data returned from the
             # api can be compared via `__eq__` to avoid duplicate updates
             # being dispatched to listeners
