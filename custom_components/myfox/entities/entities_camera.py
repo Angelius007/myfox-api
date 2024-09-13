@@ -22,14 +22,17 @@ class MyFoxCameraEntity(BaseCameraEntity) :
         if self.stream:
             """ """
             _LOGGER.debug("Source : %s", self.stream.source)
-            _LOGGER.debug("_available : %b", self.stream._available)
+            if self.stream._available:
+                _LOGGER.debug("stream actif")
+            else :
+                self.stream.stop()
+                self.stream = None
             
         coordinator:MyFoxCoordinator = self.coordinator
         return await coordinator.cameraPreviewTake(self.idx)
     
     async def stream_source(self) -> str | None:
         """Return the source of the stream."""
-        _LOGGER.debug("Statut %s : %s", self.idx, str(self._attr_state))
         coordinator:MyFoxCoordinator = self.coordinator
         info_stream = await coordinator.cameraLiveStart(self.idx, "hls")
         if info_stream :
