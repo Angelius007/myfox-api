@@ -27,6 +27,7 @@ class MyFoxCameraEntity(BaseCameraEntity) :
         coordinator:MyFoxCoordinator = self.coordinator
         info_stream = await coordinator.cameraLiveStart(self.idx, "hls")
         if info_stream :
+            self._attr_is_streaming = True
             return info_stream["location"]
         else :
             return None
@@ -36,12 +37,13 @@ class MyFoxCameraEntity(BaseCameraEntity) :
         self._attr_is_on = True
         coordinator:MyFoxCoordinator = self.coordinator
         await coordinator.cameraLiveStop(self.idx)
-        info_stream = await coordinator.cameraLiveStart(self.idx, "hls")
+        info_stream = await self.stream_source()
         self.stream.update_source(info_stream)
         
     async def async_turn_on(self) -> None:
         self._attr_is_streaming = False
+        self._attr_is_on = True
         coordinator:MyFoxCoordinator = self.coordinator
         await coordinator.cameraLiveStop(self.idx)
-        info_stream = await coordinator.cameraLiveStart(self.idx, "hls")
+        info_stream = await self.stream_source()
         self.stream.update_source(info_stream)
