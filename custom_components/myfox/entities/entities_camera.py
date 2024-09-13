@@ -19,11 +19,13 @@ class MyFoxCameraEntity(BaseCameraEntity) :
         self, width: int | None = None, height: int | None = None
     ) -> bytes | None:
         """Return bytes of camera image."""
+        _LOGGER.debug("Statut %s : %s", self.idx, self.state()) 
         coordinator:MyFoxCoordinator = self.coordinator
         return await coordinator.cameraPreviewTake(self.idx)
     
     async def stream_source(self) -> str | None:
         """Return the source of the stream."""
+        _LOGGER.debug("Statut %s : %s", self.idx, self.state()) 
         coordinator:MyFoxCoordinator = self.coordinator
         info_stream = await coordinator.cameraLiveStart(self.idx, "hls")
         if info_stream :
