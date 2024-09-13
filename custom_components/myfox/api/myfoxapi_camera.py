@@ -96,7 +96,6 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
             if self.isCacheExpireWithParam(self.lastPreview_time, self.camera_cache_expire_in) :
                 self.lastPreview = await self.callMyFoxApiBinaryPost(MYFOX_CAMERA_PREV_TAKE % (self.myfox_info.site.siteId, deviceId))
                 self.lastPreview_time = time.time()
-                _LOGGER.info("MyFoxApiCameraClient.cameraPreviewTake : New Picture")
             else :
                 _LOGGER.debug("MyFoxApiCameraClient.cameraPreviewTake -> Cache ")
 

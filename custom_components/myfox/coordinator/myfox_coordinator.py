@@ -439,21 +439,16 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             _LOGGER.debug("cameraLiveStart : %s from %s with protocol %s", idx, str(self.name), protocol)
             valeurs = idx.split("|", 2)
             device_id = valeurs[0]
-            device_option = valeurs[1]
             # recherche du client et du device
             for (client_key,myfoxApiClient) in self.myfoxApiClient.items() :
                 if myfoxApiClient.__class__ == MyFoxApiCameraClient :
                     client:MyFoxApiCameraClient = myfoxApiClient
                     # verification device
-                    _LOGGER.debug("cameraLiveStart  for '%s'", str(device_option) )
                     if device_id in client.devices :
                         """ live """
                         retour_url = await client.cameraLiveStart(int(device_id), protocol)
                         break
 
-            _LOGGER.debug("cameraLiveStart pour %s ", str(idx))
-
-                
             return retour_url
         except MyFoxException as exception:
             _LOGGER.error(exception)
@@ -474,15 +469,11 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 if myfoxApiClient.__class__ == MyFoxApiCameraClient :
                     client:MyFoxApiCameraClient = myfoxApiClient
                     # verification device
-                    _LOGGER.debug("cameraLiveStop  for '%s'", str(device_option) )
                     if device_id in client.devices :
                         """ """
                         retour_url = await client.cameraLiveStop(int(device_id))
                         break
-
-            _LOGGER.debug("cameraLiveStop pour %s ", str(idx))
-
-                
+               
             return retour_url
         except MyFoxException as exception:
             _LOGGER.error(exception)
@@ -498,22 +489,17 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             _LOGGER.debug("cameraPreviewTake : %s from %s", idx, str(self.name))
             valeurs = idx.split("|", 2)
             device_id = valeurs[0]
-            device_option = valeurs[1]
             # recherche du client et du device
             for (client_key,myfoxApiClient) in self.myfoxApiClient.items() :
                 if myfoxApiClient.__class__ == MyFoxApiCameraClient :
                     client:MyFoxApiCameraClient = myfoxApiClient
                     # verification device
-                    _LOGGER.debug("cameraPreviewTake  for '%s'", str(device_option) )
                     if device_id in client.devices :
                         """ """
                         """ on """
                         retour_byte = await client.cameraPreviewTake(int(device_id))
                         break
 
-            _LOGGER.debug("cameraPreviewTake pour %s ", str(idx))
-
-                
             return retour_byte
         except MyFoxException as exception:
             _LOGGER.error(exception)
