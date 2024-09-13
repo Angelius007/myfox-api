@@ -19,7 +19,11 @@ class MyFoxCameraEntity(BaseCameraEntity) :
         self, width: int | None = None, height: int | None = None
     ) -> bytes | None:
         """Return bytes of camera image."""
-        _LOGGER.debug("Statut %s : %s", self.idx, str(self._attr_state))
+        if self.stream:
+            """ """
+            _LOGGER.debug("Source : %s", self.stream.source)
+            _LOGGER.debug("_available : %s", str(self.stream.available()))
+            
         coordinator:MyFoxCoordinator = self.coordinator
         return await coordinator.cameraPreviewTake(self.idx)
     
