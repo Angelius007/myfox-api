@@ -18,4 +18,4 @@ class BaseCameraEntity(MyFoxAbstractCameraEntity):
     ) -> bytes | None:
         """Return bytes of camera image."""
         coordinator:MyFoxCoordinator = self.coordinator
-        await coordinator.cameraPreviewTake(self.idx)
+        return await coordinator.cameraPreviewTake(self.idx)
