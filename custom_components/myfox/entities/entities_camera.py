@@ -38,7 +38,6 @@ class MyFoxCameraEntity(BaseCameraEntity) :
         info_stream = await coordinator.cameraLiveStart(self.idx, "hls")
         if info_stream :
             self._attr_is_streaming = True
-            _LOGGER.debug("Démarrage du stream sur : %s", str(info_stream))
             return info_stream["location"]
         else :
             return None

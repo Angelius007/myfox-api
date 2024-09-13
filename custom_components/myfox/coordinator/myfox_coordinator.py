@@ -436,7 +436,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         """ Selection option et transmission au bon client """
         retour_url:str = None
         try:
-            _LOGGER.info("cameraLiveStart : %s from %s with protocol %s", idx, str(self.name), protocol)
+            _LOGGER.debug("cameraLiveStart : %s from %s with protocol %s", idx, str(self.name), protocol)
             valeurs = idx.split("|", 2)
             device_id = valeurs[0]
             device_option = valeurs[1]
@@ -495,7 +495,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         """ Selection option et transmission au bon client """
         retour_byte:bytes = None
         try:
-            _LOGGER.info("cameraPreviewTake : %s from %s", idx, str(self.name))
+            _LOGGER.debug("cameraPreviewTake : %s from %s", idx, str(self.name))
             valeurs = idx.split("|", 2)
             device_id = valeurs[0]
             device_option = valeurs[1]

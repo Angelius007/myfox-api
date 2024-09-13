@@ -54,10 +54,6 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
             response = await self.callMyFoxApiPost(MYFOX_CAMERA_LIVE_START % (self.myfox_info.site.siteId, deviceId, protocol))
             data = response["payload"]
             _LOGGER.info("Live stream : %s", str(data))
-            #camera.guid = data["GUID"]
-            #camera.protocol = data["protocol"]
-            #camera.location = data["location"]
-
             return data
 
         except MyFoxException as exception:
@@ -100,6 +96,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
             if self.isCacheExpireWithParam(self.lastPreview_time, self.camera_cache_expire_in) :
                 self.lastPreview = await self.callMyFoxApiBinaryPost(MYFOX_CAMERA_PREV_TAKE % (self.myfox_info.site.siteId, deviceId))
                 self.lastPreview_time = time.time()
+                _LOGGER.info("MyFoxApiCameraClient.cameraPreviewTake : New Picture")
             else :
                 _LOGGER.debug("MyFoxApiCameraClient.cameraPreviewTake -> Cache ")
 
