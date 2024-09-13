@@ -17,6 +17,8 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
         self.client_key = "camera"
         self.camera = list()
         self.camera_time = 0
+        self.lastPreview:bytes = None
+        self.lastPreview_time = 0
 
     async def getList(self):
         """ Recuperation scenarios """
@@ -94,9 +96,12 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
     async def cameraPreviewTake(self, deviceId:int):
         """ Recuperation scenarios """
         try:
-            response = await self.callMyFoxApiBinaryPost(MYFOX_CAMERA_PREV_TAKE % (self.myfox_info.site.siteId, deviceId))
+            if self.isCacheExpire(self.lastPreview_time) :
+                self.lastPreview = await self.callMyFoxApiBinaryPost(MYFOX_CAMERA_PREV_TAKE % (self.myfox_info.site.siteId, deviceId))
+            else :
+                _LOGGER.debug("MyFoxApiCameraClient.cameraPreviewTake -> Cache ")
 
-            return response
+            return self.lastPreview
 
         except MyFoxException as exception:
             raise exception
