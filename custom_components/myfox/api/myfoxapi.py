@@ -367,11 +367,14 @@ class MyFoxApiClient:
         return expiration
 
     def isCacheExpire(self, start_time) -> float :
+        return self.isCacheExpireWithParam(start_time, self.cache_expire_in)
+
+    def isCacheExpireWithParam(self, start_time, param_expire) -> float :
         current_time = time.time()
         expiration = (current_time - start_time)
-        _LOGGER.debug("Expiration cache [%s / %s]", expiration, self.cache_expire_in)
-        return expiration >= self.cache_expire_in
-
+        _LOGGER.debug("Expiration cache [%s / %s]", expiration, param_expire)
+        return expiration >= param_expire
+    
     async def getInfoSite(self, siteId:int, forceCall:bool=False) -> MyFoxSite:
         """ Recuperation info site """
         try:
