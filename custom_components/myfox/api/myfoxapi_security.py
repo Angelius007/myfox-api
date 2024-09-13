@@ -1,5 +1,6 @@
 import logging
 
+import time
 from .myfoxapi_exception import (MyFoxException)
 from .myfoxapi import (MyFoxApiClient, MyFoxEntryDataApi )
 
@@ -34,6 +35,7 @@ class MyFoxApiSecurityClient(MyFoxApiClient) :
                                     "status" : statutSecurity["status"],
                                     "statusLabel" : statutSecurity["statusLabel"]
                                     })
+                self.security_time = time.time()
         else :
             _LOGGER.debug("MyFoxApiSecurityClient.getList -> Cache ")
         return self.security
