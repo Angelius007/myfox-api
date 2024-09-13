@@ -36,12 +36,12 @@ class MyFoxCameraEntity(BaseCameraEntity) :
         self._attr_is_on = True
         coordinator:MyFoxCoordinator = self.coordinator
         await coordinator.cameraLiveStop(self.idx)
-        info_stream = await coordinator.cameraLiveStart(self.idx)
+        info_stream = await coordinator.cameraLiveStart(self.idx, "hls")
         self.stream.update_source(info_stream)
         
     async def async_turn_on(self) -> None:
         self._attr_is_streaming = False
         coordinator:MyFoxCoordinator = self.coordinator
         await coordinator.cameraLiveStop(self.idx)
-        info_stream = await coordinator.cameraLiveStart(self.idx)
+        info_stream = await coordinator.cameraLiveStart(self.idx, "hls")
         self.stream.update_source(info_stream)
