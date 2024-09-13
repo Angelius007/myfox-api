@@ -22,7 +22,7 @@ class MyFoxCameraEntity(BaseCameraEntity) :
         if self.stream:
             """ """
             _LOGGER.debug("Source : %s", self.stream.source)
-            _LOGGER.debug("_available : %s", str(self.stream.available()))
+            _LOGGER.debug("_available : %b", self.stream._available)
             
         coordinator:MyFoxCoordinator = self.coordinator
         return await coordinator.cameraPreviewTake(self.idx)
