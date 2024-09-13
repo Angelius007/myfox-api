@@ -3,8 +3,7 @@ from dataclasses import dataclass
 from homeassistant.components.camera import Camera
 
 from ..devices import BaseDevice, MyFoxDeviceInfo
-from ..entities.entities_camera import BaseCameraEntity
-
+from ..entities.entities_camera import ImageCameraEntity, StreamCameraEntity
 #Camera {
 #"deviceId": 1027535,
 #"label": "Séjour",
@@ -42,4 +41,5 @@ class MyFoxCameraDevice(BaseDevice):
         super().__init__(device_info)
 
     def cameras(self, coordinator) -> list[Camera]:
-        return [BaseCameraEntity(coordinator, self, f'Camera-{self.device_info.label}', "camera")]
+        return [ImageCameraEntity(coordinator, self, f'Camera-{self.device_info.label}', "image"),
+                StreamCameraEntity(coordinator, self, f'Camera-{self.device_info.label}', "stream")]

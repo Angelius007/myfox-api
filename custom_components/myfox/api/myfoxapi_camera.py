@@ -53,7 +53,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
         try:
             response = await self.callMyFoxApiPost(MYFOX_CAMERA_LIVE_START % (self.myfox_info.site.siteId, deviceId, protocol))
             data = response["payload"]
-
+            _LOGGER.info("Live stream : %s", str(data))
             #camera.guid = data["GUID"]
             #camera.protocol = data["protocol"]
             #camera.location = data["location"]

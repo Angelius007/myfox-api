@@ -115,6 +115,7 @@ class MyFoxAbstractCameraEntity(Camera):
         self.coordinator = coordinator
         self._attr_name = title
         self._attr_unique_id = "MyFox-"+self.idx
+        self._attr_frame_interval = 10 #10 sec d'interval minimum entre deux mises a jour
 
     @property
     def device_info(self) -> DeviceInfo | None:
