@@ -434,11 +434,11 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             raise UpdateFailed(f"Error with API: {err}")
 
         
-    async def cameraLiveStart(self, idx:str) -> bytes :
+    async def cameraLiveStart(self, idx:str, protocol:str) -> bytes :
         """ Selection option et transmission au bon client """
         retour_url:str = None
         try:
-            _LOGGER.info("cameraLiveStart : %s from %s", idx, str(self.name))
+            _LOGGER.info("cameraLiveStart : %s from %s with protocol %s", idx, str(self.name), protocol)
             valeurs = idx.split("|", 2)
             device_id = valeurs[0]
             device_option = valeurs[1]
@@ -451,7 +451,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     if device_id in client.devices :
                         """ """
                         """ on """
-                        retour_url = await client.cameraLiveStart(int(device_id))
+                        retour_url = await client.cameraLiveStart(int(device_id), protocol)
                         break
 
             _LOGGER.debug("cameraLiveStart pour %s ", str(idx))
