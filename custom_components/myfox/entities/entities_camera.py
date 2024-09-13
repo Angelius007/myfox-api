@@ -20,12 +20,14 @@ class MyFoxCameraEntity(BaseCameraEntity) :
     ) -> bytes | None:
         """Return bytes of camera image."""
         if self.stream:
-            """ """
+            """ verification si un stream est en cours ou en ano """
             _LOGGER.debug("Source : %s", self.stream.source)
             if self.stream._available:
-                _LOGGER.debug("stream actif")
+                _LOGGER.debug("Stream actif")
             else :
-                self.stream.stop()
+                _LOGGER.debug("Stream non accessible. On coupe")
+                await self.stream.stop()
+                self._attr_is_streaming = False
                 self.stream = None
             
         coordinator:MyFoxCoordinator = self.coordinator
