@@ -26,8 +26,8 @@ class MyFoxCameraEntity(BaseCameraEntity) :
                 _LOGGER.debug("Stream actif")
             else :
                 _LOGGER.debug("Stream non accessible. On coupe")
-                await self.stream.stop()
                 self._attr_is_streaming = False
+                await self.stream.stop()
                 self.stream = None
             
         coordinator:MyFoxCoordinator = self.coordinator
