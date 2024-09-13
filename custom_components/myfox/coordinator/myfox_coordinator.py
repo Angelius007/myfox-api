@@ -432,7 +432,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         except Exception as err:
             raise UpdateFailed(f"Error with API: {err}")
 
-    async def cameraLiveStart(self, idx:str, protocol:str) -> bytes :
+    async def cameraLiveStart(self, idx:str, protocol:str) -> str :
         """ Selection option et transmission au bon client """
         retour_url:str = None
         try:
