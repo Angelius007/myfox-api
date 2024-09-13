@@ -25,6 +25,6 @@ class MyFoxCameraEntity(BaseCameraEntity) :
     async def stream_source(self) -> str | None:
         """Return the source of the stream."""
         coordinator:MyFoxCoordinator = self.coordinator
-        info_stream = await coordinator.cameraLiveStart(self.idx)
+        info_stream = await coordinator.cameraLiveStart(self.idx, "hls")
 
         return info_stream["location"]
