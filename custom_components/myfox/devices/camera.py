@@ -43,7 +43,7 @@ class MyFoxCameraDevice(BaseDevice):
         super().__init__(device_info)
 
     def cameras(self, coordinator) -> list[Camera]:
-        return [MyFoxCameraEntity(coordinator, self, f'Camera-{self.device_info.label}', "camera")]
+        return [MyFoxCameraEntity(coordinator, self, f'{self.device_info.label}', "camera")]
     
     def buttons(self, coordinator) -> list[ButtonEntity]:
         return [CameraButtonEntity(coordinator, self, f'{self.device_info.label} Snapshot', "snapshot"),
