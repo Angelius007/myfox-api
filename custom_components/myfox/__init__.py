@@ -59,7 +59,7 @@ _PLATFORMS = {
     Platform.SWITCH,
     Platform.BUTTON,
     Platform.SCENE,
-    #Platform.CAMERA
+    Platform.CAMERA
 }
 
 async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
@@ -157,7 +157,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 async def addCamera(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Camera")
-    # await addClientToCoordinator(hass, entry, MyFoxApiCameraClient(myfox_info))
+    await addClientToCoordinator(hass, entry, MyFoxApiCameraClient(myfox_info))
 
 async def addGate(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """

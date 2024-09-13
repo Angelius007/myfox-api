@@ -2,6 +2,7 @@ import logging
 from typing import Any
 
 from homeassistant.helpers.entity import Entity, DeviceInfo
+from homeassistant.components.camera import Camera
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
 )
@@ -100,3 +101,27 @@ class BaseSceneWithValueEntity(MyFoxAbstractSceneEntity):
             _LOGGER.debug("_handle_coordinator_update : %s, %s", self.idx, self.coordinator.data[self.idx])
             if self._update_value(self.coordinator.data[self.idx]) :
                 self.async_write_ha_state()
+
+## ////////////////////////////////////////////////////////////////////////////
+## CAMERA
+## ////////////////////////////////////////////////////////////////////////////
+
+class MyFoxAbstractCameraEntity(Camera):
+
+    def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
+        super().__init__()
+        self.idx = str(device.device_info.deviceId)+"|"+key 
+        self._device: BaseDevice = device
+        self._attr_name = title
+        self._attr_unique_id = "MyFox-"+self.idx
+
+    @property
+    def device_info(self) -> DeviceInfo | None:
+        return DeviceInfo(
+            identifiers={(DOMAIN_MYFOX, f"{self._device.device_info.deviceId}-{self._device.device_info.modelLabel}")},
+            manufacturer="MyFox",
+            name=self._device.device_info.label,
+            model=self._device.device_info.modelLabel,
+            model_id=self._device.device_info.modelId,
+            serial_number=str(self._device.device_info.deviceId),
+        )
