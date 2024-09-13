@@ -30,3 +30,10 @@ class MyFoxCameraEntity(BaseCameraEntity) :
             return info_stream["location"]
         else :
             return None
+    
+    async def async_turn_off(self) -> None:
+        self._attr_is_on = False
+        self._attr_is_streaming = False
+        coordinator:MyFoxCoordinator = self.coordinator
+        await coordinator.cameraLiveStop(self.idx)
+        await self.stream.stop()

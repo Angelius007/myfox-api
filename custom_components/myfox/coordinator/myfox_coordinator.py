@@ -4,7 +4,6 @@ import async_timeout
 from datetime import timedelta
 from typing import Any, List, TypeVar
 
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
@@ -433,7 +432,6 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         except Exception as err:
             raise UpdateFailed(f"Error with API: {err}")
 
-        
     async def cameraLiveStart(self, idx:str, protocol:str) -> bytes :
         """ Selection option et transmission au bon client """
         retour_url:str = None
@@ -449,12 +447,40 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # verification device
                     _LOGGER.debug("cameraLiveStart  for '%s'", str(device_option) )
                     if device_id in client.devices :
-                        """ """
-                        """ on """
+                        """ live """
                         retour_url = await client.cameraLiveStart(int(device_id), protocol)
                         break
 
             _LOGGER.debug("cameraLiveStart pour %s ", str(idx))
+
+                
+            return retour_url
+        except MyFoxException as exception:
+            _LOGGER.error(exception)
+            return retour_url
+        except Exception as err:
+            raise UpdateFailed(f"Error with API: {err}")
+        
+    async def cameraLiveStop(self, idx:str) -> bytes :
+        """ Selection option et transmission au bon client """
+        retour_url = None
+        try:
+            _LOGGER.info("cameraLiveStop : %s from %s", idx, str(self.name))
+            valeurs = idx.split("|", 2)
+            device_id = valeurs[0]
+            device_option = valeurs[1]
+            # recherche du client et du device
+            for (client_key,myfoxApiClient) in self.myfoxApiClient.items() :
+                if myfoxApiClient.__class__ == MyFoxApiCameraClient :
+                    client:MyFoxApiCameraClient = myfoxApiClient
+                    # verification device
+                    _LOGGER.debug("cameraLiveStop  for '%s'", str(device_option) )
+                    if device_id in client.devices :
+                        """ """
+                        retour_url = await client.cameraLiveStop(int(device_id))
+                        break
+
+            _LOGGER.debug("cameraLiveStop pour %s ", str(idx))
 
                 
             return retour_url
