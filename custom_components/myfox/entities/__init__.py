@@ -112,6 +112,7 @@ class MyFoxAbstractCameraEntity(Camera):
         super().__init__()
         self.idx = str(device.device_info.deviceId)+"|"+key 
         self._device: BaseDevice = device
+        self.coordinator = coordinator
         self._attr_name = title
         self._attr_unique_id = "MyFox-"+self.idx
 
