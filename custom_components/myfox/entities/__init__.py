@@ -2,8 +2,9 @@ import logging
 from typing import Any
 
 from homeassistant.helpers.entity import Entity, DeviceInfo
-from homeassistant.components.camera import Camera
+from homeassistant.components.camera import Camera, CameraEntityFeature
 from homeassistant.components.camera.const import StreamType
+
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
 )
@@ -117,6 +118,7 @@ class MyFoxAbstractCameraEntity(Camera):
         self._attr_name = title
         self._attr_unique_id = "MyFox-"+self.idx
         self._attr_frame_interval = 10 #10 sec d'interval minimum entre deux mises a jour
+        self._attr_supported_features = CameraEntityFeature.STREAM
         self._attr_frontend_stream_type = StreamType.HLS
 
     @property
