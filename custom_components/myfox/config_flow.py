@@ -23,7 +23,9 @@ from .api.const import (
      KEY_CACHE_EXPIRE_IN,
      CACHE_EXPIRE_IN,
      POOLING_INTERVAL_DEF,
-     KEY_POOLING_INTERVAL
+     KEY_POOLING_INTERVAL,
+     KEY_CACHE_CAMERA,
+     CACHE_CAMERA
 )
 
 from .api.myfoxapi import (
@@ -202,17 +204,25 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
         pooling_interval = POOLING_INTERVAL_DEF
         if KEY_POOLING_INTERVAL in self.config_entry.options:
             pooling_interval = int(self.config_entry.options.get(KEY_POOLING_INTERVAL))
+        cache_camera = CACHE_CAMERA
+        if KEY_CACHE_CAMERA in self.config_entry.options:
+            cache_camera = int(self.config_entry.options.get(KEY_CACHE_CAMERA))
+     
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema(
                 {
                     vol.Required(
+                        KEY_POOLING_INTERVAL,
+                        default=pooling_interval,
+                    ): int,
+                    vol.Required(
                         KEY_CACHE_EXPIRE_IN,
                         default=cache_expire_in_param,
                     ): int,
                     vol.Required(
-                        KEY_POOLING_INTERVAL,
-                        default=pooling_interval,
+                        KEY_CACHE_CAMERA,
+                        default=cache_camera,
                     ): int
                 }
             ),

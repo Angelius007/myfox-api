@@ -22,7 +22,9 @@ from .api.const import (
     KEY_CACHE_EXPIRE_IN,
     CACHE_EXPIRE_IN,
      POOLING_INTERVAL_DEF,
-     KEY_POOLING_INTERVAL
+     KEY_POOLING_INTERVAL,
+     KEY_CACHE_CAMERA,
+     CACHE_CAMERA
 )
 from .api.myfoxapi import (
     MyFoxEntryDataApi,
@@ -80,14 +82,22 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
                                    entry.data[KEY_EXPIRE_IN],
                                    entry.data[KEY_EXPIRE_TIME])
     options = MyFoxOptionsDataApi()
-    if KEY_CACHE_EXPIRE_IN in entry.options :
-        options.cache_time = entry.options[KEY_CACHE_EXPIRE_IN]
-    else :
-        options.cache_time = CACHE_EXPIRE_IN
+    # frequence de pooling du coordinator
     if KEY_POOLING_INTERVAL in entry.options :
         options.pooling_frequency = entry.options[KEY_POOLING_INTERVAL]
     else :
         options.pooling_frequency = POOLING_INTERVAL_DEF
+    # cache global par defaut
+    if KEY_CACHE_EXPIRE_IN in entry.options :
+        options.cache_time = entry.options[KEY_CACHE_EXPIRE_IN]
+    else :
+        options.cache_time = CACHE_EXPIRE_IN
+    # cache specifique de la camera
+    if KEY_CACHE_CAMERA in entry.options :
+        options.cache_camera_time = entry.options[KEY_CACHE_CAMERA]
+    else :
+        options.cache_camera_time = CACHE_CAMERA
+
     myfox_info.options = options
 
     myfox_client = MyFoxApiClient(myfox_info)

@@ -15,15 +15,18 @@ KEY_EXPIRE_IN     = "expires_in"
 KEY_EXPIRE_TIME   = "expires_time"
 KEY_GRANT_TYPE    = "grant_type"
 
+KEY_POOLING_INTERVAL:str = "pool_interval_minutes"
+KEY_CACHE_EXPIRE_IN:str = "cache_expires_in"
+KEY_CACHE_CAMERA:str = "cache_camera"
+
 GRANT_TYPE_PASSWORD = "password"
 GRANT_REFRESH_TOKEN = "refresh_token"
 
 # SEUILS
-KEY_POOLING_INTERVAL:str = "pool_interval_minutes"
-KEY_CACHE_EXPIRE_IN:str = "cache_expires_in"
 POOLING_INTERVAL_DEF:int    = 2 # 2 min
 SEUIL_EXPIRE_MIN:int    = (5*60) # 5 min
 CACHE_EXPIRE_IN:int     = (10*60) #10 min
+CACHE_CAMERA:int     = (5*60) #5 min
 
 # token
 MYFOX_TOKEN_PATH = "oauth2/token"

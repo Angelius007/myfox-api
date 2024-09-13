@@ -21,8 +21,9 @@
     "step": {
       "init": {
         "data": {
+          "pool_interval_minutes": "Pooling frequency (in minutes)",
           "cache_expires_in": "Cache duration (in seconds)",
-          "pool_interval_minutes": "Pooling frequency (in minutes)"
+          "cache_camera": "Camera Cache duration (in seconds)"
         }
       }
     }

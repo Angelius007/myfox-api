@@ -19,6 +19,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
         self.camera_time = 0
         self.lastPreview:bytes = None
         self.lastPreview_time = 0
+        self.cache_expire_in = myfox_info.options.cache_camera_time
 
     async def getList(self):
         """ Recuperation scenarios """

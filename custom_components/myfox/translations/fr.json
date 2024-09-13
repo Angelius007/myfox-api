@@ -21,8 +21,9 @@
     "step": {
       "init": {
         "data": {
+          "pool_interval_minutes": "Fréquence de pooling (en minutes)",
           "cache_expires_in": "Durée du cache (en secondees)",
-          "pool_interval_minutes": "Fréquence de pooling (en minutes)"
+          "cache_camera": "Durée du carche de la camera (en secondes)"
         }
       }
     }
