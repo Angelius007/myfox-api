@@ -13,7 +13,7 @@ class BaseCameraEntity(MyFoxAbstractCameraEntity):
         super().__init__(coordinator, device, title, key)
 
 
-class ImageCameraEntity(BaseCameraEntity) :
+class MyFoxCameraEntity(BaseCameraEntity) :
 
     async def async_camera_image(
         self, width: int | None = None, height: int | None = None
@@ -22,9 +22,6 @@ class ImageCameraEntity(BaseCameraEntity) :
         coordinator:MyFoxCoordinator = self.coordinator
         return await coordinator.cameraPreviewTake(self.idx)
     
-
-class StreamCameraEntity(BaseCameraEntity) :
-
     async def stream_source(self) -> str | None:
         """Return the source of the stream."""
         coordinator:MyFoxCoordinator = self.coordinator
