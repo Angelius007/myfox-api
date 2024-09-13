@@ -77,6 +77,14 @@
           return 'mdi:toggle-switch-variant-off';
         icon_color: >
           return 'red';
+    "button.*_open":
+      templates: 
+        icon_color: >
+          return 'green';
+    "button.*_close":
+      templates: 
+        icon_color: >
+          return 'red';
     "switch.scenario_*":
       templates: 
         icon: >

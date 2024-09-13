@@ -46,9 +46,9 @@ class MyFoxCameraDevice(BaseDevice):
         return [MyFoxCameraEntity(coordinator, self, f'Camera-{self.device_info.label}', "camera")]
     
     def buttons(self, coordinator) -> list[ButtonEntity]:
-        return [CameraButtonEntity(coordinator, self, f'Camera-{self.device_info.label}', "snapshot"),
-                CameraButtonEntity(coordinator, self, f'Camera-{self.device_info.label}', "recording_start"),
-                CameraButtonEntity(coordinator, self, f'Camera-{self.device_info.label}', "recording_stop"),
-                CameraButtonEntity(coordinator, self, f'Camera-{self.device_info.label}', "live_start"),
-                CameraButtonEntity(coordinator, self, f'Camera-{self.device_info.label}', "live_extend"),
-                CameraButtonEntity(coordinator, self, f'Camera-{self.device_info.label}', "live_stop")]
+        return [CameraButtonEntity(coordinator, self, f'{self.device_info.label} Snapshot', "snapshot"),
+                CameraButtonEntity(coordinator, self, f'{self.device_info.label} Rec Start', "recording_start"),
+                CameraButtonEntity(coordinator, self, f'{self.device_info.label} Rec Stop', "recording_stop"),
+                CameraButtonEntity(coordinator, self, f'{self.device_info.label} Live Start', "live_start"),
+                CameraButtonEntity(coordinator, self, f'{self.device_info.label} Live Extend', "live_extend"),
+                CameraButtonEntity(coordinator, self, f'{self.device_info.label} Live Stop', "live_stop")]
