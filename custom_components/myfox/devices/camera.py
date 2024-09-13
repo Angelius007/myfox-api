@@ -1,9 +1,11 @@
 from dataclasses import dataclass
 
 from homeassistant.components.camera import Camera
+from homeassistant.components.button import ButtonEntity
 
 from ..devices import BaseDevice, MyFoxDeviceInfo
 from ..entities.entities_camera import MyFoxCameraEntity
+from ..entities.entities_button import CameraButtonEntity
 #Camera {
 #"deviceId": 1027535,
 #"label": "Séjour",
@@ -42,3 +44,11 @@ class MyFoxCameraDevice(BaseDevice):
 
     def cameras(self, coordinator) -> list[Camera]:
         return [MyFoxCameraEntity(coordinator, self, f'Camera-{self.device_info.label}', "camera")]
+    
+    def buttons(self, coordinator) -> list[ButtonEntity]:
+        return [CameraButtonEntity(coordinator, self, f'Camera-{self.device_info.label}', "snapshot"),
+                CameraButtonEntity(coordinator, self, f'Camera-{self.device_info.label}', "recording_start"),
+                CameraButtonEntity(coordinator, self, f'Camera-{self.device_info.label}', "recording_stop"),
+                CameraButtonEntity(coordinator, self, f'Camera-{self.device_info.label}', "live_start"),
+                CameraButtonEntity(coordinator, self, f'Camera-{self.device_info.label}', "live_extend"),
+                CameraButtonEntity(coordinator, self, f'Camera-{self.device_info.label}', "live_stop")]

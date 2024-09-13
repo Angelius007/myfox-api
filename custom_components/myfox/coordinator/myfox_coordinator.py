@@ -272,6 +272,46 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         else :
                             """ inconnu """
                             _LOGGER.error("pressButton %s  non reconnue pour le device %s", str(device_action), str(device_id))
+                elif myfoxApiClient.__class__ == MyFoxApiCameraClient :
+                    client:MyFoxApiCameraClient = myfoxApiClient
+                    # verification device
+                    if device_id in client.devices :
+                        """ """
+                        if device_action == "snapshot" :
+                            """ snapshot """
+                            action_ok = await client.cameraSnapshotTake(int(device_id))
+                            break
+                        elif device_action == "recording_start" :
+                            """ recording_start """
+                            action_ok = await client.cameraRecordingStart(int(device_id))
+                            break
+                        elif device_action == "recording_stop" :
+                            """ cameraRecordingStop """
+                            action_ok = await client.cameraRecordingStop(int(device_id))
+                            break
+                        elif device_action == "shutter_open" :
+                            """ shutter_open """
+                            action_ok = await client.cameraShutterOpen(int(device_id))
+                            break
+                        elif device_action == "shutter_close" :
+                            """ shutter_close """
+                            action_ok = await client.cameraShutterClose(int(device_id))
+                            break
+                        elif device_action == "live_start" :
+                            """ live_start """
+                            action_ok = await client.cameraLiveStart(int(device_id), "hls")
+                            break
+                        elif device_action == "live_extend" :
+                            """ live_extend """
+                            action_ok = await client.cameraLiveExtend(int(device_id))
+                            break
+                        elif device_action == "live_stop" :
+                            """ live_stop """
+                            action_ok = await client.cameraLiveStop(int(device_id))
+                            break
+                        else :
+                            """ inconnu """
+                            _LOGGER.error("pressButton %s  non reconnue pour le device %s", str(device_action), str(device_id))
             _LOGGER.debug("pressButton %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok) )
 
             return action_ok

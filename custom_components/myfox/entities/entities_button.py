@@ -36,6 +36,28 @@ class ShutterButtonEntity(BaseButtonEntity):
             return "mdi:eye"
 
 
+class CameraButtonEntity(BaseButtonEntity):
+    """ """
+    _attr_device_class = ButtonDeviceClass.IDENTIFY
+    _attr_entity_category = EntityCategory.CONFIG
+
+    @property
+    def icon(self) -> str | None:
+        if self.idx.endswith("snapshot"):
+            return "mdi:camera-plus-outline"
+        elif self.idx.endswith("recording_start"):
+            return "mdi:record-rec"
+        elif self.idx.endswith("live_start"):
+            return "mdi:record-rec"
+        elif self.idx.endswith("recording_stop"):
+            return "mdi:stop"
+        elif self.idx.endswith("live_stop"):
+            return "mdi:stop"
+        elif self.idx.endswith("live_extend"):
+            return "mdi:plus-box"
+        else :
+            return ""
+
 class SocketButtonEntity(BaseButtonEntity):
     """ """
     _attr_device_class = ButtonDeviceClass.IDENTIFY
