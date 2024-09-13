@@ -7,6 +7,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.const import (
     Platform,
 )
+from .api.myfoxapi_exception import (MyFoxException)
 
 from .api.const import (
     KEY_CLIENT_ID,
@@ -220,44 +221,50 @@ async def addTemperatureDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_in
 async def addClientToCoordinator(hass: HomeAssistant, entry: ConfigEntry, client:MyFoxApiClient) :
     """" """
     _LOGGER.debug("-> Get devices")
-    liste_capteurs = await client.getList()
-    for capteur in liste_capteurs :
-        _LOGGER.debug("Configuration device " + str(capteur))
-        deviceId = 0
-        scenarioId = 0
-        label = ""
-        modelId = 0
-        modelLabel = ""
-        typeLabel = ""
-        enabled = ""
-        if "deviceId" in capteur :
-            deviceId = capteur["deviceId"]
-        elif "groupId" in capteur :
-            deviceId = capteur["groupId"]
-        if "scenarioId" in capteur :
-            scenarioId = capteur["scenarioId"]
-        if "label" in capteur :
-            label = capteur["label"]
-        if "modelId" in capteur :
-            modelId = capteur["modelId"]
-        if "modelLabel" in capteur :
-            modelLabel = capteur["modelLabel"]
-        elif "type" in capteur :
-            modelLabel = capteur["type"]
-        if "typeLabel" in capteur :
-            typeLabel = capteur["typeLabel"]
-        if "enabled" in capteur :
-            enabled = capteur["enabled"]
+    try :
+        liste_capteurs = await client.getList()
+        for capteur in liste_capteurs :
+            _LOGGER.debug("Configuration device " + str(capteur))
+            deviceId = 0
+            scenarioId = 0
+            label = ""
+            modelId = 0
+            modelLabel = ""
+            typeLabel = ""
+            enabled = ""
+            if "deviceId" in capteur :
+                deviceId = capteur["deviceId"]
+            elif "groupId" in capteur :
+                deviceId = capteur["groupId"]
+            if "scenarioId" in capteur :
+                scenarioId = capteur["scenarioId"]
+            if "label" in capteur :
+                label = capteur["label"]
+            if "modelId" in capteur :
+                modelId = capteur["modelId"]
+            if "modelLabel" in capteur :
+                modelLabel = capteur["modelLabel"]
+            elif "type" in capteur :
+                modelLabel = capteur["type"]
+            if "typeLabel" in capteur :
+                typeLabel = capteur["typeLabel"]
+            if "enabled" in capteur :
+                enabled = capteur["enabled"]
 
-        if deviceId > 0 :
-            client.configure_device(deviceId, label, modelId, modelLabel)
-        if scenarioId > 0 :
-            client.configure_scene(scenarioId, label, typeLabel, enabled)
+            if deviceId > 0 :
+                client.configure_device(deviceId, label, modelId, modelLabel)
+            if scenarioId > 0 :
+                client.configure_scene(scenarioId, label, typeLabel, enabled)
 
-    if liste_capteurs.__len__() > 0 :
-        coordinator:MyFoxCoordinator = hass.data[DOMAIN_MYFOX][entry.entry_id]
-        coordinator.add_client(client)
+        if liste_capteurs.__len__() > 0 :
+            coordinator:MyFoxCoordinator = hass.data[DOMAIN_MYFOX][entry.entry_id]
+            coordinator.add_client(client)
 
+    except MyFoxException as exception:
+        _LOGGER.error("%s : Imposslble de charger le client %s", str(exception), client.__class__)
+    except Exception as exception:
+        _LOGGER.error("%s : Imposslble de charger le client %s", str(exception), client.__class__)
+    
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     if not await hass.config_entries.async_unload_platforms(entry, _PLATFORMS):
         return False
