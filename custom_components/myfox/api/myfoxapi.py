@@ -217,12 +217,13 @@ class MyFoxApiClient:
 
         try:
             binary_resp = await resp.read()
-            filename=resp.content_disposition.filename
-            _LOGGER.info(filename)
-            #f = open(filename, "w")
-            #f.buffer.write(binary_resp)
-            #f.buffer.flush()
-            #f.close()
+            if resp and resp.content_disposition and resp.content_disposition.filename :
+                filename=resp.content_disposition.filename
+                _LOGGER.info(filename)
+                #f = open(filename, "w")
+                #f.buffer.write(binary_resp)
+                #f.buffer.flush()
+                #f.close()
 
             return binary_resp
         
