@@ -35,6 +35,30 @@
           if (state === 'Hors GEL') return 'yellow';
           if (state === 'OFF')      return 'green';
           return '';
+    "scene.scenario_radiateur_off":
+      templates: 
+        icon: >
+          return 'mdi:gesture-tap-button';
+        icon_color: >
+          return 'green';
+    "scene.scenario_radiateur_on":
+      templates: 
+        icon: >
+          return 'mdi:gesture-tap-button';
+        icon_color: >
+          return 'red';
+    "scene.scenario_radiateur_eco":
+      templates: 
+        icon: >
+          return 'mdi:gesture-tap-button';
+        icon_color: >
+          return 'orange';
+    "scene.scenario_radiateur_hg":
+      templates: 
+        icon: >
+          return 'mdi:gesture-tap-button';
+        icon_color: >
+          return 'yellow';
     "select.alarme*":
       templates: 
         icon: >
