@@ -41,7 +41,7 @@
           return 'mdi:gesture-tap-button';
         icon_color: >
           return 'green';
-    "scene.scenario_radiateur_on":
+    "scene.scenario_radiateur_confort":
       templates: 
         icon: >
           return 'mdi:gesture-tap-button';
