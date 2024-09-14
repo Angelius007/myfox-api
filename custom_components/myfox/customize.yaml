@@ -1,6 +1,60 @@
 
   # Customize entities matching a pattern
   customize_glob:
+    "scene.*on":
+      templates: 
+        icon: >
+          return 'mdi:toggle-switch-variant';
+        icon_color: >
+          return 'green';
+    "scene.*off":
+      templates: 
+        icon: >
+          return 'mdi:toggle-switch-variant-off';
+        icon_color: >
+          return 'red';
+    "button.on_*":
+      templates: 
+        icon: >
+          return 'mdi:toggle-switch-variant';
+        icon_color: >
+          return 'green';
+    "button.off_*":
+      templates: 
+        icon: >
+          return 'mdi:toggle-switch-variant-off';
+        icon_color: >
+          return 'red';
+    "button.*_open":
+      templates: 
+        icon_color: >
+          return 'green';
+    "button.*_close":
+      templates: 
+        icon_color: >
+          return 'red';
+    "switch.scenario_*":
+      templates: 
+        icon: >
+          if (state === 'True' or state === 'on')      return 'mdi:toggle-switch-variant';
+          if (state === 'False' or state === 'off')    return 'mdi:toggle-switch-variant-off';
+          return 'mdi:gesture-tap';
+        icon_color: >
+          if (state === 'True' or state === 'on')      return 'green';
+          if (state === 'False' or state === 'off')    return 'red';
+          return '';
+    "select.alarme*":
+      templates: 
+        icon: >
+          if (state === 'Disarmed')    return 'mdi:shield-outline';
+          if (state === 'Partial')     return 'mdi:shield-half-full';
+          if (state === 'Armed')       return 'mdi:shield-check';
+          return 'mdi:security';
+        icon_color: >
+          if (state === 'Disarmed')    return 'greed';
+          if (state === 'Partial')     return 'orange';
+          if (state === 'Armed')       return 'red';
+          return '';
     "sensor.etat_incendie_*":
       templates: 
         icon: >
@@ -35,6 +89,24 @@
           if (state === 'Hors GEL') return 'yellow';
           if (state === 'OFF')      return 'green';
           return '';
+    "button.ouverture_volet*":
+      templates: 
+        icon: >
+          return 'mdi:window-shutter-open';
+        icon_color: >
+          return 'green';
+    "button.fermeture_volet*":
+      templates: 
+        icon: >
+          return 'mdi:window-shutter';
+        icon_color: >
+          return 'red';
+    "button.favorite_volet*":
+      templates: 
+        icon: >
+          return 'mdi:window-shutter-auto';
+        icon_color: >
+          return 'red';
     "scene.scenario_radiateur_off":
       templates: 
         icon: >
@@ -59,75 +131,27 @@
           return 'mdi:gesture-tap-button';
         icon_color: >
           return 'yellow';
-    "select.alarme*":
+    "button.*_live_start":
       templates: 
         icon: >
-          if (state === 'Disarmed')    return 'mdi:shield-outline';
-          if (state === 'Partial')     return 'mdi:shield-half-full';
-          if (state === 'Armed')       return 'mdi:shield-check';
-          return 'mdi:security';
-        icon_color: >
-          if (state === 'Disarmed')    return 'greed';
-          if (state === 'Partial')     return 'orange';
-          if (state === 'Armed')       return 'red';
-          return '';
-    "button.ouverture_volet*":
-      templates: 
-        icon: >
-          return 'mdi:window-shutter-open';
-        icon_color: >
-          return 'green';
-    "button.fermeture_volet*":
-      templates: 
-        icon: >
-          return 'mdi:window-shutter';
+          return 'mdi:record-rec';
         icon_color: >
           return 'red';
-    "button.favorite_volet*":
+    "button.*_live_stop":
       templates: 
         icon: >
-          return 'mdi:window-shutter-auto';
+          return 'mdi:stop';
         icon_color: >
-          return 'red';
-    "button.on_*":
+          return 'dark-grey';
+    "button.*_live_extend":
       templates: 
         icon: >
-          return 'mdi:toggle-switch-variant';
+          return 'mdi:plus-box';
         icon_color: >
-          return 'green';
-    "button.off_*":
+          return 'deep-orange';
+    "button.*_snapshot":
       templates: 
         icon: >
-          return 'mdi:toggle-switch-variant-off';
+          return 'mdi:camera-plus-outline';
         icon_color: >
-          return 'red';
-    "button.*_open":
-      templates: 
-        icon_color: >
-          return 'green';
-    "button.*_close":
-      templates: 
-        icon_color: >
-          return 'red';
-    "switch.scenario_*":
-      templates: 
-        icon: >
-          if (state === 'True' or state === 'on')      return 'mdi:toggle-switch-variant';
-          if (state === 'False' or state === 'off')    return 'mdi:toggle-switch-variant-off';
-          return 'mdi:gesture-tap';
-        icon_color: >
-          if (state === 'True' or state === 'on')      return 'green';
-          if (state === 'False' or state === 'off')    return 'red';
-          return '';
-    "scene.*on":
-      templates: 
-        icon: >
-          return 'mdi:toggle-switch-variant';
-        icon_color: >
-          return 'green';
-    "scene.*off":
-      templates: 
-        icon: >
-          return 'mdi:toggle-switch-variant-off';
-        icon_color: >
-          return 'red';
+          return 'lime';
