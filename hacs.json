@@ -1,0 +1,7 @@
+{
+    "name": "MyFox",
+    "render_readme": true,
+    "homeassistant": "2024.8.0",
+    "hide_default_branch": true,
+    "country": ["FR", "EN"]
+}
