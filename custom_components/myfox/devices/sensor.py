@@ -17,14 +17,6 @@ _LOGGER = logging.getLogger(__name__)
 # modelLabel (string): The device model label
 # }
 
-@dataclass
-class MyFoxGenerictSensor :
-    deviceId: int
-    label: str
-    modelId: int
-    modelLabel: str
-    state: int
-
 # DeviceWithState {
 # deviceId (integer): The device identifier,
 # label (string): The device label,
@@ -32,19 +24,6 @@ class MyFoxGenerictSensor :
 # modelId (string): The device model identifier,
 # modelLabel (string): The device model label
 # }
-@dataclass
-class MyFoxDeviceWithState :
-    deviceId: int
-    label: str
-    modelId: int
-    modelLabel: str
-    stateLabel : str
-
-@dataclass
-class MyFoxDeviceWithStateState :
-    deviceId: int
-    stateLabel : str
-
 
 @dataclass
 class MyFoxAlerteSensorDevice(BaseDevice) :

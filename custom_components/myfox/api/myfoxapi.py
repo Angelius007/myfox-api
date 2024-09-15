@@ -8,7 +8,6 @@ from abc import abstractmethod
 from typing import Any
 from aiohttp import ClientResponse
 from dataclasses import dataclass, field
-from typing import Optional
 from .const import (
     DEFAULT_MYFOX_URL_API, MYFOX_TOKEN_PATH, MYFOX_INFO_SITE_PATH,MYFOX_HISTORY_GET,
     KEY_GRANT_TYPE, KEY_CLIENT_ID, KEY_CLIENT_SECRET, KEY_MYFOX_USER, KEY_MYFOX_PSWD, KEY_REFRESH_TOKEN,

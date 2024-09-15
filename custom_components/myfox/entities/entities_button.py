@@ -72,3 +72,11 @@ class SocketButtonEntity(BaseButtonEntity):
         else :
             return "mdi:eye"
     
+class PerformButtonEntity(BaseButtonEntity):
+    """ """
+    _attr_device_class = ButtonDeviceClass.IDENTIFY
+    _attr_entity_category = EntityCategory.CONFIG
+
+    @property
+    def icon(self) -> str | None:
+        return "mdi:gesture-tap-button"

@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from ..devices import BaseDevice, MyFoxDeviceInfo
+
 #Image {
 #imageId (integer): The image identifier,
 #cameraId (integer): This value can be null if the camera has been uninstalled.,
@@ -9,15 +11,6 @@ from dataclasses import dataclass
 #createdAt (integer): The image creation date,
 #fileURL (string): The download URL
 #}
-@dataclass
-class MyFoxImage :
-    imageId: int
-    cameraId: int
-    cameraLabel: str
-    height: int
-    width: int  
-    createdAt: str
-    fileURL: str
 
 #Video {
 #videoId (integer): The video identifier,
@@ -32,16 +25,9 @@ class MyFoxImage :
 #playURL (string): URL to get informations for HLS playing,
 #previewURL (string): The video preview file URL
 #}
+
 @dataclass
-class MyFoxVideo :
-    videoId: int
-    cameraId: int
-    cameraLabel: str
-    duration: int
-    height: int
-    width: int  
-    isRecording: bool
-    createdAt: str
-    fileURL: str
-    playURL: str
-    previewURL: str
+class MyFoxLibrairieDevice(BaseDevice) :
+    """" """
+    def __init__(self, device_info:MyFoxDeviceInfo):
+        super().__init__(device_info)

@@ -6,7 +6,7 @@ from homeassistant.const import (UnitOfTemperature)
 from homeassistant.helpers.entity import EntityCategory
 
 from . import BaseWithValueEntity
-from ..const import (ALERTE_OPTIONS, ONLINE_OPTIONS, LIGHT_OPTIONS, HEATER_OPTIONS)
+from ..const import (ALERTE_OPTIONS, ONLINE_OPTIONS, LIGHT_OPTIONS)
 from ..devices import BaseDevice
 from ..coordinator.myfox_coordinator import (MyFoxCoordinator)
 

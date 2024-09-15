@@ -17,14 +17,6 @@ _LOGGER = logging.getLogger(__name__)
 #}
 
 @dataclass
-class MyFoxSocket :
-    deviceId: int
-    label: str
-    modelId: int
-    modelLabel: str
-
-
-@dataclass
 class MyFoxSocketDevice(BaseDevice) :
     """ """
 

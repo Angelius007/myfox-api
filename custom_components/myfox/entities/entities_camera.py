@@ -1,7 +1,5 @@
 import logging
 
-from homeassistant.components.camera import Camera
-
 from . import MyFoxAbstractCameraEntity
 from ..devices import BaseDevice
 from ..coordinator.myfox_coordinator import (MyFoxCoordinator)

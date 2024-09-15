@@ -4,9 +4,6 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 
-from homeassistant.const import (
-    Platform,
-)
 from .api.myfoxapi_exception import (MyFoxException)
 
 from .api.const import (
@@ -67,6 +64,18 @@ _PLATFORMS = {
 
 async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     """Migrate old entry."""
+    old_version = config_entry.version
+    if old_version < CONFIG_VERSION :
+        """ Action en cas d'ancienne version detectee """
+        new_data = {**config_entry.data}
+        new_options = {**config_entry.options}
+        if old_version <= 2 :
+            """ Action en cas de version < n """
+
+        config_entry.version = CONFIG_VERSION
+        hass.config_entries.async_update_entry(config_entry, data=new_data, options=new_options)
+        _LOGGER.info("Migration from version %s to version %s successful", old_version, CONFIG_VERSION)
+    return True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
@@ -168,12 +177,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 async def addCamera(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Camera")
-    await addClientToCoordinator(hass, entry, MyFoxApiCameraClient(myfox_info))
 
 async def addGate(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Gate")
-    pass
+    await addClientToCoordinator(hass, entry, MyFoxApiGateClient(myfox_info))
 
 async def addSecurity(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """

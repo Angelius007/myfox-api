@@ -6,7 +6,7 @@ from homeassistant.helpers import selector
 from homeassistant.core import callback
 
 from dataclasses import field
-from typing import Dict, Any
+from typing import  Any
 import voluptuous as vol
 from . import (DOMAIN_MYFOX, 
                 CONFIG_VERSION)

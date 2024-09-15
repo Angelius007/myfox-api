@@ -26,10 +26,6 @@ class BaseDevice(ABC):
         super().__init__()
         self.device_info = device_info
 
-    def configure(self, refresh_period: int, diag: bool = False):
-        #self.data = MyFoxDataHolder(refresh_period, diag)
-        """ """
-
     def sensors(self, coordinator) -> list[SensorEntity]:
         return []
 
@@ -55,21 +51,3 @@ class DiagnosticDevice(BaseDevice):
 
     def __init__(self, device_info: MyFoxDeviceInfo):
         super().__init__()
-
-    def sensors(self, coordinator) -> list[SensorEntity]:
-        return []
-
-    def numbers(self, coordinator) -> list[NumberEntity]:
-        return []
-
-    def switches(self, coordinator) -> list[SwitchEntity]:
-        return []
-
-    def buttons(self, coordinator) -> list[ButtonEntity]:
-        return []
-
-    def selects(self, coordinator) -> list[SelectEntity]:
-        return []
-    
-    def texts(self, coordinator) -> list[ButtonEntity]:
-        return []

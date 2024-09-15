@@ -13,18 +13,20 @@ from homeassistant.helpers.update_coordinator import (
 from ..api.myfoxapi import (
     MyFoxApiClient
 )
-from ..api.myfoxapi_exception import (MyFoxException)
-from ..api.myfoxapi_shutter import (MyFoxApiShutterClient)
-from ..api.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
-from ..api.myfoxapi_socket import (MyFoxApiSocketClient)
-from ..api.myfoxapi_group_electric import (MyFoxApiGroupElectricClient)
-from ..api.myfoxapi_temperature import (MyFoxApiTemperatureClient)
-from ..api.myfoxapi_light import (MyFoxApiLightClient)
-from ..api.myfoxapi_sensor_alerte import (MyFoxApiAlerteSensorClient)
-from ..api.myfoxapi_heater import (MyFoxApiHeaterClient)
+from ..api.myfoxapi_exception import MyFoxException
+from ..api.myfoxapi_shutter import MyFoxApiShutterClient
+from ..api.myfoxapi_group_shutter import MyFoxApiGroupShutterClient
+from ..api.myfoxapi_socket import MyFoxApiSocketClient
+from ..api.myfoxapi_group_electric import MyFoxApiGroupElectricClient
+from ..api.myfoxapi_temperature import MyFoxApiTemperatureClient
+from ..api.myfoxapi_light import MyFoxApiLightClient
+from ..api.myfoxapi_sensor_alerte import MyFoxApiAlerteSensorClient
+from ..api.myfoxapi_heater import MyFoxApiHeaterClient
 from ..api.myfoxapi_scenario import MyFoxApiSecenarioClient
 from ..api.myfoxapi_security import MyFoxApiSecurityClient
 from ..api.myfoxapi_camera import MyFoxApiCameraClient
+from ..api.myfoxapi_gate import MyFoxApiGateClient
+from ..api.myfoxapi_module import MyFoxApiModuleClient
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -160,6 +162,20 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         
                         client:MyFoxApiSecenarioClient = myfoxApiClient
                         for temp in client.scenarii :
+                            self.addToParams(params, listening_idx, temp)
+
+                    # cas d'un client gate
+                    if myfoxApiClient.__class__ == MyFoxApiGateClient :
+                        
+                        client:MyFoxApiGateClient = myfoxApiClient
+                        for temp in client.gate :
+                            self.addToParams(params, listening_idx, temp)
+
+                    # cas d'un client module
+                    if myfoxApiClient.__class__ == MyFoxApiModuleClient :
+                        
+                        client:MyFoxApiModuleClient = myfoxApiClient
+                        for temp in client.gate :
                             self.addToParams(params, listening_idx, temp)
 
             _LOGGER.debug("params : %s", str(params))
@@ -312,8 +328,49 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         else :
                             """ inconnu """
                             _LOGGER.error("pressButton %s  non reconnue pour le device %s", str(device_action), str(device_id))
+                elif myfoxApiClient.__class__ == MyFoxApiGateClient :
+                    client:MyFoxApiGateClient = myfoxApiClient
+                    # verification device
+                    if device_id in client.devices :
+                        """ """
+                        if device_action == "performeOne" :
+                            """ performeOne """
+                            action_ok = await client.performeOne(int(device_id))
+                            break
+                        elif device_action == "performeTwo" :
+                            """ performeTwo """
+                            action_ok = await client.performeTwo(int(device_id))
+                            break
+                        else :
+                            """ inconnu """
+                            _LOGGER.error("pressButton %s  non reconnue pour le device %s", str(device_action), str(device_id))
+                elif myfoxApiClient.__class__ == MyFoxApiModuleClient :
+                    client:MyFoxApiModuleClient = myfoxApiClient
+                    # verification device
+                    if device_id in client.devices :
+                        """ """
+                        if device_action == "performeOne" :
+                            """ performeOne """
+                            action_ok = await client.performeOne(int(device_id))
+                            break
+                        elif device_action == "performeTwo" :
+                            """ performeTwo """
+                            action_ok = await client.performeTwo(int(device_id))
+                            break
+                        else :
+                            """ inconnu """
+                            _LOGGER.error("pressButton %s  non reconnue pour le device %s", str(device_action), str(device_id))
             _LOGGER.debug("pressButton %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok) )
 
+            if action_ok :
+                params = dict[str, Any]()
+                listening_idx = set()
+                listening_idx.add(idx)
+                valeur = dict[str, Any]()
+                valeur["deviceId"] = device_id
+                valeur["device_action"] = device_action
+                self.addToParams(params, listening_idx, valeur)
+                self.async_set_updated_data(params)
             return action_ok
         except MyFoxException as exception:
             _LOGGER.error(exception)

@@ -2,7 +2,6 @@ import logging
 import logging.config
 
 from typing import  Any
-import pytest
 import asyncio
 import json
 
@@ -26,18 +25,6 @@ from myfox.api.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
 from myfox.api.myfoxapi_heater import (MyFoxApiHeaterClient)
 from myfox.api.myfoxapi_thermo import (MyFoxApThermoClient)
 
-
-from myfox.devices.camera import (MyFoxCamera)
-from myfox.devices.gate import (MyFoxGate)
-from myfox.devices.heater import (MyFoxHeater)
-from myfox.devices.module import (MyFoxModule)
-from myfox.devices.light import (MyFoxLightSensor)
-from myfox.devices.sensor import (MyFoxGenerictSensor, MyFoxDeviceWithState)
-from myfox.devices.temperature import (MyFoxTemperatureRecord, MyFoxTemperatureSensor)
-from myfox.devices.shutter import MyFoxShutter
-from myfox.devices.socket import MyFoxSocket
-from myfox.devices.librairie import (MyFoxImage, MyFoxVideo)
-from myfox.devices.group import (MyFoxGroupElectric, MyFoxGroupShutter)
 from myfox.devices.site import (MyFoxSite)
 
 
@@ -242,7 +229,6 @@ class TestClients :
         #_LOGGER.info("results:"+str(results))
         results = loop.run_until_complete(asyncio.gather(*[client.getVideoList()]))
         _LOGGER.info("results:"+str(results))
-        #device = MyFoxVideo(2262, "A1 - Lampe séjour", 19, "Prise électrique commandée DIO First")
 
     def testGroupElectric(loop : AbstractEventLoop, client : MyFoxApiGroupElectricClient):
         #results = loop.run_until_complete(asyncio.gather(*[client.getList()]))

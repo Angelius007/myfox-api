@@ -20,16 +20,6 @@ _LOGGER = logging.getLogger(__name__)
 #}
 
 @dataclass
-class MyFoxHeater :
-    deviceId: int
-    label: str
-    modelId: int
-    modelLabel: str
-    modeLabel: str
-    stateLabel: str
-    lastTemperature: float | None = None
-
-@dataclass
 class MyFoxHeaterDevice(BaseDevice) :
 
     def __init__(self, device_info:MyFoxDeviceInfo):

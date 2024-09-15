@@ -5,8 +5,6 @@ from abc import ABC
 from homeassistant.components.scene import Scene
 from homeassistant.components.switch import SwitchEntity
 
-#from .data_holder import MyFoxDataHolder
-
 _LOGGER = logging.getLogger(__name__)
 
 @dataclasses.dataclass
