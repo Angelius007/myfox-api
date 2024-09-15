@@ -12,8 +12,8 @@ from myfox.api.myfoxapi_camera import (MyFoxApiCameraClient)
 from myfox.api.myfoxapi_light import (MyFoxApiLightClient)
 from myfox.api.myfoxapi_security import (MyFoxApiSecurityClient)
 from myfox.api.myfoxapi_scenario import (MyFoxApiSecenarioClient)
-from myfox.api.myfoxapi_sensor import (MyFoxApiSensorClient)
-from myfox.api.myfoxapi_sensor_alerte import (MyFoxApiAlerteSensorClient)
+from custom_components.myfox.api.myfoxapi_state import (MyFoxApiStateClient)
+from custom_components.myfox.api.myfoxapi_state_alerte import (MyFoxApiAlerteStateClient)
 from myfox.api.myfoxapi_temperature import (MyFoxApiTemperatureClient)
 from myfox.api.myfoxapi_gate import (MyFoxApiGateClient)
 from myfox.api.myfoxapi_module import (MyFoxApiModuleClient)
@@ -171,11 +171,11 @@ class TestClients :
         results = loop.run_until_complete(asyncio.gather(*[client.getLightHistory(65714)]))
         _LOGGER.info("results:"+str(results))
 
-    def testGenericSensor(loop : AbstractEventLoop, client : MyFoxApiAlerteSensorClient):
+    def testGenericSensor(loop : AbstractEventLoop, client : MyFoxApiAlerteStateClient):
         results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
         _LOGGER.info("results:"+str(results))
 
-    def testSensor(loop : AbstractEventLoop, client : MyFoxApiSensorClient):
+    def testSensor(loop : AbstractEventLoop, client : MyFoxApiStateClient):
         results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
         _LOGGER.info("results:"+str(results))
         # results = loop.run_until_complete(asyncio.gather(*[client.getDeviceWithState(123)]))
@@ -309,7 +309,7 @@ if __name__ == "__main__" :
         # TestClients.testSecurity(loop, MyFoxApiSecurityClient(myfox_info))
         # TestClients.testCamera(loop, MyFoxApiCameraClient(myfox_info))
         # TestClients.testLightSensor(loop, MyFoxApiLightClient(myfox_info))
-        # TestClients.testGenericSensor(loop, MyFoxApiAlerteSensorClient(myfox_info))
+        # TestClients.testGenericSensor(loop, MyFoxApiAlerteStateClient(myfox_info))
         # TestClients.testSensor(loop, MyFoxApiSensorClient(myfox_info))
         # TestClients.testTemperatureSensor(loop, MyFoxApiTemperatureClient(myfox_info))
         # TestClients.testGate(loop, MyFoxApiGateClient(myfox_info))

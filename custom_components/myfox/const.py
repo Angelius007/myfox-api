@@ -8,6 +8,11 @@ ONLINE_OPTIONS = {
     "Offline": 1,
 }
 
+STATE_OPTIONS = {
+    "Ouvert": "opened",
+    "Fermé": "closed",
+}
+
 ALERTE_OPTIONS = {
     "OK": 0,
     "ALERTE": 1,

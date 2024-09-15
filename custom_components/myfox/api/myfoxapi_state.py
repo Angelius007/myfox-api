@@ -11,11 +11,11 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-class MyFoxApiSensorClient(MyFoxApiClient) :
+class MyFoxApiStateClient(MyFoxApiClient) :
 
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
-        self.client_key = "sensor"
+        self.client_key = "state"
         self.sensor = list()
         self.sensor_time = 0
         self.sensorState = list()

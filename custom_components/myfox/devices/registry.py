@@ -1,15 +1,17 @@
 from typing import Type, OrderedDict
 
+from . import state
+
 from ..devices import (BaseDevice, DiagnosticDevice, 
                        camera, gate, heater, alarme,
-                       librairie, light, module, sensor, shutter, socket, temperature)
+                       librairie, light, module, shutter, socket, temperature)
 
 device_by_product: OrderedDict[str, Type[BaseDevice]] = OrderedDict[str, Type[BaseDevice]]({
     "Diagnostic"    : DiagnosticDevice
 })
 
 device_by_client_key: OrderedDict[str, Type[BaseDevice]] = OrderedDict[str, Type[BaseDevice]]({
-    "alerte_state_sensor"   : sensor.MyFoxAlerteSensorDevice,
+    "alerte_state_sensor"   : state.MyFoxAlerteStateDevice,
     "camera"                : camera.MyFoxCameraDevice,
     "gate"                  : gate.MyFoxGateDevice,
     "group_electric"        : socket.MyFoxSocketDevice,
@@ -21,6 +23,7 @@ device_by_client_key: OrderedDict[str, Type[BaseDevice]] = OrderedDict[str, Type
     "security"              : alarme.MyFoxAlarmeDevice,
     "shutter"               : shutter.MyFoxShuttereDevice,
     "socket"                : socket.MyFoxSocketDevice,
+    "state"                 : state.MyFoxStateDevice,
     "temperature"           : temperature.MyFoxTemperatureDevice,
     "thermo"                : heater.MyFoxHeaterDevice,
     "generic"               : DiagnosticDevice

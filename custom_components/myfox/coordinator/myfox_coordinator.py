@@ -20,7 +20,8 @@ from ..api.myfoxapi_socket import MyFoxApiSocketClient
 from ..api.myfoxapi_group_electric import MyFoxApiGroupElectricClient
 from ..api.myfoxapi_temperature import MyFoxApiTemperatureClient
 from ..api.myfoxapi_light import MyFoxApiLightClient
-from ..api.myfoxapi_sensor_alerte import MyFoxApiAlerteSensorClient
+from ..api.myfoxapi_state_alerte import MyFoxApiAlerteStateClient
+from ..api.myfoxapi_state import MyFoxApiStateClient
 from ..api.myfoxapi_heater import MyFoxApiHeaterClient
 from ..api.myfoxapi_scenario import MyFoxApiSecenarioClient
 from ..api.myfoxapi_security import MyFoxApiSecurityClient
@@ -144,9 +145,16 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                             self.addToParams(params, listening_idx, temp)
                     
                     # cas d'un client sensor alert
-                    if myfoxApiClient.__class__ == MyFoxApiAlerteSensorClient :
+                    if myfoxApiClient.__class__ == MyFoxApiAlerteStateClient :
                         
-                        client:MyFoxApiAlerteSensorClient = myfoxApiClient
+                        client:MyFoxApiAlerteStateClient = myfoxApiClient
+                        for temp in client.sensor :
+                            self.addToParams(params, listening_idx, temp)
+
+                    # cas d'un client sensor alert
+                    if myfoxApiClient.__class__ == MyFoxApiStateClient :
+                        
+                        client:MyFoxApiStateClient = myfoxApiClient
                         for temp in client.sensor :
                             self.addToParams(params, listening_idx, temp)
 
@@ -157,7 +165,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         for temp in client.heater :
                             self.addToParams(params, listening_idx, temp)
 
-                    # cas d'un client heater
+                    # cas d'un client scenario
                     if myfoxApiClient.__class__ == MyFoxApiSecenarioClient :
                         
                         client:MyFoxApiSecenarioClient = myfoxApiClient

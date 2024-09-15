@@ -6,7 +6,7 @@ from homeassistant.const import (UnitOfTemperature)
 from homeassistant.helpers.entity import EntityCategory
 
 from . import BaseWithValueEntity
-from ..const import (ALERTE_OPTIONS, ONLINE_OPTIONS, LIGHT_OPTIONS)
+from ..const import (ALERTE_OPTIONS, ONLINE_OPTIONS, LIGHT_OPTIONS, STATE_OPTIONS)
 from ..devices import BaseDevice
 from ..coordinator.myfox_coordinator import (MyFoxCoordinator)
 
@@ -117,7 +117,7 @@ class OnlineSateSensorEntity(DictStateBaseSensorEntity):
         else :
             return "mdi:toggle-switch-off-outline"
         
-class AlerteSateSensorEntity(DictStateBaseSensorEntity):
+class AlerteStateSensorEntity(DictStateBaseSensorEntity):
     _attr_device_class = SensorDeviceClass.ENUM
     _attr_entity_category = EntityCategory.DIAGNOSTIC
     _options_dict: dict[str, int] = ALERTE_OPTIONS
@@ -133,3 +133,8 @@ class AlerteSateSensorEntity(DictStateBaseSensorEntity):
                 return "mdi:bell-outline"
         else :
             return "mdi:bell-outline"
+
+class StateSensorEntity(DictStateBaseSensorEntity):
+    _attr_device_class = SensorDeviceClass.ENUM
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
+    _options_dict: dict[str, int] = STATE_OPTIONS
