@@ -16,13 +16,6 @@ _LOGGER = logging.getLogger(__name__)
 #}
 
 @dataclass
-class MyFoxShutter :
-    deviceId: int
-    label: str
-    modelId: int
-    modelLabel: str
-
-@dataclass
 class MyFoxShuttereDevice(BaseDevice) :
     """ """
 

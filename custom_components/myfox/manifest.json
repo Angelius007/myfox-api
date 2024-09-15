@@ -6,7 +6,7 @@
     ],
     "config_flow": true,
     "documentation": "https://github.com/Angelius007/myfox-api",
-    "iot_class": "cloud_push",
+    "iot_class": "cloud_polling",
     "issue_tracker": "https://github.com/Angelius007/myfox-api/issues",
     "requirements": [
       "aiohttp>=3.10.1",

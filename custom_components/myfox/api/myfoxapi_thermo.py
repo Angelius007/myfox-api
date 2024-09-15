@@ -18,38 +18,29 @@ class MyFoxApThermoClient(MyFoxApiClient) :
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
         self.client_key = "thermo"
-        self.temperature = list()
-        self.temperature_time = 0
+        self.heater = list()
+        self.heater_time = 0
 
     def stop(self) -> bool:
         super().stop()
-        self.temperature.clear()
+        self.heater.clear()
         return True
 
     async def getList(self) -> list:
         """ Get security site """
         try:
-            if self.isCacheExpire(self.temperature_time) :
+            if self.isCacheExpire(self.heater_time) :
                 response = await self.callMyFoxApiGet(MYFOX_DEVICE_HEATER_THERMO_LIST % (self.myfox_info.site.siteId))
                 print(str(response))
                 items = response["payload"]["items"]
                 _LOGGER.debug("getList : %s",str(items))
-                self.temperature = items
-                self.temperature_time = time.time()
-                #for item in items :
-                #    if "lastTemperature" in item :
-                #        self.temperature.append(MyFoxHeater(item["deviceId"],
-                #                                            item["label"],
-                #                                            item["modelId"],
-                #                                            item["modelLabel"],
-                #                                            item["modeLabel"],
-                #                                            item["stateLabel"],
-                #                                            item["lastTemperature"])
-                #                            )
+                self.heater = items
+                self.heater_time = time.time()
+
             else :
                 _LOGGER.debug("MyFoxApThermoClient.getList -> Cache ")
 
-            return self.temperature
+            return self.heater
 
         except MyFoxException as exception:
             raise exception
@@ -65,7 +56,7 @@ class MyFoxApThermoClient(MyFoxApiClient) :
             
             statut_ok =  ("status" in response and response["status"] == "OK")
             if statut_ok :
-                self.temperature_time = 0
+                self.heater_time = 0
             return statut_ok
 
         except MyFoxException as exception:
@@ -82,7 +73,7 @@ class MyFoxApThermoClient(MyFoxApiClient) :
             
             statut_ok =  ("status" in response and response["status"] == "OK")
             if statut_ok :
-                self.temperature_time = 0
+                self.heater_time = 0
             return statut_ok
 
         except MyFoxException as exception:
@@ -99,7 +90,7 @@ class MyFoxApThermoClient(MyFoxApiClient) :
             
             statut_ok =  ("status" in response and response["status"] == "OK")
             if statut_ok :
-                self.temperature_time = 0
+                self.heater_time = 0
             return statut_ok
 
         except MyFoxException as exception:
@@ -116,7 +107,7 @@ class MyFoxApThermoClient(MyFoxApiClient) :
             
             statut_ok =  ("status" in response and response["status"] == "OK")
             if statut_ok :
-                self.temperature_time = 0
+                self.heater_time = 0
             return statut_ok
 
         except MyFoxException as exception:

@@ -8,7 +8,6 @@ from abc import abstractmethod
 from typing import Any
 from aiohttp import ClientResponse
 from dataclasses import dataclass, field
-from typing import Optional
 from .const import (
     DEFAULT_MYFOX_URL_API, MYFOX_TOKEN_PATH, MYFOX_INFO_SITE_PATH,MYFOX_HISTORY_GET,
     KEY_GRANT_TYPE, KEY_CLIENT_ID, KEY_CLIENT_SECRET, KEY_MYFOX_USER, KEY_MYFOX_PSWD, KEY_REFRESH_TOKEN,
@@ -35,6 +34,7 @@ class MyFoxOptionsDataApi:
     cache_time:int = 0
     pooling_frequency:int = 0
     cache_camera_time:int = 0
+    cache_security_time:int = 0
 
 @dataclass
 class MyFoxEntryDataApi:
@@ -131,6 +131,10 @@ class MyFoxApiClient:
     async def callMyFoxApiGet(self, path:str, data:str = None):
         """ Appel API en GET """
         return await self.callMyFoxApi(path, data, "GET")
+    
+    async def callMyFoxApiBinaryGet(self, path:str, data:str = None):
+        """ Appel API en GET """
+        return await self.callMyFoxApi(path, data, "GET", "binary")
     
     async def callMyFoxApiPost(self, path:str, data:str = None):
         """ Appel API en POST """

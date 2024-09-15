@@ -8,6 +8,7 @@ from homeassistant.components.number import NumberEntity
 from homeassistant.components.select import SelectEntity
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.switch import SwitchEntity
+from homeassistant.components.media_player import MediaPlayerEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -25,10 +26,6 @@ class BaseDevice(ABC):
     def __init__(self, device_info: MyFoxDeviceInfo):
         super().__init__()
         self.device_info = device_info
-
-    def configure(self, refresh_period: int, diag: bool = False):
-        #self.data = MyFoxDataHolder(refresh_period, diag)
-        """ """
 
     def sensors(self, coordinator) -> list[SensorEntity]:
         return []
@@ -51,25 +48,10 @@ class BaseDevice(ABC):
     def cameras(self, coordinator) -> list[Camera]:
         return []
     
+    def medias(self, coordinator) -> list[MediaPlayerEntity]:
+        return []
+    
 class DiagnosticDevice(BaseDevice):
 
     def __init__(self, device_info: MyFoxDeviceInfo):
         super().__init__()
-
-    def sensors(self, coordinator) -> list[SensorEntity]:
-        return []
-
-    def numbers(self, coordinator) -> list[NumberEntity]:
-        return []
-
-    def switches(self, coordinator) -> list[SwitchEntity]:
-        return []
-
-    def buttons(self, coordinator) -> list[ButtonEntity]:
-        return []
-
-    def selects(self, coordinator) -> list[SelectEntity]:
-        return []
-    
-    def texts(self, coordinator) -> list[ButtonEntity]:
-        return []

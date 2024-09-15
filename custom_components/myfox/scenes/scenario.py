@@ -14,13 +14,6 @@ _LOGGER = logging.getLogger(__name__)
 #"label": "Volets Nuit ON",
 #"typeLabel": "onDemand",
 #"enabled": null
-@dataclass
-class MyFoxScenario :
-    scenarioId: int
-    label: str
-    typeLabel: str
-    enabled: bool | None
-
 
 @dataclass
 class MyFoxScenarioDevice(BaseScene) :

@@ -30,14 +30,6 @@ class MyFoxApiHeaterClient(MyFoxApiClient) :
                 items = response["payload"]["items"]
                 self.heater = items
                 self.heater_time = time.time()
-                #for item in items :
-                #    self.temperature.append(MyFoxHeater(item["deviceId"],
-                #                                        item["label"],
-                #                                        item["modelId"],
-                #                                        item["modelLabel"],
-                #                                        item["modeLabel"],
-                #                                        item["stateLabel"])
-                #                            )
             else :
                 _LOGGER.debug("MyFoxApiHeaterClient.getList -> Cache ")
 

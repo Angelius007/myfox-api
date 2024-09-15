@@ -30,7 +30,7 @@ class MyFoxAbstractDeviceEntity(CoordinatorEntity, Entity):
         self.idx = str(device.device_info.deviceId)+"|"+key 
         self._device: BaseDevice = device
         self._attr_name = title
-        self._attr_unique_id = "MyFox-"+self.idx
+        self._attr_unique_id = "MyFox-"+title+"-"+self.idx
 
     @property
     def device_info(self) -> DeviceInfo | None:
@@ -73,7 +73,7 @@ class MyFoxAbstractSceneEntity(CoordinatorEntity, Entity):
         self.idx = str(scene.scene_info.scenarioId)+"|"+key 
         self._scene: BaseScene = scene
         self._attr_name = title
-        self._attr_unique_id = "MyFox-"+self.idx
+        self._attr_unique_id = "MyFox-"+title+"-"+self.idx
 
     @property
     def device_info(self) -> DeviceInfo | None:
@@ -116,7 +116,7 @@ class MyFoxAbstractCameraEntity(Camera):
         self._device: BaseDevice = device
         self.coordinator = coordinator
         self._attr_name = title
-        self._attr_unique_id = "MyFox-"+self.idx
+        self._attr_unique_id = "MyFox-"+title+"-"+self.idx
         self._attr_frame_interval = 30 # 30 sec d'interval minimum entre deux mises a jour
         self._attr_supported_features = CameraEntityFeature.STREAM
         self._attr_frontend_stream_type = StreamType.HLS

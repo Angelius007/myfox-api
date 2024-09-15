@@ -1,10 +1,16 @@
+from typing import Final
 
-DOMAIN_MYFOX = "myfox"
-CONFIG_VERSION = 1
+DOMAIN_MYFOX: Final = "myfox"
+CONFIG_VERSION: int = 1
 
 ONLINE_OPTIONS = {
     "Online": 0,
     "Offline": 1,
+}
+
+STATE_OPTIONS = {
+    "Ouvert": "opened",
+    "Fermé": "closed",
 }
 
 ALERTE_OPTIONS = {
@@ -27,6 +33,8 @@ HEATER_OPTIONS = {
     "OFF": "off",
     "Mode ECO": "eco",
     "Hors GEL": "frost",
+    #"Absent": "away",
+    #"Auto": "auto",
 }
 
 SECURITY_OPTIONS = {

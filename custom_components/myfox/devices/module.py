@@ -1,4 +1,12 @@
+import logging
 from dataclasses import dataclass
+
+from homeassistant.components.button import ButtonEntity
+
+from ..devices import BaseDevice, MyFoxDeviceInfo
+from ..entities.entities_button import PerformButtonEntity
+
+_LOGGER = logging.getLogger(__name__)
 
 #Module {
 #deviceId (integer): The device identifier,
@@ -8,8 +16,12 @@ from dataclasses import dataclass
 #}
 
 @dataclass
-class MyFoxModule :
-    deviceId: int
-    label: str
-    modelId: int
-    modelLabel: str
+class MyFoxModuleDevice(BaseDevice):
+    """ """
+    def __init__(self, device_info:MyFoxDeviceInfo):
+        super().__init__(device_info)
+
+    def buttons(self, coordinator) -> list[ButtonEntity]:
+        _LOGGER.debug("Ajout buttons sur device %s", str(self.device_info.deviceId))
+        return [PerformButtonEntity(coordinator, self,f"One - {self.device_info.label}", "performeOne"),
+                PerformButtonEntity(coordinator, self, f"Two - {self.device_info.label}", "performeTwo")]

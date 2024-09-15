@@ -131,19 +131,19 @@
           return 'mdi:gesture-tap-button';
         icon_color: >
           return 'yellow';
-    "button.*_live_start":
+    "button.*_start":
       templates: 
         icon: >
           return 'mdi:record-rec';
         icon_color: >
           return 'red';
-    "button.*_live_stop":
+    "button.*_stop":
       templates: 
         icon: >
           return 'mdi:stop';
         icon_color: >
           return 'dark-grey';
-    "button.*_live_extend":
+    "button.*_extend":
       templates: 
         icon: >
           return 'mdi:plus-box';

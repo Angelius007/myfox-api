@@ -15,14 +15,6 @@ _LOGGER = logging.getLogger(__name__)
     # modelId (string): The device model identifier,
     # modelLabel (string): The device model label
 #}
-@dataclass
-class MyFoxLightSensor :
-    deviceId: int
-    label: str
-    modelId: int
-    modelLabel: str
-    light: int
-
     
 @dataclass
 class MyFoxLightDevice(BaseDevice) :

@@ -11,11 +11,11 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-class MyFoxApiSensorClient(MyFoxApiClient) :
+class MyFoxApiStateClient(MyFoxApiClient) :
 
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
-        self.client_key = "sensor"
+        self.client_key = "state"
         self.sensor = list()
         self.sensor_time = 0
         self.sensorState = list()
@@ -36,12 +36,6 @@ class MyFoxApiSensorClient(MyFoxApiClient) :
                 _LOGGER.debug("getDeviceWithStateList : %s",str(items))
                 self.sensor = items
                 self.sensor_time = time.time()
-                #for item in items :
-                #    self.sensor.append(MyFoxDeviceWithState(item["deviceId"],
-                #                                           item["label"],
-                #                                           item["modelId"],
-                #                                           item["modelLabel"],
-                #                                           item["stateLabel"]))
             else :
                 _LOGGER.debug("MyFoxApiSensorClient.getList -> Cache ")
 
@@ -62,9 +56,6 @@ class MyFoxApiSensorClient(MyFoxApiClient) :
                 _LOGGER.debug("getDeviceWithState : %s",str(items))
                 self.sensorState = items
                 self.sensorState_time = time.time()
-                #for item in items :
-                #    self.sensorState.append(MyFoxDeviceWithStateState(item["deviceId"],
-                #                                           item["stateLabel"]))
             else :
                 _LOGGER.debug("MyFoxApiSensorClient.getDeviceWithState -> Cache ")
 

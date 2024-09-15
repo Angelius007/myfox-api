@@ -1,4 +1,12 @@
+import logging
 from dataclasses import dataclass
+
+from homeassistant.components.media_player import MediaPlayerEntity
+
+from ..devices import BaseDevice, MyFoxDeviceInfo
+from ..entities.entities_media import ImageMediaEntity, VideoMediaEntity
+
+_LOGGER = logging.getLogger(__name__)
 
 #Image {
 #imageId (integer): The image identifier,
@@ -9,15 +17,6 @@ from dataclasses import dataclass
 #createdAt (integer): The image creation date,
 #fileURL (string): The download URL
 #}
-@dataclass
-class MyFoxImage :
-    imageId: int
-    cameraId: int
-    cameraLabel: str
-    height: int
-    width: int  
-    createdAt: str
-    fileURL: str
 
 #Video {
 #videoId (integer): The video identifier,
@@ -32,16 +31,15 @@ class MyFoxImage :
 #playURL (string): URL to get informations for HLS playing,
 #previewURL (string): The video preview file URL
 #}
+
 @dataclass
-class MyFoxVideo :
-    videoId: int
-    cameraId: int
-    cameraLabel: str
-    duration: int
-    height: int
-    width: int  
-    isRecording: bool
-    createdAt: str
-    fileURL: str
-    playURL: str
-    previewURL: str
+class MyFoxMediaDevice(BaseDevice):
+    """ """
+    def __init__(self, device_info:MyFoxDeviceInfo):
+        super().__init__(device_info)
+
+    def medias(self, coordinator) -> list[MediaPlayerEntity]:
+        _LOGGER.debug("(inactif) Ajout ImageMediaEntity & VideoMediaEntity sur device %s", str(self.device_info.deviceId))
+        #return [ImageMediaEntity(coordinator, self,f"Images - {self.device_info.label}", "images"),
+        #        VideoMediaEntity(coordinator, self, f"Videos - {self.device_info.label}", "videos")]
+        return []
