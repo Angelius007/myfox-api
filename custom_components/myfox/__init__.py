@@ -177,6 +177,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 async def addCamera(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Camera")
+    await addClientToCoordinator(hass, entry, MyFoxApiCameraClient(myfox_info))
 
 async def addGate(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
@@ -205,7 +206,7 @@ async def addSocket(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEnt
 async def addModule(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Module")
-    pass
+    await addClientToCoordinator(hass, entry, MyFoxApiModuleClient(myfox_info))
 
 async def addHeater(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
