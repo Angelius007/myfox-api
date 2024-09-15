@@ -34,10 +34,14 @@ class MyFoxHeaterDevice(BaseDevice) :
         return [HeaterSelectEntity(coordinator, self, f"Consigne {self.device_info.label}", "stateLabel")]
 
 @dataclass
-class MyFoxHeaterWithStateDevice(MyFoxHeaterDevice) :
+class MyFoxHeaterWithStateDevice(BaseDevice) :
     
     def __init__(self, device_info:MyFoxDeviceInfo):
         super().__init__(device_info)
 
     def sensors(self, coordinator) -> list[SensorEntity]:
         return [TempSensorEntity(coordinator, self, f"Temperature {self.device_info.label}", "lastTemperature")]
+
+    def selects(self, coordinator) -> list[SelectEntity]:
+        _LOGGER.debug("Ajout HeaterSelectEntity sur device %s", str(self.device_info.deviceId))
+        return [HeaterSelectEntity(coordinator, self, f"Consigne-Thermo {self.device_info.label}", "stateLabel")]
