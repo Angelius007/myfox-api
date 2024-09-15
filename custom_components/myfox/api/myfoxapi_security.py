@@ -17,6 +17,7 @@ class MyFoxApiSecurityClient(MyFoxApiClient) :
         self.client_key = "security"
         self.security = list()
         self.security_time = 0
+        self.security_cache_expire_in = myfox_info.options.cache_security_time
 
     def stop(self) -> bool:
         super().stop()
@@ -24,7 +25,7 @@ class MyFoxApiSecurityClient(MyFoxApiClient) :
 
     async def getList(self) -> list:
         """ Generation d'une entite fictive pour l'alarme """
-        if self.isCacheExpire(self.security_time) :
+        if self.isCacheExpireWithParam(self.security_time, self.security_cache_expire_in) :
             statutSecurity = await self.getSecurity()
             self.security.clear()
             if "status" in statutSecurity and "statusLabel" in statutSecurity :

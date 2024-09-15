@@ -16,6 +16,7 @@ KEY_GRANT_TYPE   : Final = "grant_type"
 KEY_POOLING_INTERVAL: Final = "pool_interval_minutes"
 KEY_CACHE_EXPIRE_IN : Final = "cache_expires_in"
 KEY_CACHE_CAMERA    : Final = "cache_camera"
+KEY_CACHE_SECURITY  : Final = "cache_security"
 
 GRANT_TYPE_PASSWORD: Final = "password"
 GRANT_REFRESH_TOKEN: Final = "refresh_token"
@@ -25,6 +26,7 @@ POOLING_INTERVAL_DEF:int = 2 # 2 min
 SEUIL_EXPIRE_MIN:int     = (5*60) # 5 min
 CACHE_EXPIRE_IN:int      = (10*60) #10 min
 CACHE_CAMERA:int         = (5*60) #5 min
+CACHE_SECURITY:int       = (10*60) #10 min
 
 # token
 MYFOX_TOKEN_PATH: Final = "oauth2/token"

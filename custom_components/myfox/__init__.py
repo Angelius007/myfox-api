@@ -21,7 +21,9 @@ from .api.const import (
      POOLING_INTERVAL_DEF,
      KEY_POOLING_INTERVAL,
      KEY_CACHE_CAMERA,
-     CACHE_CAMERA
+     CACHE_CAMERA,
+     KEY_CACHE_SECURITY,
+     CACHE_SECURITY
 )
 from .api.myfoxapi import (
     MyFoxEntryDataApi,
@@ -106,6 +108,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         options.cache_camera_time = entry.options[KEY_CACHE_CAMERA]
     else :
         options.cache_camera_time = CACHE_CAMERA
+    # cache specifique de la securite
+    if KEY_CACHE_SECURITY in entry.options :
+        options.cache_security_time = entry.options[KEY_CACHE_SECURITY]
+    else :
+        options.cache_security_time = CACHE_SECURITY
 
     myfox_info.options = options
 

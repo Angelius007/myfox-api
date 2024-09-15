@@ -34,6 +34,7 @@ class MyFoxOptionsDataApi:
     cache_time:int = 0
     pooling_frequency:int = 0
     cache_camera_time:int = 0
+    cache_security_time:int = 0
 
 @dataclass
 class MyFoxEntryDataApi:
