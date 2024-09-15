@@ -8,6 +8,7 @@ from homeassistant.components.number import NumberEntity
 from homeassistant.components.select import SelectEntity
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.switch import SwitchEntity
+from homeassistant.components.media_player import MediaPlayerEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -45,6 +46,9 @@ class BaseDevice(ABC):
         return []
 
     def cameras(self, coordinator) -> list[Camera]:
+        return []
+    
+    def medias(self, coordinator) -> list[MediaPlayerEntity]:
         return []
     
 class DiagnosticDevice(BaseDevice):

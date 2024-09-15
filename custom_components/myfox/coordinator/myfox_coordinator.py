@@ -29,6 +29,7 @@ from ..api.myfoxapi_security import MyFoxApiSecurityClient
 from ..api.myfoxapi_camera import MyFoxApiCameraClient
 from ..api.myfoxapi_gate import MyFoxApiGateClient
 from ..api.myfoxapi_module import MyFoxApiModuleClient
+from ..api.myfoxapi_library import MyFoxApiLibraryClient
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -576,7 +577,6 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             _LOGGER.info("cameraLiveStop : %s from %s", idx, str(self.name))
             valeurs = idx.split("|", 2)
             device_id = valeurs[0]
-            device_option = valeurs[1]
             # recherche du client et du device
             for (client_key,myfoxApiClient) in self.myfoxApiClient.items() :
                 if myfoxApiClient.__class__ == MyFoxApiCameraClient :
@@ -619,3 +619,50 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             return retour_byte
         except Exception as err:
             raise UpdateFailed(f"Error with API: {err}")
+
+    async def getMedia(self, idx:str) :
+        retour = []
+        try:
+            _LOGGER.info("getMedia : %s from %s", idx, str(self.name))
+            valeurs = idx.split("|", 2)
+            device_option = valeurs[1]
+            for (client_key,myfoxApiClient) in self.myfoxApiClient.items() :
+                if myfoxApiClient.__class__ == MyFoxApiLibraryClient :
+                    client:MyFoxApiLibraryClient = myfoxApiClient
+                    if device_option == "images" :
+                        retour = await client.getImageList()
+                        break
+                    elif device_option == "videos" :
+                        retour = await client.getVideoList()
+                        break
+            _LOGGER.debug("getMedia %s : %s", str(idx), str(retour) )
+            return retour
+        except MyFoxException as exception:
+            _LOGGER.error(exception)
+            return retour
+        except Exception as err:
+            raise UpdateFailed(f"Error with API: {err}")
+
+    async def playVideo(self, idx:str, videoId:int) -> bool :
+        _LOGGER.info("playVideo : %s from %s", idx, str(self.name))
+
+        action_ok = False
+        for (client_key,myfoxApiClient) in self.myfoxApiClient.items() :
+            if myfoxApiClient.__class__ == MyFoxApiLibraryClient :
+                client:MyFoxApiLibraryClient = myfoxApiClient
+                if videoId in client.scenes :
+                    action_ok = await client.playVideo(int(videoId))
+                    break
+        _LOGGER.debug("playVideo %s : %s", str(idx), str(action_ok) )
+
+    async def getImage(self, idx:str, image_url:int) -> bytes :
+        _LOGGER.info("getImage : %s from %s", idx, str(self.name))
+        retour = None
+        for (client_key,myfoxApiClient) in self.myfoxApiClient.items() :
+            if myfoxApiClient.__class__ == MyFoxApiLibraryClient :
+                client:MyFoxApiLibraryClient = myfoxApiClient
+                retour = await client.getImage(image_url)
+                break
+        
+        _LOGGER.debug("getImage %s : %s", str(idx), str(image_url) )
+        return retour

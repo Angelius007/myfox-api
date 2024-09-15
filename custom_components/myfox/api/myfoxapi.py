@@ -131,6 +131,10 @@ class MyFoxApiClient:
         """ Appel API en GET """
         return await self.callMyFoxApi(path, data, "GET")
     
+    async def callMyFoxApiBinaryGet(self, path:str, data:str = None):
+        """ Appel API en GET """
+        return await self.callMyFoxApi(path, data, "GET", "binary")
+    
     async def callMyFoxApiPost(self, path:str, data:str = None):
         """ Appel API en POST """
         return await self.callMyFoxApi(path, data, "POST")
