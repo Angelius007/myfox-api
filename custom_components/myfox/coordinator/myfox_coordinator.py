@@ -23,6 +23,7 @@ from ..api.myfoxapi_light import MyFoxApiLightClient
 from ..api.myfoxapi_state_alerte import MyFoxApiAlerteStateClient
 from ..api.myfoxapi_state import MyFoxApiStateClient
 from ..api.myfoxapi_heater import MyFoxApiHeaterClient
+from ..api.myfoxapi_thermo import MyFoxApThermoClient
 from ..api.myfoxapi_scenario import MyFoxApiSecenarioClient
 from ..api.myfoxapi_security import MyFoxApiSecurityClient
 from ..api.myfoxapi_camera import MyFoxApiCameraClient
@@ -162,6 +163,13 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     if myfoxApiClient.__class__ == MyFoxApiHeaterClient :
                         
                         client:MyFoxApiHeaterClient = myfoxApiClient
+                        for temp in client.heater :
+                            self.addToParams(params, listening_idx, temp)
+
+                    # cas d'un client thermo
+                    if myfoxApiClient.__class__ == MyFoxApThermoClient :
+                        
+                        client:MyFoxApThermoClient = myfoxApiClient
                         for temp in client.heater :
                             self.addToParams(params, listening_idx, temp)
 

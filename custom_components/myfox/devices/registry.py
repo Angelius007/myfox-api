@@ -25,7 +25,7 @@ device_by_client_key: OrderedDict[str, Type[BaseDevice]] = OrderedDict[str, Type
     "socket"                : socket.MyFoxSocketDevice,
     "state"                 : state.MyFoxStateDevice,
     "temperature"           : temperature.MyFoxTemperatureDevice,
-    "thermo"                : heater.MyFoxHeaterDevice,
+    "thermo"                : heater.MyFoxHeaterWithStateDevice,
     "generic"               : DiagnosticDevice
 })
 

@@ -33,6 +33,8 @@ HEATER_OPTIONS = {
     "OFF": "off",
     "Mode ECO": "eco",
     "Hors GEL": "frost",
+    #"Absent": "away",
+    #"Auto": "auto",
 }
 
 SECURITY_OPTIONS = {

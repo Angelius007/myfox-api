@@ -212,6 +212,7 @@ async def addHeater(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEnt
     """ """
     _LOGGER.debug("Add Heater")
     await addClientToCoordinator(hass, entry, MyFoxApiHeaterClient(myfox_info))
+    await addClientToCoordinator(hass, entry, MyFoxApThermoClient(myfox_info))
 
 async def addScenario(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
