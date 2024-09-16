@@ -35,6 +35,8 @@ HEATER_OPTIONS = {
     "Hors GEL": "frost",
     #"Absent": "away",
     #"Auto": "auto",
+    #"Boost": "boost",
+    #"Thermostat OFF": "thermostatoff",
 }
 
 SECURITY_OPTIONS = {
