@@ -3,7 +3,8 @@
 
 API : https://api.myfox.me/
 
-Implémentation Custom pour interfaçage avec les API MyFox (racheté par Somfy)
+Implémentation Custom pour interfaçage avec les API MyFox (racheté par Somfy).
+
 Récupère l'ensemble des items dispo via les API MyFox et crée les "appareils" et "entités" associées
 
 Endpoints implémentés / non implémentés :
