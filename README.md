@@ -1,13 +1,23 @@
-## MyFox
-### Author : Angelius007
-
-API : https://api.myfox.me/
-
+# MyFox Integration pour Home Assistant
 Implémentation Custom pour interfaçage avec les API MyFox (racheté par Somfy).
-
 Récupère l'ensemble des items dispo via les API MyFox et crée les "appareils" et "entités" associées
 
-Endpoints implémentés / non implémentés :
+## Installation
+- Installation avec "custom repository" via HACS
+- Installation manuelle en téléchargeant puis désarchivage dans le répertoie custom_components
+
+Une fois installé, Ajouter via les intégration -> MyFox.
+
+### Author 
+Angelius007
+
+### Sources
+https://github.com/Angelius007/myfox-api
+
+### API MyFox
+API : https://api.myfox.me/
+
+### Endpoints implémentés / non implémentés :
 - /client/site/items : listing des sites de l'utilisateur. Choix du site paramétrable dans HA
 - /site/{siteId}/device/camera/items : listing des caméras
     - /site/{siteId}/device/{cameraId}/camera/live/start/{protocol} : démarrage d'un live (protocol "hls" implémenté)
@@ -66,9 +76,8 @@ Endpoints implémentés / non implémentés :
 - /site/{siteId}/security : récupération de l'état de l'alarme
     - /site/{siteId}/security/set/{securityLevel} : changement du niveau de sécurité de l'alarme
 
-
-Préconisations :
-- Installer le plugin "custom-ui" via HACS pour changer la couleur des icônes
+### Préconisations :
+- Pour intégrer des couleurs dans les icônes, installer le plugin "custom-ui" via HACS pour changer la couleur des icônes
 
 Après installation :
 - Pour pouvoir mettre des couleurs sur les icônes
@@ -76,7 +85,7 @@ Après installation :
     - ajouter dans le configuration.yaml la ligne : 
         homeassistant: !include custom_components/myfox/customize.yaml
 
-
+## Pour les développeurs
 
 Pour les Tests :
 
