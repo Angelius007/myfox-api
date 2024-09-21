@@ -105,7 +105,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         so entities can quickly look up their data.
         """
         try:
-            _LOGGER.info("Load data from : %s", str(self.name))
+            _LOGGER.debug("Load data from : %s", str(self.name))
             # Note: asyncio.TimeoutError and aiohttp.ClientError are already
             # handled by the data update coordinator.
             async with async_timeout.timeout(10):
