@@ -187,7 +187,7 @@ class TestClients :
         _LOGGER.info("results:"+str(results[0]))
 
         for capteur in results[0] :
-            print(str(capteur))
+            _LOGGER.debug(str(capteur))
             #capteur.
             client.configure_device(capteur["deviceId"],capteur["label"],capteur["modelId"],capteur["modelLabel"])
             #device = MyFoxTemperatureSensor(65714, "device", 0, "xx", "")

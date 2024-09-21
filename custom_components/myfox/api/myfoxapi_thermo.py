@@ -31,7 +31,7 @@ class MyFoxApThermoClient(MyFoxApiClient) :
         try:
             if self.isCacheExpire(self.heater_time) :
                 response = await self.callMyFoxApiGet(MYFOX_DEVICE_HEATER_THERMO_LIST % (self.myfox_info.site.siteId))
-                print(str(response))
+                _LOGGER.debug(str(response))
                 items = response["payload"]["items"]
                 _LOGGER.debug("getList : %s",str(items))
                 self.heater = items
@@ -45,7 +45,7 @@ class MyFoxApThermoClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
     
     async def setAuto(self, deviceId:int) -> list:
@@ -62,7 +62,7 @@ class MyFoxApThermoClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
     
     async def setAway(self, deviceId:int) -> list:
@@ -79,7 +79,7 @@ class MyFoxApThermoClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
 
     async def setBoost(self, deviceId:int) -> list:
@@ -96,7 +96,7 @@ class MyFoxApThermoClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
 
     async def setOff(self, deviceId:int) -> list:
@@ -113,5 +113,5 @@ class MyFoxApThermoClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)

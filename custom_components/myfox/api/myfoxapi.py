@@ -195,7 +195,7 @@ class MyFoxApiClient:
                 raise exception
             except Exception as exception:
                 _LOGGER.error(exception)
-                print("Error : " + str(exception))
+                _LOGGER.error("Error : " + str(exception))
                 raise MyFoxException(exception)
 
     async def _get_response(self, resp: ClientResponse, responseClass:str = "json"):
@@ -293,7 +293,7 @@ class MyFoxApiClient:
             raise exception 
         except Exception as exception:
             _LOGGER.error(exception)
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             return False
         
     async def refreshToken(self) -> bool:
@@ -318,7 +318,7 @@ class MyFoxApiClient:
             raise exception
         except Exception as exception:
             _LOGGER.error(exception)
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             return False
 
     # Sauvegarde du token
@@ -335,7 +335,7 @@ class MyFoxApiClient:
             _LOGGER.debug(KEY_EXPIRE_TIME+":"+str(self.myfox_info.expires_time))
         except KeyError as key:
             _LOGGER.error(key)
-            print("Error : " + key)
+            _LOGGER.error("Error : " + key)
             raise MyFoxException(f"Failed to extract key {key} from response: {response}")
     
     async def getToken(self) -> str:
@@ -354,7 +354,7 @@ class MyFoxApiClient:
             raise exception
         except Exception as exception:
             _LOGGER.error(exception)
-            print("Error : " + exception)
+            _LOGGER.error("Error : " + exception)
             raise MyFoxException(exception)
 
     def getExpireDelay(self) -> float :
@@ -365,10 +365,10 @@ class MyFoxApiClient:
         if expiration < 0:
             expiration = 0
             _LOGGER.info("Token expire")
-            print("Token expire")
+            _LOGGER.error("Token expire")
         else:
             _LOGGER.info("Expiration du token dans " + str(expiration) + " secondes a " + str(expires_time))
-            print("Expiration du token dans " + str(expiration) + " secondes a " + str(expires_time))
+            _LOGGER.error("Expiration du token dans " + str(expiration) + " secondes a " + str(expires_time))
         return expiration
 
     def isCacheExpire(self, start_time) -> float :
@@ -402,7 +402,7 @@ class MyFoxApiClient:
             raise exception
         except Exception as exception:
             _LOGGER.error(exception)
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
         
     async def getInfoSites(self, forceCall:bool=False) -> list[MyFoxSite]:
@@ -433,7 +433,7 @@ class MyFoxApiClient:
                                                     int(item["deviceLightCount"]),
                                                     int(item["deviceDetectorCount"]))
                     self.myfox_info.sites.append(site)
-                    print("site_id:"+str(site.siteId))
+                    _LOGGER.debug("site_id:"+str(site.siteId))
                     _LOGGER.debug("Nouveau site : %s", str(site))
                     #break
                 self.infoSites_times = time.time()
@@ -446,7 +446,7 @@ class MyFoxApiClient:
             raise exception
         except Exception as exception:
             _LOGGER.error(exception)
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
 
     async def getHistory(self):
@@ -465,7 +465,7 @@ class MyFoxApiClient:
                 # type (string) = ['scenario' or 'homeAuto' or 'security' or 'config' or 'alarm' or 'access' or 'account' or 'diagnosis']: The event type,
                 # createdAt (string): The event date
                 # }
-                print(str(item))
+                _LOGGER.debug(str(item))
                 break
 
             return items
@@ -474,5 +474,5 @@ class MyFoxApiClient:
             raise exception
         except Exception as exception:
             _LOGGER.error(exception)
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)

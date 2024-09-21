@@ -33,12 +33,6 @@ class MyFoxApiAlerteStateClient(MyFoxApiClient) :
                 self.sensor = items
                 self.sensor_time = time.time()
 
-                #for item in items :
-                #    self.sensor.append(MyFoxGenerictSensor(item["deviceId"],
-                #                                           item["label"],
-                #                                           item["modelId"],
-                #                                           item["modelLabel"],
-                #                                           item["state"]))
             else :
                 _LOGGER.debug("MyFoxApiAlerteStateClient.getList -> Cache ")
 
@@ -47,6 +41,6 @@ class MyFoxApiAlerteStateClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
     

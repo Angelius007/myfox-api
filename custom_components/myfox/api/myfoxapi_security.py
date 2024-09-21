@@ -47,16 +47,13 @@ class MyFoxApiSecurityClient(MyFoxApiClient) :
             response = await self.callMyFoxApiGet(MYFOX_SECURITY_GET % (self.myfox_info.site.siteId))
             statutSecurity = response["payload"]
             _LOGGER.debug("getSecurity : %s",str(statutSecurity))
-            # {'status': 'OK', 'timestamp': 1723759973, 'payload': {'status': 1, 'statusLabel': 'disarmed'}
-            # 1 : disarmed
-            # 2 : partial
-            # 4 : armed
+
             return statutSecurity
 
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
 
     async def setSecurity(self, securityLevel: str):
@@ -70,5 +67,5 @@ class MyFoxApiSecurityClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)

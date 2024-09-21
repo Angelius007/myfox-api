@@ -32,12 +32,6 @@ class MyFoxApiLightClient(MyFoxApiClient) :
                 self.ligth = items
                 self.light_time = time.time()
 
-                #for item in items :
-                #    self.ligth.append(MyFoxLightSensor(item["deviceId"],
-                #                    item["label"],
-                #                    item["modelId"],
-                #                    item["modelLabel"],
-                #                    item["light"]))
             else :
                 _LOGGER.debug("MyFoxApiLightClient.getList -> Cache ")
 
@@ -46,7 +40,7 @@ class MyFoxApiLightClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
 
     async def getLightHistory(self, deviceId:int):
@@ -60,5 +54,5 @@ class MyFoxApiLightClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)

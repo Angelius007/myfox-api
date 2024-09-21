@@ -33,11 +33,6 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
                 self.scenarii = items
                 self.scenarii_time = time.time()
 
-                #for item in items :
-                #    self.scenarii.append(MyFoxScenario(item["scenarioId"],
-                #                    item["label"],
-                #                    item["typeLabel"],
-                #                    item["enabled"]))
             else :
                 _LOGGER.debug("MyFoxApiSecenarioClient.getList -> Cache ")
 
@@ -46,7 +41,7 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
 
     async def enableScenario(self, scenarioId: int):
@@ -63,7 +58,7 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
         
     async def disableScenario(self, scenarioId: int):
@@ -80,7 +75,7 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
 
     async def playScenario(self, scenarioId: int):
@@ -97,5 +92,5 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)

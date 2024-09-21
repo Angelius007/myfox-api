@@ -24,21 +24,11 @@ class MyFoxApiGroupShutterClient(MyFoxApiClient) :
         try:
             if self.isCacheExpire(self.module_time) :
                 response = await self.callMyFoxApiGet(MYFOX_GROUP_SHUTTER_LIST % (self.myfox_info.site.siteId))
-                print(str(response))
+                _LOGGER.debug(str(response))
                 items = response["payload"]["items"]
                 self.module = items
                 self.module_time = time.time()
-                #for item in items :
-                #    group = MyFoxGroupShutter(item["groupId"],
-                #                                item["label"],
-                #                                item["type"],
-                #                                [])
-                #    for device in item["devices"] :
-                #        group.devices.append(MyFoxShutter(device["deviceId"],
-                #                                            device["label"],
-                #                                            device["modelId"],
-                #                                            device["modelLabel"]))
-                #    self.module.append(group)
+
             else :
                 _LOGGER.debug("MyFoxApiGroupShutterClient.getList -> Cache ")
 
@@ -47,7 +37,7 @@ class MyFoxApiGroupShutterClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
     
     async def setOpen(self, groupId:int) -> list:
@@ -64,7 +54,7 @@ class MyFoxApiGroupShutterClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
     
     async def setClose(self, groupId:int) -> list:
@@ -81,5 +71,5 @@ class MyFoxApiGroupShutterClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)

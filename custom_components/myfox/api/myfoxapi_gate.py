@@ -27,11 +27,7 @@ class MyFoxApiGateClient(MyFoxApiClient) :
                 items = response["payload"]["items"]
                 self.gate = items
                 self.gate_time = time.time()
-                #for item in items :
-                #    self.gate.append(MyFoxGate(item["deviceId"],
-                #                                           item["label"],
-                #                                           item["modelId"],
-                #                                           item["modelLabel"]))
+
             else :
                 _LOGGER.debug("MyFoxApiGateClient.getList -> Cache ")
 
@@ -40,7 +36,7 @@ class MyFoxApiGateClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
     
     async def performeOne(self, deviceId:int) -> list:
@@ -57,7 +53,7 @@ class MyFoxApiGateClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
     
     async def performeTwo(self, deviceId:int) -> list:
@@ -74,5 +70,5 @@ class MyFoxApiGateClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
