@@ -35,11 +35,6 @@ class MyFoxApiShutterClient(MyFoxApiClient) :
                 _LOGGER.debug("getList : %s",str(items))
                 self.module = items
                 self.module_time = time.time()
-                #for item in items :
-                #    self.module.append(MyFoxShutter(item["deviceId"],
-                #                                           item["label"],
-                #                                           item["modelId"],
-                #                                           item["modelLabel"]))
 
             else :
                 _LOGGER.debug("MyFoxApiShutterClient.getList -> Cache ")
@@ -49,7 +44,7 @@ class MyFoxApiShutterClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
     
     async def setFavorite(self, deviceId:int) -> list:
@@ -66,7 +61,7 @@ class MyFoxApiShutterClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
     
     async def setOpen(self, deviceId:int) -> list:
@@ -83,7 +78,7 @@ class MyFoxApiShutterClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
 
     async def setClose(self, deviceId:int) -> list:
@@ -100,5 +95,5 @@ class MyFoxApiShutterClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)

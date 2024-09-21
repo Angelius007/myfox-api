@@ -33,12 +33,6 @@ class MyFoxApiSocketClient(MyFoxApiClient) :
                 self.module = items
                 self.module_time = time.time()
 
-                #for item in items :
-                #    self.module.append(MyFoxSocket(item["deviceId"],
-                #                                           item["label"],
-                #                                           item["modelId"],
-                #                                           item["modelLabel"]))
-
             else :
                 _LOGGER.debug("MyFoxApiSocketClient.getList -> Cache ")
                 
@@ -47,7 +41,7 @@ class MyFoxApiSocketClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
     
     async def setOn(self, deviceId:int) -> list:
@@ -64,7 +58,7 @@ class MyFoxApiSocketClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
     
     async def setOff(self, deviceId:int) -> list:
@@ -83,5 +77,5 @@ class MyFoxApiSocketClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error(exception)
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)

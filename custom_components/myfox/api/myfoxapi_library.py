@@ -34,14 +34,6 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
                 _LOGGER.debug("getImageList : %s",str(items))
                 self.image = items
 
-                #for item in items :
-                #    self.module.append(MyFoxImage(item["imageId"],
-                #                                item["cameraId"],
-                #                                item["cameraLabel"],
-                #                                item["height"],
-                #                                item["width"],
-                #                                item["createdAt"],
-                #                                item["fileURL"]))
             else :
                 _LOGGER.debug("MyFoxApiLibraryClient.getImageList -> Cache ")
 
@@ -50,7 +42,7 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
     
     async def getVideoList(self) -> list:
@@ -61,19 +53,7 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
                 items = response["payload"]["items"]
                 _LOGGER.debug("getVideoList : %s",str(items))
                 self.video = items
-                #for item in items :
-                #    self.module.append(MyFoxVideo(item["videoId"],
-                #                                item["cameraId"],
-                #                                item["modelId"],
-                #                                item["cameraLabel"],
-                #                                item["duration"],
-                #                                item["height"],
-                #                                item["width"],
-                #                                item["isRecording"],
-                #                                item["createdAt"],
-                #                                item["fileURL"],
-                #                                item["playURL"],
-                #                                item["previewURL"]))
+
 
             else :
                 _LOGGER.debug("MyFoxApiLibraryClient.getVideoList -> Cache ")
@@ -83,7 +63,7 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
     
     async def playVideo(self, videoId:int) -> str:
@@ -97,7 +77,7 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
 
     async def getImage(self, image_url:int) -> bytes:
@@ -111,5 +91,5 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)

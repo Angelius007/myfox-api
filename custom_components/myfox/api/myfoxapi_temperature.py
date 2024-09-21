@@ -41,12 +41,7 @@ class MyFoxApiTemperatureClient(MyFoxApiClient) :
                 # for item in items :
                 self.temperature = items
                 self.temperature_time = time.time()
-                #     self.temperature.append(MyFoxTemperatureDevice(MyFoxTemperatureSensor(item["deviceId"],
-                #                                            item["label"],
-                #                                            item["modelId"],
-                #                                            item["modelLabel"],
-                #                                            item["lastTemperature"],
-                #                                            item["lastTemperatureAt"])))
+
             else :
                 _LOGGER.debug("MyFoxApiTemperatureClient.getList -> Cache ")
             return self.temperature
@@ -54,7 +49,7 @@ class MyFoxApiTemperatureClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
     
     async def updateDevice(self, deviceId:int) :
@@ -70,10 +65,6 @@ class MyFoxApiTemperatureClient(MyFoxApiClient) :
                 _LOGGER.debug("getTemperature : %s",str(items))
                 self.temperatureRecord = items
                 self.temperatureRecord_time = time.time()
-                #for item in items :
-                #    self.temperatureRecord.append(MyFoxTemperatureRecord(item["recordId"],
-                #                                                        item["celsius"],
-                #                                                        item["recordedAt"]))
             else :
                 _LOGGER.debug("MyFoxApiTemperatureClient.getTemperature -> Cache ")
 
@@ -82,5 +73,5 @@ class MyFoxApiTemperatureClient(MyFoxApiClient) :
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
-            print("Error : " + str(exception))
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
