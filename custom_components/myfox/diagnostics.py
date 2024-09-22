@@ -33,7 +33,7 @@ async def async_get_config_entry_diagnostics(
                 "access_token" :    myfoxApiClient.myfox_info.access_token,
                 "refresh_token" :   myfoxApiClient.myfox_info.refresh_token,
             }
-            value_myfox["site"].append(value_site)
+            value_myfox["info_site"].append(value_site)
         value_client = {
             "client_key" :      myfoxApiClient.client_key,
             "devices":          [],
