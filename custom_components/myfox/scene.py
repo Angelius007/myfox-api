@@ -13,7 +13,7 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
     """ Chargement des scenes """
     coordinator:MyFoxCoordinator = hass.data[DOMAIN_MYFOX][entry.entry_id]
-    for (client_key,client_item) in coordinator.myfoxApiClient.items() :
+    for (client_key,client_item) in coordinator.myfoxApiClients.items() :
         client: MyFoxApiClient = client_item
 
         for (scenarioId, scene) in client.scenes.items():
