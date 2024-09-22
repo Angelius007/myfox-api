@@ -169,7 +169,7 @@ class MyFoxApiClient:
                 urlApi = self.getUrlMyFoxApi(path)
                 if not data or KEY_GRANT_TYPE not in data :
                     urlApi = urlApi + "?access_token=" + await self.getToken()
-                    _LOGGER.info("Appel : " + urlApi)
+                    _LOGGER.debug("Appel : " + urlApi)
                     if method == "POST":
                         resp = await session.post(urlApi, headers=headers) 
                         return await self._get_response(resp, responseClass)
@@ -177,7 +177,7 @@ class MyFoxApiClient:
                         resp = await session.get(urlApi, headers=headers) 
                         return await self._get_response(resp, responseClass)
                 else :
-                    _LOGGER.info("Appel : " + urlApi)
+                    _LOGGER.debug("Appel : " + urlApi)
                     if method == "POST":
                         resp = await session.post(urlApi, headers=headers, json=data) 
                         return await self._get_response(resp, responseClass)
@@ -220,16 +220,18 @@ class MyFoxApiClient:
             raise MyFoxException(f"Got HTTP status code {resp.status}: {resp.reason}")
 
         try:
-            binary_resp = await resp.read()
+            response = {
+                "filename":str,
+                "binary":bytes
+            }
+            response["binary"] = await resp.read()
+            response["filename"] = "undefined"
             if resp and resp.content_disposition and resp.content_disposition.filename :
                 filename=resp.content_disposition.filename
                 _LOGGER.info(filename)
-                #f = open(filename, "w")
-                #f.buffer.write(binary_resp)
-                #f.buffer.flush()
-                #f.close()
+                response["filename"] = filename
 
-            return binary_resp
+            return response
         
         except Exception as error:
             _LOGGER.error(error)

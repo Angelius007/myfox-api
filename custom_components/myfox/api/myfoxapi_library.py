@@ -86,7 +86,7 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
             response = await self.callMyFoxApiBinaryGet(image_url)
             _LOGGER.debug("playVideo : %s",str(response))
 
-            return response
+            return response["binary"]
 
         except MyFoxException as exception:
             raise exception
