@@ -177,7 +177,7 @@ class MyFoxApiClient:
                         resp = await session.get(urlApi, headers=headers) 
                         return await self._get_response(resp, responseClass)
                 else :
-                    _LOGGER.info("Appel : " + urlApi)
+                    _LOGGER.debug("Appel : " + urlApi)
                     if method == "POST":
                         resp = await session.post(urlApi, headers=headers, json=data) 
                         return await self._get_response(resp, responseClass)

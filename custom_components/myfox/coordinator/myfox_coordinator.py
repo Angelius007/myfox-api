@@ -91,6 +91,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         This method will be called automatically during
         coordinator.async_config_entry_first_refresh.
         """
+        _LOGGER.info("Demarrage de %s", str(self.name))
         for (client_key,myfoxApiClient) in self.myfoxApiClient.items() :
             _LOGGER.debug("Client[%s].getList:%s",str(client_key),str(myfoxApiClient.__class__))
             try:
@@ -105,7 +106,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         so entities can quickly look up their data.
         """
         try:
-            _LOGGER.debug("Load data from : %s", str(self.name))
+            _LOGGER.debug("Async update data from : %s", str(self.name))
             # Note: asyncio.TimeoutError and aiohttp.ClientError are already
             # handled by the data update coordinator.
             async with async_timeout.timeout(10):
@@ -192,7 +193,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     if myfoxApiClient.__class__ == MyFoxApiModuleClient :
                         
                         client:MyFoxApiModuleClient = myfoxApiClient
-                        for temp in client.gate :
+                        for temp in client.module :
                             self.addToParams(params, listening_idx, temp)
 
             _LOGGER.debug("params : %s", str(params))
