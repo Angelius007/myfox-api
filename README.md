@@ -1,9 +1,19 @@
 # MyFox Integration pour Home Assistant
+[![GitHub release](https://img.shields.io/github/release/Angelius007/myfox-api?include_prereleases=&sort=semver&color=blue)](https://github.com/Angelius007/myfox-api/releases/)
+[![GH-code-size](https://img.shields.io/github/languages/code-size/Angelius007/myfox-api?color=red)](https://github.com/Angelius007/myfox-api)
+[![issues - myfox-api](https://img.shields.io/github/issues/Angelius007/myfox-api)](https://github.com/Angelius007/myfox-api/issues)
+[![GH-last-commit](https://img.shields.io/github/last-commit/Angelius007/myfox-api?style=flat-square)](https://github.com/Angelius007/myfox-api/commits/main)
+
+[![HACS validation](https://github.com/Angelius007/myfox-api/workflows/HACS%20validation/badge.svg)](https://github.com/Angelius007/myfox-api/actions?query=workflow:"HACS+validation")
+[![Validate with hassfest](https://github.com/Angelius007/myfox-api/workflows/Validate%20with%20hassfest/badge.svg)](https://github.com/Angelius007/myfox-api/actions?query=workflow:"Validate+with+hassfest")
+
 Implémentation Custom pour interfaçage avec les API MyFox (racheté par Somfy).
 Récupère l'ensemble des items dispo via les API MyFox et crée les "appareils" et "entités" associées
 
 ## Installation
 - Installation avec "custom repository" via HACS
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Angelius007&repository=myfox-api)
+
 - Installation manuelle en téléchargeant puis désarchivage dans le répertoie custom_components
 
 Une fois installé, Ajouter via les intégrations -> MyFox.
@@ -234,6 +244,28 @@ Une fois installé, Ajouter via les intégrations -> MyFox.
 - _(not implemented)_ /site/{siteId}/library/video/items : listing des vidéos dans le cloud MyFox
 - _(not implemented)_ /site/{siteId}/library/video/{videoId}/play : lecture d'une viédo du cloud MyFox
 
+</p></details>
+
+## Configurations :
+
+<details><summary>Fréquence de pooling (en minutes) / Pooling frequency (in minutes) </summary>
+<p>
+Fréquence d'appel des API via le coordinateur. Tous les services de récupération des appareils et de certains capteurs sont mis à jour via ce pooling.
+</p></details>
+
+<details><summary>Durée du cache (en secondees) / Cache duration (in seconds) </summary>
+<p>
+Durée du cache pour les listes d'appareils et capteurs. Si le pooling tente de récupérer des informations avant la fin de durée du cache, l'appel à l'API ne sera pas réalisé et la donnée en cache sera utilisée. (permet de limiter le nombre d'appels aux API MyFox)
+</p></details>
+
+<details><summary>Durée du cache de l'alarme (en secondes) / Security Cache duration (in seconds) </summary>
+<p>
+Durée du cache spécifique à l'alarme (pour récupérer l'état de l'armement)
+</p></details>
+
+<details><summary>Durée du cache de la camera (en secondes) / Camera Cache duration (in seconds) </summary>
+<p>
+Durée du cache spécifique à la caméra (pour récupérer un aperçu des caméras).
 </p></details>
 
 ## Préconisations :

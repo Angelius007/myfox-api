@@ -365,10 +365,8 @@ class MyFoxApiClient:
         if expiration < 0:
             expiration = 0
             _LOGGER.info("Token expire")
-            _LOGGER.error("Token expire")
         else:
-            _LOGGER.info("Expiration du token dans " + str(expiration) + " secondes a " + str(expires_time))
-            _LOGGER.error("Expiration du token dans " + str(expiration) + " secondes a " + str(expires_time))
+            _LOGGER.debug("Expiration du token dans " + str(expiration) + " secondes a " + str(expires_time))
         return expiration
 
     def isCacheExpire(self, start_time) -> float :
