@@ -1,4 +1,10 @@
 # MyFox Integration pour Home Assistant
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://github.com/hacs/integration)
+[![GitHub release](https://img.shields.io/github/release/Angelius007/myfox-api?include_prereleases=&sort=semver&color=blue)](https://github.com/Angelius007/myfox-api/releases/)
+[![GH-code-size](https://img.shields.io/github/languages/code-size/Angelius007/myfox-api?color=red)](https://github.com/Angelius007/myfox-api)
+[![issues - myfox-api](https://img.shields.io/github/issues/Angelius007/myfox-api)](https://github.com/Angelius007/myfox-api/issues)
+[![GH-last-commit](https://img.shields.io/github/last-commit/Angelius007/myfox-api?style=flat-square)](https://github.com/Angelius007/myfox-api/commits/main)
+
 Implémentation Custom pour interfaçage avec les API MyFox (racheté par Somfy).
 Récupère l'ensemble des items dispo via les API MyFox et crée les "appareils" et "entités" associées
 
