@@ -220,16 +220,18 @@ class MyFoxApiClient:
             raise MyFoxException(f"Got HTTP status code {resp.status}: {resp.reason}")
 
         try:
-            binary_resp = await resp.read()
+            response = {
+                "filename":str,
+                "binary":bytes
+            }
+            response["binary"] = await resp.read()
+            response["filename"] = "undefined"
             if resp and resp.content_disposition and resp.content_disposition.filename :
                 filename=resp.content_disposition.filename
                 _LOGGER.info(filename)
-                #f = open(filename, "w")
-                #f.buffer.write(binary_resp)
-                #f.buffer.flush()
-                #f.close()
+                response["filename"] = filename
 
-            return binary_resp
+            return response
         
         except Exception as error:
             _LOGGER.error(error)

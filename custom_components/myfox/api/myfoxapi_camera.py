@@ -87,8 +87,16 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
         """ Recuperation scenarios """
         try:
             if self.isCacheExpireWithParam(self.lastPreview_time, self.camera_cache_expire_in) :
-                self.lastPreview = await self.callMyFoxApiBinaryPost(MYFOX_CAMERA_PREV_TAKE % (self.myfox_info.site.siteId, deviceId))
-                self.lastPreview_time = time.time()
+                response = await self.callMyFoxApiBinaryPost(MYFOX_CAMERA_PREV_TAKE % (self.myfox_info.site.siteId, deviceId))
+                if("binary" in response) :
+                    self.lastPreview = response["binary"]
+                    if "filename" in response and response["filename"] == "default.jpg" :
+                        # Pas de cache si on a l'umage par defaut
+                        self.lastPreview_time = 0
+                    else :
+                        self.lastPreview_time = time.time()
+                else :
+                    self.lastPreview_time = 0
             else :
                 _LOGGER.debug("MyFoxApiCameraClient.cameraPreviewTake -> Cache ")
 
