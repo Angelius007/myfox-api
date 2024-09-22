@@ -366,7 +366,7 @@ class MyFoxApiClient:
         expiration = expires_time - current_time
         if expiration < 0:
             expiration = 0
-            _LOGGER.info("Token expire")
+            _LOGGER.debug("Token expire")
         else:
             _LOGGER.debug("Expiration du token dans " + str(expiration) + " secondes a " + str(expires_time))
         return expiration
