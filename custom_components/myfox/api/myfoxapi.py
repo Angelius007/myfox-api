@@ -169,7 +169,7 @@ class MyFoxApiClient:
                 urlApi = self.getUrlMyFoxApi(path)
                 if not data or KEY_GRANT_TYPE not in data :
                     urlApi = urlApi + "?access_token=" + await self.getToken()
-                    _LOGGER.info("Appel : " + urlApi)
+                    _LOGGER.debug("Appel : " + urlApi)
                     if method == "POST":
                         resp = await session.post(urlApi, headers=headers) 
                         return await self._get_response(resp, responseClass)
