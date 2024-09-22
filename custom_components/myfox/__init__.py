@@ -297,7 +297,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
         return False
 
     coordinator:MyFoxCoordinator = hass.data[DOMAIN_MYFOX].pop(entry.entry_id)
-    for (type,hassclient) in coordinator.myfoxApiClient.items() :
+    for (type,hassclient) in coordinator.myfoxApiClients.items() :
         client: MyFoxApiClient = hassclient
         client.stop()
     coordinator.stop()
