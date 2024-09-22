@@ -11,9 +11,10 @@ Implémentation Custom pour interfaçage avec les API MyFox (racheté par Somfy)
 Récupère l'ensemble des items dispo via les API MyFox et crée les "appareils" et "entités" associées
 
 ## Installation
-- Installation avec "custom repository" via HACS
+- Installation via HACS _(prochainement)_
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Angelius007&repository=myfox-api)
 
+- Installation avec "Dépôts personnalisés / custom repository" via HACS (en indiquant le dépôt : https://github.com/Angelius007/myfox-api / Type : Integration)
 - Installation manuelle en téléchargeant puis désarchivage dans le répertoie custom_components
 
 Une fois installé, Ajouter via les intégrations -> MyFox.
