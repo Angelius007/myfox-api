@@ -4,20 +4,29 @@
 [![issues - myfox-api](https://img.shields.io/github/issues/Angelius007/myfox-api)](https://github.com/Angelius007/myfox-api/issues)
 [![GH-last-commit](https://img.shields.io/github/last-commit/Angelius007/myfox-api?style=flat-square)](https://github.com/Angelius007/myfox-api/commits/main)
 
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
 [![HACS validation](https://github.com/Angelius007/myfox-api/workflows/HACS%20validation/badge.svg)](https://github.com/Angelius007/myfox-api/actions?query=workflow:"HACS+validation")
 [![Validate with hassfest](https://github.com/Angelius007/myfox-api/workflows/Validate%20with%20hassfest/badge.svg)](https://github.com/Angelius007/myfox-api/actions?query=workflow:"Validate+with+hassfest")
 
 Implémentation Custom pour interfaçage avec les API MyFox (racheté par Somfy).
-Récupère l'ensemble des items dispo via les API MyFox et crée les "appareils" et "entités" associées
+
+Récupère l'ensemble des items dispo via les API MyFox et ajoute les "appareils" et "entités" associées
 
 ## Installation
+3 méthodes disponibles pour l'installation :
 - Installation via HACS _(prochainement)_
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Angelius007&repository=myfox-api)
+- Installation avec "Dépôts personnalisés / custom repository" via HACS :
+   - Dépôt : https://github.com/Angelius007/myfox-api
+   - Type : Integration
+- Installation manuelle en téléchargeant la dernière archive :
+   - [Télécharger la dernière archive](https://github.com/Angelius007/myfox-api/releases/latest)
+   - Désarchivez le fichier
+   - Copier le dossier "**myfox**" dans le répertoire "**custom_components**"
 
-- Installation avec "Dépôts personnalisés / custom repository" via HACS (en indiquant le dépôt : https://github.com/Angelius007/myfox-api / Type : Integration)
-- Installation manuelle en téléchargeant puis désarchivage dans le répertoie custom_components
+Une fois installé, ajouter via les intégrations -> MyFox.
 
-Une fois installé, Ajouter via les intégrations -> MyFox.
+Ou bien cliquez sur le lien [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=myfox)
 
 ## Endpoints implémentés / non implémentés :
 <details><summary> Recherche des sites <i>(1 service sur 1, 1 entry)</i> </summary>
@@ -299,3 +308,5 @@ https://github.com/Angelius007/myfox-api
 
 ### API MyFox
 API : https://api.myfox.me/
+
+_Attention, MyFox a été racheté par Somfy depuis plusieurs années. Il n'y a plus de support ou de mise à jour des API MyFox_
