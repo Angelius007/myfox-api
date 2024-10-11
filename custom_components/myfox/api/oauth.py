@@ -13,7 +13,10 @@ from homeassistant.components.application_credentials import (
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import config_entry_oauth2_flow
 from .const import (
-    KEY_GRANT_TYPE, GRANT_TYPE_PASSWORD, GRANT_TYPE_AUTHORIZATION_CODE, DEFAULT_MYFOX_URL_API, MYFOX_TOKEN_PATH, MYFOX_AUTORIZE_PATH
+    KEY_GRANT_TYPE, GRANT_TYPE_PASSWORD, GRANT_TYPE_AUTHORIZATION_CODE,
+    KEY_MYFOX_USER, KEY_MYFOX_PSWD,
+     
+      DEFAULT_MYFOX_URL_API, MYFOX_TOKEN_PATH, MYFOX_AUTORIZE_PATH
 )
 from ..const import (
     DOMAIN_MYFOX
@@ -63,6 +66,8 @@ class MyFoxSystemImplementation(config_entry_oauth2_flow.LocalOAuth2Implementati
             {
                 "grant_type": GRANT_TYPE_PASSWORD,
                 "code": external_data["code"],
+                KEY_MYFOX_USER: external_data[KEY_MYFOX_USER],
+                KEY_MYFOX_PSWD: external_data[KEY_MYFOX_PSWD],
                 "redirect_uri": external_data["state"]["redirect_uri"]
             }
         )
