@@ -1,13 +1,16 @@
 import logging
-
-from homeassistant.config_entries import ConfigFlow, ConfigEntry, OptionsFlow
-from homeassistant.data_entry_flow import FlowResult
-from homeassistant.helpers import selector
-from homeassistant.core import callback
-
+import jwt
 from dataclasses import field
 from typing import  Any
 import voluptuous as vol
+from collections.abc import Mapping
+
+from homeassistant.config_entries import ConfigFlow, ConfigEntry, OptionsFlow, SOURCE_REAUTH, ConfigFlowResult
+from homeassistant.data_entry_flow import FlowResult
+from homeassistant.helpers import selector
+from homeassistant.core import callback
+from homeassistant.helpers import config_entry_oauth2_flow
+
 from . import (DOMAIN_MYFOX, 
                 CONFIG_VERSION)
 from .api.const import (
@@ -36,11 +39,72 @@ from .api.myfoxapi import (
     MyFoxApiClient
 )
 from .devices.site import MyFoxSite
+from .api.oauth import MyFoxSystemImplementation
 
 _LOGGER = logging.getLogger(__name__)
 
-class MyFoxConfigFlow(ConfigFlow, domain=DOMAIN_MYFOX):
+class OAuth2FlowHandler(
+    config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain=DOMAIN_MYFOX
+):
+    """Config flow to handle MyFox OAuth2 authentication."""
+    DOMAIN = DOMAIN_MYFOX
+
+    @property
+    def logger(self) -> logging.Logger:
+        """Return logger."""
+        return _LOGGER
+    
+    async def async_step_user(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Handle a flow start."""
+        self.async_register_implementation(
+            self.hass,
+            MyFoxSystemImplementation(self.hass),
+        )
+
+        return await super().async_step_user()
+
+    async def async_oauth_create_entry(
+        self,
+        data: dict[str, Any],
+    ) -> ConfigFlowResult:
+        """Handle the initial step."""
+
+        token = jwt.decode(
+            data["token"]["access_token"], options={"verify_signature": False}
+        )
+        uid = token["sub"]
+
+        await self.async_set_unique_id(uid)
+        if self.source == SOURCE_REAUTH:
+            self._abort_if_unique_id_mismatch(reason="reauth_account_mismatch")
+            return self.async_update_reload_and_abort(
+                self._get_reauth_entry(), data=data
+            )
+        self._abort_if_unique_id_configured()
+        return self.async_create_entry(title=uid, data=data)
+
+    async def async_step_reauth(
+        self, entry_data: Mapping[str, Any]
+    ) -> ConfigFlowResult:
+        """Perform reauth upon an API authentication error."""
+        return await self.async_step_reauth_confirm()
+
+    async def async_step_reauth_confirm(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Confirm reauth dialog."""
+        if user_input is None:
+            return self.async_show_form(
+                step_id="reauth_confirm",
+                description_placeholders={"name": "MyFox"},
+            )
+        return await self.async_step_user()
+    
+class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain=DOMAIN_MYFOX):
     """ Config """
+    DOMAIN = DOMAIN_MYFOX
     VERSION = CONFIG_VERSION
     PREFIX_ENTRY = "myfox-"
 
@@ -61,6 +125,11 @@ class MyFoxConfigFlow(ConfigFlow, domain=DOMAIN_MYFOX):
 
         self.config_entry: ConfigEntry | None = None
 
+    @property
+    def logger(self) -> logging.Logger:
+        """Return logger."""
+        return _LOGGER
+    
     # Step pour relancer la conf
     async def async_step_reconfigure(self, user_input: dict[str, Any] | None = None): 
         if "entry_id" in self.context and self.context["entry_id"] :
@@ -87,13 +156,28 @@ class MyFoxConfigFlow(ConfigFlow, domain=DOMAIN_MYFOX):
             _LOGGER.debug("Entry non trouvee dans le context [%s]",str(self.context))
         return await self.async_step_user()
 
-    # 1er step
-    async def async_step_user(self, info: dict[str, Any] | None = None):
+
+    # 1er step authent
+    async def async_step_user(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Handle a flow start."""
+        self.async_register_implementation(
+            self.hass,
+            MyFoxSystemImplementation(self.hass),
+        )
+
+        return await super().async_step_user()
+
+    # 1er step config
+    async def async_oauth_create_entry(self, info: dict[str, Any] | None = None):
+        _LOGGER.debug(str(info))
+        info["token"]
         USER_STEP_SCHEMA = vol.Schema({
             vol.Required(KEY_CLIENT_ID, default=self.client_id): str,
             vol.Required(KEY_CLIENT_SECRET, default=self.client_secret): str,
-            vol.Required(KEY_MYFOX_USER, default=self.username): str,
-            vol.Required(KEY_MYFOX_PSWD, default=self.password): str
+            vol.Optional(KEY_MYFOX_USER, default=self.username): str,
+            vol.Optional(KEY_MYFOX_PSWD, default=self.password): str
         })
         if info is not None:
             myfox_info = MyFoxEntryDataApi(info.get(KEY_CLIENT_ID),
@@ -117,7 +201,7 @@ class MyFoxConfigFlow(ConfigFlow, domain=DOMAIN_MYFOX):
             return await self.async_step_select_site()
 
         return self.async_show_form(
-            step_id="user", data_schema=USER_STEP_SCHEMA)
+            step_id="oauth_create_entry", data_schema=USER_STEP_SCHEMA)
     
     # Step de selection du site
     async def async_step_select_site(self, info: dict[str, Any] | None = None) -> FlowResult:
