@@ -162,10 +162,10 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Handle a flow start."""
-        self.async_register_implementation(
-            self.hass,
-            MyFoxImplementation(self.hass),
-        )
+        #self.async_register_implementation(
+        #    self.hass,
+        #    MyFoxImplementation(self.hass),
+        #)
 
         return await super().async_step_user()
 
