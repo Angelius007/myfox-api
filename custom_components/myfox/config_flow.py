@@ -39,7 +39,7 @@ from .api.myfoxapi import (
     MyFoxApiClient
 )
 from .devices.site import MyFoxSite
-from .api.oauth import MyFoxSystemImplementation
+from .api.oauth import MyFoxSystemImplementation,MyFoxImplementation
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -164,7 +164,7 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
         """Handle a flow start."""
         self.async_register_implementation(
             self.hass,
-            MyFoxSystemImplementation(self.hass),
+            MyFoxImplementation(self.hass),
         )
 
         return await super().async_step_user()
