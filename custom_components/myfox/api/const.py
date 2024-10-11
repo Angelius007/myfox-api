@@ -10,6 +10,7 @@ KEY_SITE_ID      : Final = "site_id"
 KEY_ACCESS_TOKEN : Final = "access_token"
 KEY_REFRESH_TOKEN: Final = "refresh_token"
 KEY_EXPIRE_IN    : Final = "expires_in"
+KEY_EXPIRE_AT    : Final = "expires_at"
 KEY_EXPIRE_TIME  : Final = "expires_time"
 KEY_GRANT_TYPE   : Final = "grant_type"
 

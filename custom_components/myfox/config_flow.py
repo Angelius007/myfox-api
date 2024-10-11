@@ -22,6 +22,7 @@ from .api.const import (
      KEY_ACCESS_TOKEN,
      KEY_REFRESH_TOKEN,
      KEY_EXPIRE_IN,
+     KEY_EXPIRE_AT,
      KEY_EXPIRE_TIME,
      KEY_CACHE_EXPIRE_IN,
      CACHE_EXPIRE_IN,
@@ -171,8 +172,8 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
 
     # 1er step config
     async def async_oauth_create_entry(self, info: dict[str, Any] | None = None):
-        _LOGGER.debug(str(info))
-        info["token"]
+        _LOGGER.info(str(info))
+
         USER_STEP_SCHEMA = vol.Schema({
             vol.Required(KEY_CLIENT_ID, default=self.client_id): str,
             vol.Required(KEY_CLIENT_SECRET, default=self.client_secret): str,
@@ -180,10 +181,22 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
             vol.Optional(KEY_MYFOX_PSWD, default=self.password): str
         })
         if info is not None:
-            myfox_info = MyFoxEntryDataApi(info.get(KEY_CLIENT_ID),
-                                        info.get(KEY_CLIENT_SECRET),
-                                        info.get(KEY_MYFOX_USER),
-                                        info.get(KEY_MYFOX_PSWD))
+            info["token"]
+            myfox_info = MyFoxEntryDataApi("",
+                                        "",
+                                        "",
+                                        "")
+            myfox_info.client_id = self.client_id
+            myfox_info.client_secret = self.client_secret
+            if KEY_ACCESS_TOKEN in  info["token"] :
+                myfox_info.access_token =  info["token"][KEY_ACCESS_TOKEN]
+            if KEY_REFRESH_TOKEN in  info["token"] :
+                myfox_info.refresh_token =  info["token"][KEY_REFRESH_TOKEN]
+            if KEY_EXPIRE_IN in  info["token"] :
+                myfox_info.expires_in =  info["token"][KEY_EXPIRE_IN]
+            if KEY_EXPIRE_AT in  info["token"] :
+                myfox_info.expires_time =  info["token"][KEY_EXPIRE_AT]
+            
             if self.access_token :
                 myfox_info.access_token = self.access_token
             if self.refresh_token :
@@ -192,11 +205,15 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
             options.cache_time = CACHE_EXPIRE_IN
             myfox_info.options = options
             self.myfox_client = MyFoxApiClient(myfox_info)
-            
-            login_ok = await self.myfox_client.login()
-            if login_ok :
+            if self.myfox_client.getExpireDelay() > 0 :
+                await self.myfox_client.getInfoSites()
                 """Recherche des devices."""
                 self.sites = self.myfox_client.myfox_info.sites
+            else :
+                login_ok = await self.myfox_client.login()
+                if login_ok :
+                    """Recherche des devices."""
+                    self.sites = self.myfox_client.myfox_info.sites
 
             return await self.async_step_select_site()
 
