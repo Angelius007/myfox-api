@@ -128,6 +128,8 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
     ) -> ConfigFlowResult:
         """Perform reauth upon an API authentication error."""
         _LOGGER.debug("async_step_reauth :  %s", str(entry_data))
+        if KEY_SITE_ID in entry_data :
+            self.siteId = entry_data[KEY_SITE_ID]
         return await self.async_step_reauth_confirm()
 
     async def async_step_reauth_confirm(
@@ -135,6 +137,7 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
     ) -> ConfigFlowResult:
         """Confirm reauth dialog."""
         _LOGGER.debug("async_step_reauth_confirm :  %s", str(user_input))
+        
         if user_input is None:
             return self.async_show_form(
                 step_id="reauth_confirm",
@@ -146,10 +149,27 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
     async def async_oauth_create_entry(self, info: dict[str, Any] | None = None):
         _LOGGER.debug("async_oauth_create_entry :  %s", str(info))
         if self.source == SOURCE_REAUTH:
-            return self.async_update_reload_and_abort(
-                self._get_reauth_entry(),
-                data=info,
-            )
+            if self.siteId is not None:
+                device_unique_id = self.PREFIX_ENTRY+str(self.siteId)
+                existing_entry = await self.async_set_unique_id(device_unique_id)
+                data = existing_entry.data.copy()
+                data.update(info)
+                _LOGGER.debug("Reload conf via siteId :  %s", str(device_unique_id))
+                return self.async_update_reload_and_abort(
+                    existing_entry,
+                    data=data,
+                )
+            elif "entry_id" in self.context and self.context["entry_id"] :
+                device_unique_id = self.context["entry_id"]
+                existing_entry = await self.async_set_unique_id(device_unique_id)
+                data = existing_entry.data.copy()
+                data.update(info)
+                _LOGGER.debug("Reload conf via context :  %s", str(device_unique_id))
+                return self.async_update_reload_and_abort(
+                    existing_entry,
+                    data=data,
+                )
+            _LOGGER.debug("Poursuite reauth car entry non trouve")
         if info is not None:
             myfox_info = MyFoxEntryDataApi(info.get(KEY_CLIENT_ID),
                                         info.get(KEY_CLIENT_SECRET),
