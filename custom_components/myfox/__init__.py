@@ -83,6 +83,12 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                     KEY_EXPIRE_AT     : new_data.pop(KEY_EXPIRE_TIME, ""),
                     "token_type"      : "Bearer",
                 }
+            else :
+                # suppression anciennes clefs
+                new_data.pop(KEY_ACCESS_TOKEN, "")
+                new_data.pop(KEY_REFRESH_TOKEN, "")
+                new_data.pop(KEY_EXPIRE_IN, "")
+                new_data.pop(KEY_EXPIRE_TIME, "")
 
         hass.config_entries.async_update_entry(config_entry, data=new_data, options=new_options, version=CONFIG_VERSION)
         _LOGGER.info("Migration from version %s to version %s successful", old_version, CONFIG_VERSION)
