@@ -91,13 +91,13 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             # si le token a bougé
             if data[KEY_TOKEN][KEY_ACCESS_TOKEN] != myfoxApiClient.myfox_info.access_token :
                 new_data = {}
-                new_data[KEY_TOKEN] = {}
-                new_data[KEY_TOKEN][KEY_ACCESS_TOKEN] = myfoxApiClient.myfox_info.access_token
+                new_data[KEY_TOKEN] = data[KEY_TOKEN].copy() # copy pour casser la reference memoire
+                new_data[KEY_TOKEN][KEY_ACCESS_TOKEN]  = myfoxApiClient.myfox_info.access_token
                 new_data[KEY_TOKEN][KEY_REFRESH_TOKEN] = myfoxApiClient.myfox_info.refresh_token
-                new_data[KEY_TOKEN][KEY_EXPIRE_IN] = myfoxApiClient.myfox_info.expires_in
-                new_data[KEY_TOKEN][KEY_EXPIRE_AT] = myfoxApiClient.myfox_info.expires_time
+                new_data[KEY_TOKEN][KEY_EXPIRE_IN]     = myfoxApiClient.myfox_info.expires_in
+                new_data[KEY_TOKEN][KEY_EXPIRE_AT]     = myfoxApiClient.myfox_info.expires_time
                 data.update(new_data)
-                # maj conf
+                # maj conf  
                 if self.hass.config_entries.async_update_entry(existing_entry, data=data, options=new_options) :
                     _LOGGER.info("-> Tokens modifies")
 
