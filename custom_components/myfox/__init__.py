@@ -75,13 +75,14 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         new_options = {**config_entry.options}
         if old_version < 2 :
             """ Migration token dans le bloc token """
-            new_data[KEY_TOKEN] = {
-                KEY_ACCESS_TOKEN  : new_data.pop(KEY_ACCESS_TOKEN),
-                KEY_REFRESH_TOKEN : new_data.pop(KEY_REFRESH_TOKEN),
-                KEY_EXPIRE_IN     : new_data.pop(KEY_EXPIRE_IN),
-                KEY_EXPIRE_AT     : new_data.pop(KEY_EXPIRE_TIME),
-                "token_type"      : "Bearer",
-            }
+            if KEY_TOKEN not in new_data :
+                new_data[KEY_TOKEN] = {
+                    KEY_ACCESS_TOKEN  : new_data.pop(KEY_ACCESS_TOKEN, ""),
+                    KEY_REFRESH_TOKEN : new_data.pop(KEY_REFRESH_TOKEN, ""),
+                    KEY_EXPIRE_IN     : new_data.pop(KEY_EXPIRE_IN, ""),
+                    KEY_EXPIRE_AT     : new_data.pop(KEY_EXPIRE_TIME, ""),
+                    "token_type"      : "Bearer",
+                }
 
         hass.config_entries.async_update_entry(config_entry, data=new_data, options=new_options, version=CONFIG_VERSION)
         _LOGGER.info("Migration from version %s to version %s successful", old_version, CONFIG_VERSION)
