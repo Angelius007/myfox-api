@@ -56,7 +56,7 @@ from .api.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
 from .api.myfoxapi_heater import (MyFoxApiHeaterClient)
 from .api.myfoxapi_thermo import (MyFoxApThermoClient)
 from .coordinator.myfox_coordinator import (MyFoxCoordinator)
-from .api.myfoxapi_exception import (MyFoxException, InvalidTokenMyFoxException)
+from .api.myfoxapi_exception import (InvalidTokenMyFoxException)
 
 from .const import (DOMAIN_MYFOX, CONFIG_VERSION)
 
@@ -178,7 +178,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     if info_site :
         """Recherche des devices."""
 
-        coordinator = MyFoxCoordinator(hass, options.pooling_frequency)
+        coordinator = MyFoxCoordinator(hass, options.pooling_frequency, entry)
         hass.data[DOMAIN_MYFOX][entry.entry_id] = coordinator
         
         # add Alarme

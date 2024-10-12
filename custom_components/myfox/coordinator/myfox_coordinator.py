@@ -5,6 +5,7 @@ from datetime import timedelta
 from typing import Any, List, TypeVar
 
 from homeassistant.core import HomeAssistant
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
     UpdateFailed,
@@ -32,6 +33,13 @@ from ..api.myfoxapi_gate import MyFoxApiGateClient
 from ..api.myfoxapi_module import MyFoxApiModuleClient
 from ..api.myfoxapi_library import MyFoxApiLibraryClient
 
+from ..api.const import (
+    KEY_TOKEN,
+    KEY_ACCESS_TOKEN,
+    KEY_REFRESH_TOKEN,
+    KEY_EXPIRE_IN,
+    KEY_EXPIRE_AT,
+)
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -51,7 +59,7 @@ class BoundFifoList(List):
 class MyFoxCoordinator(DataUpdateCoordinator) :
     """ Corrd inator pour synchro avec les appels API MyFox """
 
-    def __init__(self, hass: HomeAssistant,  pooling_frequency: int):
+    def __init__(self, hass: HomeAssistant,  pooling_frequency: int, entry: ConfigEntry):
         """Initialize my coordinator."""
         super().__init__(
             hass,
@@ -67,8 +75,25 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         )
         self.myfoxApiClients =  dict[str, MyFoxApiClient]()
         self.last_params = None
+        self.entry = entry
 
         _LOGGER.info("Init " + str(self.name) + " avec un pooling de " + str(pooling_frequency) + " minutes")
+
+    async def update_entry(self, myfoxApiClient:MyFoxApiClient) :
+        try:
+            data = self.entry.data.copy()
+            options = self.entry.options.copy()
+            # si le token a bougé
+            if data[KEY_TOKEN][KEY_ACCESS_TOKEN] != myfoxApiClient.myfox_info.access_token :
+                data[KEY_TOKEN][KEY_ACCESS_TOKEN] = myfoxApiClient.myfox_info.access_token
+                data[KEY_TOKEN][KEY_REFRESH_TOKEN] = myfoxApiClient.myfox_info.refresh_token
+                data[KEY_TOKEN][KEY_EXPIRE_IN] = myfoxApiClient.myfox_info.expires_in
+                data[KEY_TOKEN][KEY_EXPIRE_AT] = myfoxApiClient.myfox_info.expires_time
+
+            if self.hass.config_entries.async_update_entry(self.entry, data=data, options=options):
+                await self.hass.config_entries.async_reload(self.entry.entry_id)
+        except Exception as exception:
+            _LOGGER.error(exception)
 
     def updateTokens(self, info:dict[str, Any]):
         for (type,hassclient) in self.myfoxApiClients.items() :
@@ -142,6 +167,8 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         client:MyFoxApiSecurityClient = myfoxApiClient
                         for temp in client.security :
                             self.addToParams(params, listening_idx, temp)
+                        # mise a jour si besoin des tokens
+                        self.update_entry(client)
 
                     # cas d'un client temperature
                     if myfoxApiClient.__class__ == MyFoxApiTemperatureClient :
