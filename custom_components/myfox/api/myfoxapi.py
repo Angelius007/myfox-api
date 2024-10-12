@@ -242,7 +242,10 @@ class MyFoxApiClient:
         if resp.status == 401:
             try:
                 json_resp = await resp.json()
-                raise InvalidTokenMyFoxException(resp.status, f"Error : {json_resp["error"]}")
+                if "error" in json_resp :
+                    raise InvalidTokenMyFoxException(resp.status, f"Error : {json_resp["error"]}")
+                else :
+                    raise InvalidTokenMyFoxException(resp.status, f"Error no detail : {resp.status}")
             except MyFoxException as exception:
                 raise exception 
             except Exception as error:
