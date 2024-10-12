@@ -39,13 +39,14 @@ class MyFoxSystemImplementation(config_entry_oauth2_flow.LocalOAuth2Implementati
         self.code_challenge = (
             base64.urlsafe_b64encode(hashed_verifier).decode().replace("=", "")
         )
+        url_autorize = f"http://homeassistant-test.local:8123/auth/external/callback"
         url_token = f"{DEFAULT_MYFOX_URL_API}{MYFOX_TOKEN_PATH}"
         super().__init__(
             hass,
             DOMAIN_MYFOX,
             "",
             "",
-            "",
+            url_autorize,
             url_token,
         )
 
@@ -58,44 +59,25 @@ class MyFoxSystemImplementation(config_entry_oauth2_flow.LocalOAuth2Implementati
     def extra_authorize_data(self) -> dict[str, Any]:
         """Extra data that needs to be appended to the authorize url."""
         return {
-            "code_challenge": self.code_challenge,  # PKCE
+            "code"            : self.code_challenge,  # PKCE
         }
 
-    async def async_step_auth(
-        self, user_input: dict[str, Any] | None = None
-    ) -> config_entries.ConfigFlowResult:
-        """Create an entry for auth."""
-        USER_STEP_SCHEMA = vol.Schema({
-            vol.Required(KEY_CLIENT_ID, default=self.client_id): str,
-            vol.Required(KEY_CLIENT_SECRET, default=self.client_secret): str,
-            vol.Required(KEY_MYFOX_USER): str,
-            vol.Required(KEY_MYFOX_PSWD): str
-        })
-
-        # Flow has been triggered by external data
-        if user_input is not None:
-            self.external_data = user_input
-            next_step = "authorize_rejected" if "error" in user_input else "creation"
-            return self.async_external_step_done(next_step_id=next_step)
-
-        # return self.async_external_step(step_id="auth", url="", data_schema=USER_STEP_SCHEMA)
-        return self.async_show_form(step_id="auth", data_schema=USER_STEP_SCHEMA)
-    
     async def async_resolve_external_data(self, external_data: Any) -> dict:
         """Resolve the authorization code to tokens."""
+        _LOGGER.debug("Complement : %s",str(external_data))
+
         return await self._token_request(
             {
                 KEY_GRANT_TYPE    : GRANT_TYPE_PASSWORD,
-                KEY_CLIENT_ID     : external_data[KEY_CLIENT_ID],
-                KEY_CLIENT_SECRET : external_data[KEY_CLIENT_SECRET],
-                KEY_MYFOX_USER    : external_data[KEY_MYFOX_USER],
-                KEY_MYFOX_PSWD    : external_data[KEY_MYFOX_PSWD],
+                KEY_CLIENT_ID     : "",
+                KEY_CLIENT_SECRET : "",
+                KEY_MYFOX_USER    : "",
+                KEY_MYFOX_PSWD    : "",
                 "code"            : external_data["code"],
                 "redirect_uri"    : external_data["state"]["redirect_uri"],
-                "code_verifier"   : self.code_verifier,
+                "code_verifier"   : self.code_verifier,  # PKCE
             }
         )
-
 
 class MyFoxImplementation(AuthImplementation):
     """Tesla Fleet API user Oauth2 implementation."""

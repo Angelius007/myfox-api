@@ -171,10 +171,10 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
     ) -> ConfigFlowResult:
         """Handle a flow start."""
         """Handle a flow start."""
-        self.async_register_implementation(
-            self.hass,
-            MyFoxSystemImplementation(self.hass),
-        )
+        #self.async_register_implementation(
+        #    self.hass,
+        #    MyFoxSystemImplementation(self.hass),
+        #)
         
         if self.data is None:
             self.data = dict[str, Any]()
