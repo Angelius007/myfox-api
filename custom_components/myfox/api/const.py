@@ -7,19 +7,23 @@ KEY_CLIENT_SECRET: Final = "client_secret"
 KEY_MYFOX_USER   : Final = "username"
 KEY_MYFOX_PSWD   : Final = "password"
 KEY_SITE_ID      : Final = "site_id"
+KEY_TOKEN        : Final = "token"
 KEY_ACCESS_TOKEN : Final = "access_token"
 KEY_REFRESH_TOKEN: Final = "refresh_token"
 KEY_EXPIRE_IN    : Final = "expires_in"
+KEY_EXPIRE_AT    : Final = "expires_at"
 KEY_EXPIRE_TIME  : Final = "expires_time"
 KEY_GRANT_TYPE   : Final = "grant_type"
+KEY_AUTH_IMPLEMENTATION   : Final = "auth_implementation"
 
 KEY_POOLING_INTERVAL: Final = "pool_interval_minutes"
 KEY_CACHE_EXPIRE_IN : Final = "cache_expires_in"
 KEY_CACHE_CAMERA    : Final = "cache_camera"
 KEY_CACHE_SECURITY  : Final = "cache_security"
 
-GRANT_TYPE_PASSWORD: Final = "password"
-GRANT_REFRESH_TOKEN: Final = "refresh_token"
+GRANT_TYPE_PASSWORD           : Final = "password"
+GRANT_TYPE_AUTHORIZATION_CODE : Final = "authorization_code"
+GRANT_REFRESH_TOKEN           : Final = "refresh_token"
 
 # SEUILS
 POOLING_INTERVAL_DEF:int = 2 # 2 min
@@ -30,6 +34,7 @@ CACHE_SECURITY:int       = (10*60) #10 min
 
 # token
 MYFOX_TOKEN_PATH: Final = "oauth2/token"
+MYFOX_AUTORIZE_PATH: Final = "oauth2/authorize"
 # sites
 MYFOX_INFO_SITE_PATH: Final = "v2/client/site/items" #List available sites for the current user
 MYFOX_HISTORY_GET   : Final = "v2/site/%i/history" #Get site history

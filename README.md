@@ -13,6 +13,17 @@ Implémentation Custom pour interfaçage avec les API MyFox (racheté par Somfy)
 Récupère l'ensemble des items dispo via les API MyFox et ajoute les "appareils" et "entités" associées
 
 ## Installation
+
+### Création d'un compte sur myfox.me
+Rendez-vous sur https://api.myfox.me/dev/apps et créer un accès de type "Commercial applications"
+- Name : MyFox Home Assistant
+- Description : Home Assistant to control MyFox via API
+- Redirect URL	: https://my.home-assistant.io/redirect/oauth
+
+L'accès via "Personal application" n'est plus disponible pour cette intégration car imposait de stocker les accès en plus des tokens.
+L'utilisation du token "Personal application" reste disponible pour le moment pour les tests unitaires.
+
+### Installation de l'intégration
 3 méthodes disponibles pour l'installation :
 - Installation via HACS _(prochainement)_
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Angelius007&repository=myfox-api)

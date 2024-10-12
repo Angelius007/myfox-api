@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 from .const import (
     DEFAULT_MYFOX_URL_API, MYFOX_TOKEN_PATH, MYFOX_INFO_SITE_PATH,MYFOX_HISTORY_GET,
     KEY_GRANT_TYPE, KEY_CLIENT_ID, KEY_CLIENT_SECRET, KEY_MYFOX_USER, KEY_MYFOX_PSWD, KEY_REFRESH_TOKEN,
-    KEY_EXPIRE_IN, KEY_ACCESS_TOKEN, GRANT_TYPE_PASSWORD, GRANT_REFRESH_TOKEN,KEY_EXPIRE_TIME,SEUIL_EXPIRE_MIN,
+    KEY_EXPIRE_IN, KEY_EXPIRE_AT, KEY_ACCESS_TOKEN, GRANT_TYPE_PASSWORD, GRANT_REFRESH_TOKEN,KEY_EXPIRE_TIME,SEUIL_EXPIRE_MIN,
 )
 from ..scenes import (BaseScene, DiagnosticScene, MyFoxSceneInfo)
 from ..devices import (BaseDevice, DiagnosticDevice, MyFoxDeviceInfo)
@@ -22,7 +22,6 @@ from .myfoxapi_exception import (MyFoxException, InvalidTokenMyFoxException)
 from homeassistant.const import (
     Platform,
 )
-
 _LOGGER = logging.getLogger(__name__)
 
 @dataclass
@@ -185,12 +184,7 @@ class MyFoxApiClient:
                         resp = await session.get(urlApi, headers=headers, json=data) 
                         return await self._get_response(resp, responseClass)
             except InvalidTokenMyFoxException as exception:
-                # Renouvellement token
-                if await self.login() :
-                    # Relance appel
-                    return self.callMyFoxApi(path, data, method)
-                else :
-                    raise exception
+                raise exception
             except MyFoxException as exception:
                 raise exception
             except Exception as exception:
@@ -242,7 +236,10 @@ class MyFoxApiClient:
         if resp.status == 401:
             try:
                 json_resp = await resp.json()
-                raise InvalidTokenMyFoxException(resp.status, f"Error : {json_resp["error"]}")
+                if "error" in json_resp :
+                    raise InvalidTokenMyFoxException(resp.status, f"Error : {json_resp["error"]}")
+                else :
+                    raise InvalidTokenMyFoxException(resp.status, f"Error no detail : {resp.status}")
             except MyFoxException as exception:
                 raise exception 
             except Exception as error:
@@ -307,6 +304,7 @@ class MyFoxApiClient:
                 KEY_CLIENT_SECRET:self.myfox_info.client_secret,
                 KEY_REFRESH_TOKEN:self.myfox_info.refresh_token
             }
+            _LOGGER.debug("Refresh token utilise : %s", str(self.myfox_info.refresh_token))
             
             response = await self.callMyFoxApiPost(MYFOX_TOKEN_PATH, data)
             # save des tokens
@@ -315,7 +313,8 @@ class MyFoxApiClient:
             await self.getInfoSites()
 
             return True
-
+        except InvalidTokenMyFoxException as exception:
+            raise exception
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
@@ -327,17 +326,20 @@ class MyFoxApiClient:
     def saveToken(self, response) :
         """ Sauvegarde des tokens """
         try:
-            self.myfox_info.access_token = response[KEY_ACCESS_TOKEN]
-            self.myfox_info.refresh_token = response[KEY_REFRESH_TOKEN]
-            self.myfox_info.expires_in = response[KEY_EXPIRE_IN]
-            self.myfox_info.expires_time = (time.time() + self.myfox_info.expires_in)
-            _LOGGER.debug(KEY_ACCESS_TOKEN+":"+self.myfox_info.access_token)
-            _LOGGER.debug(KEY_REFRESH_TOKEN+":"+self.myfox_info.refresh_token)
-            _LOGGER.debug(KEY_EXPIRE_IN+":"+str(self.myfox_info.expires_in))
-            _LOGGER.debug(KEY_EXPIRE_TIME+":"+str(self.myfox_info.expires_time))
+            _LOGGER.debug("Response for token : %s", str(response))
+            if KEY_ACCESS_TOKEN in response :
+                self.myfox_info.access_token = response[KEY_ACCESS_TOKEN]
+            if KEY_REFRESH_TOKEN in response :
+                self.myfox_info.refresh_token = response[KEY_REFRESH_TOKEN]
+            if KEY_EXPIRE_IN in response :
+                self.myfox_info.expires_in = response[KEY_EXPIRE_IN]
+            if KEY_EXPIRE_AT in response :
+                self.myfox_info.expires_time = response[KEY_EXPIRE_AT]
+            else :
+                self.myfox_info.expires_time = (time.time() + self.myfox_info.expires_in)
+
         except KeyError as key:
-            _LOGGER.error(key)
-            _LOGGER.error("Error : " + key)
+            _LOGGER.error("Error : " + str(key))
             raise MyFoxException(f"Failed to extract key {key} from response: {response}")
     
     async def getToken(self) -> str:
@@ -345,13 +347,20 @@ class MyFoxApiClient:
         try:
             expireDelay = self.getExpireDelay()
             if expireDelay == 0: # jeton expire
-                await self.login()
+                _LOGGER.debug("Jeton expire -> demande de renouvellement")
+                await self.refreshToken()
                 expireDelay = self.getExpireDelay()
+                # raise InvalidTokenMyFoxException
+                # await self.login()
+                # expireDelay = self.getExpireDelay()
             elif expireDelay < (SEUIL_EXPIRE_MIN): # si jeton valide - de 5 min, on renouvelle
                 # Token expire, on renouvelle
+                _LOGGER.debug("Jeton bientot expire -> demande de renouvellement")
                 await self.refreshToken()
                 expireDelay = self.getExpireDelay()
             return self.myfox_info.access_token
+        except InvalidTokenMyFoxException as exception:
+            raise exception
         except MyFoxException as exception:
             raise exception
         except Exception as exception:

@@ -7,13 +7,13 @@ import json
 
 from asyncio import AbstractEventLoop
 
-from myfox.api.myfoxapi import (MyFoxPolicy, MyFoxEntryDataApi, MyFoxApiClient)
+from myfox.api.myfoxapi import (MyFoxPolicy, MyFoxEntryDataApi, MyFoxApiClient, MyFoxOptionsDataApi)
 from myfox.api.myfoxapi_camera import (MyFoxApiCameraClient)
 from myfox.api.myfoxapi_light import (MyFoxApiLightClient)
 from myfox.api.myfoxapi_security import (MyFoxApiSecurityClient)
 from myfox.api.myfoxapi_scenario import (MyFoxApiSecenarioClient)
-from custom_components.myfox.api.myfoxapi_state import (MyFoxApiStateClient)
-from custom_components.myfox.api.myfoxapi_state_alerte import (MyFoxApiAlerteStateClient)
+from myfox.api.myfoxapi_state import (MyFoxApiStateClient)
+from myfox.api.myfoxapi_state_alerte import (MyFoxApiAlerteStateClient)
 from myfox.api.myfoxapi_temperature import (MyFoxApiTemperatureClient)
 from myfox.api.myfoxapi_gate import (MyFoxApiGateClient)
 from myfox.api.myfoxapi_module import (MyFoxApiModuleClient)
@@ -92,6 +92,8 @@ class MyFoxCache() :
                     
         myfox_info = MyFoxEntryDataApi(client_id, client_secret, myxof_user, myfox_pswd,
                         access_token, refresh_token, expires_in, expires_time, MyFoxSite(site_id))
+        options = MyFoxOptionsDataApi()
+        myfox_info.options = options
         _LOGGER.info(str(myfox_info))
         return myfox_info
 
@@ -103,6 +105,8 @@ class TestClients :
         # site_list = list()
         # for site in results[0]:
         #     site_list.append(site.key)
+        results = loop.run_until_complete(asyncio.gather(*[client.login()]))
+        _LOGGER.info("results:"+str(results))
 
         results = loop.run_until_complete(asyncio.gather(*[client.getInfoSite(1326, forceInit)]))
         _LOGGER.info("results:"+str(results))
@@ -304,7 +308,7 @@ if __name__ == "__main__" :
     try :
         """ """
         TestClients.testSetUpdate()
-        #TestClients.testClient(loop, MyFoxApiClient(myfox_info), True) # , True
+        TestClients.testClient(loop, MyFoxApiClient(myfox_info), True) # , True
         # TestClients.testScenario(loop, MyFoxApiSecenarioClient(myfox_info))
         # TestClients.testSecurity(loop, MyFoxApiSecurityClient(myfox_info))
         # TestClients.testCamera(loop, MyFoxApiCameraClient(myfox_info))
