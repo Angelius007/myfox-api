@@ -19,6 +19,7 @@ from .api.const import (
      KEY_MYFOX_USER, 
      KEY_MYFOX_PSWD,
      KEY_SITE_ID,
+     KEY_TOKEN,
      KEY_ACCESS_TOKEN,
      KEY_REFRESH_TOKEN,
      KEY_EXPIRE_IN,
@@ -148,10 +149,11 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
                     self.username = self.data[KEY_MYFOX_USER]
                 if KEY_MYFOX_PSWD in self.data:
                     self.password = self.data[KEY_MYFOX_PSWD]
-                if KEY_ACCESS_TOKEN in self.data:
-                    self.access_token = self.data[KEY_ACCESS_TOKEN]
-                if KEY_REFRESH_TOKEN in self.data:
-                    self.refresh_token = self.data[KEY_REFRESH_TOKEN]
+                if KEY_TOKEN in self.data:
+                    if KEY_ACCESS_TOKEN in self.data[KEY_TOKEN]:
+                        self.access_token = self.data[KEY_TOKEN][KEY_ACCESS_TOKEN]
+                    if KEY_REFRESH_TOKEN in self.data[KEY_TOKEN]:
+                        self.refresh_token = self.data[KEY_TOKEN][KEY_REFRESH_TOKEN]
                 if KEY_SITE_ID in self.data:
                     self.siteId = self.data[KEY_SITE_ID]
             if self.data is None:
