@@ -80,7 +80,7 @@ class MyFoxSystemImplementation(config_entry_oauth2_flow.LocalOAuth2Implementati
         )
 
 class MyFoxImplementation(AuthImplementation):
-    """Tesla Fleet API user Oauth2 implementation."""
+    """MyFox API user Oauth2 implementation."""
 
     def __init__(
         self, hass: HomeAssistant, auth_domain: str, credential: ClientCredential
@@ -103,7 +103,3 @@ class MyFoxImplementation(AuthImplementation):
         new_token =  await super().async_refresh_token(token)
         _LOGGER.debug("New Token %s", str(new_token) )
         return new_token
-#    @property
-#    def extra_authorize_data(self) -> dict[str, Any]:
-#        """Extra data that needs to be appended to the authorize url."""
-#        return {KEY_GRANT_TYPE: GRANT_TYPE_AUTHORIZATION_CODE}
