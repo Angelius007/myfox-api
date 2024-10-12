@@ -154,7 +154,10 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
                     self.refresh_token = self.data[KEY_REFRESH_TOKEN]
                 if KEY_SITE_ID in self.data:
                     self.siteId = self.data[KEY_SITE_ID]
-            self.data.update(user_input)
+            if self.data is None:
+                self.data = dict[str, Any]()
+            if user_input is not None:
+                self.data.update(user_input)
         else :
             _LOGGER.debug("Entry non trouvee dans le context [%s]",str(self.context))
         return await self.async_step_user()
@@ -169,6 +172,10 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
         #    self.hass,
         #    MyFoxImplementation(self.hass),
         #)
+        if self.data is None:
+            self.data = dict[str, Any]()
+        if user_input is not None:
+            self.data.update(user_input)
 
         return await super().async_step_user()
 
