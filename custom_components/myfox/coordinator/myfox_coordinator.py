@@ -165,7 +165,6 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
                     if len(listening_idx) > 0:
                         try:
-                            _LOGGER.debug("Client[%s].getList:%s",str(client_key),str(myfoxApiClient.__class__))
                             await myfoxApiClient.getList()
                         except MyFoxException as exception:
                             _LOGGER.error(exception)
@@ -262,14 +261,12 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 control_key = str(device_id) + "|" + str(key)
                 if control_key in listening_idx or len(listening_idx) == 0 :
                     params[control_key] = val
-                    _LOGGER.debug("addToParams -> deviceId(%s) : %s [%s]", str(device_id), control_key, str(val))
         if "scenarioId" in temp :
             scene_id = temp["scenarioId"]
             for key,val in temp.items() :
                 control_key = str(scene_id) + "|" + str(key)
                 if control_key in listening_idx or len(listening_idx) == 0 :
                     params[control_key] = val
-                    _LOGGER.debug("addToParams -> scenarioId(%s) : %s [%s]", str(scene_id), control_key, str(val))
         
     async def pressButton(self, idx:str) -> bool :
         """ Appuis sur un bouton et transmission au bon client """
