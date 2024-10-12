@@ -14,6 +14,7 @@ KEY_EXPIRE_IN    : Final = "expires_in"
 KEY_EXPIRE_AT    : Final = "expires_at"
 KEY_EXPIRE_TIME  : Final = "expires_time"
 KEY_GRANT_TYPE   : Final = "grant_type"
+KEY_AUTH_IMPLEMENTATION   : Final = "auth_implementation"
 
 KEY_POOLING_INTERVAL: Final = "pool_interval_minutes"
 KEY_CACHE_EXPIRE_IN : Final = "cache_expires_in"

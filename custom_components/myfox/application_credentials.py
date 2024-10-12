@@ -13,7 +13,7 @@ async def async_get_auth_implementation(
     hass: HomeAssistant, auth_domain: str, credential: ClientCredential
 ) -> config_entry_oauth2_flow.AbstractOAuth2Implementation:
     """Return auth implementation."""
-    _LOGGER.debug("Init MyFoxImplementation for credential %s", str(credential))
+    _LOGGER.debug("Init MyFoxImplementation for credential %s", str(credential.name))
     return MyFoxImplementation(
         hass,
         auth_domain,

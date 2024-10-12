@@ -5,6 +5,10 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
 
+
+from homeassistant.components.application_credentials import (
+    ClientCredential
+)
 from .api.myfoxapi_exception import (MyFoxException)
 
 from .api.const import (
@@ -20,13 +24,14 @@ from .api.const import (
     KEY_EXPIRE_TIME,
     KEY_SITE_ID,
     KEY_CACHE_EXPIRE_IN,
+    KEY_AUTH_IMPLEMENTATION,
     CACHE_EXPIRE_IN,
-     POOLING_INTERVAL_DEF,
-     KEY_POOLING_INTERVAL,
-     KEY_CACHE_CAMERA,
-     CACHE_CAMERA,
-     KEY_CACHE_SECURITY,
-     CACHE_SECURITY
+    POOLING_INTERVAL_DEF,
+    KEY_POOLING_INTERVAL,
+    KEY_CACHE_CAMERA,
+    CACHE_CAMERA,
+    KEY_CACHE_SECURITY,
+    CACHE_SECURITY
 )
 from .api.myfoxapi import (
     MyFoxEntryDataApi,
@@ -113,6 +118,18 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     myfox_pswd = None
     if KEY_MYFOX_PSWD in entry.data :
         myfox_pswd = entry.data[KEY_MYFOX_PSWD]
+    if KEY_AUTH_IMPLEMENTATION in entry.data :
+        auth_implementation = entry.data[KEY_AUTH_IMPLEMENTATION]
+    if "application_credentials" in hass.data :
+        if "storage" in hass.data["application_credentials"] :
+            storage_collection = hass.data["application_credentials"]["storage"]
+            credentials = storage_collection.async_client_credentials(DOMAIN_MYFOX)
+            if auth_implementation in credentials :
+                credential:ClientCredential = credentials[auth_implementation]
+                client_id     = credential.client_id
+                client_secret = credential.client_secret
+                client_name   = credential.name
+                _LOGGER.debug("Credential selectionne %s", str(client_name))
 
     myfox_info = MyFoxEntryDataApi(client_id,
                                    client_secret,

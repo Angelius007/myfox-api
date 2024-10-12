@@ -184,12 +184,6 @@ class MyFoxApiClient:
                         resp = await session.get(urlApi, headers=headers, json=data) 
                         return await self._get_response(resp, responseClass)
             except InvalidTokenMyFoxException as exception:
-                # raise ConfigEntryAuthFailed from exception
-                # Renouvellement token
-                #if await self.login() :
-                #    # Relance appel
-                #    return self.callMyFoxApi(path, data, method)
-                #else :
                 raise exception
             except MyFoxException as exception:
                 raise exception
@@ -318,7 +312,8 @@ class MyFoxApiClient:
             await self.getInfoSites()
 
             return True
-
+        except InvalidTokenMyFoxException as exception:
+            raise exception
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
@@ -355,15 +350,16 @@ class MyFoxApiClient:
             expireDelay = self.getExpireDelay()
             if expireDelay == 0: # jeton expire
                 _LOGGER.debug("Jeton expire -> demande de renouvellement")
-                raise InvalidTokenMyFoxException
+                await self.refreshToken()
+                expireDelay = self.getExpireDelay()
+                # raise InvalidTokenMyFoxException
                 # await self.login()
                 # expireDelay = self.getExpireDelay()
             elif expireDelay < (SEUIL_EXPIRE_MIN): # si jeton valide - de 5 min, on renouvelle
-                _LOGGER.debug("Jeton bientot expire -> demande de renouvellement")
-                raise InvalidTokenMyFoxException
                 # Token expire, on renouvelle
-                # await self.refreshToken()
-                # expireDelay = self.getExpireDelay()
+                _LOGGER.debug("Jeton bientot expire -> demande de renouvellement")
+                await self.refreshToken()
+                expireDelay = self.getExpireDelay()
             return self.myfox_info.access_token
         except InvalidTokenMyFoxException as exception:
             raise exception
