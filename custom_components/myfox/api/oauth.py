@@ -25,7 +25,7 @@ from ..const import (
 _LOGGER = logging.getLogger(__name__)
 
 class MyFoxSystemImplementation(config_entry_oauth2_flow.LocalOAuth2Implementation):
-    """Tesla Fleet API open source Oauth2 implementation."""
+    """MyFox API open source Oauth2 implementation."""
 
     code_verifier: str
     code_challenge: str
@@ -78,8 +78,9 @@ class MyFoxSystemImplementation(config_entry_oauth2_flow.LocalOAuth2Implementati
             next_step = "authorize_rejected" if "error" in user_input else "creation"
             return self.async_external_step_done(next_step_id=next_step)
 
-        return self.async_external_step(step_id="auth", url="", data_schema=USER_STEP_SCHEMA)
-
+        # return self.async_external_step(step_id="auth", url="", data_schema=USER_STEP_SCHEMA)
+        return self.async_show_form(step_id="auth", data_schema=USER_STEP_SCHEMA)
+    
     async def async_resolve_external_data(self, external_data: Any) -> dict:
         """Resolve the authorization code to tokens."""
         return await self._token_request(
@@ -88,7 +89,10 @@ class MyFoxSystemImplementation(config_entry_oauth2_flow.LocalOAuth2Implementati
                 KEY_CLIENT_ID     : external_data[KEY_CLIENT_ID],
                 KEY_CLIENT_SECRET : external_data[KEY_CLIENT_SECRET],
                 KEY_MYFOX_USER    : external_data[KEY_MYFOX_USER],
-                KEY_MYFOX_PSWD    : external_data[KEY_MYFOX_PSWD]
+                KEY_MYFOX_PSWD    : external_data[KEY_MYFOX_PSWD],
+                "code"            : external_data["code"],
+                "redirect_uri"    : external_data["state"]["redirect_uri"],
+                "code_verifier"   : self.code_verifier,
             }
         )
 
