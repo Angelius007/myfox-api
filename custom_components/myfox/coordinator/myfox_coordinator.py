@@ -81,20 +81,20 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
 
     async def update_entry(self, myfoxApiClient:MyFoxApiClient) :
         try:
-            data = self.entry.data.copy()
-            options = self.entry.options.copy()
+            new_data = {**self.entry.data}
+            new_options = {**self.entry.options}
             
             # mise a jour si besoin des tokens
             await myfoxApiClient.getToken()
             # si le token a bougé
-            if data[KEY_TOKEN][KEY_ACCESS_TOKEN] != myfoxApiClient.myfox_info.access_token :
-                _LOGGER.debug("Dephase detecte %s -> %s", data[KEY_TOKEN][KEY_ACCESS_TOKEN], myfoxApiClient.myfox_info.access_token)
-                data[KEY_TOKEN][KEY_ACCESS_TOKEN] = myfoxApiClient.myfox_info.access_token
-                data[KEY_TOKEN][KEY_REFRESH_TOKEN] = myfoxApiClient.myfox_info.refresh_token
-                data[KEY_TOKEN][KEY_EXPIRE_IN] = myfoxApiClient.myfox_info.expires_in
-                data[KEY_TOKEN][KEY_EXPIRE_AT] = myfoxApiClient.myfox_info.expires_time
+            if new_data[KEY_TOKEN][KEY_ACCESS_TOKEN] != myfoxApiClient.myfox_info.access_token :
+                _LOGGER.debug("Dephase detecte %s -> %s", new_data[KEY_TOKEN][KEY_ACCESS_TOKEN], myfoxApiClient.myfox_info.access_token)
+                new_data[KEY_TOKEN][KEY_ACCESS_TOKEN] = myfoxApiClient.myfox_info.access_token
+                new_data[KEY_TOKEN][KEY_REFRESH_TOKEN] = myfoxApiClient.myfox_info.refresh_token
+                new_data[KEY_TOKEN][KEY_EXPIRE_IN] = myfoxApiClient.myfox_info.expires_in
+                new_data[KEY_TOKEN][KEY_EXPIRE_AT] = myfoxApiClient.myfox_info.expires_time
                 # maj conf
-                if self.hass.config_entries.async_update_entry(self.entry, data=data, options=options) :
+                if self.hass.config_entries.async_update_entry(self.entry, data=new_data, options=new_options) :
                     _LOGGER.debug("-> Changement detecte sur la conf")
 
         except Exception as exception:
