@@ -3,6 +3,7 @@ import logging
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryAuthFailed
 
 from .api.myfoxapi_exception import (MyFoxException)
 
@@ -50,6 +51,7 @@ from .api.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
 from .api.myfoxapi_heater import (MyFoxApiHeaterClient)
 from .api.myfoxapi_thermo import (MyFoxApThermoClient)
 from .coordinator.myfox_coordinator import (MyFoxCoordinator)
+from .api.myfoxapi_exception import (MyFoxException, InvalidTokenMyFoxException)
 
 from .const import (DOMAIN_MYFOX, CONFIG_VERSION)
 
@@ -131,11 +133,18 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     myfox_info.options = options
 
-    myfox_client = MyFoxApiClient(myfox_info)
-    
-    info_site = await myfox_client.getInfoSite(entry.data[KEY_SITE_ID])
-    _LOGGER.info("Chargement du site %s", str(info_site))
-     
+    try:
+        myfox_client = MyFoxApiClient(myfox_info)
+        
+        info_site = await myfox_client.getInfoSite(entry.data[KEY_SITE_ID])
+        _LOGGER.info("Chargement du site %s", str(info_site))
+    except InvalidTokenMyFoxException as err:   
+        # Raising ConfigEntryAuthFailed will cancel future updates
+        # and start a config flow with SOURCE_REAUTH (async_step_reauth)
+        raise ConfigEntryAuthFailed from err
+    except MyFoxException as exception:
+        _LOGGER.error(exception)
+        
     if info_site :
         """Recherche des devices."""
 

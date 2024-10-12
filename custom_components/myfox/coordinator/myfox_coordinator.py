@@ -98,6 +98,10 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             _LOGGER.debug("Client[%s].getList:%s",str(client_key),str(myfoxApiClient.__class__))
             try:
                 await myfoxApiClient.getList()
+            except InvalidTokenMyFoxException as err:   
+                # Raising ConfigEntryAuthFailed will cancel future updates
+                # and start a config flow with SOURCE_REAUTH (async_step_reauth)
+                raise ConfigEntryAuthFailed from err
             except MyFoxException as exception:
                 _LOGGER.error(exception)
 
