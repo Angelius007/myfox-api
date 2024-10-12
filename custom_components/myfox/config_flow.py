@@ -145,7 +145,11 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
     # 1er step config
     async def async_oauth_create_entry(self, info: dict[str, Any] | None = None):
         _LOGGER.debug("async_oauth_create_entry :  %s", str(info))
-        
+        if self.source == SOURCE_REAUTH:
+            return self.async_update_reload_and_abort(
+                self._get_reauth_entry(),
+                data=info,
+            )
         if info is not None:
             myfox_info = MyFoxEntryDataApi(info.get(KEY_CLIENT_ID),
                                         info.get(KEY_CLIENT_SECRET),
