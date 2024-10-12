@@ -70,6 +70,10 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
 
         _LOGGER.info("Init " + str(self.name) + " avec un pooling de " + str(pooling_frequency) + " minutes")
 
+    def updateTokens(self, info:dict[str, Any]):
+        for (type,hassclient) in self.myfoxApiClients.items() :
+            """ Mise a jour des tokens """
+            hassclient.saveToken(info)
 
     def stop(self) :
         """ Arret des process """

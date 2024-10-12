@@ -335,5 +335,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     coordinator.stop()
     return True
 
-async def update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
-    await hass.config_entries.async_reload(entry.entry_id)
+async def update_listener(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
+    coordinator:MyFoxCoordinator = hass.data[DOMAIN_MYFOX][config_entry.entry_id]
+    new_data = {**config_entry.data}
+    coordinator.updateTokens(new_data[KEY_TOKEN])
+    await hass.config_entries.async_reload(config_entry.entry_id)
