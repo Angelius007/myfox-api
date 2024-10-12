@@ -202,14 +202,15 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
             if self.refresh_token :
                 myfox_info.refresh_token = self.refresh_token
             # nouveaux token
-            if KEY_ACCESS_TOKEN in  info["token"] :
-                myfox_info.access_token =  info["token"][KEY_ACCESS_TOKEN]
-            if KEY_REFRESH_TOKEN in  info["token"] :
-                myfox_info.refresh_token =  info["token"][KEY_REFRESH_TOKEN]
-            if KEY_EXPIRE_IN in  info["token"] :
-                myfox_info.expires_in =  info["token"][KEY_EXPIRE_IN]
-            if KEY_EXPIRE_AT in  info["token"] :
-                myfox_info.expires_time =  info["token"][KEY_EXPIRE_AT]
+            if KEY_TOKEN in info:
+                if KEY_ACCESS_TOKEN in  info[KEY_TOKEN] :
+                    myfox_info.access_token =  info[KEY_TOKEN][KEY_ACCESS_TOKEN]
+                if KEY_REFRESH_TOKEN in  info[KEY_TOKEN] :
+                    myfox_info.refresh_token =  info[KEY_TOKEN][KEY_REFRESH_TOKEN]
+                if KEY_EXPIRE_IN in  info[KEY_TOKEN] :
+                    myfox_info.expires_in =  info[KEY_TOKEN][KEY_EXPIRE_IN]
+                if KEY_EXPIRE_AT in  info[KEY_TOKEN] :
+                    myfox_info.expires_time =  info[KEY_TOKEN][KEY_EXPIRE_AT]
             
             options = MyFoxOptionsDataApi()
             options.cache_time = CACHE_EXPIRE_IN
