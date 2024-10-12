@@ -125,6 +125,7 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
         self.refresh_token = None
 
         self.config_entry: ConfigEntry | None = None
+        self.data: dict[str, Any] | None = None
 
     @property
     def logger(self) -> logging.Logger:
@@ -138,21 +139,22 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
             _LOGGER.debug("Entry trouvee : %s",unique_id)
             existing_entry = self.hass.config_entries.async_get_entry(unique_id)
             if existing_entry:
-                data = existing_entry.data.copy()
-                if KEY_CLIENT_ID in data:
-                    self.client_id = data[KEY_CLIENT_ID]
-                if KEY_CLIENT_SECRET in data:
-                    self.client_secret = data[KEY_CLIENT_SECRET]
-                if KEY_MYFOX_USER in data:
-                    self.username = data[KEY_MYFOX_USER]
-                if KEY_MYFOX_PSWD in data:
-                    self.password = data[KEY_MYFOX_PSWD]
-                if KEY_ACCESS_TOKEN in data:
-                    self.access_token = data[KEY_ACCESS_TOKEN]
-                if KEY_REFRESH_TOKEN in data:
-                    self.refresh_token = data[KEY_REFRESH_TOKEN]
-                if KEY_SITE_ID in data:
-                    self.siteId = data[KEY_SITE_ID]
+                self.data = existing_entry.data.copy()
+                if KEY_CLIENT_ID in self.data:
+                    self.client_id = self.data[KEY_CLIENT_ID]
+                if KEY_CLIENT_SECRET in self.data:
+                    self.client_secret = self.data[KEY_CLIENT_SECRET]
+                if KEY_MYFOX_USER in self.data:
+                    self.username = self.data[KEY_MYFOX_USER]
+                if KEY_MYFOX_PSWD in self.data:
+                    self.password = self.data[KEY_MYFOX_PSWD]
+                if KEY_ACCESS_TOKEN in self.data:
+                    self.access_token = self.data[KEY_ACCESS_TOKEN]
+                if KEY_REFRESH_TOKEN in self.data:
+                    self.refresh_token = self.data[KEY_REFRESH_TOKEN]
+                if KEY_SITE_ID in self.data:
+                    self.siteId = self.data[KEY_SITE_ID]
+            self.data.update(user_input)
         else :
             _LOGGER.debug("Entry non trouvee dans le context [%s]",str(self.context))
         return await self.async_step_user()
@@ -172,7 +174,7 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
 
     # 1er step config
     async def async_oauth_create_entry(self, info: dict[str, Any] | None = None):
-        _LOGGER.info("Post authent :  %s", str(info))
+        _LOGGER.info("async_oauth_create_entry :  %s", str(info))
 
         USER_STEP_SCHEMA = vol.Schema({
             vol.Required(KEY_CLIENT_ID, default=self.client_id): str,
@@ -181,8 +183,8 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
             vol.Optional(KEY_MYFOX_PSWD, default=self.password): str
         })
         if info is not None:
-            myfox_info = MyFoxEntryDataApi(self.client_id,
-                                        self.client_secret,
+            myfox_info = MyFoxEntryDataApi("",
+                                        "",
                                         "",
                                         "")
             if KEY_ACCESS_TOKEN in  info["token"] :
@@ -211,7 +213,7 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
                 if login_ok :
                     """Recherche des devices."""
                     self.sites = self.myfox_client.myfox_info.sites
-
+            self.data.update(info)
             return await self.async_step_select_site()
 
         return self.async_show_form(
@@ -220,6 +222,7 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
     # Step de selection du site
     async def async_step_select_site(self, info: dict[str, Any] | None = None) -> FlowResult:
         """ Selection du site"""
+        _LOGGER.info("async_step_select_site :  %s", str(info))
         if info is not None:
             """ sauvegarde du site et de l'entry """
             for site in self.sites:
@@ -229,40 +232,33 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
             
             existing_entry = await self.async_set_unique_id(device_unique_id)
             
+            new_data = {
+                KEY_CLIENT_ID: self.myfox_client.myfox_info.client_id,
+                KEY_CLIENT_SECRET: self.myfox_client.myfox_info.client_secret,
+                KEY_MYFOX_USER: self.myfox_client.myfox_info.username,
+                KEY_MYFOX_PSWD: self.myfox_client.myfox_info.password,
+                KEY_ACCESS_TOKEN: self.myfox_client.myfox_info.access_token,
+                KEY_REFRESH_TOKEN: self.myfox_client.myfox_info.refresh_token,
+                KEY_EXPIRE_IN: self.myfox_client.myfox_info.expires_in,
+                KEY_EXPIRE_TIME: self.myfox_client.myfox_info.expires_time,
+                KEY_SITE_ID: str(self.site.siteId),
+            }
             if existing_entry:
                 options = existing_entry.options.copy()
-                data = existing_entry.data.copy()
-                data[KEY_CLIENT_ID] = self.myfox_client.myfox_info.client_id
-                data[KEY_CLIENT_SECRET] = self.myfox_client.myfox_info.client_secret
-                data[KEY_MYFOX_USER] = self.myfox_client.myfox_info.username
-                data[KEY_MYFOX_PSWD] = self.myfox_client.myfox_info.password
-                data[KEY_ACCESS_TOKEN] = self.myfox_client.myfox_info.access_token
-                data[KEY_REFRESH_TOKEN] = self.myfox_client.myfox_info.refresh_token
-                data[KEY_EXPIRE_IN] = self.myfox_client.myfox_info.expires_in
-                data[KEY_EXPIRE_TIME] = self.myfox_client.myfox_info.expires_time
-                data.update(info)
-                data[KEY_SITE_ID] = str(self.site.siteId)
-                if self.hass.config_entries.async_update_entry(existing_entry, data=data, options=options):
+                #data = existing_entry.data.copy()
+                self.data.update(info)
+                self.data.update(new_data)
+
+                if self.hass.config_entries.async_update_entry(existing_entry, data=self.data, options=options):
                     await self.hass.config_entries.async_reload(existing_entry.entry_id)
                 return self.async_abort(reason="updated_successfully")
             else :
                 options = {
                     KEY_CACHE_EXPIRE_IN : CACHE_EXPIRE_IN
                 }
-                data = {
-                    KEY_CLIENT_ID: self.myfox_client.myfox_info.client_id,
-                    KEY_CLIENT_SECRET: self.myfox_client.myfox_info.client_secret,
-                    KEY_MYFOX_USER: self.myfox_client.myfox_info.username,
-                    KEY_MYFOX_PSWD: self.myfox_client.myfox_info.password,
-                    KEY_ACCESS_TOKEN: self.myfox_client.myfox_info.access_token,
-                    KEY_REFRESH_TOKEN: self.myfox_client.myfox_info.refresh_token,
-                    KEY_EXPIRE_IN: self.myfox_client.myfox_info.expires_in,
-                    KEY_EXPIRE_TIME: self.myfox_client.myfox_info.expires_time,
-                    KEY_SITE_ID: str(self.site.siteId),
-                }
-                data.update(info)
-                data[KEY_SITE_ID] = str(self.site.siteId)
-                return self.async_create_entry(title=device_unique_id, data=data, options=options)
+                self.data.update(info)
+                self.data.update(new_data)
+                return self.async_create_entry(title=device_unique_id, data=self.data, options=options)
         
         site_list = list()
         default_site = None
