@@ -304,6 +304,7 @@ class MyFoxApiClient:
                 KEY_CLIENT_SECRET:self.myfox_info.client_secret,
                 KEY_REFRESH_TOKEN:self.myfox_info.refresh_token
             }
+            _LOGGER.debug("Refresh token utilise : %s", str(self.myfox_info.refresh_token))
             
             response = await self.callMyFoxApiPost(MYFOX_TOKEN_PATH, data)
             # save des tokens
