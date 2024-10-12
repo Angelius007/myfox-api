@@ -246,10 +246,7 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
                 KEY_CLIENT_SECRET: self.myfox_client.myfox_info.client_secret,
                 KEY_MYFOX_USER: self.myfox_client.myfox_info.username,
                 KEY_MYFOX_PSWD: self.myfox_client.myfox_info.password,
-                KEY_ACCESS_TOKEN: self.myfox_client.myfox_info.access_token,
-                KEY_REFRESH_TOKEN: self.myfox_client.myfox_info.refresh_token,
-                KEY_EXPIRE_IN: self.myfox_client.myfox_info.expires_in,
-                KEY_EXPIRE_TIME: self.myfox_client.myfox_info.expires_time,
+
                 KEY_SITE_ID: str(self.site.siteId),
             }
             if existing_entry:
