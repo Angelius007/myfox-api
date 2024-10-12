@@ -182,11 +182,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         await coordinator.async_config_entry_first_refresh()
 
         new_data = {**entry.data}
-        # mise a jour du token
-        new_data[KEY_TOKEN][KEY_ACCESS_TOKEN]  = myfox_info.access_token
-        new_data[KEY_TOKEN][KEY_REFRESH_TOKEN] = myfox_info.refresh_token
-        new_data[KEY_TOKEN][KEY_EXPIRE_IN]     = myfox_info.expires_in
-        new_data[KEY_TOKEN][KEY_EXPIRE_AT]   = myfox_info.expires_time
         
         hass.config_entries.async_update_entry(entry, data=new_data, options=entry.options)
         await hass.config_entries.async_forward_entry_setups(entry, _PLATFORMS)
