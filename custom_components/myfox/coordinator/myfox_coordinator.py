@@ -133,7 +133,6 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         """
         _LOGGER.info("Demarrage de %s", str(self.name))
         for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
-            _LOGGER.debug("Client[%s].getList:%s",str(client_key),str(myfoxApiClient.__class__))
             try:
                 await myfoxApiClient.getList()
             except InvalidTokenMyFoxException as err:   
