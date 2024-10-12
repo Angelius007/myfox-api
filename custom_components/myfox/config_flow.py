@@ -41,7 +41,7 @@ from .api.myfoxapi import (
     MyFoxApiClient
 )
 from .devices.site import MyFoxSite
-from .api.oauth import MyFoxSystemImplementation,MyFoxImplementation
+from .api.oauth import MyFoxSystemImplementation
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -183,10 +183,33 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
 
         return await super().async_step_user()
 
+    async def async_step_reauth(
+        self, entry_data: Mapping[str, Any]
+    ) -> ConfigFlowResult:
+        """Perform reauth upon an API authentication error."""
+        return await self.async_step_reauth_confirm()
+
+    async def async_step_reauth_confirm(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Confirm reauth dialog."""
+        if user_input is None:
+            return self.async_show_form(
+                step_id="reauth_confirm",
+                description_placeholders={"name": "MyFox"},
+            )
+        return await self.async_step_user()
+
     # 1er step config
     async def async_oauth_create_entry(self, info: dict[str, Any] | None = None):
         _LOGGER.info("async_oauth_create_entry :  %s", str(info))
 
+        if self.source == SOURCE_REAUTH:
+            self._abort_if_unique_id_mismatch(reason="reauth_account_mismatch")
+            return self.async_update_reload_and_abort(
+                self._get_reauth_entry(), data=info
+            )
+        
         USER_STEP_SCHEMA = vol.Schema({
             vol.Required(KEY_CLIENT_ID, default=self.client_id): str,
             vol.Required(KEY_CLIENT_SECRET, default=self.client_secret): str,
