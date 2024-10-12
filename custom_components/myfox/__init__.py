@@ -11,9 +11,11 @@ from .api.const import (
     KEY_CLIENT_SECRET,
     KEY_MYFOX_USER,
     KEY_MYFOX_PSWD,
+    KEY_TOKEN,
     KEY_ACCESS_TOKEN,
     KEY_REFRESH_TOKEN,
     KEY_EXPIRE_IN,
+    KEY_EXPIRE_AT,
     KEY_EXPIRE_TIME,
     KEY_SITE_ID,
     KEY_CACHE_EXPIRE_IN,
@@ -71,8 +73,15 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         """ Action en cas d'ancienne version detectee """
         new_data = {**config_entry.data}
         new_options = {**config_entry.options}
-        if old_version <= 2 :
+        if old_version < 2 :
             """ Action en cas de version < n """
+            new_data[KEY_TOKEN] = {
+                KEY_ACCESS_TOKEN  : new_data[KEY_ACCESS_TOKEN],
+                KEY_REFRESH_TOKEN : new_data[KEY_REFRESH_TOKEN],
+                KEY_EXPIRE_IN     : new_data[KEY_EXPIRE_IN],
+                KEY_EXPIRE_AT     : new_data[KEY_EXPIRE_TIME],
+                "token_type"      : "Bearer",
+            }
 
         config_entry.version = CONFIG_VERSION
         hass.config_entries.async_update_entry(config_entry, data=new_data, options=new_options)
@@ -88,10 +97,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
                                    entry.data[KEY_CLIENT_SECRET],
                                    entry.data[KEY_MYFOX_USER],
                                    entry.data[KEY_MYFOX_PSWD],
-                                   entry.data[KEY_ACCESS_TOKEN],
-                                   entry.data[KEY_REFRESH_TOKEN],
-                                   entry.data[KEY_EXPIRE_IN],
-                                   entry.data[KEY_EXPIRE_TIME])
+                                   entry.data[KEY_TOKEN][KEY_ACCESS_TOKEN],
+                                   entry.data[KEY_TOKEN][KEY_REFRESH_TOKEN],
+                                   entry.data[KEY_TOKEN][KEY_EXPIRE_IN],
+                                   entry.data[KEY_TOKEN][KEY_EXPIRE_AT])
     options = MyFoxOptionsDataApi()
     # frequence de pooling du coordinator
     if KEY_POOLING_INTERVAL in entry.options :
