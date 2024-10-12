@@ -41,68 +41,8 @@ from .api.myfoxapi import (
     MyFoxApiClient
 )
 from .devices.site import MyFoxSite
-from .api.oauth import MyFoxSystemImplementation
 
 _LOGGER = logging.getLogger(__name__)
-
-class OAuth2FlowHandler(
-    config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain=DOMAIN_MYFOX
-):
-    """Config flow to handle MyFox OAuth2 authentication."""
-    DOMAIN = DOMAIN_MYFOX
-
-    @property
-    def logger(self) -> logging.Logger:
-        """Return logger."""
-        return _LOGGER
-    
-    async def async_step_user(
-        self, user_input: dict[str, Any] | None = None
-    ) -> ConfigFlowResult:
-        """Handle a flow start."""
-        self.async_register_implementation(
-            self.hass,
-            MyFoxSystemImplementation(self.hass),
-        )
-
-        return await super().async_step_user()
-
-    async def async_oauth_create_entry(
-        self,
-        data: dict[str, Any],
-    ) -> ConfigFlowResult:
-        """Handle the initial step."""
-
-        token = jwt.decode(
-            data["token"]["access_token"], options={"verify_signature": False}
-        )
-        uid = token["sub"]
-
-        await self.async_set_unique_id(uid)
-        if self.source == SOURCE_REAUTH:
-            self._abort_if_unique_id_mismatch(reason="reauth_account_mismatch")
-            return self.async_update_reload_and_abort(
-                self._get_reauth_entry(), data=data
-            )
-        self._abort_if_unique_id_configured()
-        return self.async_create_entry(title=uid, data=data)
-
-    async def async_step_reauth(
-        self, entry_data: Mapping[str, Any]
-    ) -> ConfigFlowResult:
-        """Perform reauth upon an API authentication error."""
-        return await self.async_step_reauth_confirm()
-
-    async def async_step_reauth_confirm(
-        self, user_input: dict[str, Any] | None = None
-    ) -> ConfigFlowResult:
-        """Confirm reauth dialog."""
-        if user_input is None:
-            return self.async_show_form(
-                step_id="reauth_confirm",
-                description_placeholders={"name": "MyFox"},
-            )
-        return await self.async_step_user()
     
 class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain=DOMAIN_MYFOX):
     """ Config """
@@ -203,13 +143,12 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
     # 1er step config
     async def async_oauth_create_entry(self, info: dict[str, Any] | None = None):
         _LOGGER.info("async_oauth_create_entry :  %s", str(info))
-
+        
         if self.source == SOURCE_REAUTH:
             self._abort_if_unique_id_mismatch(reason="reauth_account_mismatch")
             return self.async_update_reload_and_abort(
                 self._get_reauth_entry(), data=info
             )
-        
         USER_STEP_SCHEMA = vol.Schema({
             vol.Required(KEY_CLIENT_ID, default=self.client_id): str,
             vol.Required(KEY_CLIENT_SECRET, default=self.client_secret): str,
@@ -236,7 +175,7 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
                     myfox_info.expires_in =  info[KEY_TOKEN][KEY_EXPIRE_IN]
                 if KEY_EXPIRE_AT in  info[KEY_TOKEN] :
                     myfox_info.expires_time =  info[KEY_TOKEN][KEY_EXPIRE_AT]
-            
+
             options = MyFoxOptionsDataApi()
             options.cache_time = CACHE_EXPIRE_IN
             myfox_info.options = options
@@ -267,14 +206,13 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
                     self.site = site
             device_unique_id = self.PREFIX_ENTRY+str(self.site.siteId)
             
-            existing_entry = await self.async_set_unique_id(device_unique_id)
+            existing_entry = await self.async_set_unique_id(device_unique_id, raise_on_progress=False)
             
             new_data = {
                 KEY_SITE_ID: str(self.site.siteId),
             }
             if existing_entry:
                 options = existing_entry.options.copy()
-                #data = existing_entry.data.copy()
                 self.data.update(info)
                 self.data.update(new_data)
 
