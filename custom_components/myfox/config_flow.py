@@ -270,11 +270,6 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
             existing_entry = await self.async_set_unique_id(device_unique_id)
             
             new_data = {
-                KEY_CLIENT_ID: self.myfox_client.myfox_info.client_id,
-                KEY_CLIENT_SECRET: self.myfox_client.myfox_info.client_secret,
-                KEY_MYFOX_USER: self.myfox_client.myfox_info.username,
-                KEY_MYFOX_PSWD: self.myfox_client.myfox_info.password,
-
                 KEY_SITE_ID: str(self.site.siteId),
             }
             if existing_entry:

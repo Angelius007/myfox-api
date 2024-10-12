@@ -101,10 +101,23 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     if DOMAIN_MYFOX not in hass.data:
         hass.data[DOMAIN_MYFOX] = {}
     
-    myfox_info = MyFoxEntryDataApi(entry.data[KEY_CLIENT_ID],
-                                   entry.data[KEY_CLIENT_SECRET],
-                                   entry.data[KEY_MYFOX_USER],
-                                   entry.data[KEY_MYFOX_PSWD],
+    client_id = None
+    if KEY_CLIENT_ID in entry.data :
+        client_id = entry.data[KEY_CLIENT_ID]
+    client_secret = None
+    if KEY_CLIENT_SECRET in entry.data :
+        client_secret = entry.data[KEY_CLIENT_SECRET]
+    myfox_user = None
+    if KEY_MYFOX_USER in entry.data :
+        myfox_user = entry.data[KEY_MYFOX_USER]
+    myfox_pswd = None
+    if KEY_MYFOX_PSWD in entry.data :
+        myfox_pswd = entry.data[KEY_MYFOX_PSWD]
+
+    myfox_info = MyFoxEntryDataApi(client_id,
+                                   client_secret,
+                                   myfox_user,
+                                   myfox_pswd,
                                    entry.data[KEY_TOKEN][KEY_ACCESS_TOKEN],
                                    entry.data[KEY_TOKEN][KEY_REFRESH_TOKEN],
                                    entry.data[KEY_TOKEN][KEY_EXPIRE_IN],
