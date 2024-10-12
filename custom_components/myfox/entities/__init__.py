@@ -47,8 +47,7 @@ class BaseWithValueEntity(MyFoxAbstractDeviceEntity):
     def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
         super().__init__(coordinator, device, title, key)
         if self.idx in self.coordinator.data:
-            statutok=self._update_value(coordinator.data[self.idx])
-            _LOGGER.debug("init value : %s, %s : %s", self.idx, self.coordinator.data[self.idx], str(statutok))
+            self._update_value(coordinator.data[self.idx])
             
     def _update_value(self, val: Any) -> bool:
         self._attr_native_value = self.coordinator.data[self.idx]
@@ -58,7 +57,6 @@ class BaseWithValueEntity(MyFoxAbstractDeviceEntity):
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         if self.idx in self.coordinator.data:
-            _LOGGER.debug("_handle_coordinator_update : %s, %s", self.idx, self.coordinator.data[self.idx])
             if self._update_value(self.coordinator.data[self.idx]) :
                 self.async_write_ha_state()
 
@@ -89,8 +87,7 @@ class BaseSceneWithValueEntity(MyFoxAbstractSceneEntity):
     def __init__(self, coordinator:MyFoxCoordinator, scene: BaseScene, title: str, key: str):
         super().__init__(coordinator, scene, title, key)
         if self.idx in self.coordinator.data:
-            statutok=self._update_value(coordinator.data[self.idx])
-            _LOGGER.debug("init value : %s, %s : %s", self.idx, self.coordinator.data[self.idx], str(statutok))
+            self._update_value(coordinator.data[self.idx])
             
     def _update_value(self, val: Any) -> bool:
         self._attr_native_value = self.coordinator.data[self.idx]
@@ -100,7 +97,6 @@ class BaseSceneWithValueEntity(MyFoxAbstractSceneEntity):
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         if self.idx in self.coordinator.data:
-            _LOGGER.debug("_handle_coordinator_update : %s, %s", self.idx, self.coordinator.data[self.idx])
             if self._update_value(self.coordinator.data[self.idx]) :
                 self.async_write_ha_state()
 

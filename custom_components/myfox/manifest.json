@@ -5,6 +5,7 @@
       "@Angelius007"
     ],
     "config_flow": true,
+    "dependencies": ["application_credentials"],
     "documentation": "https://github.com/Angelius007/myfox-api",
     "iot_class": "cloud_polling",
     "issue_tracker": "https://github.com/Angelius007/myfox-api/issues",
@@ -14,5 +15,5 @@
       "jsonpath>=0.82.2",
       "orjson>=3.10.6"
     ],
-    "version": "1.1.2"
+    "version": "1.2.0"
   }

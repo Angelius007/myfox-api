@@ -1,7 +1,7 @@
 from typing import Final
 
 DOMAIN_MYFOX: Final = "myfox"
-CONFIG_VERSION: int = 1
+CONFIG_VERSION: int = 2
 
 ONLINE_OPTIONS = {
     "Online": 0,

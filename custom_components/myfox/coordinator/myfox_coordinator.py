@@ -5,15 +5,17 @@ from datetime import timedelta
 from typing import Any, List, TypeVar
 
 from homeassistant.core import HomeAssistant
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
     UpdateFailed,
 )
+from homeassistant.exceptions import ConfigEntryAuthFailed
 
 from ..api.myfoxapi import (
     MyFoxApiClient
 )
-from ..api.myfoxapi_exception import MyFoxException
+from ..api.myfoxapi_exception import (MyFoxException, InvalidTokenMyFoxException)
 from ..api.myfoxapi_shutter import MyFoxApiShutterClient
 from ..api.myfoxapi_group_shutter import MyFoxApiGroupShutterClient
 from ..api.myfoxapi_socket import MyFoxApiSocketClient
@@ -31,6 +33,13 @@ from ..api.myfoxapi_gate import MyFoxApiGateClient
 from ..api.myfoxapi_module import MyFoxApiModuleClient
 from ..api.myfoxapi_library import MyFoxApiLibraryClient
 
+from ..api.const import (
+    KEY_TOKEN,
+    KEY_ACCESS_TOKEN,
+    KEY_REFRESH_TOKEN,
+    KEY_EXPIRE_IN,
+    KEY_EXPIRE_AT,
+)
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -50,7 +59,7 @@ class BoundFifoList(List):
 class MyFoxCoordinator(DataUpdateCoordinator) :
     """ Corrd inator pour synchro avec les appels API MyFox """
 
-    def __init__(self, hass: HomeAssistant,  pooling_frequency: int):
+    def __init__(self, hass: HomeAssistant,  pooling_frequency: int, entry: ConfigEntry):
         """Initialize my coordinator."""
         super().__init__(
             hass,
@@ -66,9 +75,39 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         )
         self.myfoxApiClients =  dict[str, MyFoxApiClient]()
         self.last_params = None
+        self.entry = entry
 
         _LOGGER.info("Init " + str(self.name) + " avec un pooling de " + str(pooling_frequency) + " minutes")
 
+    async def update_entry(self, myfoxApiClient:MyFoxApiClient) :
+        try:
+
+            existing_entry = self.hass.config_entries.async_get_entry(self.entry.entry_id)
+            data = existing_entry.data.copy()
+            new_options = existing_entry.options.copy()
+            
+            # mise a jour si besoin des tokens
+            await myfoxApiClient.getToken()
+            # si le token a bougé
+            if data[KEY_TOKEN][KEY_ACCESS_TOKEN] != myfoxApiClient.myfox_info.access_token :
+                new_data = {}
+                new_data[KEY_TOKEN] = data[KEY_TOKEN].copy() # copy pour casser la reference memoire
+                new_data[KEY_TOKEN][KEY_ACCESS_TOKEN]  = myfoxApiClient.myfox_info.access_token
+                new_data[KEY_TOKEN][KEY_REFRESH_TOKEN] = myfoxApiClient.myfox_info.refresh_token
+                new_data[KEY_TOKEN][KEY_EXPIRE_IN]     = myfoxApiClient.myfox_info.expires_in
+                new_data[KEY_TOKEN][KEY_EXPIRE_AT]     = myfoxApiClient.myfox_info.expires_time
+                data.update(new_data)
+                # maj conf  
+                if self.hass.config_entries.async_update_entry(existing_entry, data=data, options=new_options) :
+                    _LOGGER.info("-> Tokens modifies")
+
+        except Exception as exception:
+            _LOGGER.error(exception)
+
+    def updateTokens(self, info:dict[str, Any]):
+        for (type,hassclient) in self.myfoxApiClients.items() :
+            """ Mise a jour des tokens """
+            hassclient.saveToken(info)
 
     def stop(self) :
         """ Arret des process """
@@ -94,9 +133,12 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         """
         _LOGGER.info("Demarrage de %s", str(self.name))
         for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
-            _LOGGER.debug("Client[%s].getList:%s",str(client_key),str(myfoxApiClient.__class__))
             try:
                 await myfoxApiClient.getList()
+            except InvalidTokenMyFoxException as err:   
+                # Raising ConfigEntryAuthFailed will cancel future updates
+                # and start a config flow with SOURCE_REAUTH (async_step_reauth)
+                raise ConfigEntryAuthFailed from err
             except MyFoxException as exception:
                 _LOGGER.error(exception)
 
@@ -122,7 +164,6 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
                     if len(listening_idx) > 0:
                         try:
-                            _LOGGER.debug("Client[%s].getList:%s",str(client_key),str(myfoxApiClient.__class__))
                             await myfoxApiClient.getList()
                         except MyFoxException as exception:
                             _LOGGER.error(exception)
@@ -133,6 +174,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         client:MyFoxApiSecurityClient = myfoxApiClient
                         for temp in client.security :
                             self.addToParams(params, listening_idx, temp)
+                        await self.update_entry(client)
 
                     # cas d'un client temperature
                     if myfoxApiClient.__class__ == MyFoxApiTemperatureClient :
@@ -201,12 +243,12 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             self.last_params = params
             
             return params
-        # except ApiAuthError as err:   
+        except InvalidTokenMyFoxException as err:   
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
-        #     raise ConfigEntryAuthFailed from err
-        # except ApiError as err:
-        #     raise UpdateFailed(f"Error communicating with API: {err}")
+            raise ConfigEntryAuthFailed from err
+        except MyFoxException as err:
+            raise UpdateFailed(f"Error communicating with API: {err}")
         except Exception as err:
             raise UpdateFailed(f"Error with API: {err}")
         
@@ -218,14 +260,12 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 control_key = str(device_id) + "|" + str(key)
                 if control_key in listening_idx or len(listening_idx) == 0 :
                     params[control_key] = val
-                    _LOGGER.debug("addToParams -> deviceId(%s) : %s [%s]", str(device_id), control_key, str(val))
         if "scenarioId" in temp :
             scene_id = temp["scenarioId"]
             for key,val in temp.items() :
                 control_key = str(scene_id) + "|" + str(key)
                 if control_key in listening_idx or len(listening_idx) == 0 :
                     params[control_key] = val
-                    _LOGGER.debug("addToParams -> scenarioId(%s) : %s [%s]", str(scene_id), control_key, str(val))
         
     async def pressButton(self, idx:str) -> bool :
         """ Appuis sur un bouton et transmission au bon client """
@@ -392,6 +432,10 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 self.addToParams(params, listening_idx, valeur)
                 self.async_set_updated_data(params)
             return action_ok
+        except InvalidTokenMyFoxException as err:   
+            # Raising ConfigEntryAuthFailed will cancel future updates
+            # and start a config flow with SOURCE_REAUTH (async_step_reauth)
+            raise ConfigEntryAuthFailed from err
         except MyFoxException as exception:
             _LOGGER.error(exception)
             return action_ok
@@ -399,79 +443,109 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             raise UpdateFailed(f"Error with API: {err}")
 
     async def playScenario(self, idx:str) -> bool :
-        _LOGGER.info("playScenario : %s from %s", idx, str(self.name))
-        valeurs = idx.split("|", 2)
-        scenario_id = valeurs[0]
-        scenario_type = valeurs[1]
         action_ok = False
-        for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
-            if myfoxApiClient.__class__ == MyFoxApiSecenarioClient :
-                client:MyFoxApiSecenarioClient = myfoxApiClient
-                if scenario_id in client.scenes :
-                    action_ok = await client.playScenario(int(scenario_id))
-                    break
-        _LOGGER.debug("playScenario %s : %s", str(idx), str(action_ok) )
+        try:
+            _LOGGER.info("playScenario : %s from %s", idx, str(self.name))
+            valeurs = idx.split("|", 2)
+            scenario_id = valeurs[0]
+            scenario_type = valeurs[1]
+            for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
+                if myfoxApiClient.__class__ == MyFoxApiSecenarioClient :
+                    client:MyFoxApiSecenarioClient = myfoxApiClient
+                    if scenario_id in client.scenes :
+                        action_ok = await client.playScenario(int(scenario_id))
+                        break
+            _LOGGER.debug("playScenario %s : %s", str(idx), str(action_ok) )
 
-        if action_ok :
-            params = dict[str, Any]()
-            listening_idx = set()
-            listening_idx.add(idx)
-            valeur = dict[str, Any]()
-            valeur["scenarioId"] = scenario_id
-            valeur["typeLabel "] = scenario_type
-            valeur["enabled"] = "None"
-            self.addToParams(params, listening_idx, valeur)
-            self.async_set_updated_data(params)
+            if action_ok :
+                params = dict[str, Any]()
+                listening_idx = set()
+                listening_idx.add(idx)
+                valeur = dict[str, Any]()
+                valeur["scenarioId"] = scenario_id
+                valeur["typeLabel "] = scenario_type
+                valeur["enabled"] = "None"
+                self.addToParams(params, listening_idx, valeur)
+                self.async_set_updated_data(params)
+        except InvalidTokenMyFoxException as err:
+            # Raising ConfigEntryAuthFailed will cancel future updates
+            # and start a config flow with SOURCE_REAUTH (async_step_reauth)
+            raise ConfigEntryAuthFailed from err
+        except MyFoxException as exception:
+            _LOGGER.error(exception)
+            return action_ok
+        except Exception as err:
+            raise UpdateFailed(f"Error with API: {err}")
 
     async def enableScenario(self, idx:str) -> bool :
-        _LOGGER.info("enableScenario : %s from %s", idx, str(self.name))
-        valeurs = idx.split("|", 2)
-        scenario_id = valeurs[0]
-        scenario_type = valeurs[1]
         action_ok = False
-        for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
-            if myfoxApiClient.__class__ == MyFoxApiSecenarioClient :
-                client:MyFoxApiSecenarioClient = myfoxApiClient
-                if scenario_id in client.scenes :
-                    action_ok = await client.enableScenario(int(scenario_id))
-                    break
-        _LOGGER.debug("enableScenario %s : %s", str(idx), str(action_ok) )
+        try:
+            _LOGGER.info("enableScenario : %s from %s", idx, str(self.name))
+            valeurs = idx.split("|", 2)
+            scenario_id = valeurs[0]
+            scenario_type = valeurs[1]
+            for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
+                if myfoxApiClient.__class__ == MyFoxApiSecenarioClient :
+                    client:MyFoxApiSecenarioClient = myfoxApiClient
+                    if scenario_id in client.scenes :
+                        action_ok = await client.enableScenario(int(scenario_id))
+                        break
+            _LOGGER.debug("enableScenario %s : %s", str(idx), str(action_ok) )
 
-        if action_ok :
-            params = dict[str, Any]()
-            listening_idx = set()
-            listening_idx.add(idx)
-            valeur = dict[str, Any]()
-            valeur["scenarioId"] = scenario_id
-            valeur["typeLabel "] = scenario_type
-            valeur["enabled"] = True
-            self.addToParams(params, listening_idx, valeur)
-            self.async_set_updated_data(params)
+            if action_ok :
+                params = dict[str, Any]()
+                listening_idx = set()
+                listening_idx.add(idx)
+                valeur = dict[str, Any]()
+                valeur["scenarioId"] = scenario_id
+                valeur["typeLabel "] = scenario_type
+                valeur["enabled"] = True
+                self.addToParams(params, listening_idx, valeur)
+                self.async_set_updated_data(params)
+        except InvalidTokenMyFoxException as err:
+            # Raising ConfigEntryAuthFailed will cancel future updates
+            # and start a config flow with SOURCE_REAUTH (async_step_reauth)
+            raise ConfigEntryAuthFailed from err
+        except MyFoxException as exception:
+            _LOGGER.error(exception)
+            return action_ok
+        except Exception as err:
+            raise UpdateFailed(f"Error with API: {err}")
 
     async def disableScenario(self, idx:str) -> bool :
-        _LOGGER.info("disableScenario : %s from %s", idx, str(self.name))
-        valeurs = idx.split("|", 2)
-        scenario_id = valeurs[0]
-        scenario_type = valeurs[1]
         action_ok = False
-        for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
-            if myfoxApiClient.__class__ == MyFoxApiSecenarioClient :
-                client:MyFoxApiSecenarioClient = myfoxApiClient
-                if scenario_id in client.scenes :
-                    action_ok = await client.disableScenario(int(scenario_id))
-                    break
-        _LOGGER.debug("disableScenario %s : %s", str(idx), str(action_ok) )
+        try:
+            _LOGGER.info("disableScenario : %s from %s", idx, str(self.name))
+            valeurs = idx.split("|", 2)
+            scenario_id = valeurs[0]
+            scenario_type = valeurs[1]
+            for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
+                if myfoxApiClient.__class__ == MyFoxApiSecenarioClient :
+                    client:MyFoxApiSecenarioClient = myfoxApiClient
+                    if scenario_id in client.scenes :
+                        action_ok = await client.disableScenario(int(scenario_id))
+                        break
+            _LOGGER.debug("disableScenario %s : %s", str(idx), str(action_ok) )
 
-        if action_ok :
-            params = dict[str, Any]()
-            listening_idx = set()
-            listening_idx.add(idx)
-            valeur = dict[str, Any]()
-            valeur["scenarioId"] = scenario_id
-            valeur["typeLabel "] = scenario_type
-            valeur["enabled"] = False
-            self.addToParams(params, listening_idx, valeur)
-            self.async_set_updated_data(params)
+            if action_ok :
+                params = dict[str, Any]()
+                listening_idx = set()
+                listening_idx.add(idx)
+                valeur = dict[str, Any]()
+                valeur["scenarioId"] = scenario_id
+                valeur["typeLabel "] = scenario_type
+                valeur["enabled"] = False
+                self.addToParams(params, listening_idx, valeur)
+                self.async_set_updated_data(params)
+        except InvalidTokenMyFoxException as err:   
+            # Raising ConfigEntryAuthFailed will cancel future updates
+            # and start a config flow with SOURCE_REAUTH (async_step_reauth)
+            raise ConfigEntryAuthFailed from err
+        except MyFoxException as exception:
+            _LOGGER.error(exception)
+            return action_ok
+        except Exception as err:
+            raise UpdateFailed(f"Error with API: {err}")
 
     async def selectOption(self, idx:str, option:str) -> bool :
         """ Selection option et transmission au bon client """
@@ -543,6 +617,10 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 self.async_set_updated_data(params)
                 
             return action_ok
+        except InvalidTokenMyFoxException as err:   
+            # Raising ConfigEntryAuthFailed will cancel future updates
+            # and start a config flow with SOURCE_REAUTH (async_step_reauth)
+            raise ConfigEntryAuthFailed from err
         except MyFoxException as exception:
             _LOGGER.error(exception)
             return action_ok
@@ -567,6 +645,10 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         break
 
             return retour_url
+        except InvalidTokenMyFoxException as err:   
+            # Raising ConfigEntryAuthFailed will cancel future updates
+            # and start a config flow with SOURCE_REAUTH (async_step_reauth)
+            raise ConfigEntryAuthFailed from err
         except MyFoxException as exception:
             _LOGGER.error(exception)
             return retour_url
@@ -591,6 +673,10 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         break
                
             return retour_url
+        except InvalidTokenMyFoxException as err:   
+            # Raising ConfigEntryAuthFailed will cancel future updates
+            # and start a config flow with SOURCE_REAUTH (async_step_reauth)
+            raise ConfigEntryAuthFailed from err
         except MyFoxException as exception:
             _LOGGER.error(exception)
             return retour_url
@@ -617,6 +703,10 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         break
 
             return retour_byte
+        except InvalidTokenMyFoxException as err:   
+            # Raising ConfigEntryAuthFailed will cancel future updates
+            # and start a config flow with SOURCE_REAUTH (async_step_reauth)
+            raise ConfigEntryAuthFailed from err
         except MyFoxException as exception:
             _LOGGER.error(exception)
             return retour_byte
@@ -640,32 +730,57 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         break
             _LOGGER.debug("getMedia %s : %s", str(idx), str(retour) )
             return retour
+        except InvalidTokenMyFoxException as err:   
+            # Raising ConfigEntryAuthFailed will cancel future updates
+            # and start a config flow with SOURCE_REAUTH (async_step_reauth)
+            raise ConfigEntryAuthFailed from err
         except MyFoxException as exception:
             _LOGGER.error(exception)
-            return retour
+            raise exception
         except Exception as err:
             raise UpdateFailed(f"Error with API: {err}")
 
     async def playVideo(self, idx:str, videoId:int) -> bool :
-        _LOGGER.info("playVideo : %s from %s", idx, str(self.name))
-
         action_ok = False
-        for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
-            if myfoxApiClient.__class__ == MyFoxApiLibraryClient :
-                client:MyFoxApiLibraryClient = myfoxApiClient
-                if videoId in client.scenes :
-                    action_ok = await client.playVideo(int(videoId))
-                    break
-        _LOGGER.debug("playVideo %s : %s", str(idx), str(action_ok) )
+        try:
+            _LOGGER.info("playVideo : %s from %s", idx, str(self.name))
 
-    async def getImage(self, idx:str, image_url:int) -> bytes :
-        _LOGGER.info("getImage : %s from %s", idx, str(self.name))
-        retour = None
-        for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
-            if myfoxApiClient.__class__ == MyFoxApiLibraryClient :
-                client:MyFoxApiLibraryClient = myfoxApiClient
-                retour = await client.getImage(image_url)
-                break
+            for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
+                if myfoxApiClient.__class__ == MyFoxApiLibraryClient :
+                    client:MyFoxApiLibraryClient = myfoxApiClient
+                    if videoId in client.scenes :
+                        action_ok = await client.playVideo(int(videoId))
+                        break
+            _LOGGER.debug("playVideo %s : %s", str(idx), str(action_ok) )
+        except InvalidTokenMyFoxException as err:   
+            # Raising ConfigEntryAuthFailed will cancel future updates
+            # and start a config flow with SOURCE_REAUTH (async_step_reauth)
+            raise ConfigEntryAuthFailed from err
+        except MyFoxException as exception:
+            _LOGGER.error(exception)
+            raise exception
+        except Exception as err:
+            raise UpdateFailed(f"Error with API: {err}")
         
-        _LOGGER.debug("getImage %s : %s", str(idx), str(image_url) )
-        return retour
+    async def getImage(self, idx:str, image_url:int) -> bytes :
+        try:
+            _LOGGER.info("getImage : %s from %s", idx, str(self.name))
+            retour = None
+            for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
+                if myfoxApiClient.__class__ == MyFoxApiLibraryClient :
+                    client:MyFoxApiLibraryClient = myfoxApiClient
+                    retour = await client.getImage(image_url)
+                    break
+            
+            _LOGGER.debug("getImage %s : %s", str(idx), str(image_url) )
+            return retour
+
+        except InvalidTokenMyFoxException as err:   
+            # Raising ConfigEntryAuthFailed will cancel future updates
+            # and start a config flow with SOURCE_REAUTH (async_step_reauth)
+            raise ConfigEntryAuthFailed from err
+        except MyFoxException as exception:
+            _LOGGER.error(exception)
+            raise exception
+        except Exception as err:
+            raise UpdateFailed(f"Error with API: {err}")

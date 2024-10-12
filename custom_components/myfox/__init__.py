@@ -3,7 +3,12 @@ import logging
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryAuthFailed
 
+
+from homeassistant.components.application_credentials import (
+    ClientCredential
+)
 from .api.myfoxapi_exception import (MyFoxException)
 
 from .api.const import (
@@ -11,19 +16,22 @@ from .api.const import (
     KEY_CLIENT_SECRET,
     KEY_MYFOX_USER,
     KEY_MYFOX_PSWD,
+    KEY_TOKEN,
     KEY_ACCESS_TOKEN,
     KEY_REFRESH_TOKEN,
     KEY_EXPIRE_IN,
+    KEY_EXPIRE_AT,
     KEY_EXPIRE_TIME,
     KEY_SITE_ID,
     KEY_CACHE_EXPIRE_IN,
+    KEY_AUTH_IMPLEMENTATION,
     CACHE_EXPIRE_IN,
-     POOLING_INTERVAL_DEF,
-     KEY_POOLING_INTERVAL,
-     KEY_CACHE_CAMERA,
-     CACHE_CAMERA,
-     KEY_CACHE_SECURITY,
-     CACHE_SECURITY
+    POOLING_INTERVAL_DEF,
+    KEY_POOLING_INTERVAL,
+    KEY_CACHE_CAMERA,
+    CACHE_CAMERA,
+    KEY_CACHE_SECURITY,
+    CACHE_SECURITY
 )
 from .api.myfoxapi import (
     MyFoxEntryDataApi,
@@ -48,6 +56,7 @@ from .api.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
 from .api.myfoxapi_heater import (MyFoxApiHeaterClient)
 from .api.myfoxapi_thermo import (MyFoxApThermoClient)
 from .coordinator.myfox_coordinator import (MyFoxCoordinator)
+from .api.myfoxapi_exception import (InvalidTokenMyFoxException)
 
 from .const import (DOMAIN_MYFOX, CONFIG_VERSION)
 
@@ -71,11 +80,24 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         """ Action en cas d'ancienne version detectee """
         new_data = {**config_entry.data}
         new_options = {**config_entry.options}
-        if old_version <= 2 :
-            """ Action en cas de version < n """
+        if old_version < 2 :
+            """ Migration token dans le bloc token """
+            if KEY_TOKEN not in new_data :
+                new_data[KEY_TOKEN] = {
+                    KEY_ACCESS_TOKEN  : new_data.pop(KEY_ACCESS_TOKEN, ""),
+                    KEY_REFRESH_TOKEN : new_data.pop(KEY_REFRESH_TOKEN, ""),
+                    KEY_EXPIRE_IN     : new_data.pop(KEY_EXPIRE_IN, ""),
+                    KEY_EXPIRE_AT     : new_data.pop(KEY_EXPIRE_TIME, ""),
+                    "token_type"      : "Bearer",
+                }
+            else :
+                # suppression anciennes clefs
+                new_data.pop(KEY_ACCESS_TOKEN, "")
+                new_data.pop(KEY_REFRESH_TOKEN, "")
+                new_data.pop(KEY_EXPIRE_IN, "")
+                new_data.pop(KEY_EXPIRE_TIME, "")
 
-        config_entry.version = CONFIG_VERSION
-        hass.config_entries.async_update_entry(config_entry, data=new_data, options=new_options)
+        hass.config_entries.async_update_entry(config_entry, data=new_data, options=new_options, version=CONFIG_VERSION)
         _LOGGER.info("Migration from version %s to version %s successful", old_version, CONFIG_VERSION)
     return True
 
@@ -84,14 +106,39 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     if DOMAIN_MYFOX not in hass.data:
         hass.data[DOMAIN_MYFOX] = {}
     
-    myfox_info = MyFoxEntryDataApi(entry.data[KEY_CLIENT_ID],
-                                   entry.data[KEY_CLIENT_SECRET],
-                                   entry.data[KEY_MYFOX_USER],
-                                   entry.data[KEY_MYFOX_PSWD],
-                                   entry.data[KEY_ACCESS_TOKEN],
-                                   entry.data[KEY_REFRESH_TOKEN],
-                                   entry.data[KEY_EXPIRE_IN],
-                                   entry.data[KEY_EXPIRE_TIME])
+    client_id = None
+    if KEY_CLIENT_ID in entry.data :
+        client_id = entry.data[KEY_CLIENT_ID]
+    client_secret = None
+    if KEY_CLIENT_SECRET in entry.data :
+        client_secret = entry.data[KEY_CLIENT_SECRET]
+    myfox_user = None
+    if KEY_MYFOX_USER in entry.data :
+        myfox_user = entry.data[KEY_MYFOX_USER]
+    myfox_pswd = None
+    if KEY_MYFOX_PSWD in entry.data :
+        myfox_pswd = entry.data[KEY_MYFOX_PSWD]
+    if KEY_AUTH_IMPLEMENTATION in entry.data :
+        auth_implementation = entry.data[KEY_AUTH_IMPLEMENTATION]
+    if "application_credentials" in hass.data :
+        if "storage" in hass.data["application_credentials"] :
+            storage_collection = hass.data["application_credentials"]["storage"]
+            credentials = storage_collection.async_client_credentials(DOMAIN_MYFOX)
+            if auth_implementation in credentials :
+                credential:ClientCredential = credentials[auth_implementation]
+                client_id     = credential.client_id
+                client_secret = credential.client_secret
+                client_name   = credential.name
+                _LOGGER.debug("Credential selectionne %s", str(client_name))
+
+    myfox_info = MyFoxEntryDataApi(client_id,
+                                   client_secret,
+                                   myfox_user,
+                                   myfox_pswd,
+                                   entry.data[KEY_TOKEN][KEY_ACCESS_TOKEN],
+                                   entry.data[KEY_TOKEN][KEY_REFRESH_TOKEN],
+                                   entry.data[KEY_TOKEN][KEY_EXPIRE_IN],
+                                   entry.data[KEY_TOKEN][KEY_EXPIRE_AT])
     options = MyFoxOptionsDataApi()
     # frequence de pooling du coordinator
     if KEY_POOLING_INTERVAL in entry.options :
@@ -116,15 +163,22 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     myfox_info.options = options
 
-    myfox_client = MyFoxApiClient(myfox_info)
-    
-    info_site = await myfox_client.getInfoSite(entry.data[KEY_SITE_ID])
-    _LOGGER.info("Chargement du site %s", str(info_site))
-     
+    try:
+        myfox_client = MyFoxApiClient(myfox_info)
+        
+        info_site = await myfox_client.getInfoSite(entry.data[KEY_SITE_ID])
+        _LOGGER.info("Chargement du site %s", str(info_site))
+    except InvalidTokenMyFoxException as err:   
+        # Raising ConfigEntryAuthFailed will cancel future updates
+        # and start a config flow with SOURCE_REAUTH (async_step_reauth)
+        raise ConfigEntryAuthFailed from err
+    except MyFoxException as exception:
+        _LOGGER.error(exception)
+        
     if info_site :
         """Recherche des devices."""
 
-        coordinator = MyFoxCoordinator(hass, options.pooling_frequency)
+        coordinator = MyFoxCoordinator(hass, options.pooling_frequency, entry)
         hass.data[DOMAIN_MYFOX][entry.entry_id] = coordinator
         
         # add Alarme
@@ -167,11 +221,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         await coordinator.async_config_entry_first_refresh()
 
         new_data = {**entry.data}
-        # mise a jour du token
-        new_data[KEY_ACCESS_TOKEN]  = myfox_info.access_token
-        new_data[KEY_REFRESH_TOKEN] = myfox_info.refresh_token
-        new_data[KEY_EXPIRE_IN]     = myfox_info.expires_in
-        new_data[KEY_EXPIRE_TIME]   = myfox_info.expires_time
         
         hass.config_entries.async_update_entry(entry, data=new_data, options=entry.options)
         await hass.config_entries.async_forward_entry_setups(entry, _PLATFORMS)
@@ -303,5 +352,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     coordinator.stop()
     return True
 
-async def update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
-    await hass.config_entries.async_reload(entry.entry_id)
+async def update_listener(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
+    _LOGGER.debug("update_listener-> reload entry")
+    coordinator:MyFoxCoordinator = hass.data[DOMAIN_MYFOX][config_entry.entry_id]
+    new_data = {**config_entry.data}
+    coordinator.updateTokens(new_data[KEY_TOKEN])
+    await hass.config_entries.async_reload(config_entry.entry_id)
