@@ -144,17 +144,6 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
     async def async_oauth_create_entry(self, info: dict[str, Any] | None = None):
         _LOGGER.info("async_oauth_create_entry :  %s", str(info))
         
-        if self.source == SOURCE_REAUTH:
-            self._abort_if_unique_id_mismatch(reason="reauth_account_mismatch")
-            return self.async_update_reload_and_abort(
-                self._get_reauth_entry(), data=info
-            )
-        USER_STEP_SCHEMA = vol.Schema({
-            vol.Required(KEY_CLIENT_ID, default=self.client_id): str,
-            vol.Required(KEY_CLIENT_SECRET, default=self.client_secret): str,
-            vol.Optional(KEY_MYFOX_USER, default=self.username): str,
-            vol.Optional(KEY_MYFOX_PSWD, default=self.password): str
-        })
         if info is not None:
             myfox_info = MyFoxEntryDataApi(info.get(KEY_CLIENT_ID),
                                         info.get(KEY_CLIENT_SECRET),
@@ -192,8 +181,7 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
             self.data.update(info)
             return await self.async_step_select_site()
 
-        return self.async_show_form(
-            step_id="oauth_create_entry", data_schema=USER_STEP_SCHEMA)
+        return await self.async_step_user()
     
     # Step de selection du site
     async def async_step_select_site(self, info: dict[str, Any] | None = None) -> FlowResult:
