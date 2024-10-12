@@ -168,7 +168,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         for temp in client.security :
                             self.addToParams(params, listening_idx, temp)
                         # mise a jour si besoin des tokens
-                        self.update_entry(client)
+                        await self.update_entry(client)
 
                     # cas d'un client temperature
                     if myfoxApiClient.__class__ == MyFoxApiTemperatureClient :
