@@ -1,5 +1,5 @@
 """Provide oauth implementations for the MyFox integration."""
-
+import logging
 import base64
 import hashlib
 import secrets
@@ -21,6 +21,7 @@ from .const import (
 from ..const import (
     DOMAIN_MYFOX
 )
+_LOGGER = logging.getLogger(__name__)
 
 class MyFoxSystemImplementation(config_entry_oauth2_flow.LocalOAuth2Implementation):
     """Tesla Fleet API open source Oauth2 implementation."""
@@ -91,6 +92,12 @@ class MyFoxImplementation(AuthImplementation):
             AuthorizationServer(url_autorize, url_token),
         )
 
+    async def async_refresh_token(self, token: dict) -> dict:
+        """ Rafraichissement token"""
+        _LOGGER.debug("Refresh Old Token %s", str(token) )
+        new_token =  await super().async_refresh_token(token)
+        _LOGGER.debug("New Token %s", str(new_token) )
+        return new_token
 #    @property
 #    def extra_authorize_data(self) -> dict[str, Any]:
 #        """Extra data that needs to be appended to the authorize url."""

@@ -331,13 +331,12 @@ class MyFoxApiClient:
             self.myfox_info.refresh_token = response[KEY_REFRESH_TOKEN]
             self.myfox_info.expires_in = response[KEY_EXPIRE_IN]
             self.myfox_info.expires_time = (time.time() + self.myfox_info.expires_in)
-            _LOGGER.debug(KEY_ACCESS_TOKEN+":"+self.myfox_info.access_token)
-            _LOGGER.debug(KEY_REFRESH_TOKEN+":"+self.myfox_info.refresh_token)
+            _LOGGER.debug(KEY_ACCESS_TOKEN+":"+str(self.myfox_info.access_token))
+            _LOGGER.debug(KEY_REFRESH_TOKEN+":"+str(self.myfox_info.refresh_token))
             _LOGGER.debug(KEY_EXPIRE_IN+":"+str(self.myfox_info.expires_in))
             _LOGGER.debug(KEY_EXPIRE_TIME+":"+str(self.myfox_info.expires_time))
         except KeyError as key:
-            _LOGGER.error(key)
-            _LOGGER.error("Error : " + key)
+            _LOGGER.error("Error : " + str(key))
             raise MyFoxException(f"Failed to extract key {key} from response: {response}")
     
     async def getToken(self) -> str:
