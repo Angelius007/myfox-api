@@ -240,8 +240,8 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
                 data[KEY_REFRESH_TOKEN] = self.myfox_client.myfox_info.refresh_token
                 data[KEY_EXPIRE_IN] = self.myfox_client.myfox_info.expires_in
                 data[KEY_EXPIRE_TIME] = self.myfox_client.myfox_info.expires_time
-                data[KEY_SITE_ID] = str(self.site.siteId)
                 data.update(info)
+                data[KEY_SITE_ID] = str(self.site.siteId)
                 if self.hass.config_entries.async_update_entry(existing_entry, data=data, options=options):
                     await self.hass.config_entries.async_reload(existing_entry.entry_id)
                 return self.async_abort(reason="updated_successfully")
@@ -261,6 +261,7 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
                     KEY_SITE_ID: str(self.site.siteId),
                 }
                 data.update(info)
+                data[KEY_SITE_ID] = str(self.site.siteId)
                 return self.async_create_entry(title=device_unique_id, data=data, options=options)
         
         site_list = list()
