@@ -89,9 +89,9 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             # mise a jour si besoin des tokens
             await myfoxApiClient.getToken()
             # si le token a bougé
-            new_data = {}
-            new_data[KEY_TOKEN] = {}
             if data[KEY_TOKEN][KEY_ACCESS_TOKEN] != myfoxApiClient.myfox_info.access_token :
+                new_data = {}
+                new_data[KEY_TOKEN] = {}
                 new_data[KEY_TOKEN][KEY_ACCESS_TOKEN] = myfoxApiClient.myfox_info.access_token
                 new_data[KEY_TOKEN][KEY_REFRESH_TOKEN] = myfoxApiClient.myfox_info.refresh_token
                 new_data[KEY_TOKEN][KEY_EXPIRE_IN] = myfoxApiClient.myfox_info.expires_in
