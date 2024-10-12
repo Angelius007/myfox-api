@@ -85,13 +85,14 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             options = self.entry.options.copy()
             # si le token a bougé
             if data[KEY_TOKEN][KEY_ACCESS_TOKEN] != myfoxApiClient.myfox_info.access_token :
+                _LOGGER.debug("Dephase detecte %s -> %s", data[KEY_TOKEN][KEY_ACCESS_TOKEN], myfoxApiClient.myfox_info.access_token)
                 data[KEY_TOKEN][KEY_ACCESS_TOKEN] = myfoxApiClient.myfox_info.access_token
                 data[KEY_TOKEN][KEY_REFRESH_TOKEN] = myfoxApiClient.myfox_info.refresh_token
                 data[KEY_TOKEN][KEY_EXPIRE_IN] = myfoxApiClient.myfox_info.expires_in
                 data[KEY_TOKEN][KEY_EXPIRE_AT] = myfoxApiClient.myfox_info.expires_time
+                # maj conf
+                self.hass.config_entries.async_update_entry(self.entry, data=data, options=options)
 
-            if self.hass.config_entries.async_update_entry(self.entry, data=data, options=options):
-                await self.hass.config_entries.async_reload(self.entry.entry_id)
         except Exception as exception:
             _LOGGER.error(exception)
 
