@@ -127,12 +127,14 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
         self, entry_data: Mapping[str, Any]
     ) -> ConfigFlowResult:
         """Perform reauth upon an API authentication error."""
+        _LOGGER.debug("async_step_reauth :  %s", str(entry_data))
         return await self.async_step_reauth_confirm()
 
     async def async_step_reauth_confirm(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Confirm reauth dialog."""
+        _LOGGER.debug("async_step_reauth_confirm :  %s", str(user_input))
         if user_input is None:
             return self.async_show_form(
                 step_id="reauth_confirm",
@@ -142,7 +144,7 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
 
     # 1er step config
     async def async_oauth_create_entry(self, info: dict[str, Any] | None = None):
-        _LOGGER.info("async_oauth_create_entry :  %s", str(info))
+        _LOGGER.debug("async_oauth_create_entry :  %s", str(info))
         
         if info is not None:
             myfox_info = MyFoxEntryDataApi(info.get(KEY_CLIENT_ID),
@@ -186,7 +188,7 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
     # Step de selection du site
     async def async_step_select_site(self, info: dict[str, Any] | None = None) -> FlowResult:
         """ Selection du site"""
-        _LOGGER.info("async_step_select_site :  %s", str(info))
+        _LOGGER.debug("async_step_select_site :  %s", str(info))
         if info is not None:
             """ sauvegarde du site et de l'entry """
             for site in self.sites:
