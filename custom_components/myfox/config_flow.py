@@ -170,10 +170,12 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Handle a flow start."""
-        #self.async_register_implementation(
-        #    self.hass,
-        #    MyFoxImplementation(self.hass),
-        #)
+        """Handle a flow start."""
+        self.async_register_implementation(
+            self.hass,
+            MyFoxSystemImplementation(self.hass),
+        )
+        
         if self.data is None:
             self.data = dict[str, Any]()
         if user_input is not None:
@@ -192,10 +194,10 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
             vol.Optional(KEY_MYFOX_PSWD, default=self.password): str
         })
         if info is not None:
-            myfox_info = MyFoxEntryDataApi("",
-                                        "",
-                                        "",
-                                        "")
+            myfox_info = MyFoxEntryDataApi(info.get(KEY_CLIENT_ID),
+                                        info.get(KEY_CLIENT_SECRET),
+                                        info.get(KEY_MYFOX_USER),
+                                        info.get(KEY_MYFOX_PSWD))
             # anciens tokens
             if self.access_token :
                 myfox_info.access_token = self.access_token
