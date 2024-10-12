@@ -81,21 +81,24 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
 
     async def update_entry(self, myfoxApiClient:MyFoxApiClient) :
         try:
-            new_data = {**self.entry.data}
-            new_options = {**self.entry.options}
+
+            existing_entry = self.hass.config_entries.async_get_entry(self.entry.entry_id)
+            data = existing_entry.data.copy()
+            new_options = existing_entry.options.copy()
             
             # mise a jour si besoin des tokens
             await myfoxApiClient.getToken()
             # si le token a bougé
-            if new_data[KEY_TOKEN][KEY_ACCESS_TOKEN] != myfoxApiClient.myfox_info.access_token :
-                _LOGGER.debug("Dephase detecte %s -> %s", new_data[KEY_TOKEN][KEY_ACCESS_TOKEN], myfoxApiClient.myfox_info.access_token)
+            new_data = {}
+            if data[KEY_TOKEN][KEY_ACCESS_TOKEN] != myfoxApiClient.myfox_info.access_token :
                 new_data[KEY_TOKEN][KEY_ACCESS_TOKEN] = myfoxApiClient.myfox_info.access_token
                 new_data[KEY_TOKEN][KEY_REFRESH_TOKEN] = myfoxApiClient.myfox_info.refresh_token
                 new_data[KEY_TOKEN][KEY_EXPIRE_IN] = myfoxApiClient.myfox_info.expires_in
                 new_data[KEY_TOKEN][KEY_EXPIRE_AT] = myfoxApiClient.myfox_info.expires_time
+                data.update(new_data)
                 # maj conf
-                if self.hass.config_entries.async_update_entry(self.entry, data=new_data, options=new_options) :
-                    _LOGGER.debug("-> Changement detecte sur la conf")
+                if self.hass.config_entries.async_update_entry(existing_entry, data=data, options=new_options) :
+                    _LOGGER.info("-> Tokens modifies")
 
         except Exception as exception:
             _LOGGER.error(exception)
