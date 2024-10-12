@@ -327,6 +327,7 @@ class MyFoxApiClient:
     def saveToken(self, response) :
         """ Sauvegarde des tokens """
         try:
+            _LOGGER.debug("Response for token : %s", str(response))
             self.myfox_info.access_token = response[KEY_ACCESS_TOKEN]
             self.myfox_info.refresh_token = response[KEY_REFRESH_TOKEN]
             self.myfox_info.expires_in = response[KEY_EXPIRE_IN]
