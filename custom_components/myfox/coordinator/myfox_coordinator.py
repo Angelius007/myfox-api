@@ -94,7 +94,8 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 data[KEY_TOKEN][KEY_EXPIRE_IN] = myfoxApiClient.myfox_info.expires_in
                 data[KEY_TOKEN][KEY_EXPIRE_AT] = myfoxApiClient.myfox_info.expires_time
                 # maj conf
-                self.hass.config_entries.async_update_entry(self.entry, data=data, options=options)
+                if self.hass.config_entries.async_update_entry(self.entry, data=data, options=options) :
+                    _LOGGER.debug("-> Changement detecte sur la conf")
 
         except Exception as exception:
             _LOGGER.error(exception)
