@@ -83,7 +83,9 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         try:
             data = self.entry.data.copy()
             options = self.entry.options.copy()
-            _LOGGER.debug("Data avant :  %s", str(data))
+            
+            # mise a jour si besoin des tokens
+            await myfoxApiClient.getToken()
             # si le token a bougé
             if data[KEY_TOKEN][KEY_ACCESS_TOKEN] != myfoxApiClient.myfox_info.access_token :
                 _LOGGER.debug("Dephase detecte %s -> %s", data[KEY_TOKEN][KEY_ACCESS_TOKEN], myfoxApiClient.myfox_info.access_token)
@@ -93,7 +95,6 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 data[KEY_TOKEN][KEY_EXPIRE_AT] = myfoxApiClient.myfox_info.expires_time
                 # maj conf
                 self.hass.config_entries.async_update_entry(self.entry, data=data, options=options)
-            _LOGGER.debug("Data apres :  %s", str(data))
 
         except Exception as exception:
             _LOGGER.error(exception)
@@ -170,7 +171,6 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         client:MyFoxApiSecurityClient = myfoxApiClient
                         for temp in client.security :
                             self.addToParams(params, listening_idx, temp)
-                        # mise a jour si besoin des tokens
                         await self.update_entry(client)
 
                     # cas d'un client temperature

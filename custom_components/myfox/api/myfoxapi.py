@@ -383,11 +383,6 @@ class MyFoxApiClient:
         return expiration
 
     def isCacheExpire(self, start_time) -> float :
-        try :
-            """ Verification du token """
-            self.getToken()
-        except Exception as exception:
-            _LOGGER.debug(exception)
         return self.isCacheExpireWithParam(start_time, self.cache_expire_in)
 
     def isCacheExpireWithParam(self, start_time, param_expire) -> float :
