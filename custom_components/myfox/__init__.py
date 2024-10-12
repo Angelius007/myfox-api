@@ -83,8 +83,7 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                 "token_type"      : "Bearer",
             }
 
-        config_entry.version = CONFIG_VERSION
-        hass.config_entries.async_update_entry(config_entry, data=new_data, options=new_options)
+        hass.config_entries.async_update_entry(config_entry, data=new_data, options=new_options, version=CONFIG_VERSION)
         _LOGGER.info("Migration from version %s to version %s successful", old_version, CONFIG_VERSION)
     return True
 
