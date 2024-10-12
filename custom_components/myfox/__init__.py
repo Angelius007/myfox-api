@@ -120,16 +120,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         myfox_pswd = entry.data[KEY_MYFOX_PSWD]
     if KEY_AUTH_IMPLEMENTATION in entry.data :
         auth_implementation = entry.data[KEY_AUTH_IMPLEMENTATION]
-    if "application_credentials" in hass.data :
-        if "storage" in hass.data["application_credentials"] :
-            storage_collection = hass.data["application_credentials"]["storage"]
-            credentials = storage_collection.async_client_credentials(DOMAIN_MYFOX)
-            if auth_implementation in credentials :
-                credential:ClientCredential = credentials[auth_implementation]
-                client_id     = credential.client_id
-                client_secret = credential.client_secret
-                client_name   = credential.name
-                _LOGGER.debug("Credential selectionne %s", str(client_name))
+        if "application_credentials" in hass.data :
+            if "storage" in hass.data["application_credentials"] :
+                storage_collection = hass.data["application_credentials"]["storage"]
+                credentials = storage_collection.async_client_credentials(DOMAIN_MYFOX)
+                if auth_implementation in credentials :
+                    credential:ClientCredential = credentials[auth_implementation]
+                    client_id     = credential.client_id
+                    client_secret = credential.client_secret
+                    client_name   = credential.name
+                    _LOGGER.debug("Credential selectionne %s", str(client_name))
 
     myfox_info = MyFoxEntryDataApi(client_id,
                                    client_secret,
