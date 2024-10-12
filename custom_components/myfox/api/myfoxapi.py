@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 from .const import (
     DEFAULT_MYFOX_URL_API, MYFOX_TOKEN_PATH, MYFOX_INFO_SITE_PATH,MYFOX_HISTORY_GET,
     KEY_GRANT_TYPE, KEY_CLIENT_ID, KEY_CLIENT_SECRET, KEY_MYFOX_USER, KEY_MYFOX_PSWD, KEY_REFRESH_TOKEN,
-    KEY_EXPIRE_IN, KEY_ACCESS_TOKEN, GRANT_TYPE_PASSWORD, GRANT_REFRESH_TOKEN,KEY_EXPIRE_TIME,SEUIL_EXPIRE_MIN,
+    KEY_EXPIRE_IN, KEY_EXPIRE_AT, KEY_ACCESS_TOKEN, GRANT_TYPE_PASSWORD, GRANT_REFRESH_TOKEN,KEY_EXPIRE_TIME,SEUIL_EXPIRE_MIN,
 )
 from ..scenes import (BaseScene, DiagnosticScene, MyFoxSceneInfo)
 from ..devices import (BaseDevice, DiagnosticDevice, MyFoxDeviceInfo)
@@ -22,7 +22,6 @@ from .myfoxapi_exception import (MyFoxException, InvalidTokenMyFoxException)
 from homeassistant.const import (
     Platform,
 )
-
 _LOGGER = logging.getLogger(__name__)
 
 @dataclass
@@ -185,12 +184,13 @@ class MyFoxApiClient:
                         resp = await session.get(urlApi, headers=headers, json=data) 
                         return await self._get_response(resp, responseClass)
             except InvalidTokenMyFoxException as exception:
+                # raise ConfigEntryAuthFailed from exception
                 # Renouvellement token
-                if await self.login() :
-                    # Relance appel
-                    return self.callMyFoxApi(path, data, method)
-                else :
-                    raise exception
+                #if await self.login() :
+                #    # Relance appel
+                #    return self.callMyFoxApi(path, data, method)
+                #else :
+                raise exception
             except MyFoxException as exception:
                 raise exception
             except Exception as exception:
@@ -328,10 +328,16 @@ class MyFoxApiClient:
         """ Sauvegarde des tokens """
         try:
             _LOGGER.debug("Response for token : %s", str(response))
-            self.myfox_info.access_token = response[KEY_ACCESS_TOKEN]
-            self.myfox_info.refresh_token = response[KEY_REFRESH_TOKEN]
-            self.myfox_info.expires_in = response[KEY_EXPIRE_IN]
-            self.myfox_info.expires_time = (time.time() + self.myfox_info.expires_in)
+            if KEY_ACCESS_TOKEN in response :
+                self.myfox_info.access_token = response[KEY_ACCESS_TOKEN]
+            if KEY_REFRESH_TOKEN in response :
+                self.myfox_info.refresh_token = response[KEY_REFRESH_TOKEN]
+            if KEY_EXPIRE_IN in response :
+                self.myfox_info.expires_in = response[KEY_EXPIRE_IN]
+            if KEY_EXPIRE_AT in response :
+                self.myfox_info.expires_time = response[KEY_EXPIRE_AT]
+            else :
+                self.myfox_info.expires_time = (time.time() + self.myfox_info.expires_in)
             _LOGGER.debug(KEY_ACCESS_TOKEN+":"+str(self.myfox_info.access_token))
             _LOGGER.debug(KEY_REFRESH_TOKEN+":"+str(self.myfox_info.refresh_token))
             _LOGGER.debug(KEY_EXPIRE_IN+":"+str(self.myfox_info.expires_in))
@@ -345,13 +351,19 @@ class MyFoxApiClient:
         try:
             expireDelay = self.getExpireDelay()
             if expireDelay == 0: # jeton expire
-                await self.login()
-                expireDelay = self.getExpireDelay()
+                _LOGGER.debug("Jeton expire -> demande de renouvellement")
+                raise InvalidTokenMyFoxException
+                # await self.login()
+                # expireDelay = self.getExpireDelay()
             elif expireDelay < (SEUIL_EXPIRE_MIN): # si jeton valide - de 5 min, on renouvelle
+                _LOGGER.debug("Jeton bientot expire -> demande de renouvellement")
+                raise InvalidTokenMyFoxException
                 # Token expire, on renouvelle
-                await self.refreshToken()
-                expireDelay = self.getExpireDelay()
+                # await self.refreshToken()
+                # expireDelay = self.getExpireDelay()
             return self.myfox_info.access_token
+        except InvalidTokenMyFoxException as exception:
+            raise exception
         except MyFoxException as exception:
             raise exception
         except Exception as exception:

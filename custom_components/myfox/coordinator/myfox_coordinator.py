@@ -9,11 +9,12 @@ from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
     UpdateFailed,
 )
+from homeassistant.exceptions import ConfigEntryAuthFailed
 
 from ..api.myfoxapi import (
     MyFoxApiClient
 )
-from ..api.myfoxapi_exception import MyFoxException
+from ..api.myfoxapi_exception import (MyFoxException, InvalidTokenMyFoxException)
 from ..api.myfoxapi_shutter import MyFoxApiShutterClient
 from ..api.myfoxapi_group_shutter import MyFoxApiGroupShutterClient
 from ..api.myfoxapi_socket import MyFoxApiSocketClient
@@ -201,12 +202,12 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             self.last_params = params
             
             return params
-        # except ApiAuthError as err:   
+        except InvalidTokenMyFoxException as err:   
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
-        #     raise ConfigEntryAuthFailed from err
-        # except ApiError as err:
-        #     raise UpdateFailed(f"Error communicating with API: {err}")
+            raise ConfigEntryAuthFailed from err
+        except MyFoxException as err:
+            raise UpdateFailed(f"Error communicating with API: {err}")
         except Exception as err:
             raise UpdateFailed(f"Error with API: {err}")
         

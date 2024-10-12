@@ -172,7 +172,7 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
 
     # 1er step config
     async def async_oauth_create_entry(self, info: dict[str, Any] | None = None):
-        _LOGGER.info(str(info))
+        _LOGGER.info("Post authent :  %s", str(info))
 
         USER_STEP_SCHEMA = vol.Schema({
             vol.Required(KEY_CLIENT_ID, default=self.client_id): str,
@@ -181,13 +181,10 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
             vol.Optional(KEY_MYFOX_PSWD, default=self.password): str
         })
         if info is not None:
-            info["token"]
-            myfox_info = MyFoxEntryDataApi("",
-                                        "",
+            myfox_info = MyFoxEntryDataApi(self.client_id,
+                                        self.client_secret,
                                         "",
                                         "")
-            myfox_info.client_id = self.client_id
-            myfox_info.client_secret = self.client_secret
             if KEY_ACCESS_TOKEN in  info["token"] :
                 myfox_info.access_token =  info["token"][KEY_ACCESS_TOKEN]
             if KEY_REFRESH_TOKEN in  info["token"] :
