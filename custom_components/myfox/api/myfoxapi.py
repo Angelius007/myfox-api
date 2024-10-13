@@ -37,10 +37,10 @@ class MyFoxOptionsDataApi:
 
 @dataclass
 class MyFoxEntryDataApi:
-    client_id: str
-    client_secret: str
-    username: str
-    password: str
+    client_id: str = None
+    client_secret: str = None
+    username: str = None
+    password: str = None
     access_token: str = None
     refresh_token: str = None
     expires_in: int = 0

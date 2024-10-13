@@ -6,18 +6,6 @@
         "data": {
           "client_id": "Client ID",
           "client_secret": "Client Secret",
-          "username": "Username",
-          "password": "Password",
-          "access_token" : "Access token",
-          "refresh_token" : "Refresh token"
-        }
-      },
-      "auth": {
-        "data": {
-          "client_id": "Client ID",
-          "client_secret": "Client Secret",
-          "username": "Username",
-          "password": "Password",
           "access_token" : "Access token",
           "refresh_token" : "Refresh token"
         }
