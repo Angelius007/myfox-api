@@ -168,7 +168,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         myfox_client = MyFoxApiClient(myfox_info)
         
         info_site = await myfox_client.getInfoSite(entry.data[KEY_SITE_ID])
-        _LOGGER.info("Chargement du site %s", str(info_site))
+        _LOGGER.debug("Chargement du site %s", str(info_site))
     except InvalidTokenMyFoxException as err:   
         # Raising ConfigEntryAuthFailed will cancel future updates
         # and start a config flow with SOURCE_REAUTH (async_step_reauth)
