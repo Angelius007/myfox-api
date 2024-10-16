@@ -48,7 +48,6 @@ class MyFoxApiLightClient(MyFoxApiClient) :
         try:
             response = await self.callMyFoxApiGet(MYFOX_LIGHT_HISTORY % (self.myfox_info.site.siteId , deviceId))
             _LOGGER.debug("getLightHistory : %s",str(response))
-            # {'status': 'OK', 'timestamp': 1723759985, 'payload': {'request': 'OK'}}
             return response
 
         except MyFoxException as exception:

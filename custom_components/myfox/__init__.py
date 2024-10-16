@@ -50,7 +50,6 @@ from .api.myfoxapi_gate import (MyFoxApiGateClient)
 from .api.myfoxapi_module import (MyFoxApiModuleClient)
 from .api.myfoxapi_shutter import (MyFoxApiShutterClient)
 from .api.myfoxapi_socket import (MyFoxApiSocketClient)
-from .api.myfoxapi_library import (MyFoxApiLibraryClient)
 from .api.myfoxapi_group_electric import (MyFoxApiGroupElectricClient)
 from .api.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
 from .api.myfoxapi_heater import (MyFoxApiHeaterClient)
@@ -90,12 +89,20 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
                     KEY_EXPIRE_AT     : new_data.pop(KEY_EXPIRE_TIME, ""),
                     "token_type"      : "Bearer",
                 }
+                new_data.pop(KEY_CLIENT_ID, "")
+                new_data.pop(KEY_CLIENT_SECRET, "")
+                new_data.pop(KEY_MYFOX_USER, "")
+                new_data.pop(KEY_MYFOX_PSWD, "")
             else :
                 # suppression anciennes clefs
                 new_data.pop(KEY_ACCESS_TOKEN, "")
                 new_data.pop(KEY_REFRESH_TOKEN, "")
                 new_data.pop(KEY_EXPIRE_IN, "")
                 new_data.pop(KEY_EXPIRE_TIME, "")
+                new_data.pop(KEY_CLIENT_ID, "")
+                new_data.pop(KEY_CLIENT_SECRET, "")
+                new_data.pop(KEY_MYFOX_USER, "")
+                new_data.pop(KEY_MYFOX_PSWD, "")
 
         hass.config_entries.async_update_entry(config_entry, data=new_data, options=new_options, version=CONFIG_VERSION)
         _LOGGER.info("Migration from version %s to version %s successful", old_version, CONFIG_VERSION)
@@ -112,12 +119,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     client_secret = None
     if KEY_CLIENT_SECRET in entry.data :
         client_secret = entry.data[KEY_CLIENT_SECRET]
-    myfox_user = None
-    if KEY_MYFOX_USER in entry.data :
-        myfox_user = entry.data[KEY_MYFOX_USER]
-    myfox_pswd = None
-    if KEY_MYFOX_PSWD in entry.data :
-        myfox_pswd = entry.data[KEY_MYFOX_PSWD]
+
     if KEY_AUTH_IMPLEMENTATION in entry.data :
         auth_implementation = entry.data[KEY_AUTH_IMPLEMENTATION]
         if "application_credentials" in hass.data :
@@ -131,14 +133,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
                     client_name   = credential.name
                     _LOGGER.debug("Credential selectionne %s", str(client_name))
 
-    myfox_info = MyFoxEntryDataApi(client_id,
-                                   client_secret,
-                                   myfox_user,
-                                   myfox_pswd,
-                                   entry.data[KEY_TOKEN][KEY_ACCESS_TOKEN],
-                                   entry.data[KEY_TOKEN][KEY_REFRESH_TOKEN],
-                                   entry.data[KEY_TOKEN][KEY_EXPIRE_IN],
-                                   entry.data[KEY_TOKEN][KEY_EXPIRE_AT])
+    myfox_info = MyFoxEntryDataApi(client_id=client_id,
+                                   client_secret=client_secret,
+                                   access_token=entry.data[KEY_TOKEN][KEY_ACCESS_TOKEN],
+                                   refresh_token=entry.data[KEY_TOKEN][KEY_REFRESH_TOKEN],
+                                   expires_in=entry.data[KEY_TOKEN][KEY_EXPIRE_IN],
+                                   expires_time=entry.data[KEY_TOKEN][KEY_EXPIRE_AT])
     options = MyFoxOptionsDataApi()
     # frequence de pooling du coordinator
     if KEY_POOLING_INTERVAL in entry.options :
@@ -167,7 +167,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         myfox_client = MyFoxApiClient(myfox_info)
         
         info_site = await myfox_client.getInfoSite(entry.data[KEY_SITE_ID])
-        _LOGGER.info("Chargement du site %s", str(info_site))
+        _LOGGER.debug("Chargement du site %s", str(info_site))
     except InvalidTokenMyFoxException as err:   
         # Raising ConfigEntryAuthFailed will cancel future updates
         # and start a config flow with SOURCE_REAUTH (async_step_reauth)

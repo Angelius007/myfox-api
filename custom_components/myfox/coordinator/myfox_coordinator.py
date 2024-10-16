@@ -99,7 +99,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 data.update(new_data)
                 # maj conf  
                 if self.hass.config_entries.async_update_entry(existing_entry, data=data, options=new_options) :
-                    _LOGGER.info("-> Tokens modifies")
+                    _LOGGER.info("-> Tokens mis à jour")
 
         except Exception as exception:
             _LOGGER.error(exception)
@@ -131,7 +131,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         This method will be called automatically during
         coordinator.async_config_entry_first_refresh.
         """
-        _LOGGER.info("Demarrage de %s", str(self.name))
+        _LOGGER.debug("Demarrage de %s", str(self.name))
         for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
             try:
                 await myfoxApiClient.getList()

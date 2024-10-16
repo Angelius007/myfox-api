@@ -1,11 +1,10 @@
 import logging
-import jwt
 from dataclasses import field
 from typing import  Any
 import voluptuous as vol
 from collections.abc import Mapping
 
-from homeassistant.config_entries import ConfigFlow, ConfigEntry, OptionsFlow, SOURCE_REAUTH, ConfigFlowResult
+from homeassistant.config_entries import ConfigEntry, OptionsFlow, SOURCE_REAUTH, ConfigFlowResult
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers import selector
 from homeassistant.core import callback
@@ -14,17 +13,12 @@ from homeassistant.helpers import config_entry_oauth2_flow
 from . import (DOMAIN_MYFOX, 
                 CONFIG_VERSION)
 from .api.const import (
-     KEY_CLIENT_ID, 
-     KEY_CLIENT_SECRET, 
-     KEY_MYFOX_USER, 
-     KEY_MYFOX_PSWD,
      KEY_SITE_ID,
      KEY_TOKEN,
      KEY_ACCESS_TOKEN,
      KEY_REFRESH_TOKEN,
      KEY_EXPIRE_IN,
      KEY_EXPIRE_AT,
-     KEY_EXPIRE_TIME,
      KEY_CACHE_EXPIRE_IN,
      CACHE_EXPIRE_IN,
      POOLING_INTERVAL_DEF,
@@ -57,11 +51,6 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
         self.site: MyFoxSite = None
         self.sites: list[MyFoxSite] = field(default_factory=list[MyFoxSite])
 
-        self.client_id = None
-        self.client_secret = None
-        self.username = None
-        self.password = None
-
         self.access_token = None
         self.refresh_token = None
 
@@ -81,14 +70,6 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
             existing_entry = self.hass.config_entries.async_get_entry(unique_id)
             if existing_entry:
                 self.data = existing_entry.data.copy()
-                if KEY_CLIENT_ID in self.data:
-                    self.client_id = self.data[KEY_CLIENT_ID]
-                if KEY_CLIENT_SECRET in self.data:
-                    self.client_secret = self.data[KEY_CLIENT_SECRET]
-                if KEY_MYFOX_USER in self.data:
-                    self.username = self.data[KEY_MYFOX_USER]
-                if KEY_MYFOX_PSWD in self.data:
-                    self.password = self.data[KEY_MYFOX_PSWD]
                 if KEY_TOKEN in self.data:
                     if KEY_ACCESS_TOKEN in self.data[KEY_TOKEN]:
                         self.access_token = self.data[KEY_TOKEN][KEY_ACCESS_TOKEN]
@@ -110,12 +91,6 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Handle a flow start."""
-        """Handle a flow start."""
-        #self.async_register_implementation(
-        #    self.hass,
-        #    MyFoxSystemImplementation(self.hass),
-        #)
-        
         if self.data is None:
             self.data = dict[str, Any]()
         if user_input is not None:
@@ -171,10 +146,7 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
                 )
             _LOGGER.debug("Poursuite reauth car entry non trouve")
         if info is not None:
-            myfox_info = MyFoxEntryDataApi(info.get(KEY_CLIENT_ID),
-                                        info.get(KEY_CLIENT_SECRET),
-                                        info.get(KEY_MYFOX_USER),
-                                        info.get(KEY_MYFOX_PSWD))
+            myfox_info = MyFoxEntryDataApi()
             # anciens tokens
             if self.access_token :
                 myfox_info.access_token = self.access_token

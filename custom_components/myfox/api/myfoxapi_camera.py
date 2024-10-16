@@ -60,7 +60,6 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
         """ Recuperation scenarios """
         try:
             response = await self.callMyFoxApiPost(MYFOX_CAMERA_LIVE_EXTEND % (self.myfox_info.site.siteId, deviceId))
-            # data = response["payload"]
 
             return response
 
@@ -74,7 +73,6 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
         """ Recuperation scenarios """
         try:
             response = await self.callMyFoxApiPost(MYFOX_CAMERA_LIVE_STOP % (self.myfox_info.site.siteId, deviceId))
-            # data = response["payload"]
 
             return response
 
