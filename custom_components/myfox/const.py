@@ -38,6 +38,16 @@ HEATER_OPTIONS = {
     #"Boost": "boost",
     #"Thermostat OFF": "thermostatoff",
 }
+HEATER_EXTENDED_OPTIONS = {
+    "ON": "on",
+    "OFF": "off",
+    "Mode ECO": "eco",
+    "Hors GEL": "frost",
+    "Absent": "away",
+    "Auto": "auto",
+    "Boost": "boost",
+    "Thermostat OFF": "thermostatoff",
+}
 
 SECURITY_OPTIONS = {
     "Disarmed": 1,

@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 from .const import (
     DEFAULT_MYFOX_URL_API, MYFOX_TOKEN_PATH, MYFOX_INFO_SITE_PATH,MYFOX_HISTORY_GET,
     KEY_GRANT_TYPE, KEY_CLIENT_ID, KEY_CLIENT_SECRET, KEY_MYFOX_USER, KEY_MYFOX_PSWD, KEY_REFRESH_TOKEN,
-    KEY_EXPIRE_IN, KEY_EXPIRE_AT, KEY_ACCESS_TOKEN, GRANT_TYPE_PASSWORD, GRANT_REFRESH_TOKEN,KEY_EXPIRE_TIME,SEUIL_EXPIRE_MIN,
+    KEY_EXPIRE_IN, KEY_EXPIRE_AT, KEY_ACCESS_TOKEN, GRANT_TYPE_PASSWORD, GRANT_REFRESH_TOKEN,SEUIL_EXPIRE_MIN,
 )
 from ..scenes import (BaseScene, DiagnosticScene, MyFoxSceneInfo)
 from ..devices import (BaseDevice, DiagnosticDevice, MyFoxDeviceInfo)
@@ -350,9 +350,6 @@ class MyFoxApiClient:
                 _LOGGER.debug("Jeton expire -> demande de renouvellement")
                 await self.refreshToken()
                 expireDelay = self.getExpireDelay()
-                # raise InvalidTokenMyFoxException
-                # await self.login()
-                # expireDelay = self.getExpireDelay()
             elif expireDelay < (SEUIL_EXPIRE_MIN): # si jeton valide - de 5 min, on renouvelle
                 # Token expire, on renouvelle
                 _LOGGER.debug("Jeton bientot expire -> demande de renouvellement")

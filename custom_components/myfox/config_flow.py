@@ -1,11 +1,10 @@
 import logging
-import jwt
 from dataclasses import field
 from typing import  Any
 import voluptuous as vol
 from collections.abc import Mapping
 
-from homeassistant.config_entries import ConfigFlow, ConfigEntry, OptionsFlow, SOURCE_REAUTH, ConfigFlowResult
+from homeassistant.config_entries import ConfigEntry, OptionsFlow, SOURCE_REAUTH, ConfigFlowResult
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers import selector
 from homeassistant.core import callback

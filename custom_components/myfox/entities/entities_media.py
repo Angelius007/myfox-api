@@ -2,7 +2,7 @@ import logging
 from typing import  Any
 
 from homeassistant.components.media_player import (MediaPlayerEntity, MediaClass,  MediaType, MediaPlayerEntityFeature, MediaPlayerEnqueue)
-from homeassistant.components.media_player.browse_media import BrowseMedia, async_process_play_media_url  # noqa: F401
+from homeassistant.components.media_player.browse_media import BrowseMedia  # noqa: F401
 from homeassistant.components import media_source
 
 from ..entities import MyFoxAbstractDeviceEntity
