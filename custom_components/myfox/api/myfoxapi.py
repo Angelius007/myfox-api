@@ -16,7 +16,7 @@ from .const import (
 from ..scenes import (BaseScene, DiagnosticScene, MyFoxSceneInfo)
 from ..devices import (BaseDevice, DiagnosticDevice, MyFoxDeviceInfo)
 from ..devices.site import MyFoxSite
-from .myfoxapi_exception import (MyFoxException, InvalidTokenMyFoxException)
+from .myfoxapi_exception import (MyFoxException, InvalidTokenMyFoxException, RetryMyFoxException)
 
 #from homeassistant.config_entries import ConfigEntry, ConfigEntryState
 from homeassistant.const import (
@@ -158,7 +158,7 @@ class MyFoxApiClient:
         """ Liste """
         pass
 
-    async def callMyFoxApi(self, path:str, data:str = None, method:str = "POST", responseClass:str = "json"):
+    async def callMyFoxApi(self, path:str, data:str = None, method:str = "POST", responseClass:str = "json", retry:int = 0):
         """ Appel API """
         async with aiohttp.ClientSession() as session:
             try:                
@@ -183,6 +183,15 @@ class MyFoxApiClient:
                     else :
                         resp = await session.get(urlApi, headers=headers, json=data) 
                         return await self._get_response(resp, responseClass)
+            except RetryMyFoxException  as exception:
+                """ Retry """
+                if retry < 5 :
+                    _LOGGER.warning(f"Erreur {exception.status}. Relance de la requete {path} (Tentative : {(retry+1)}/5)")
+                    time.sleep(20) # tempo de qqes secondes pour relancer la requete
+                    return await self.callMyFoxApi(path, data, method, responseClass, (retry+1))
+                else :
+                    _LOGGER.error(f"Erreur {exception.status}. Echec des relances {path} (Tentative : {(retry)}/5)")
+                    raise exception
             except InvalidTokenMyFoxException as exception:
                 raise exception
             except MyFoxException as exception:
@@ -259,8 +268,16 @@ class MyFoxApiClient:
                     description = json_resp["error_description"]
                 if "error" in json_resp:
                     error = json_resp["error"]
+                    if "(632)" in error :
+                        """ Erreur temporaire. Tentative de relance """
+                        raise RetryMyFoxException(632, f"Error : {error} - Description: {description}")
                 raise MyFoxException(statut, f"Error : {error} - Description: {description}")
 
+        except RetryMyFoxException as exception:
+            raise exception 
+        except MyFoxException as exception:
+            _LOGGER.error(error)
+            raise exception 
         except Exception as error:
             _LOGGER.error(error)
             raise MyFoxException(f"Failed to parse response: {resp.text} Error: {error}")
