@@ -7,7 +7,7 @@ from homeassistant.exceptions import ConfigEntryAuthFailed
 
 
 from homeassistant.components.application_credentials import (
-    ClientCredential, ApplicationCredentialsStorageCollection
+    ClientCredential, ApplicationCredentialsStorageCollection, DOMAIN as DOMAIN_CREDENTIAL
 )
 from .api.myfoxapi_exception import (MyFoxException)
 
@@ -122,8 +122,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     if KEY_AUTH_IMPLEMENTATION in entry.data :
         auth_implementation = entry.data[KEY_AUTH_IMPLEMENTATION]
-        if "application_credentials" in hass.data :
-            application_credential:ApplicationCredentialsStorageCollection = hass.data["application_credentials"]
+        if DOMAIN_CREDENTIAL in hass.data :
+            application_credential:ApplicationCredentialsStorageCollection = hass.data[DOMAIN_CREDENTIAL]
             credentials = application_credential.async_client_credentials(DOMAIN_MYFOX)
             if auth_implementation in credentials :
                 credential:ClientCredential = credentials[auth_implementation]
