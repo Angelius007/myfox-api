@@ -15,3 +15,12 @@ class MyFoxException(Exception):
 
 class InvalidTokenMyFoxException(MyFoxException) :
     """Client token expire or invalid """
+
+class RetryMyFoxException(MyFoxException) :
+    """ Exception to retry call """
+    def __init__(
+        self,
+        status: Optional[int] = 632,
+        message: str = "") -> None:
+
+        super().__init__(status, message)
