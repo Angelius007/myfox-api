@@ -90,7 +90,7 @@ class MyFoxCache() :
         if "site_id" in data:
             site_id = int(data["site_id"])
                     
-        myfox_info = MyFoxEntryDataApi(client_id=client_id, client_secret=client_secret, myxof_user=myxof_user, myfox_pswd=myfox_pswd,
+        myfox_info = MyFoxEntryDataApi(client_id=client_id, client_secret=client_secret, username=myxof_user, password=myfox_pswd,
                         access_token=access_token, refresh_token=refresh_token, expires_in=expires_in, expires_time=expires_time, site=MyFoxSite(site_id))
         options = MyFoxOptionsDataApi()
         myfox_info.options = options
@@ -307,7 +307,7 @@ if __name__ == "__main__" :
 
     try :
         """ """
-        TestClients.testSetUpdate()
+        # TestClients.testSetUpdate()
         TestClients.testClient(loop, MyFoxApiClient(myfox_info), True) # , True
         # TestClients.testScenario(loop, MyFoxApiSecenarioClient(myfox_info))
         # TestClients.testSecurity(loop, MyFoxApiSecurityClient(myfox_info))

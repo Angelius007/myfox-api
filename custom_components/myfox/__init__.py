@@ -162,7 +162,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         options.cache_security_time = CACHE_SECURITY
 
     myfox_info.options = options
-
+    info_site = None
     try:
         myfox_client = MyFoxApiClient(myfox_info)
         
