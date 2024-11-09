@@ -183,7 +183,9 @@ class MyFoxApiClient:
                     else :
                         resp = await session.get(urlApi, headers=headers, json=data) 
                         return await self._get_response(resp, responseClass)
-            except RetryMyFoxException  as exception:
+            except InvalidTokenMyFoxException as exception:
+                raise exception
+            except MyFoxException as exception:
                 """ Retry """
                 if retry < 5 :
                     _LOGGER.warning(f"Erreur {exception.status}. Relance de la requete {path} (Tentative : {(retry+1)}/5)")
@@ -192,10 +194,6 @@ class MyFoxApiClient:
                 else :
                     _LOGGER.error(f"Erreur {exception.status}. Echec des relances {path} (Tentative : {(retry)}/5)")
                     raise exception
-            except InvalidTokenMyFoxException as exception:
-                raise exception
-            except MyFoxException as exception:
-                raise exception
             except Exception as exception:
                 _LOGGER.error(exception)
                 _LOGGER.error("Error : " + str(exception))
