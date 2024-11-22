@@ -57,12 +57,15 @@ class MyFoxPolicy(asyncio.DefaultEventLoopPolicy):
 class MyFoxApiClient:
 
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
-        self.myfox_info:MyFoxEntryDataApi = myfox_info
         self.client_key = "generic"
         self.client = None
         self.devices: dict[str, BaseDevice] = {}
         self.scenes: dict[str, BaseScene] = {}
         self.infoSites_times = 0
+        self.saveMyFoxInfo(myfox_info)
+
+    def saveMyFoxInfo(self, myfox_info:MyFoxEntryDataApi) :
+        self.myfox_info:MyFoxEntryDataApi = myfox_info
         self.cache_expire_in = myfox_info.options.cache_time
 
     def configure_device(self, deviceId: int, label: str, modelId: int, modelLabel: str):
@@ -389,7 +392,7 @@ class MyFoxApiClient:
             expiration = 0
             _LOGGER.debug("Token expire")
         else:
-            _LOGGER.debug("Expiration du token dans " + str(expiration) + " secondes a " + str(expires_time))
+            _LOGGER.debug("Expiration du token dans " + str(expiration) + " secondes a " + str(time.ctime(expires_time)))
         return expiration
 
     def isCacheExpire(self, start_time) -> float :

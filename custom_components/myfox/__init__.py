@@ -1,4 +1,5 @@
 import logging
+import time
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
@@ -104,18 +105,7 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         _LOGGER.info("Migration from version %s to version %s successful", old_version, CONFIG_VERSION)
     return True
 
-
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
-    if DOMAIN_MYFOX not in hass.data:
-        hass.data.setdefault(MYFOX_KEY, {})
-    
-    client_id = None
-    if KEY_CLIENT_ID in entry.data :
-        client_id = entry.data[KEY_CLIENT_ID]
-    client_secret = None
-    if KEY_CLIENT_SECRET in entry.data :
-        client_secret = entry.data[KEY_CLIENT_SECRET]
-
+def getClientCredential(hass: HomeAssistant, entry: ConfigEntry) -> ClientCredential :
     if KEY_AUTH_IMPLEMENTATION in entry.data :
         auth_implementation = entry.data[KEY_AUTH_IMPLEMENTATION]
         if DOMAIN_CREDENTIAL in hass.data :
@@ -123,17 +113,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             credentials = application_credential.async_client_credentials(DOMAIN_MYFOX)
             if auth_implementation in credentials :
                 credential:ClientCredential = credentials[auth_implementation]
-                client_id     = credential.client_id
-                client_secret = credential.client_secret
                 client_name   = credential.name
                 _LOGGER.debug("Credential selectionne %s", str(client_name))
+                return credential
+    return None
 
-    myfox_info = MyFoxEntryDataApi(client_id=client_id,
-                                   client_secret=client_secret,
-                                   access_token=entry.data[KEY_TOKEN][KEY_ACCESS_TOKEN],
-                                   refresh_token=entry.data[KEY_TOKEN][KEY_REFRESH_TOKEN],
-                                   expires_in=entry.data[KEY_TOKEN][KEY_EXPIRE_IN],
-                                   expires_time=entry.data[KEY_TOKEN][KEY_EXPIRE_AT])
+def updateMyFoxOptions(entry: ConfigEntry) -> MyFoxOptionsDataApi :
     options = MyFoxOptionsDataApi()
     # frequence de pooling du coordinator
     if KEY_POOLING_INTERVAL in entry.options :
@@ -156,10 +141,41 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     else :
         options.cache_security_time = CACHE_SECURITY
 
-    myfox_info.options = options
+    return options
+
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
+    if DOMAIN_MYFOX not in hass.data:
+        hass.data.setdefault(MYFOX_KEY, {})
+    
+    client_id = None
+    if KEY_CLIENT_ID in entry.data :
+        client_id = entry.data[KEY_CLIENT_ID]
+    client_secret = None
+    if KEY_CLIENT_SECRET in entry.data :
+        client_secret = entry.data[KEY_CLIENT_SECRET]
+
+    credential:ClientCredential = getClientCredential(hass, entry)
+    if credential :
+        client_id     = credential.client_id
+        client_secret = credential.client_secret
+
+    myfox_info = MyFoxEntryDataApi(client_id=client_id,
+                                   client_secret=client_secret,
+                                   access_token=entry.data[KEY_TOKEN][KEY_ACCESS_TOKEN],
+                                   refresh_token=entry.data[KEY_TOKEN][KEY_REFRESH_TOKEN],
+                                   expires_in=entry.data[KEY_TOKEN][KEY_EXPIRE_IN],
+                                   expires_time=entry.data[KEY_TOKEN][KEY_EXPIRE_AT])
+    if myfox_info.expires_time > 0 :
+        _LOGGER.info("-> Tokens à jour jusqu'a %s", str(time.ctime(myfox_info.expires_time)))
+
+    myfox_info.options = updateMyFoxOptions(entry)
+
     info_site = None
+    coordinator = MyFoxCoordinator(hass, myfox_info.options.pooling_frequency, entry)
+    hass.data.setdefault(MYFOX_KEY, {})[entry.entry_id] = coordinator
     try:
         myfox_client = MyFoxApiClient(myfox_info)
+        coordinator.add_client(myfox_client)
         
         info_site = await myfox_client.getInfoSite(entry.data[KEY_SITE_ID])
         _LOGGER.debug("Chargement du site %s", str(info_site))
@@ -172,10 +188,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         
     if info_site :
         """Recherche des devices."""
-
-        coordinator = MyFoxCoordinator(hass, options.pooling_frequency, entry)
-        hass.data.setdefault(MYFOX_KEY, {})[entry.entry_id] = coordinator
-        
         # add Alarme
         await addSecurity(hass, entry, myfox_info)
         # cameraCount: int = 0
@@ -348,8 +360,45 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     return True
 
 async def update_listener(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
-    _LOGGER.debug("update_listener-> reload entry")
+    _LOGGER.info("-> Mise à jour Entite")
     coordinator:MyFoxCoordinator = hass.data.setdefault(MYFOX_KEY, {})[config_entry.entry_id]
     new_data = {**config_entry.data}
-    coordinator.updateTokens(new_data[KEY_TOKEN])
-    hass.config_entries.async_schedule_reload(config_entry.entry_id)
+
+    credential:ClientCredential = getClientCredential(hass, config_entry)
+    if credential and coordinator :
+        myfox_info:MyFoxEntryDataApi = coordinator.getMyFoxInfo()
+        myfox_info.client_id         = credential.client_id
+        myfox_info.client_secret     = credential.client_secret
+
+        # mise a jour des options
+        myfox_info.options = updateMyFoxOptions(config_entry)
+
+        # Si le token de conf est plus lointain, on ecrase le token client,sinon, on reprend le token client dans la conf
+        expires_time:float = config_entry.data[KEY_TOKEN][KEY_EXPIRE_AT]
+        if(expires_time > myfox_info.expires_time ) :
+            myfox_info.access_token  = config_entry.data[KEY_TOKEN][KEY_ACCESS_TOKEN]
+            myfox_info.refresh_token = config_entry.data[KEY_TOKEN][KEY_REFRESH_TOKEN]
+            myfox_info.expires_in    = config_entry.data[KEY_TOKEN][KEY_EXPIRE_IN]
+            myfox_info.expires_time  = config_entry.data[KEY_TOKEN][KEY_EXPIRE_AT]
+        else :
+            # Mise a jour des confs
+            new_data[KEY_TOKEN][KEY_ACCESS_TOKEN]  =  myfox_info.access_token
+            new_data[KEY_TOKEN][KEY_REFRESH_TOKEN] =  myfox_info.refresh_token
+            new_data[KEY_TOKEN][KEY_EXPIRE_IN]     =  myfox_info.expires_in
+            new_data[KEY_TOKEN][KEY_EXPIRE_AT]     =  myfox_info.expires_time
+        
+        coordinator.updateMyfoxinfo(myfox_info)
+        coordinator.updateTokens(new_data[KEY_TOKEN])
+        _LOGGER.info("-> Tokens à jour jusqu'a %s", str(time.ctime(myfox_info.expires_time)))
+        
+        _LOGGER.info("-> Mise à jour des confs")
+        hass.config_entries.async_update_entry(config_entry, data=new_data, options=config_entry.options)
+
+        # si mise a jour du coordinator, on relance le chargement
+        if coordinator.pooling_frequency !=  myfox_info.options.pooling_frequency :
+            _LOGGER.info("-> Rechargement Entite suite à modification du pooling")
+            hass.config_entries.async_schedule_reload(config_entry.entry_id)
+
+    else :
+        _LOGGER.info("-> Rechargement Entite")
+        hass.config_entries.async_schedule_reload(config_entry.entry_id)

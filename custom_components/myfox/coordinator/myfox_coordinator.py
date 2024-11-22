@@ -1,5 +1,6 @@
 import logging
 import async_timeout
+import time
 
 from datetime import timedelta
 from typing import Any, List, TypeVar
@@ -13,7 +14,7 @@ from homeassistant.helpers.update_coordinator import (
 from homeassistant.exceptions import ConfigEntryAuthFailed
 
 from ..api.myfoxapi import (
-    MyFoxApiClient
+    MyFoxApiClient, MyFoxEntryDataApi
 )
 from ..api.myfoxapi_exception import (MyFoxException, InvalidTokenMyFoxException)
 from ..api.myfoxapi_shutter import MyFoxApiShutterClient
@@ -73,6 +74,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             # being dispatched to listeners
             always_update=True
         )
+        self.pooling_frequency = pooling_frequency
         self.myfoxApiClients =  dict[str, MyFoxApiClient]()
         self.last_params = None
         self.entry = entry
@@ -99,7 +101,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 data.update(new_data)
                 # maj conf  
                 if self.hass.config_entries.async_update_entry(existing_entry, data=data, options=new_options) :
-                    _LOGGER.info("-> Tokens mis à jour")
+                    _LOGGER.info("-> Tokens mis à jour jusqu'a %s", str(time.ctime(myfoxApiClient.myfox_info.expires_time)))
 
         except Exception as exception:
             _LOGGER.error(exception)
@@ -108,6 +110,11 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         for (type,hassclient) in self.myfoxApiClients.items() :
             """ Mise a jour des tokens """
             hassclient.saveToken(info)
+
+    def updateMyfoxinfo(self, myfox_info) :
+        for (type,hassclient) in self.myfoxApiClients.items() :
+            """ Mise a jour des infos """
+            hassclient.saveMyFoxInfo(myfox_info)
 
     def stop(self) :
         """ Arret des process """
@@ -177,67 +184,72 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         await self.update_entry(client)
 
                     # cas d'un client temperature
-                    if myfoxApiClient.__class__ == MyFoxApiTemperatureClient :
+                    elif myfoxApiClient.__class__ == MyFoxApiTemperatureClient :
                         
                         client:MyFoxApiTemperatureClient = myfoxApiClient
                         for temp in client.temperature :
                             self.addToParams(params, listening_idx, temp)
 
                     # cas d'un client light
-                    if myfoxApiClient.__class__ == MyFoxApiLightClient :
+                    elif myfoxApiClient.__class__ == MyFoxApiLightClient :
                         
                         client:MyFoxApiLightClient = myfoxApiClient
                         for temp in client.ligth :
                             self.addToParams(params, listening_idx, temp)
                     
                     # cas d'un client sensor alert
-                    if myfoxApiClient.__class__ == MyFoxApiAlerteStateClient :
+                    elif myfoxApiClient.__class__ == MyFoxApiAlerteStateClient :
                         
                         client:MyFoxApiAlerteStateClient = myfoxApiClient
                         for temp in client.sensor :
                             self.addToParams(params, listening_idx, temp)
 
                     # cas d'un client sensor alert
-                    if myfoxApiClient.__class__ == MyFoxApiStateClient :
+                    elif myfoxApiClient.__class__ == MyFoxApiStateClient :
                         
                         client:MyFoxApiStateClient = myfoxApiClient
                         for temp in client.sensor :
                             self.addToParams(params, listening_idx, temp)
 
                     # cas d'un client heater
-                    if myfoxApiClient.__class__ == MyFoxApiHeaterClient :
+                    elif myfoxApiClient.__class__ == MyFoxApiHeaterClient :
                         
                         client:MyFoxApiHeaterClient = myfoxApiClient
                         for temp in client.heater :
                             self.addToParams(params, listening_idx, temp)
 
                     # cas d'un client thermo
-                    if myfoxApiClient.__class__ == MyFoxApThermoClient :
+                    elif myfoxApiClient.__class__ == MyFoxApThermoClient :
                         
                         client:MyFoxApThermoClient = myfoxApiClient
                         for temp in client.heater :
                             self.addToParams(params, listening_idx, temp)
 
                     # cas d'un client scenario
-                    if myfoxApiClient.__class__ == MyFoxApiSecenarioClient :
+                    elif myfoxApiClient.__class__ == MyFoxApiSecenarioClient :
                         
                         client:MyFoxApiSecenarioClient = myfoxApiClient
                         for temp in client.scenarii :
                             self.addToParams(params, listening_idx, temp)
 
                     # cas d'un client gate
-                    if myfoxApiClient.__class__ == MyFoxApiGateClient :
+                    elif myfoxApiClient.__class__ == MyFoxApiGateClient :
                         
                         client:MyFoxApiGateClient = myfoxApiClient
                         for temp in client.gate :
                             self.addToParams(params, listening_idx, temp)
 
                     # cas d'un client module
-                    if myfoxApiClient.__class__ == MyFoxApiModuleClient :
+                    elif myfoxApiClient.__class__ == MyFoxApiModuleClient :
                         
                         client:MyFoxApiModuleClient = myfoxApiClient
                         for temp in client.module :
                             self.addToParams(params, listening_idx, temp)
+                    # cas du client natif
+                    elif myfoxApiClient.__class__ == MyFoxApiClient :
+                        client:MyFoxApiClient = myfoxApiClient
+                        # Si besoin denouvellement de token
+                        await client.getToken()
 
             _LOGGER.debug("params : %s", str(params))
             self.last_params = params
@@ -779,6 +791,24 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
             raise ConfigEntryAuthFailed from err
+        except MyFoxException as exception:
+            _LOGGER.error(exception)
+            raise exception
+        except Exception as err:
+            raise UpdateFailed(f"Error with API: {err}")
+        
+    def getMyFoxInfo(self) -> MyFoxEntryDataApi :
+        try:
+            _LOGGER.debug("get MyFoxInfo")
+            retour = None
+            for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
+                if myfoxApiClient.__class__ == MyFoxApiClient :
+                    client:MyFoxApiClient = myfoxApiClient
+                    retour = client.myfox_info
+                    break
+            
+            return retour
+
         except MyFoxException as exception:
             _LOGGER.error(exception)
             raise exception
