@@ -352,4 +352,4 @@ async def update_listener(hass: HomeAssistant, config_entry: ConfigEntry) -> Non
     coordinator:MyFoxCoordinator = hass.data.setdefault(MYFOX_KEY, {})[config_entry.entry_id]
     new_data = {**config_entry.data}
     coordinator.updateTokens(new_data[KEY_TOKEN])
-    await hass.config_entries.async_schedule_reload(config_entry.entry_id)
+    hass.config_entries.async_schedule_reload(config_entry.entry_id)
