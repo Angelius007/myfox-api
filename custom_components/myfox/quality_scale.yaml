@@ -1,0 +1,62 @@
+rules:
+  # Bronze
+  config-flow: done
+  test-before-configure: todo
+  unique-config-entry: done
+  config-flow-test-coverage: todo
+  runtime-data: todo
+  test-before-setup: todo
+  appropriate-polling: done
+  entity-unique-id: done
+  has-entity-name: done
+  entity-event-setup: todo
+  dependency-transparency: todo
+  action-setup: todo
+  common-modules: todo
+  docs-high-level-description: todo
+  docs-installation-instructions: todo
+  docs-removal-instructions: todo
+  docs-actions: todo
+  brands: done
+
+  # Silver
+  config-entry-unloading: done
+  log-when-unavailable: todo
+  entity-unavailable: todo
+  action-exceptions: todo
+  reauthentication-flow: done
+  parallel-updates: todo
+  test-coverage: todo
+  integration-owner: done
+  docs-installation-parameters: todo
+  docs-configuration-parameters: todo
+
+  # Gold
+  entity-translations: todo
+  entity-device-class: done
+  devices: done
+  entity-category: todo
+  entity-disabled-by-default: todo
+  discovery: todo
+  stale-devices: todo
+  #  status: exempt
+  #  comment: Each config entry maps to a single device
+  diagnostics: done
+  exception-translations: todo
+  icon-translations: todo
+  reconfiguration-flow: done
+  dynamic-devices: done
+  discovery-update-info: todo
+  repair-issues: todo
+  docs-use-cases: todo
+  docs-supported-devices: todo
+  docs-supported-functions: todo
+  docs-data-update: todo
+  docs-known-limitations: todo
+  docs-troubleshooting: todo
+  docs-examples: todo
+
+  # Platinum
+  async-dependency: todo
+  inject-websession: todo
+  strict-typing: todo

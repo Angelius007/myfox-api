@@ -4,6 +4,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
+from homeassistant.util.hass_dict import HassEntryKey
 
 
 from homeassistant.components.application_credentials import (
@@ -59,8 +60,8 @@ from .api.myfoxapi_exception import (InvalidTokenMyFoxException)
 
 from .const import (DOMAIN_MYFOX, CONFIG_VERSION)
 
-
 _LOGGER = logging.getLogger(__name__)
+MYFOX_KEY: HassEntryKey["MyFoxCoordinator"] = HassEntryKey(DOMAIN_MYFOX)
 
 _PLATFORMS = {
     Platform.NUMBER,
@@ -106,7 +107,7 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     if DOMAIN_MYFOX not in hass.data:
-        hass.data[DOMAIN_MYFOX] = {}
+        hass.data.setdefault(MYFOX_KEY, {})
     
     client_id = None
     if KEY_CLIENT_ID in entry.data :
@@ -173,7 +174,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         """Recherche des devices."""
 
         coordinator = MyFoxCoordinator(hass, options.pooling_frequency, entry)
-        hass.data[DOMAIN_MYFOX][entry.entry_id] = coordinator
+        hass.data.setdefault(MYFOX_KEY, {})[entry.entry_id] = coordinator
         
         # add Alarme
         await addSecurity(hass, entry, myfox_info)
@@ -327,7 +328,7 @@ async def addClientToCoordinator(hass: HomeAssistant, entry: ConfigEntry, client
                 client.configure_scene(scenarioId, label, typeLabel, enabled)
 
         if liste_capteurs.__len__() > 0 :
-            coordinator:MyFoxCoordinator = hass.data[DOMAIN_MYFOX][entry.entry_id]
+            coordinator:MyFoxCoordinator = hass.data.setdefault(MYFOX_KEY, {})[entry.entry_id]
             coordinator.add_client(client)
 
     except MyFoxException as exception:
@@ -339,7 +340,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     if not await hass.config_entries.async_unload_platforms(entry, _PLATFORMS):
         return False
 
-    coordinator:MyFoxCoordinator = hass.data[DOMAIN_MYFOX].pop(entry.entry_id)
+    coordinator:MyFoxCoordinator = hass.data.setdefault(MYFOX_KEY, {}).pop(entry.entry_id)
     for (type,hassclient) in coordinator.myfoxApiClients.items() :
         client: MyFoxApiClient = hassclient
         client.stop()
@@ -348,7 +349,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
 
 async def update_listener(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
     _LOGGER.debug("update_listener-> reload entry")
-    coordinator:MyFoxCoordinator = hass.data[DOMAIN_MYFOX][config_entry.entry_id]
+    coordinator:MyFoxCoordinator = hass.data.setdefault(MYFOX_KEY, {})[config_entry.entry_id]
     new_data = {**config_entry.data}
     coordinator.updateTokens(new_data[KEY_TOKEN])
-    await hass.config_entries.async_reload(config_entry.entry_id)
+    await hass.config_entries.async_schedule_reload(config_entry.entry_id)
