@@ -24,14 +24,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 
             for (deviceId, device) in client.devices.items():
                 # ajout uniquement des nouveaux devices
-                if deviceId not in known_devices :
-                    known_devices.add(deviceId)
+                device_unique = client.client_key + deviceId
+                if device_unique not in known_devices :
+                    known_devices.add(device_unique)
                     async_add_entities(device.switches(coordinator))
 
             for (scenarioId, scene) in client.scenes.items():
                 # ajout uniquement des nouveaux devices
-                if scenarioId not in known_scenes :
-                    known_scenes.add(scenarioId)
+                scene_unique = client.client_key + scenarioId
+                if scene_unique not in known_scenes :
+                    known_scenes.add(scene_unique)
                     async_add_entities(scene.switches(coordinator))
 
     _check_device()

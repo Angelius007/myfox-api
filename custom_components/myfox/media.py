@@ -22,9 +22,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     #    for (client_key,client_item) in coordinator.myfoxApiClients.items() :
     #        client: MyFoxApiClient = client_item
             # TODO add medias
+                # ajout uniquement des nouveaux devices
             #for (deviceId, device) in client.devices.items():
+            #     device_unique = client.client_key + deviceId
             #    if deviceId not in known_devices :
-            #        known_devices.add(deviceId)
+            #        known_devices.add(device_unique)
             #        async_add_entities(device.medias(coordinator))
 
     _check_device()

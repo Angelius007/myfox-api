@@ -23,8 +23,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 
             for (scenarioId, scene) in client.scenes.items():
                 # ajout uniquement des nouveaux devices
-                if scenarioId not in known_scenes :
-                    known_scenes.add(scenarioId)
+                scene_unique = client.client_key + scenarioId
+                if scene_unique not in known_scenes :
+                    known_scenes.add(scene_unique)
                     async_add_entities(scene.scenes(coordinator))
 
     _check_scene()
