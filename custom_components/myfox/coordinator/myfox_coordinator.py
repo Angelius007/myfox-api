@@ -249,7 +249,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     elif myfoxApiClient.__class__ == MyFoxApiClient :
                         client:MyFoxApiClient = myfoxApiClient
                         # Si besoin denouvellement de token
-                        await client.getToken()
+                        await self.update_entry(client)
 
             _LOGGER.debug("params : %s", str(params))
             self.last_params = params
