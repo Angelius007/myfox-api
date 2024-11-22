@@ -15,8 +15,19 @@ MYFOX_KEY: HassEntryKey["MyFoxCoordinator"] = HassEntryKey(DOMAIN_MYFOX)
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
     """ Chargement des scenes """
     coordinator:MyFoxCoordinator = hass.data.setdefault(MYFOX_KEY, {})[entry.entry_id]
-    for (client_key,client_item) in coordinator.myfoxApiClients.items() :
-        client: MyFoxApiClient = client_item
+    known_scenes: set[str] = set()
+    
+    def _check_scene() -> None:
+        for (client_key,client_item) in coordinator.myfoxApiClients.items() :
+            client: MyFoxApiClient = client_item
 
-        for (scenarioId, scene) in client.scenes.items():
-            async_add_entities(scene.scenes(coordinator))
+            for (scenarioId, scene) in client.scenes.items():
+                # ajout uniquement des nouveaux devices
+                if scenarioId not in known_scenes :
+                    known_scenes.add(scenarioId)
+                    async_add_entities(scene.scenes(coordinator))
+
+    _check_scene()
+    entry.async_on_unload(
+        coordinator.async_add_listener(_check_scene)
+    )

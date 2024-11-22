@@ -13,10 +13,21 @@ _LOGGER = logging.getLogger(__name__)
 MYFOX_KEY: HassEntryKey["MyFoxCoordinator"] = HassEntryKey(DOMAIN_MYFOX)
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
-    """ Chargement des switchs """
+    """ Chargement des selects """
     coordinator:MyFoxCoordinator = hass.data.setdefault(MYFOX_KEY, {})[entry.entry_id]
-    for (client_key,client_item) in coordinator.myfoxApiClients.items() :
-        client: MyFoxApiClient = client_item
+    known_devices: set[str] = set()
 
-        for (deviceId, device) in client.devices.items():
-            async_add_entities(device.selects(coordinator))
+    def _check_device() -> None:
+        for (client_key,client_item) in coordinator.myfoxApiClients.items() :
+            client: MyFoxApiClient = client_item
+
+            for (deviceId, device) in client.devices.items():
+                # ajout uniquement des nouveaux devices
+                if deviceId not in known_devices :
+                    known_devices.add(deviceId)
+                    async_add_entities(device.selects(coordinator))
+
+    _check_device()
+    entry.async_on_unload(
+        coordinator.async_add_listener(_check_device)
+    )
