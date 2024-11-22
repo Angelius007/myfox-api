@@ -40,7 +40,8 @@ class CameraButtonEntity(BaseButtonEntity):
     """ """
     _attr_device_class = ButtonDeviceClass.IDENTIFY
     _attr_entity_category = EntityCategory.CONFIG
-
+    _attr_should_poll = False
+    
     @property
     def icon(self) -> str | None:
         if self.idx.endswith("snapshot"):

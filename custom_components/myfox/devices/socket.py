@@ -24,6 +24,6 @@ class MyFoxSocketDevice(BaseDevice) :
         super().__init__(device_info)
 
     def buttons(self, coordinator) -> list[ButtonEntity]:
-        _LOGGER.debug("Ajout buttons sur device %s", str(self.device_info.deviceId))
+        _LOGGER.debug("Ajout SocketButtonEntity sur device %s", str(self.device_info.deviceId))
         return [SocketButtonEntity(coordinator, self,f"On {self.device_info.label}", "on"),
                 SocketButtonEntity(coordinator, self, f"Off {self.device_info.label}", "off")]

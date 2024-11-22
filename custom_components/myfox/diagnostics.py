@@ -3,13 +3,14 @@ from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.util.hass_dict import HassEntryKey
 
 from .coordinator.myfox_coordinator import (MyFoxCoordinator)
 
 from . import DOMAIN_MYFOX
 
 _LOGGER = logging.getLogger(__name__)
-
+MYFOX_KEY: HassEntryKey["MyFoxCoordinator"] = HassEntryKey(DOMAIN_MYFOX)
 
 async def async_get_config_entry_diagnostics(
     hass: HomeAssistant, entry: ConfigEntry
@@ -17,7 +18,7 @@ async def async_get_config_entry_diagnostics(
     """Return diagnostics for a config entry."""
     values = {"MyFox":[]}
     # Coordinator
-    coordinator:MyFoxCoordinator = hass.data[DOMAIN_MYFOX][entry.entry_id]
+    coordinator:MyFoxCoordinator = hass.data.setdefault(MYFOX_KEY, {})[entry.entry_id]
     value_myfox = {
         "coordinator" : coordinator.name,
         "info_site" : [],
