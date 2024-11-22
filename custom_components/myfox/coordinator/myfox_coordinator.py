@@ -57,7 +57,7 @@ class BoundFifoList(List):
 
 
 class MyFoxCoordinator(DataUpdateCoordinator) :
-    """ Corrd inator pour synchro avec les appels API MyFox """
+    """ Coordinator pour synchro avec les appels API MyFox """
 
     def __init__(self, hass: HomeAssistant,  pooling_frequency: int, entry: ConfigEntry):
         """Initialize my coordinator."""
