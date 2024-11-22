@@ -203,7 +203,7 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
                 self.data.update(new_data)
 
                 if self.hass.config_entries.async_update_entry(existing_entry, data=self.data, options=options):
-                    await self.hass.config_entries.async_schedule_reload(existing_entry.entry_id)
+                    self.hass.config_entries.async_schedule_reload(existing_entry.entry_id)
                 return self.async_abort(reason="updated_successfully")
             else :
                 options = {
