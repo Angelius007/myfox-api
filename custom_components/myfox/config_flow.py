@@ -235,7 +235,7 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
         config_entry: ConfigEntry,
     ) -> OptionsFlow:
         """ Create the options flow. """
-        return MyFoxOptionsFlowHandler()
+        return MyFoxOptionsFlowHandler(config_entry)
 
 class MyFoxOptionsFlowHandler(OptionsFlow):
     def __init__(self, config_entry: ConfigEntry) -> None:

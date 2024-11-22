@@ -17,6 +17,9 @@ class MyFoxApiSecurityClient(MyFoxApiClient) :
         self.client_key = "security"
         self.security = list()
         self.security_time = 0
+
+    def saveMyFoxInfo(self, myfox_info:MyFoxEntryDataApi) :
+        super().saveMyFoxInfo(myfox_info)
         self.security_cache_expire_in = myfox_info.options.cache_security_time
 
     def stop(self) -> bool:
