@@ -360,7 +360,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     return True
 
 async def update_listener(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
-    _LOGGER.info("-> Mise à jour Entite")
+    _LOGGER.debug("-> Mise à jour Entite")
     coordinator:MyFoxCoordinator = hass.data.setdefault(MYFOX_KEY, {})[config_entry.entry_id]
     new_data = {**config_entry.data}
 
@@ -389,9 +389,8 @@ async def update_listener(hass: HomeAssistant, config_entry: ConfigEntry) -> Non
         
         coordinator.updateMyfoxinfo(myfox_info)
         coordinator.updateTokens(new_data[KEY_TOKEN])
-        _LOGGER.info("-> Tokens à jour jusqu'a %s", str(time.ctime(myfox_info.expires_time)))
+        _LOGGER.debug("-> Tokens à jour jusqu'a %s", str(time.ctime(myfox_info.expires_time)))
         
-        _LOGGER.info("-> Mise à jour des confs")
         hass.config_entries.async_update_entry(config_entry, data=new_data, options=config_entry.options)
 
         # si mise a jour du coordinator, on relance le chargement
