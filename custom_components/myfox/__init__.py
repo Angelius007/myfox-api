@@ -227,6 +227,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         if myfox_client.myfox_info.site.deviceTemperatureCount > 0 :
             retour &= await addTemperatureDevice(hass, entry, myfox_info)
 
+        if not retour:
+            raise ConfigEntryNotReady("Service partiellement chargé")
+
         # prepa coordinator
         await coordinator.async_config_entry_first_refresh()
 
@@ -236,8 +239,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         await hass.config_entries.async_forward_entry_setups(entry, _PLATFORMS)
         entry.async_on_unload(entry.add_update_listener(update_listener))
 
-        if not retour:
-            raise ConfigEntryNotReady("Service partiellement chargé")
 
         return retour
     else :
