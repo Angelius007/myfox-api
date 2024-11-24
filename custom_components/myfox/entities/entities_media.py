@@ -5,7 +5,7 @@ from homeassistant.components.media_player import (MediaPlayerEntity, MediaClass
 from homeassistant.components.media_player.browse_media import BrowseMedia  # noqa: F401
 from homeassistant.components import media_source
 
-from entity import MyFoxAbstractDeviceEntity
+from .entity import MyFoxAbstractDeviceEntity
 from ..devices import BaseDevice
 from ..coordinator.myfox_coordinator import (MyFoxCoordinator)
 

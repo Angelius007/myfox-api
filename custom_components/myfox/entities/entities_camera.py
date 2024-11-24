@@ -1,6 +1,6 @@
 import logging
 
-from entity import MyFoxAbstractCameraEntity
+from .entity import MyFoxAbstractCameraEntity
 from ..devices import BaseDevice
 from ..coordinator.myfox_coordinator import (MyFoxCoordinator)
 

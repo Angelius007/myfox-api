@@ -108,12 +108,12 @@ class BaseSceneWithValueEntity(MyFoxAbstractSceneEntity):
 ## CAMERA
 ## ////////////////////////////////////////////////////////////////////////////
 
-class MyFoxAbstractCameraEntity(CoordinatorEntity[MyFoxCoordinator], Camera):
+class MyFoxAbstractCameraEntity(Camera):
 
     _attr_has_entity_name = True
     
     def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
-        super().__init__(coordinator, context=str(device.device_info.deviceId)+"|"+key)
+        super().__init__()
         self.idx = str(device.device_info.deviceId)+"|"+key 
         self._device: BaseDevice = device
         self.coordinator = coordinator
