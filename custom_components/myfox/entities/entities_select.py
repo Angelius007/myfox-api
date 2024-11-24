@@ -3,7 +3,7 @@ from typing import Any
 
 from homeassistant.components.select import SelectEntity
 
-from . import BaseWithValueEntity
+from entity import BaseWithValueEntity
 from ..const import (HEATER_OPTIONS, SECURITY_OPTIONS)
 from ..devices import BaseDevice
 from ..coordinator.myfox_coordinator import (MyFoxCoordinator)

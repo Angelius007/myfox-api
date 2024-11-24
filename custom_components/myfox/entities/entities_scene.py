@@ -4,7 +4,7 @@ from typing import Any
 
 from homeassistant.components.scene import Scene
 from homeassistant.components.switch import SwitchEntity
-from ..entities import MyFoxAbstractSceneEntity, BaseSceneWithValueEntity
+from entity import MyFoxAbstractSceneEntity, BaseSceneWithValueEntity
 from ..coordinator.myfox_coordinator import (MyFoxCoordinator)
 from ..scenes import BaseScene
 
