@@ -12,7 +12,7 @@ rules:
   entity-event-setup: todo
   dependency-transparency: todo
   action-setup: todo
-  common-modules: todo
+  common-modules: done
   docs-high-level-description: todo
   docs-installation-instructions: todo
   docs-removal-instructions: todo

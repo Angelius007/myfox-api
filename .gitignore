@@ -165,3 +165,6 @@ cache*.txt
 image.jpeg
 preview-*.jpeg
 preview-*.jpg
+
+# temp exclusion
+tests/*

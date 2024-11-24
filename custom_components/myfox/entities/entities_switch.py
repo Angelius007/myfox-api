@@ -2,7 +2,7 @@ import logging
 
 from homeassistant.components.switch import SwitchEntity
 
-from ..entities import MyFoxAbstractDeviceEntity
+from entity import MyFoxAbstractDeviceEntity
 
 _LOGGER = logging.getLogger(__name__)
 
