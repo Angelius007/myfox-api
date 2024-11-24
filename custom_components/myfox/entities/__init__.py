@@ -24,6 +24,8 @@ _LOGGER = logging.getLogger(__name__)
 ## ////////////////////////////////////////////////////////////////////////////
 
 class MyFoxAbstractDeviceEntity(CoordinatorEntity, Entity):
+    
+    _attr_has_entity_name = True
 
     def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
         super().__init__(coordinator, context=str(device.device_info.deviceId)+"|"+key)

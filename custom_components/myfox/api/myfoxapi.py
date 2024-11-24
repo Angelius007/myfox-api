@@ -174,18 +174,21 @@ class MyFoxApiClient:
                     _LOGGER.debug("Appel : " + urlApi)
                     if method == "POST":
                         resp = await session.post(urlApi, headers=headers) 
-                        return await self._get_response(resp, responseClass)
+                        retour = await self._get_response(resp, responseClass)
                     else :
                         resp = await session.get(urlApi, headers=headers) 
-                        return await self._get_response(resp, responseClass)
+                        retour = await self._get_response(resp, responseClass)
                 else :
                     _LOGGER.debug("Appel : " + urlApi)
                     if method == "POST":
                         resp = await session.post(urlApi, headers=headers, json=data) 
-                        return await self._get_response(resp, responseClass)
+                        retour = await self._get_response(resp, responseClass)
                     else :
                         resp = await session.get(urlApi, headers=headers, json=data) 
-                        return await self._get_response(resp, responseClass)
+                        retour = await self._get_response(resp, responseClass)
+                if retry > 0 :
+                    _LOGGER.info(f"Relance de la requete {path} : OK (Tentative : {(retry)}/5)")
+                return retour
             except InvalidTokenMyFoxException as exception:
                 raise exception
             except MyFoxException as exception:

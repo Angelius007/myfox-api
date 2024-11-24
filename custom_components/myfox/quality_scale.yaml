@@ -25,7 +25,7 @@ rules:
   entity-unavailable: todo
   action-exceptions: todo
   reauthentication-flow: done
-  parallel-updates: todo
+  parallel-updates: done
   test-coverage: todo
   integration-owner: done
   docs-installation-parameters: todo
