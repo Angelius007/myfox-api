@@ -3,7 +3,7 @@ import logging
 from homeassistant.components.button import (ButtonDeviceClass, ButtonEntity)
 from homeassistant.helpers.entity import EntityCategory
 
-from entity import MyFoxAbstractDeviceEntity
+from .entity import MyFoxAbstractDeviceEntity
 from ..devices import BaseDevice
 from ..coordinator.myfox_coordinator import (MyFoxCoordinator)
 

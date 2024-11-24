@@ -5,7 +5,7 @@ from homeassistant.components.sensor import (SensorDeviceClass, SensorEntity, Se
 from homeassistant.const import (UnitOfTemperature)
 from homeassistant.helpers.entity import EntityCategory
 
-from entity import BaseWithValueEntity
+from .entity import BaseWithValueEntity
 from ..const import (ALERTE_OPTIONS, ONLINE_OPTIONS, LIGHT_OPTIONS, STATE_OPTIONS)
 from ..devices import BaseDevice
 from ..coordinator.myfox_coordinator import (MyFoxCoordinator)
