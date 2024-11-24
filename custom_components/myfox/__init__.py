@@ -4,7 +4,7 @@ import time
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ConfigEntryAuthFailed
+from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
 from homeassistant.util.hass_dict import HassEntryKey
 
 
@@ -185,44 +185,47 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         raise ConfigEntryAuthFailed from err
     except MyFoxException as exception:
         _LOGGER.error(exception)
+        raise ConfigEntryNotReady("Service temporairement indisponible")
+
+    retour = True
         
     if info_site :
         """Recherche des devices."""
         # add Alarme
-        await addSecurity(hass, entry, myfox_info)
+        retour &= await addSecurity(hass, entry, myfox_info)
         # cameraCount: int = 0
         if myfox_client.myfox_info.site.cameraCount > 0 :
-            await addCamera(hass, entry, myfox_info)
+            retour &= await addCamera(hass, entry, myfox_info)
         # gateCount: int = 0
         if myfox_client.myfox_info.site.gateCount > 0 :
-            await addGate(hass, entry, myfox_info)
+            retour &= await addGate(hass, entry, myfox_info)
         # shutterCount: int = 0
         if myfox_client.myfox_info.site.shutterCount > 0 :
-            await addShutter(hass, entry, myfox_info)
+            retour &= await addShutter(hass, entry, myfox_info)
         # socketCount: int = 0
         if myfox_client.myfox_info.site.socketCount > 0 :
-            await addSocket(hass, entry, myfox_info)
+            retour &= await addSocket(hass, entry, myfox_info)
         # moduleCount: int = 0
         if myfox_client.myfox_info.site.moduleCount > 0 :
-            await addModule(hass, entry, myfox_info)
+            retour &= await addModule(hass, entry, myfox_info)
         # heaterCount: int = 0
         if myfox_client.myfox_info.site.heaterCount > 0 :
-            await addHeater(hass, entry, myfox_info)
+            retour &= await addHeater(hass, entry, myfox_info)
         # scenarioCount: int = 0
         if myfox_client.myfox_info.site.scenarioCount > 0 :
-            await addScenario(hass, entry, myfox_info)
+            retour &= await addScenario(hass, entry, myfox_info)
         # deviceStateCount: int = 0
         if myfox_client.myfox_info.site.deviceStateCount > 0 :
-            await addDeviceState(hass, entry, myfox_info)
+            retour &= await addDeviceState(hass, entry, myfox_info)
         # deviceLightCount: int = 0
         if myfox_client.myfox_info.site.deviceLightCount > 0 :
-            await addDeviceLight(hass, entry, myfox_info)
+            retour &= await addDeviceLight(hass, entry, myfox_info)
         # deviceDetectorCount: int = 0
         if myfox_client.myfox_info.site.deviceDetectorCount > 0 :
-            await addDetectorDevice(hass, entry, myfox_info)
+            retour &= await addDetectorDevice(hass, entry, myfox_info)
         # Sondes de temperature
         if myfox_client.myfox_info.site.deviceTemperatureCount > 0 :
-            await addTemperatureDevice(hass, entry, myfox_info)
+            retour &= await addTemperatureDevice(hass, entry, myfox_info)
 
         # prepa coordinator
         await coordinator.async_config_entry_first_refresh()
@@ -232,74 +235,82 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         hass.config_entries.async_update_entry(entry, data=new_data, options=entry.options)
         await hass.config_entries.async_forward_entry_setups(entry, _PLATFORMS)
         entry.async_on_unload(entry.add_update_listener(update_listener))
-        return True
+
+        if not retour:
+            raise ConfigEntryNotReady("Service partiellement chargé")
+
+        return retour
     else :
         _LOGGER.warning("Pas de site trouve pour l'identifiant %s",entry.data[KEY_SITE_ID])
-        return False
+        raise ConfigEntryNotReady("Service temporairement indisponible")
 
 async def addCamera(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Camera")
-    await addClientToCoordinator(hass, entry, MyFoxApiCameraClient(myfox_info))
+    return await addClientToCoordinator(hass, entry, MyFoxApiCameraClient(myfox_info))
 
 async def addGate(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Gate")
-    await addClientToCoordinator(hass, entry, MyFoxApiGateClient(myfox_info))
+    return await addClientToCoordinator(hass, entry, MyFoxApiGateClient(myfox_info))
 
 async def addSecurity(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Security")
-    await addClientToCoordinator(hass, entry, MyFoxApiSecurityClient(myfox_info))
+    return await addClientToCoordinator(hass, entry, MyFoxApiSecurityClient(myfox_info))
     
 async def addShutter(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Shutter")
-    await addClientToCoordinator(hass, entry, MyFoxApiShutterClient(myfox_info))
+    retour  = await addClientToCoordinator(hass, entry, MyFoxApiShutterClient(myfox_info))
     _LOGGER.debug("Add Group Shutter")
-    await addClientToCoordinator(hass, entry, MyFoxApiGroupShutterClient(myfox_info))
+    retour &= await addClientToCoordinator(hass, entry, MyFoxApiGroupShutterClient(myfox_info))
+    return retour
     
 async def addSocket(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Socket")
-    await addClientToCoordinator(hass, entry, MyFoxApiSocketClient(myfox_info))
+    retour  = await addClientToCoordinator(hass, entry, MyFoxApiSocketClient(myfox_info))
     _LOGGER.debug("Add Group Socket")
-    await addClientToCoordinator(hass, entry, MyFoxApiGroupElectricClient(myfox_info))
+    retour &= await addClientToCoordinator(hass, entry, MyFoxApiGroupElectricClient(myfox_info))
+    return retour
 
 async def addModule(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Module")
-    await addClientToCoordinator(hass, entry, MyFoxApiModuleClient(myfox_info))
+    return await addClientToCoordinator(hass, entry, MyFoxApiModuleClient(myfox_info))
 
 async def addHeater(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Heater")
-    await addClientToCoordinator(hass, entry, MyFoxApiHeaterClient(myfox_info))
-    await addClientToCoordinator(hass, entry, MyFoxApThermoClient(myfox_info))
+
+    retour  = await addClientToCoordinator(hass, entry, MyFoxApiHeaterClient(myfox_info))
+    retour &= await addClientToCoordinator(hass, entry, MyFoxApThermoClient(myfox_info))
+    return retour
 
 async def addScenario(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Scenario")
-    await addClientToCoordinator(hass, entry, MyFoxApiSecenarioClient(myfox_info))
+    return await addClientToCoordinator(hass, entry, MyFoxApiSecenarioClient(myfox_info))
 
 async def addDeviceState(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add State Device")
-    await addClientToCoordinator(hass, entry, MyFoxApiStateClient(myfox_info))
+    return await addClientToCoordinator(hass, entry, MyFoxApiStateClient(myfox_info))
 
 async def addDeviceLight(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Light Device")
-    await addClientToCoordinator(hass, entry, MyFoxApiLightClient(myfox_info))
+    return await addClientToCoordinator(hass, entry, MyFoxApiLightClient(myfox_info))
 
 async def addDetectorDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Detector Device")
-    await addClientToCoordinator(hass, entry, MyFoxApiAlerteStateClient(myfox_info))
+    return await addClientToCoordinator(hass, entry, MyFoxApiAlerteStateClient(myfox_info))
 
 async def addTemperatureDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     _LOGGER.debug("Add Temperature Device")
-    await addClientToCoordinator(hass, entry, MyFoxApiTemperatureClient(myfox_info))
+    return await addClientToCoordinator(hass, entry, MyFoxApiTemperatureClient(myfox_info))
 
 async def addClientToCoordinator(hass: HomeAssistant, entry: ConfigEntry, client:MyFoxApiClient) :
     """" """
@@ -342,11 +353,15 @@ async def addClientToCoordinator(hass: HomeAssistant, entry: ConfigEntry, client
         if liste_capteurs.__len__() > 0 :
             coordinator:MyFoxCoordinator = hass.data.setdefault(MYFOX_KEY, {})[entry.entry_id]
             coordinator.add_client(client)
+        
+        return True
 
     except MyFoxException as exception:
         _LOGGER.error("%s : Imposslble de charger le client %s", str(exception), client.__class__)
+        return False
     except Exception as exception:
         _LOGGER.error("%s : Imposslble de charger le client %s", str(exception), client.__class__)
+        return False
     
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     if not await hass.config_entries.async_unload_platforms(entry, _PLATFORMS):
