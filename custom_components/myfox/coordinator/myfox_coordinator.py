@@ -155,6 +155,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         This is the place to pre-process the data to lookup tables
         so entities can quickly look up their data.
         """
+        last_action = ""
         try:
             _LOGGER.debug("Async update data from : %s", str(self.name))
             # Note: asyncio.TimeoutError and aiohttp.ClientError are already
@@ -171,6 +172,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
                     if len(listening_idx) > 0:
                         try:
+                            last_action = "getList from {myfoxApiClient.__class__}"
                             await myfoxApiClient.getList()
                         except MyFoxException as exception:
                             _LOGGER.error(exception)
@@ -178,14 +180,17 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # cas d'un client security
                     if myfoxApiClient.__class__ == MyFoxApiSecurityClient :
                         
+                        last_action = "addToParams from {myfoxApiClient.__class__}"
                         client:MyFoxApiSecurityClient = myfoxApiClient
                         for temp in client.security :
                             self.addToParams(params, listening_idx, temp)
+                        last_action = "update_entry from {myfoxApiClient.__class__}"
                         await self.update_entry(client)
 
                     # cas d'un client temperature
                     elif myfoxApiClient.__class__ == MyFoxApiTemperatureClient :
                         
+                        last_action = "addToParams from {myfoxApiClient.__class__}"
                         client:MyFoxApiTemperatureClient = myfoxApiClient
                         for temp in client.temperature :
                             self.addToParams(params, listening_idx, temp)
@@ -193,6 +198,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # cas d'un client light
                     elif myfoxApiClient.__class__ == MyFoxApiLightClient :
                         
+                        last_action = "addToParams from {myfoxApiClient.__class__}"
                         client:MyFoxApiLightClient = myfoxApiClient
                         for temp in client.ligth :
                             self.addToParams(params, listening_idx, temp)
@@ -200,6 +206,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # cas d'un client sensor alert
                     elif myfoxApiClient.__class__ == MyFoxApiAlerteStateClient :
                         
+                        last_action = "addToParams from {myfoxApiClient.__class__}"
                         client:MyFoxApiAlerteStateClient = myfoxApiClient
                         for temp in client.sensor :
                             self.addToParams(params, listening_idx, temp)
@@ -207,6 +214,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # cas d'un client sensor alert
                     elif myfoxApiClient.__class__ == MyFoxApiStateClient :
                         
+                        last_action = "addToParams from {myfoxApiClient.__class__}"
                         client:MyFoxApiStateClient = myfoxApiClient
                         for temp in client.sensor :
                             self.addToParams(params, listening_idx, temp)
@@ -214,6 +222,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # cas d'un client heater
                     elif myfoxApiClient.__class__ == MyFoxApiHeaterClient :
                         
+                        last_action = "addToParams from {myfoxApiClient.__class__}"
                         client:MyFoxApiHeaterClient = myfoxApiClient
                         for temp in client.heater :
                             self.addToParams(params, listening_idx, temp)
@@ -221,6 +230,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # cas d'un client thermo
                     elif myfoxApiClient.__class__ == MyFoxApThermoClient :
                         
+                        last_action = "addToParams from {myfoxApiClient.__class__}"
                         client:MyFoxApThermoClient = myfoxApiClient
                         for temp in client.heater :
                             self.addToParams(params, listening_idx, temp)
@@ -228,6 +238,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # cas d'un client scenario
                     elif myfoxApiClient.__class__ == MyFoxApiSecenarioClient :
                         
+                        last_action = "addToParams from {myfoxApiClient.__class__}"
                         client:MyFoxApiSecenarioClient = myfoxApiClient
                         for temp in client.scenarii :
                             self.addToParams(params, listening_idx, temp)
@@ -235,6 +246,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # cas d'un client gate
                     elif myfoxApiClient.__class__ == MyFoxApiGateClient :
                         
+                        last_action = "addToParams from {myfoxApiClient.__class__}"
                         client:MyFoxApiGateClient = myfoxApiClient
                         for temp in client.gate :
                             self.addToParams(params, listening_idx, temp)
@@ -242,6 +254,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # cas d'un client module
                     elif myfoxApiClient.__class__ == MyFoxApiModuleClient :
                         
+                        last_action = "addToParams from {myfoxApiClient.__class__}"
                         client:MyFoxApiModuleClient = myfoxApiClient
                         for temp in client.module :
                             self.addToParams(params, listening_idx, temp)
@@ -260,9 +273,9 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
             raise ConfigEntryAuthFailed from err
         except MyFoxException as err:
-            raise UpdateFailed(f"Error communicating with API: {err}")
+            raise UpdateFailed(f"Error communicating with API: {err} - Last Action : {last_action}")
         except Exception as err:
-            raise UpdateFailed(f"Error with API: {err}")
+            raise UpdateFailed(f"Error with API _async_update_data: {err} - Last Action : {last_action}")
         
     def addToParams(self, params:dict[str, Any], listening_idx:set,temp:Any):
         """ Ajout des parames de la liste si correspond aux attentes """
@@ -452,7 +465,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             _LOGGER.error(exception)
             return action_ok
         except Exception as err:
-            raise UpdateFailed(f"Error with API: {err}")
+            raise UpdateFailed(f"Error with API pressButton: {err}")
 
     async def playScenario(self, idx:str) -> bool :
         action_ok = False
@@ -487,7 +500,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             _LOGGER.error(exception)
             return action_ok
         except Exception as err:
-            raise UpdateFailed(f"Error with API: {err}")
+            raise UpdateFailed(f"Error with API playScenario: {err}")
 
     async def enableScenario(self, idx:str) -> bool :
         action_ok = False
@@ -522,7 +535,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             _LOGGER.error(exception)
             return action_ok
         except Exception as err:
-            raise UpdateFailed(f"Error with API: {err}")
+            raise UpdateFailed(f"Error with API enableScenario: {err}")
 
     async def disableScenario(self, idx:str) -> bool :
         action_ok = False
@@ -557,7 +570,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             _LOGGER.error(exception)
             return action_ok
         except Exception as err:
-            raise UpdateFailed(f"Error with API: {err}")
+            raise UpdateFailed(f"Error with API disableScenario: {err}")
 
     async def selectOption(self, idx:str, option:str) -> bool :
         """ Selection option et transmission au bon client """
@@ -637,7 +650,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             _LOGGER.error(exception)
             return action_ok
         except Exception as err:
-            raise UpdateFailed(f"Error with API: {err}")
+            raise UpdateFailed(f"Error with API selectOption: {err}")
 
     async def cameraLiveStart(self, idx:str, protocol:str) -> str :
         """ Selection option et transmission au bon client """
@@ -665,7 +678,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             _LOGGER.error(exception)
             return retour_url
         except Exception as err:
-            raise UpdateFailed(f"Error with API: {err}")
+            raise UpdateFailed(f"Error with API cameraLiveStart: {err}")
         
     async def cameraLiveStop(self, idx:str) -> bytes :
         """ Selection option et transmission au bon client """
@@ -693,7 +706,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             _LOGGER.error(exception)
             return retour_url
         except Exception as err:
-            raise UpdateFailed(f"Error with API: {err}")
+            raise UpdateFailed(f"Error with API cameraLiveStop: {err}")
 
 
     async def cameraPreviewTake(self, idx:str) -> bytes :
@@ -723,7 +736,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             _LOGGER.error(exception)
             return retour_byte
         except Exception as err:
-            raise UpdateFailed(f"Error with API: {err}")
+            raise UpdateFailed(f"Error with API cameraPreviewTake: {err}")
 
     async def getMedia(self, idx:str) :
         retour = []
@@ -750,7 +763,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             _LOGGER.error(exception)
             raise exception
         except Exception as err:
-            raise UpdateFailed(f"Error with API: {err}")
+            raise UpdateFailed(f"Error with API getMedia: {err}")
 
     async def playVideo(self, idx:str, videoId:int) -> bool :
         action_ok = False
@@ -772,7 +785,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             _LOGGER.error(exception)
             raise exception
         except Exception as err:
-            raise UpdateFailed(f"Error with API: {err}")
+            raise UpdateFailed(f"Error with API playVideo: {err}")
         
     async def getImage(self, idx:str, image_url:int) -> bytes :
         try:
@@ -795,7 +808,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             _LOGGER.error(exception)
             raise exception
         except Exception as err:
-            raise UpdateFailed(f"Error with API: {err}")
+            raise UpdateFailed(f"Error with API getImage: {err}")
         
     def getMyFoxInfo(self) -> MyFoxEntryDataApi :
         try:
@@ -813,4 +826,4 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             _LOGGER.error(exception)
             raise exception
         except Exception as err:
-            raise UpdateFailed(f"Error with API: {err}")
+            raise UpdateFailed(f"Error with API getMyFoxInfo: {err}")
