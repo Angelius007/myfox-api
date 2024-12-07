@@ -172,7 +172,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
                     if len(listening_idx) > 0:
                         try:
-                            last_action = "getList from {myfoxApiClient.__class__}"
+                            last_action = "getList from "+str(myfoxApiClient.__class__)
                             await myfoxApiClient.getList()
                         except MyFoxException as exception:
                             _LOGGER.error(exception)
@@ -180,7 +180,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # cas d'un client security
                     if myfoxApiClient.__class__ == MyFoxApiSecurityClient :
                         
-                        last_action = "addToParams from {myfoxApiClient.__class__}"
+                        last_action = "addToParams from "+str(myfoxApiClient.__class__)
                         client:MyFoxApiSecurityClient = myfoxApiClient
                         for temp in client.security :
                             self.addToParams(params, listening_idx, temp)
@@ -190,7 +190,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # cas d'un client temperature
                     elif myfoxApiClient.__class__ == MyFoxApiTemperatureClient :
                         
-                        last_action = "addToParams from {myfoxApiClient.__class__}"
+                        last_action = "addToParams from "+str(myfoxApiClient.__class__)
                         client:MyFoxApiTemperatureClient = myfoxApiClient
                         for temp in client.temperature :
                             self.addToParams(params, listening_idx, temp)
@@ -198,7 +198,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # cas d'un client light
                     elif myfoxApiClient.__class__ == MyFoxApiLightClient :
                         
-                        last_action = "addToParams from {myfoxApiClient.__class__}"
+                        last_action = "addToParams from "+str(myfoxApiClient.__class__)
                         client:MyFoxApiLightClient = myfoxApiClient
                         for temp in client.ligth :
                             self.addToParams(params, listening_idx, temp)
@@ -206,7 +206,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # cas d'un client sensor alert
                     elif myfoxApiClient.__class__ == MyFoxApiAlerteStateClient :
                         
-                        last_action = "addToParams from {myfoxApiClient.__class__}"
+                        last_action = "addToParams from "+str(myfoxApiClient.__class__)
                         client:MyFoxApiAlerteStateClient = myfoxApiClient
                         for temp in client.sensor :
                             self.addToParams(params, listening_idx, temp)
@@ -214,7 +214,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # cas d'un client sensor alert
                     elif myfoxApiClient.__class__ == MyFoxApiStateClient :
                         
-                        last_action = "addToParams from {myfoxApiClient.__class__}"
+                        last_action = "addToParams from "+str(myfoxApiClient.__class__)
                         client:MyFoxApiStateClient = myfoxApiClient
                         for temp in client.sensor :
                             self.addToParams(params, listening_idx, temp)
@@ -222,7 +222,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # cas d'un client heater
                     elif myfoxApiClient.__class__ == MyFoxApiHeaterClient :
                         
-                        last_action = "addToParams from {myfoxApiClient.__class__}"
+                        last_action = "addToParams from "+str(myfoxApiClient.__class__)
                         client:MyFoxApiHeaterClient = myfoxApiClient
                         for temp in client.heater :
                             self.addToParams(params, listening_idx, temp)
@@ -230,7 +230,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # cas d'un client thermo
                     elif myfoxApiClient.__class__ == MyFoxApThermoClient :
                         
-                        last_action = "addToParams from {myfoxApiClient.__class__}"
+                        last_action = "addToParams from "+str(myfoxApiClient.__class__)
                         client:MyFoxApThermoClient = myfoxApiClient
                         for temp in client.heater :
                             self.addToParams(params, listening_idx, temp)
@@ -238,7 +238,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # cas d'un client scenario
                     elif myfoxApiClient.__class__ == MyFoxApiSecenarioClient :
                         
-                        last_action = "addToParams from {myfoxApiClient.__class__}"
+                        last_action = "addToParams from "+str(myfoxApiClient.__class__)
                         client:MyFoxApiSecenarioClient = myfoxApiClient
                         for temp in client.scenarii :
                             self.addToParams(params, listening_idx, temp)
@@ -246,7 +246,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # cas d'un client gate
                     elif myfoxApiClient.__class__ == MyFoxApiGateClient :
                         
-                        last_action = "addToParams from {myfoxApiClient.__class__}"
+                        last_action = "addToParams from "+str(myfoxApiClient.__class__)
                         client:MyFoxApiGateClient = myfoxApiClient
                         for temp in client.gate :
                             self.addToParams(params, listening_idx, temp)
@@ -254,7 +254,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # cas d'un client module
                     elif myfoxApiClient.__class__ == MyFoxApiModuleClient :
                         
-                        last_action = "addToParams from {myfoxApiClient.__class__}"
+                        last_action = "addToParams from "+str(myfoxApiClient.__class__)
                         client:MyFoxApiModuleClient = myfoxApiClient
                         for temp in client.module :
                             self.addToParams(params, listening_idx, temp)
