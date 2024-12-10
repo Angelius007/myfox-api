@@ -197,20 +197,28 @@ class MyFoxApiClient:
                 if retry < self.nb_retry :
                     _LOGGER.warning(f"Erreur {exception.status}. Relance de la requete {path} (Tentative : {(retry+1)}/{self.nb_retry})")
                     await asyncio.sleep(20) # tempo de qqes secondes pour relancer la requete
-                    return await self.callMyFoxApi(path, data, method, responseClass, (retry+1))
+                    return await self.callMyFoxApi(path=path, data=data, method=method, responseClass=responseClass, retry=(retry+1))
                 else :
                     _LOGGER.error(f"Erreur {exception.status}. Echec des relances {path} (Tentative : {(retry)}/{self.nb_retry})")
                     raise exception
             except Exception as exception:
-                _LOGGER.error(exception)
-                _LOGGER.error("Error : " + str(exception))
-                raise MyFoxException(exception)
+                """ Retry """
+                if retry < self.nb_retry :
+                    _LOGGER.warning(f"Exception {exception}. Relance de la requete {path} (Tentative : {(retry+1)}/{self.nb_retry})")
+                    await asyncio.sleep(30) # tempo de qqes secondes pour relancer la requete
+                    return await self.callMyFoxApi(path=path, data=data, method=method, responseClass=responseClass, retry=(retry+1))
+                else :
+                    _LOGGER.error(exception)
+                    _LOGGER.error(f"Erreur {str(exception)}. Echec des relances {path} (Tentative : {(retry)}/{self.nb_retry})")
+                    raise MyFoxException(exception)
 
     async def _get_response(self, resp: ClientResponse, responseClass:str = "json"):
         if responseClass == "json" :
             return await self._get_json_response(resp)
         elif responseClass == "binary" :
             return await self._get_binary_response(resp)
+        else :
+            raise MyFoxException(f"Erreur de format pour la reponse : {responseClass}. (Choix possibles : json/binary)")
         
     async def _get_binary_response(self, resp: ClientResponse):
         """ Traitement de la reponse """
