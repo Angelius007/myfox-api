@@ -64,9 +64,12 @@ class MyFoxApiSecurityClient(MyFoxApiClient) :
         try:
             response = await self.callMyFoxApiPost(MYFOX_SECURITY_SET % (self.myfox_info.site.siteId , securityLevel))
             _LOGGER.debug("setSecurity : %s",str(response))
-            # {'status': 'OK', 'timestamp': 1723759985, 'payload': {'request': 'OK'}}
-            return (response["payload"]["request"] == "OK")
-
+            statut_ok = (response["payload"]["request"] == "OK")
+            if statut_ok :
+             # Force expire cache
+                self.security_time = 0
+            return statut_ok
+        
         except MyFoxException as exception:
             raise exception
         except Exception as exception:
