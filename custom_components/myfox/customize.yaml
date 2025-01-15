@@ -1,6 +1,6 @@
 
   # Customize entities matching a pattern
-  customize_glob:
+  # customize_glob:
     "scene.*on":
       templates: 
         icon: >
@@ -36,12 +36,12 @@
     "switch.scenario_*":
       templates: 
         icon: >
-          if (state === 'True' or state === 'on')      return 'mdi:toggle-switch-variant';
-          if (state === 'False' or state === 'off')    return 'mdi:toggle-switch-variant-off';
+          if (state === 'True' || state === 'on')      return 'mdi:toggle-switch-variant';
+          if (state === 'False' || state === 'off')    return 'mdi:toggle-switch-variant-off';
           return 'mdi:gesture-tap';
         icon_color: >
-          if (state === 'True' or state === 'on')      return 'green';
-          if (state === 'False' or state === 'off')    return 'red';
+          if (state === 'True' || state === 'on')      return 'green';
+          if (state === 'False' || state === 'off')    return 'red';
           return '';
     "select.alarme*":
       templates: 
