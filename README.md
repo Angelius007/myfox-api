@@ -296,7 +296,8 @@ Après installation :
 - Pour pouvoir mettre des couleurs sur les icônes
 - installer Custom-ui : https://github.com/Mariusthvdb/custom-ui
 - ajouter dans le configuration.yaml la ligne : 
-        homeassistant: !include custom_components/myfox/customize.yaml
+        homeassistant: 
+           customize_glob : !include custom_components/myfox/customize.yaml
 
 ## Pour les développeurs
 
