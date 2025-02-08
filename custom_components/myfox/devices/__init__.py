@@ -2,6 +2,7 @@ import dataclasses
 import logging
 from abc import ABC
 
+from homeassistant.components.alarm_control_panel import AlarmControlPanelEntity
 from homeassistant.components.camera import Camera
 from homeassistant.components.button import ButtonEntity
 from homeassistant.components.number import NumberEntity
@@ -49,6 +50,9 @@ class BaseDevice(ABC):
         return []
     
     def medias(self, coordinator) -> list[MediaPlayerEntity]:
+        return []
+    
+    def alarms(self, coordinator) -> list[AlarmControlPanelEntity]:
         return []
     
 class DiagnosticDevice(BaseDevice):

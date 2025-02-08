@@ -652,6 +652,40 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         except Exception as err:
             raise UpdateFailed(f"Error with API selectOption: {err}")
 
+    async def setSecurity(self, device_action:str) -> bool:
+        action_ok = False
+        try:
+            for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
+                if myfoxApiClient.__class__ == MyFoxApiSecurityClient :
+                    client:MyFoxApiSecurityClient = myfoxApiClient
+                    # verification device
+                    _LOGGER.debug("setSecurity '%s' ", str(device_action) )
+                    if device_action == "disarmed" or int(device_action) == 1:
+                        """ Disarmed """
+                        action_ok = await client.setSecurity("disarmed")
+                        break
+                    elif device_action == "partial" or int(device_action) == 2:
+                        """ Partial """
+                        action_ok = await client.setSecurity("partial")
+                        break
+                    elif device_action == "armed" or int(device_action) == 4:
+                        """ Armed """
+                        action_ok = await client.setSecurity("armed")
+                        break
+                    else :
+                        """ inconnu """
+                        _LOGGER.error("selectOption '%s' non reconnue", str(device_action))
+            return action_ok
+        except InvalidTokenMyFoxException as err:   
+            # Raising ConfigEntryAuthFailed will cancel future updates
+            # and start a config flow with SOURCE_REAUTH (async_step_reauth)
+            raise ConfigEntryAuthFailed from err
+        except MyFoxException as exception:
+            _LOGGER.error(exception)
+            return action_ok
+        except Exception as err:
+            raise UpdateFailed(f"Error with API setSecurity: {err}")
+
     async def cameraLiveStart(self, idx:str, protocol:str) -> str :
         """ Selection option et transmission au bon client """
         retour_url:str = None
