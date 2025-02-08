@@ -275,6 +275,10 @@ class TestClients :
         #_LOGGER.info("results:"+str(results))
         #results = loop.run_until_complete(asyncio.gather(*[client.setOff(66172)]))
         #_LOGGER.info("results:"+str(results))
+
+    def testHistory(loop : AbstractEventLoop, client : MyFoxApiClient):
+        results = loop.run_until_complete((asyncio.gather(*[client.getHistory()])))
+        _LOGGER.info("results:"+str(results))
     
     def testSetUpdate() :
         params = dict[str, Any]()
@@ -308,7 +312,7 @@ if __name__ == "__main__" :
     try :
         """ """
         # TestClients.testSetUpdate()
-        TestClients.testClient(loop, MyFoxApiClient(myfox_info), True) # , True
+        # TestClients.testClient(loop, MyFoxApiClient(myfox_info), True) # , True
         # TestClients.testScenario(loop, MyFoxApiSecenarioClient(myfox_info))
         # TestClients.testSecurity(loop, MyFoxApiSecurityClient(myfox_info))
         # TestClients.testCamera(loop, MyFoxApiCameraClient(myfox_info))
@@ -324,7 +328,8 @@ if __name__ == "__main__" :
         # TestClients.testGroupElectric(loop, MyFoxApiGroupElectricClient(myfox_info))
         # TestClients.testGroupShutter(loop, MyFoxApiGroupShutterClient(myfox_info))
         # TestClients.testHeater(loop, MyFoxApiHeaterClient(myfox_info))
-        #TestClients.testThermo(loop, MyFoxApThermoClient(myfox_info))
+        # TestClients.testThermo(loop, MyFoxApThermoClient(myfox_info))
+        TestClients.testHistory(loop, MyFoxApiClient(myfox_info))
 
     finally :
         _LOGGER.info("-> Sauvegarde du cache ")
