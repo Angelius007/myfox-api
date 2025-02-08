@@ -19,4 +19,4 @@ class MyFoxAlarmeDevice(BaseDevice) :
 
     def alarms(self, coordinator) -> list[AlarmControlPanelEntity]:
         _LOGGER.debug("Ajout AlarmControlPanelEntity sur device %s", str(self.device_info.deviceId))
-        return [MyFoxAlarmEntity(coordinator, self, f"{self.device_info.label}", "status")]
+        return [MyFoxAlarmEntity(coordinator, self, "Security", "status")]
