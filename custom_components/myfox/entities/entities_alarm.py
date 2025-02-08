@@ -17,7 +17,6 @@ class MyFoxAlarmEntity(AlarmControlPanelEntity, BaseWithValueEntity) :
         self._attr_supported_features: AlarmControlPanelEntityFeature = (
             AlarmControlPanelEntityFeature.ARM_AWAY
             | AlarmControlPanelEntityFeature.ARM_HOME
-            | AlarmControlPanelEntityFeature.ARM_NIGHT
         )
 
     def _update_value(self, val: Any) -> bool:
@@ -54,9 +53,4 @@ class MyFoxAlarmEntity(AlarmControlPanelEntity, BaseWithValueEntity) :
         self._attr_alarm_state = AlarmControlPanelState.ARMING
         coordinator:MyFoxCoordinator = self.coordinator
         await coordinator.setSecurity("partial")
-    
-    async def async_alarm_arm_night(self, code=None) -> None:
-        """Send arm night command."""
-        self._attr_alarm_state = AlarmControlPanelState.ARMING
-        coordinator:MyFoxCoordinator = self.coordinator
-        await coordinator.setSecurity("partial")
+
