@@ -1,7 +1,7 @@
 import logging
 from typing import Any
 
-from homeassistant.components.alarm_control_panel import AlarmControlPanelEntity, AlarmControlPanelState
+from homeassistant.components.alarm_control_panel import AlarmControlPanelEntity, AlarmControlPanelState, AlarmControlPanelEntityFeature
 
 from ..coordinator.myfox_coordinator import (MyFoxCoordinator)
 from ..devices import BaseDevice
@@ -13,6 +13,12 @@ class MyFoxAlarmEntity(AlarmControlPanelEntity, BaseWithValueEntity) :
 
     def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
         super().__init__(coordinator, device, title, key)
+        self._attr_code_arm_required = False
+        self._attr_supported_features: AlarmControlPanelEntityFeature = (
+            AlarmControlPanelEntityFeature.ARM_AWAY
+            | AlarmControlPanelEntityFeature.ARM_HOME
+            | AlarmControlPanelEntityFeature.ARM_NIGHT
+        )
 
     def _update_value(self, val: Any) -> bool:
         # 1 : disarmed
