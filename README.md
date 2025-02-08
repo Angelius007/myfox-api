@@ -239,7 +239,7 @@ Ou bien cliquez sur le lien [![Open your Home Assistant instance and start setti
 - Activation/Désactivation scénario
 
 </p></details>
-<details><summary> Gestion de l'alarme <i>(2 services sur 2, selects:1)</i> </summary>
+<details><summary> Gestion de l'alarme <i>(2 services sur 2, alarm_control_panel:1)</i> </summary>
 <p>
 
 *Services*
