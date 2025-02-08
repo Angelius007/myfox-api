@@ -51,7 +51,7 @@
           if (state === 'Armed')       return 'mdi:shield-check';
           return 'mdi:security';
         icon_color: >
-          if (state === 'Disarmed')    return 'greed';
+          if (state === 'Disarmed')    return 'green';
           if (state === 'Partial')     return 'orange';
           if (state === 'Armed')       return 'red';
           return '';
