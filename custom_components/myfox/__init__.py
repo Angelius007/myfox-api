@@ -71,7 +71,8 @@ _PLATFORMS = {
     Platform.SWITCH,
     Platform.BUTTON,
     Platform.SCENE,
-    Platform.CAMERA
+    Platform.CAMERA,
+    Platform.ALARM_CONTROL_PANEL
 }
 
 async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):

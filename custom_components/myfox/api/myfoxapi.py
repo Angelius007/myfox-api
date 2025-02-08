@@ -1,8 +1,10 @@
 import logging
+import urllib.parse
 import aiohttp
 import asyncio
 import selectors
 import time
+import urllib
 
 from abc import abstractmethod
 from typing import Any
@@ -172,21 +174,16 @@ class MyFoxApiClient:
                 urlApi = self.getUrlMyFoxApi(path)
                 if not data or KEY_GRANT_TYPE not in data :
                     urlApi = urlApi + "?access_token=" + await self.getToken()
-                    _LOGGER.debug("Appel : " + urlApi)
-                    if method == "POST":
-                        resp = await session.post(urlApi, headers=headers) 
-                        retour = await self._get_response(resp, responseClass)
-                    else :
-                        resp = await session.get(urlApi, headers=headers) 
-                        retour = await self._get_response(resp, responseClass)
+                    if data is not None :
+                        params = urllib.parse.urlencode(data)
+                        urlApi = urlApi + "&" + str(params)
+                _LOGGER.debug("Appel : " + urlApi)
+                if method == "POST":
+                    resp = await session.post(urlApi, headers=headers, json=data) 
+                    retour = await self._get_response(resp, responseClass)
                 else :
-                    _LOGGER.debug("Appel : " + urlApi)
-                    if method == "POST":
-                        resp = await session.post(urlApi, headers=headers, json=data) 
-                        retour = await self._get_response(resp, responseClass)
-                    else :
-                        resp = await session.get(urlApi, headers=headers, json=data) 
-                        retour = await self._get_response(resp, responseClass)
+                    resp = await session.get(urlApi, headers=headers, json=data) 
+                    retour = await self._get_response(resp, responseClass)
                 if retry > 0 :
                     _LOGGER.info(f"Relance de la requete {path} : OK (Tentative : {(retry)}/{self.nb_retry})")
                 return retour
@@ -485,11 +482,14 @@ class MyFoxApiClient:
             _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
 
-    async def getHistory(self):
+    async def getHistory(self, type:str="alarm"):
         """ Recuperation info site """
         try:
             data = {
-                "site_id": self.myfox_info.site.siteId
+                "type"      : type,
+                #"dateFrom"  : "xxx",
+                #"dateTo"    : "yyy",
+                "dateOrder" : -1
             }
             response = await self.callMyFoxApiGet(MYFOX_HISTORY_GET % self.myfox_info.site.siteId, data)
             items = response["payload"]["items"]
