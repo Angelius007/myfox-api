@@ -291,7 +291,8 @@ Durée du cache spécifique à la caméra (pour récupérer un aperçu des camé
 
 <details><summary>Utilisation d'un code pour l'alarme</summary>
 <p>
-Activation du code pour accéder au changement de niveau de sécurité
+Activation du code pour accéder au changement de niveau de sécurité.<br />
+La désactivation de cette fonction supprime le stockage des codes.
 </p></details>
 
 <details><summary>Codes autorisés</summary>
