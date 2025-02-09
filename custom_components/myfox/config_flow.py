@@ -9,6 +9,11 @@ from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers import selector
 from homeassistant.core import callback
 from homeassistant.helpers import config_entry_oauth2_flow
+from homeassistant.helpers.selector import (
+    TextSelector,
+    TextSelectorConfig,
+    TextSelectorType,
+)
 
 from .crypto.secure import encode, decode
 
@@ -311,8 +316,11 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
                     ): bool,
                     vol.Optional(
                         KEY_AUTHORIZED_CODE_ALARM,
-                        default=authorized_codes,
-                    ): str
+                        default=authorized_codes): TextSelector(
+                        TextSelectorConfig(
+                            type=TextSelectorType.PASSWORD
+                        )
+                    )
                 }
-            ),
+            )
         )

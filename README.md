@@ -289,6 +289,16 @@ Durée du cache spécifique à l'alarme (pour récupérer l'état de l'armement)
 Durée du cache spécifique à la caméra (pour récupérer un aperçu des caméras).
 </p></details>
 
+<details><summary>Utilisation d'un code pour l'alarme</summary>
+<p>
+Activation du code pour accéder au changement de niveau de sécurité
+</p></details>
+
+<details><summary>Codes autorisés</summary>
+<p>
+Codes autorisés pour changer le niveau de sécurité de l'alarme (séparés par des espaces)
+</p></details>
+
 ## Préconisations :
 - Pour intégrer des couleurs dans les icônes, installer le plugin "custom-ui" via HACS pour changer la couleur des icônes
 
