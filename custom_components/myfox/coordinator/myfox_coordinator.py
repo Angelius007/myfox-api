@@ -13,8 +13,9 @@ from homeassistant.helpers.update_coordinator import (
 )
 from homeassistant.exceptions import ConfigEntryAuthFailed
 
+from ..api import (MyFoxEntryDataApi )
 from ..api.myfoxapi import (
-    MyFoxApiClient, MyFoxEntryDataApi
+    MyFoxApiClient
 )
 from ..api.myfoxapi_exception import (MyFoxException, InvalidTokenMyFoxException)
 from ..api.myfoxapi_shutter import MyFoxApiShutterClient

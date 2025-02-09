@@ -2,7 +2,8 @@ import logging
 import time
 
 from .myfoxapi_exception import (MyFoxException)
-from .myfoxapi import (MyFoxApiClient, MyFoxEntryDataApi )
+from . import (MyFoxEntryDataApi )
+from .myfoxapi import (MyFoxApiClient)
 
 from .const import (
     MYFOX_SCENARIO_ITEMS, MYFOX_SCENARIO_ENABLE, MYFOX_SCENARIO_DISABLE, MYFOX_SCENARIO_PLAY
