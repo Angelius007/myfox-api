@@ -17,8 +17,11 @@ from homeassistant.helpers.selector import (
 
 from .crypto.secure import encode, decode
 
-from . import (DOMAIN_MYFOX, 
-                CONFIG_VERSION)
+from .const import (
+     DOMAIN_MYFOX, 
+     CONFIG_VERSION,
+     PREFIX_ENTRY
+)
 from .api.const import (
      KEY_SITE_ID,
      KEY_TOKEN,
@@ -49,8 +52,89 @@ from .devices.site import MyFoxSite
 
 _LOGGER = logging.getLogger(__name__)
 
-PREFIX_ENTRY = "myfox-"
-    
+class MyFoxOptionsFlowHandler(OptionsFlow):
+    """ Options pour l'integration """
+    def __init__(self) -> None:
+        """ Initialize options flow. """
+        self.siteId: int | None = None
+
+    async def async_step_init(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        if self.config_entry.entry_id is not None:
+            self.siteId = self.config_entry.unique_id.replace(PREFIX_ENTRY, "", 1)
+        """ Manage the options. """
+        if user_input is not None:
+            if KEY_USE_CODE_ALARM not in user_input or not user_input.get(KEY_USE_CODE_ALARM):
+                update_infos: dict[str, Any] = {}
+                update_infos[KEY_USE_CODE_ALARM] = False
+                update_infos[KEY_AUTHORIZED_CODE_ALARM] = ""
+                user_input.update(update_infos)
+            if KEY_AUTHORIZED_CODE_ALARM in user_input and len(user_input.get(KEY_AUTHORIZED_CODE_ALARM).strip()) > 0:
+                update_infos: dict[str, Any] = {}
+                update_infos[KEY_AUTHORIZED_CODE_ALARM] = encode(user_input.get(KEY_AUTHORIZED_CODE_ALARM).strip(), self.siteId)
+                user_input.update(update_infos)
+            else :
+                update_infos : dict[str, Any] = {}
+                update_infos[KEY_AUTHORIZED_CODE_ALARM] = ""
+                user_input.update(update_infos)
+            return self.async_create_entry(title="", data=user_input)
+
+        cache_expire_in_param = CACHE_EXPIRE_IN
+        if KEY_CACHE_EXPIRE_IN in self.config_entry.options:
+            cache_expire_in_param = int(self.config_entry.options.get(KEY_CACHE_EXPIRE_IN))
+        pooling_interval = POOLING_INTERVAL_DEF
+        if KEY_POOLING_INTERVAL in self.config_entry.options:
+            pooling_interval = int(self.config_entry.options.get(KEY_POOLING_INTERVAL))
+        cache_camera = CACHE_CAMERA
+        if KEY_CACHE_CAMERA in self.config_entry.options:
+            cache_camera = int(self.config_entry.options.get(KEY_CACHE_CAMERA))
+        cache_security = CACHE_SECURITY
+        if KEY_CACHE_SECURITY in self.config_entry.options:
+            cache_security = int(self.config_entry.options.get(KEY_CACHE_SECURITY))
+        use_code_alarm = False
+        if KEY_USE_CODE_ALARM in self.config_entry.options:
+            use_code_alarm = self.config_entry.options.get(KEY_USE_CODE_ALARM)
+        authorized_codes = ""
+        if (KEY_AUTHORIZED_CODE_ALARM in self.config_entry.options 
+            and len(self.config_entry.options.get(KEY_AUTHORIZED_CODE_ALARM).strip()) > 0):
+            authorized_codes = decode(self.config_entry.options.get(KEY_AUTHORIZED_CODE_ALARM), self.siteId)
+     
+        return self.async_show_form(
+            step_id="init",
+            data_schema=vol.Schema(
+                {
+                    vol.Required(
+                        KEY_POOLING_INTERVAL,
+                        default=pooling_interval,
+                    ): int,
+                    vol.Required(
+                        KEY_CACHE_EXPIRE_IN,
+                        default=cache_expire_in_param,
+                    ): int,
+                    vol.Required(
+                        KEY_CACHE_CAMERA,
+                        default=cache_camera,
+                    ): int,
+                    vol.Required(
+                        KEY_CACHE_SECURITY,
+                        default=cache_security,
+                    ): int,
+                    vol.Optional(
+                        KEY_USE_CODE_ALARM,
+                        default=use_code_alarm,
+                    ): bool,
+                    vol.Optional(
+                        KEY_AUTHORIZED_CODE_ALARM,
+                        default=authorized_codes): TextSelector(
+                        TextSelectorConfig(
+                            type=TextSelectorType.PASSWORD
+                        )
+                    )
+                }
+            )
+        )
+
 class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain=DOMAIN_MYFOX):
     """ Config """
     DOMAIN = DOMAIN_MYFOX
@@ -245,88 +329,6 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
     @callback
     def async_get_options_flow(
         config_entry: ConfigEntry,
-    ) -> OptionsFlow:
+    ) -> MyFoxOptionsFlowHandler:
         """ Create the options flow. """
-        return MyFoxOptionsFlowHandler(config_entry)
-
-class MyFoxOptionsFlowHandler(OptionsFlow):
-    def __init__(self, config_entry: ConfigEntry) -> None:
-        """ Initialize options flow. """
-        self.config_entry = config_entry
-        if config_entry.entry_id is not None:
-            self.siteId = config_entry.unique_id.replace(PREFIX_ENTRY, "", 1)
-
-    async def async_step_init(
-        self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
-        """ Manage the options. """
-        if user_input is not None:
-            if KEY_USE_CODE_ALARM not in user_input or not user_input.get(KEY_USE_CODE_ALARM):
-                update_infos: dict[str, Any] = {}
-                update_infos[KEY_USE_CODE_ALARM] = False
-                update_infos[KEY_AUTHORIZED_CODE_ALARM] = ""
-                user_input.update(update_infos)
-            if KEY_AUTHORIZED_CODE_ALARM in user_input and len(user_input.get(KEY_AUTHORIZED_CODE_ALARM).strip()) > 0:
-                update_infos: dict[str, Any] = {}
-                update_infos[KEY_AUTHORIZED_CODE_ALARM] = encode(user_input.get(KEY_AUTHORIZED_CODE_ALARM).strip(), self.siteId)
-                user_input.update(update_infos)
-            else :
-                update_infos : dict[str, Any] = {}
-                update_infos[KEY_AUTHORIZED_CODE_ALARM] = ""
-                user_input.update(update_infos)
-            return self.async_create_entry(title="", data=user_input)
-
-        cache_expire_in_param = CACHE_EXPIRE_IN
-        if KEY_CACHE_EXPIRE_IN in self.config_entry.options:
-            cache_expire_in_param = int(self.config_entry.options.get(KEY_CACHE_EXPIRE_IN))
-        pooling_interval = POOLING_INTERVAL_DEF
-        if KEY_POOLING_INTERVAL in self.config_entry.options:
-            pooling_interval = int(self.config_entry.options.get(KEY_POOLING_INTERVAL))
-        cache_camera = CACHE_CAMERA
-        if KEY_CACHE_CAMERA in self.config_entry.options:
-            cache_camera = int(self.config_entry.options.get(KEY_CACHE_CAMERA))
-        cache_security = CACHE_SECURITY
-        if KEY_CACHE_SECURITY in self.config_entry.options:
-            cache_security = int(self.config_entry.options.get(KEY_CACHE_SECURITY))
-        use_code_alarm = False
-        if KEY_USE_CODE_ALARM in self.config_entry.options:
-            use_code_alarm = self.config_entry.options.get(KEY_USE_CODE_ALARM)
-        authorized_codes = ""
-        if (KEY_AUTHORIZED_CODE_ALARM in self.config_entry.options 
-            and len(self.config_entry.options.get(KEY_AUTHORIZED_CODE_ALARM).strip()) > 0):
-            authorized_codes = decode(self.config_entry.options.get(KEY_AUTHORIZED_CODE_ALARM), self.siteId)
-     
-        return self.async_show_form(
-            step_id="init",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(
-                        KEY_POOLING_INTERVAL,
-                        default=pooling_interval,
-                    ): int,
-                    vol.Required(
-                        KEY_CACHE_EXPIRE_IN,
-                        default=cache_expire_in_param,
-                    ): int,
-                    vol.Required(
-                        KEY_CACHE_CAMERA,
-                        default=cache_camera,
-                    ): int,
-                    vol.Required(
-                        KEY_CACHE_SECURITY,
-                        default=cache_security,
-                    ): int,
-                    vol.Optional(
-                        KEY_USE_CODE_ALARM,
-                        default=use_code_alarm,
-                    ): bool,
-                    vol.Optional(
-                        KEY_AUTHORIZED_CODE_ALARM,
-                        default=authorized_codes): TextSelector(
-                        TextSelectorConfig(
-                            type=TextSelectorType.PASSWORD
-                        )
-                    )
-                }
-            )
-        )
+        return MyFoxOptionsFlowHandler()
