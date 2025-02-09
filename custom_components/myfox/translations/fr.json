@@ -23,7 +23,8 @@
           "cache_expires_in": "Durée du cache (en secondees)",
           "cache_security" : "Durée du cache de l'alarme (en secondes)",
           "cache_camera": "Durée du cache de la camera (en secondes)",
-          "utilisation_code": "Utilisation d'un code pour l'alarme"
+          "utilisation_code": "Utilisation d'un code pour l'alarme",
+          "autorisation_codes" : "Codes autorisés"
         }
       }
     }

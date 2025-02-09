@@ -10,7 +10,7 @@ from homeassistant.helpers import selector
 from homeassistant.core import callback
 from homeassistant.helpers import config_entry_oauth2_flow
 
-from crypto.secure import encode,decode
+from .crypto.secure import encode, decode
 
 from . import (DOMAIN_MYFOX, 
                 CONFIG_VERSION)
@@ -43,6 +43,7 @@ from .api.myfoxapi import (
 from .devices.site import MyFoxSite
 
 _LOGGER = logging.getLogger(__name__)
+
 PREFIX_ENTRY = "myfox-"
     
 class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain=DOMAIN_MYFOX):
