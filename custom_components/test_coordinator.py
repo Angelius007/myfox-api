@@ -7,7 +7,8 @@ import json
 
 from asyncio import AbstractEventLoop
 
-from myfox.api.myfoxapi import (MyFoxPolicy, MyFoxEntryDataApi, MyFoxApiClient, MyFoxOptionsDataApi)
+from myfox.api import (MyFoxEntryDataApi, MyFoxOptionsDataApi)
+from myfox.api.myfoxapi import (MyFoxPolicy, MyFoxApiClient)
 from myfox.api.myfoxapi_camera import (MyFoxApiCameraClient)
 from myfox.api.myfoxapi_light import (MyFoxApiLightClient)
 from myfox.api.myfoxapi_security import (MyFoxApiSecurityClient)
@@ -24,6 +25,8 @@ from myfox.api.myfoxapi_group_electric import (MyFoxApiGroupElectricClient)
 from myfox.api.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
 from myfox.api.myfoxapi_heater import (MyFoxApiHeaterClient)
 from myfox.api.myfoxapi_thermo import (MyFoxApThermoClient)
+from myfox.crypto.secure import encode, decode
+from myfox.api.const import KEY_AUTHORIZED_CODE_ALARM
 
 from myfox.devices.site import (MyFoxSite)
 
@@ -279,6 +282,29 @@ class TestClients :
     def testHistory(loop : AbstractEventLoop, client : MyFoxApiClient):
         results = loop.run_until_complete((asyncio.gather(*[client.getHistory()])))
         _LOGGER.info("results:"+str(results))
+
+    def testEncryptDecrypt(loop : AbstractEventLoop):
+        password = "toto&€@-124"
+        message = "1205"
+        list_str: dict[str, Any] = {}
+        list_str[KEY_AUTHORIZED_CODE_ALARM] = message
+        encode_str: dict[str, Any] = {}
+        _LOGGER.info("map:\t\t\t"+str(list_str))
+        encode_str[KEY_AUTHORIZED_CODE_ALARM] = encode(list_str.get(KEY_AUTHORIZED_CODE_ALARM), password)
+        list_str.update(encode_str)
+        _LOGGER.info("map:\t\t\t"+str(list_str))
+
+        _LOGGER.info("message:\t\t\t"+str(message))
+        #encrypt
+        results = encode(message, password)
+        _LOGGER.info("results chiffré:\t\t"+str(results))
+        #decryt
+        results = decode(results, password)
+        _LOGGER.info("results chiffré/déchiffré:\t"+str(results))
+
+        assert encode(message, password) != message
+        assert decode(encode(message, password), password) == message
+
     
     def testSetUpdate() :
         params = dict[str, Any]()
@@ -329,7 +355,9 @@ if __name__ == "__main__" :
         # TestClients.testGroupShutter(loop, MyFoxApiGroupShutterClient(myfox_info))
         # TestClients.testHeater(loop, MyFoxApiHeaterClient(myfox_info))
         # TestClients.testThermo(loop, MyFoxApThermoClient(myfox_info))
-        TestClients.testHistory(loop, MyFoxApiClient(myfox_info))
+        # TestClients.testHistory(loop, MyFoxApiClient(myfox_info))
+        TestClients.testEncryptDecrypt(loop)
+        
 
     finally :
         _LOGGER.info("-> Sauvegarde du cache ")

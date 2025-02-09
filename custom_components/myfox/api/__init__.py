@@ -17,6 +17,7 @@ class MyFoxOptionsDataApi:
     cache_camera_time:int = 0
     cache_security_time:int = 0
     use_code_alarm:bool = False
+    secure_codes:str = False
 
 @dataclass
 class MyFoxEntryDataApi:

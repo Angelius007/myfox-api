@@ -2,7 +2,9 @@ import logging
 
 import time
 from .myfoxapi_exception import (MyFoxException)
-from .myfoxapi import (MyFoxApiClient, MyFoxEntryDataApi )
+from . import (MyFoxEntryDataApi )
+from .myfoxapi import (MyFoxApiClient)
+from ..crypto.secure import decode
 
 from .const import (
     MYFOX_SECURITY_GET, MYFOX_SECURITY_SET
@@ -62,6 +64,10 @@ class MyFoxApiSecurityClient(MyFoxApiClient) :
     async def setSecurity(self, securityLevel: str, code:str = None):
         """ Mise a jour security site """
         try:
+            if self.myfox_info.options.use_code_alarm:
+                codes = decode(self.myfox_info.options.secure_codes, self.myfox_info.site.siteId)
+                if code not in codes :
+                    raise MyFoxException(401, "Code incorrect")
             response = await self.callMyFoxApiPost(MYFOX_SECURITY_SET % (self.myfox_info.site.siteId , securityLevel))
             _LOGGER.debug("setSecurity : %s",str(response))
             statut_ok = (response["payload"]["request"] == "OK")

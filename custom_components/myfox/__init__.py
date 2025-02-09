@@ -34,11 +34,14 @@ from .api.const import (
     CACHE_CAMERA,
     KEY_CACHE_SECURITY,
     CACHE_SECURITY,
-    KEY_USE_CODE_ALARM
+    KEY_USE_CODE_ALARM,
+    KEY_AUTHORIZED_CODE_ALARM
+)
+from .api import (
+    MyFoxEntryDataApi,
+    MyFoxOptionsDataApi
 )
 from .api.myfoxapi import (
-    MyFoxEntryDataApi,
-    MyFoxOptionsDataApi,
     MyFoxApiClient
 )
 
@@ -147,6 +150,11 @@ def updateMyFoxOptions(entry: ConfigEntry) -> MyFoxOptionsDataApi :
         options.use_code_alarm = entry.options[KEY_USE_CODE_ALARM]
     else :
         options.use_code_alarm = False
+    # liste des codes possibles pour l'alarme
+    if KEY_AUTHORIZED_CODE_ALARM in entry.options :
+        options.secure_codes = entry.options[KEY_AUTHORIZED_CODE_ALARM]
+    else :
+        options.secure_codes = ""
 
     return options
 
