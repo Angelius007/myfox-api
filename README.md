@@ -296,7 +296,8 @@ Activation du code pour accéder au changement de niveau de sécurité
 
 <details><summary>Codes autorisés</summary>
 <p>
-Codes autorisés pour changer le niveau de sécurité de l'alarme (séparés par des espaces)
+Codes autorisés pour changer le niveau de sécurité de l'alarme (séparés par des espaces).<br />
+Le code étant numérique, ne pas commencer par des 0.
 </p></details>
 
 ## Préconisations :

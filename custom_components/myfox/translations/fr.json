@@ -24,7 +24,7 @@
           "cache_security" : "Durée du cache de l'alarme (en secondes)",
           "cache_camera": "Durée du cache de la camera (en secondes)",
           "utilisation_code": "Utilisation d'un code pour l'alarme",
-          "autorisation_codes" : "Codes autorisés (séparés par des espaces)"
+          "autorisation_codes" : "Codes autorisés (séparés par des espaces et necommençant pas par 0)"
         }
       }
     }
