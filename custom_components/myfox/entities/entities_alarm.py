@@ -15,7 +15,10 @@ class MyFoxAlarmEntity(AlarmControlPanelEntity, BaseWithValueEntity) :
     def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
         super().__init__(coordinator, device, title, key)
         self._attr_code_arm_required = coordinator.options.use_code_alarm
-        self._attr_code_format = CodeFormat.NUMBER
+        if self._attr_code_arm_required:
+            self._attr_code_format = CodeFormat.NUMBER
+        else:
+            self._attr_code_format = None
         self._attr_supported_features: AlarmControlPanelEntityFeature = (
             AlarmControlPanelEntityFeature.ARM_AWAY
             | AlarmControlPanelEntityFeature.ARM_HOME

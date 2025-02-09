@@ -425,8 +425,9 @@ async def update_listener(hass: HomeAssistant, config_entry: ConfigEntry) -> Non
         hass.config_entries.async_update_entry(config_entry, data=new_data, options=config_entry.options)
 
         # si mise a jour du coordinator, on relance le chargement
-        if coordinator.pooling_frequency !=  myfox_info.options.pooling_frequency :
-            _LOGGER.info("-> Rechargement Entite suite à modification du pooling")
+        if (coordinator.options.pooling_frequency != myfox_info.options.pooling_frequency 
+            or coordinator.options.use_code_alarm != myfox_info.options.use_code_alarm):
+            _LOGGER.info("-> Rechargement Entite suite à modification de parametrage")
             hass.config_entries.async_schedule_reload(config_entry.entry_id)
 
     else :

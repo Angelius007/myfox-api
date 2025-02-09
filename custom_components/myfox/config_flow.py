@@ -256,10 +256,14 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
     ) -> FlowResult:
         """ Manage the options. """
         if user_input is not None:
+            if KEY_USE_CODE_ALARM not in user_input:
+                update_infos: dict[str, Any] = {}
+                update_infos[KEY_USE_CODE_ALARM] = False
+                user_input.update(update_infos)
             if KEY_AUTHORIZED_CODE_ALARM in user_input:
-                encode_str: dict[str, Any] = {}
-                encode_str[KEY_AUTHORIZED_CODE_ALARM] = encode(user_input.get(KEY_AUTHORIZED_CODE_ALARM), self.siteId)
-                user_input.update(encode_str)
+                update_infos: dict[str, Any] = {}
+                update_infos[KEY_AUTHORIZED_CODE_ALARM] = encode(user_input.get(KEY_AUTHORIZED_CODE_ALARM), self.siteId)
+                user_input.update(update_infos)
             return self.async_create_entry(title="", data=user_input)
 
         cache_expire_in_param = CACHE_EXPIRE_IN
