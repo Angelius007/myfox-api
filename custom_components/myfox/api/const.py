@@ -20,6 +20,7 @@ KEY_POOLING_INTERVAL: Final = "pool_interval_minutes"
 KEY_CACHE_EXPIRE_IN : Final = "cache_expires_in"
 KEY_CACHE_CAMERA    : Final = "cache_camera"
 KEY_CACHE_SECURITY  : Final = "cache_security"
+KEY_USE_CODE_ALARM  : Final = "utilisation_code"
 
 GRANT_TYPE_PASSWORD           : Final = "password"
 GRANT_TYPE_AUTHORIZATION_CODE : Final = "authorization_code"

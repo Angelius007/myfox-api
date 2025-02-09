@@ -22,7 +22,8 @@
           "pool_interval_minutes": "Pooling frequency (in minutes)",
           "cache_expires_in": "Cache duration (in seconds)",
           "cache_security" : "Security Cache duration (in seconds)",
-          "cache_camera": "Camera Cache duration (in seconds)"
+          "cache_camera": "Camera Cache duration (in seconds)",
+          "utilisation_code": "Using code for alarm"
         }
       }
     }

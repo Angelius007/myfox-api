@@ -33,7 +33,8 @@ from .api.const import (
     KEY_CACHE_CAMERA,
     CACHE_CAMERA,
     KEY_CACHE_SECURITY,
-    CACHE_SECURITY
+    CACHE_SECURITY,
+    KEY_USE_CODE_ALARM
 )
 from .api.myfoxapi import (
     MyFoxEntryDataApi,
@@ -141,6 +142,11 @@ def updateMyFoxOptions(entry: ConfigEntry) -> MyFoxOptionsDataApi :
         options.cache_security_time = entry.options[KEY_CACHE_SECURITY]
     else :
         options.cache_security_time = CACHE_SECURITY
+    # utilisation ou non d'un code de securite pour l'alarme
+    if KEY_USE_CODE_ALARM in entry.options :
+        options.use_code_alarm = entry.options[KEY_USE_CODE_ALARM]
+    else :
+        options.use_code_alarm = False
 
     return options
 
@@ -172,7 +178,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     myfox_info.options = updateMyFoxOptions(entry)
 
     info_site = None
-    coordinator = MyFoxCoordinator(hass, myfox_info.options.pooling_frequency, entry)
+    coordinator = MyFoxCoordinator(hass, myfox_info.options, entry)
     hass.data.setdefault(MYFOX_KEY, {})[entry.entry_id] = coordinator
     try:
         myfox_client = MyFoxApiClient(myfox_info)

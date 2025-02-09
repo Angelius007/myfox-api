@@ -59,7 +59,7 @@ class MyFoxApiSecurityClient(MyFoxApiClient) :
             _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
 
-    async def setSecurity(self, securityLevel: str):
+    async def setSecurity(self, securityLevel: str, code:str = None):
         """ Mise a jour security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_SECURITY_SET % (self.myfox_info.site.siteId , securityLevel))
