@@ -33,6 +33,7 @@ from ..api.myfoxapi_camera import MyFoxApiCameraClient
 from ..api.myfoxapi_gate import MyFoxApiGateClient
 from ..api.myfoxapi_module import MyFoxApiModuleClient
 from ..api.myfoxapi_library import MyFoxApiLibraryClient
+from ..api import MyFoxOptionsDataApi
 
 from ..api.const import (
     KEY_TOKEN,
@@ -60,7 +61,7 @@ class BoundFifoList(List):
 class MyFoxCoordinator(DataUpdateCoordinator) :
     """ Coordinator pour synchro avec les appels API MyFox """
 
-    def __init__(self, hass: HomeAssistant,  pooling_frequency: int, entry: ConfigEntry):
+    def __init__(self, hass: HomeAssistant,  options: MyFoxOptionsDataApi, entry: ConfigEntry):
         """Initialize my coordinator."""
         super().__init__(
             hass,
@@ -68,18 +69,18 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             # Name of the data. For logging purposes.
             name="MyFox coordinator",
             # Polling interval. Will only be polled if there are subscribers.
-            update_interval=timedelta(minutes=pooling_frequency),
+            update_interval=timedelta(minutes=options.pooling_frequency),
             # Set always_update to `False` if the data returned from the
             # api can be compared via `__eq__` to avoid duplicate updates
             # being dispatched to listeners
             always_update=True
         )
-        self.pooling_frequency = pooling_frequency
+        self.options = options
         self.myfoxApiClients =  dict[str, MyFoxApiClient]()
         self.last_params = None
         self.entry = entry
 
-        _LOGGER.info("Init " + str(self.name) + " avec un pooling de " + str(pooling_frequency) + " minutes")
+        _LOGGER.info("Init " + str(self.name) + " avec un pooling de " + str(options.pooling_frequency) + " minutes")
 
     async def update_entry(self, myfoxApiClient:MyFoxApiClient) :
         try:
@@ -608,27 +609,6 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         else :
                             """ inconnu """
                             _LOGGER.error("selectOption '%s' non reconnue pour le device %s", str(device_action), str(device_id))
-                elif myfoxApiClient.__class__ == MyFoxApiSecurityClient :
-                    client:MyFoxApiSecurityClient = myfoxApiClient
-                    # verification device
-                    _LOGGER.debug("selectOption '%s' for '%s'", str(device_action), str(device_option) )
-                    if device_id in client.devices :
-                        """ """
-                        if int(device_action) == 1 :
-                            """ Disarmed """
-                            action_ok = await client.setSecurity("disarmed")
-                            break
-                        elif int(device_action) == 2 :
-                            """ Partial """
-                            action_ok = await client.setSecurity("partial")
-                            break
-                        elif int(device_action) == 4 :
-                            """ Armed """
-                            action_ok = await client.setSecurity("armed")
-                            break
-                        else :
-                            """ inconnu """
-                            _LOGGER.error("selectOption '%s' non reconnue pour le device %s", str(device_action), str(device_id))
             _LOGGER.debug("selectOption %s pour %s : %s", str(device_action), str(idx), str(action_ok) )
 
             if action_ok :
@@ -652,9 +632,14 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         except Exception as err:
             raise UpdateFailed(f"Error with API selectOption: {err}")
 
-    async def setSecurity(self, device_action:str) -> bool:
+    async def setSecurity(self, idx:str, device_action:str, code:str = None) -> bool:
         action_ok = False
         try:
+            _LOGGER.info("Security Option : %s/%s from %s", idx, device_action, str(self.name))
+            valeurs = idx.split("|", 2)
+            device_id = valeurs[0]
+            device_option = valeurs[1]
+            device_action_id = 0
             for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
                 if myfoxApiClient.__class__ == MyFoxApiSecurityClient :
                     client:MyFoxApiSecurityClient = myfoxApiClient
@@ -662,19 +647,31 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     _LOGGER.debug("setSecurity '%s' ", str(device_action) )
                     if device_action == "disarmed" or int(device_action) == 1:
                         """ Disarmed """
-                        action_ok = await client.setSecurity("disarmed")
+                        device_action_id = 10
+                        action_ok = await client.setSecurity("disarmed", code)
                         break
                     elif device_action == "partial" or int(device_action) == 2:
                         """ Partial """
-                        action_ok = await client.setSecurity("partial")
+                        device_action_id = 20
+                        action_ok = await client.setSecurity("partial", code)
                         break
                     elif device_action == "armed" or int(device_action) == 4:
                         """ Armed """
-                        action_ok = await client.setSecurity("armed")
+                        device_action_id = 40
+                        action_ok = await client.setSecurity("armed", code)
                         break
                     else :
                         """ inconnu """
                         _LOGGER.error("selectOption '%s' non reconnue", str(device_action))
+            if action_ok :
+                params = dict[str, Any]()
+                listening_idx = set()
+                listening_idx.add(idx)
+                valeur = dict[str, Any]()
+                valeur["deviceId"] = device_id
+                valeur[device_option] = device_action_id
+                self.addToParams(params, listening_idx, valeur)
+                self.async_set_updated_data(params)
             return action_ok
         except InvalidTokenMyFoxException as err:   
             # Raising ConfigEntryAuthFailed will cancel future updates

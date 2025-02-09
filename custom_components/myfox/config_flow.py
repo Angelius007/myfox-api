@@ -26,7 +26,8 @@ from .api.const import (
      KEY_CACHE_CAMERA,
      CACHE_CAMERA,
      KEY_CACHE_SECURITY,
-     CACHE_SECURITY
+     CACHE_SECURITY,
+     KEY_USE_CODE_ALARM
 )
 
 from .api.myfoxapi import (
@@ -261,6 +262,9 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
         cache_security = CACHE_SECURITY
         if KEY_CACHE_SECURITY in self.config_entry.options:
             cache_security = int(self.config_entry.options.get(KEY_CACHE_SECURITY))
+        use_code_alarm = False
+        if KEY_USE_CODE_ALARM in self.config_entry.options:
+            use_code_alarm = self.config_entry.options.get(KEY_USE_CODE_ALARM)
      
         return self.async_show_form(
             step_id="init",
@@ -275,13 +279,17 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
                         default=cache_expire_in_param,
                     ): int,
                     vol.Required(
+                        KEY_CACHE_CAMERA,
+                        default=cache_camera,
+                    ): int,
+                    vol.Required(
                         KEY_CACHE_SECURITY,
                         default=cache_security,
                     ): int,
                     vol.Required(
-                        KEY_CACHE_CAMERA,
-                        default=cache_camera,
-                    ): int
+                        KEY_USE_CODE_ALARM,
+                        default=use_code_alarm,
+                    ): bool
                 }
             ),
         )

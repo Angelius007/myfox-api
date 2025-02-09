@@ -9,7 +9,6 @@ import urllib
 from abc import abstractmethod
 from typing import Any
 from aiohttp import ClientResponse
-from dataclasses import dataclass, field
 from .const import (
     DEFAULT_MYFOX_URL_API, MYFOX_TOKEN_PATH, MYFOX_INFO_SITE_PATH,MYFOX_HISTORY_GET,
     KEY_GRANT_TYPE, KEY_CLIENT_ID, KEY_CLIENT_SECRET, KEY_MYFOX_USER, KEY_MYFOX_PSWD, KEY_REFRESH_TOKEN,
@@ -19,37 +18,12 @@ from ..scenes import (BaseScene, DiagnosticScene, MyFoxSceneInfo)
 from ..devices import (BaseDevice, DiagnosticDevice, MyFoxDeviceInfo)
 from ..devices.site import MyFoxSite
 from .myfoxapi_exception import (MyFoxException, InvalidTokenMyFoxException, RetryMyFoxException)
+from . import MyFoxEntryDataApi
 
 #from homeassistant.config_entries import ConfigEntry, ConfigEntryState
-from homeassistant.const import (
-    Platform,
-)
+
 _LOGGER = logging.getLogger(__name__)
 
-@dataclass
-class MyFoxEntryData:
-    platforms: list[Platform]
-
-@dataclass
-class MyFoxOptionsDataApi:
-    cache_time:int = 0
-    pooling_frequency:int = 0
-    cache_camera_time:int = 0
-    cache_security_time:int = 0
-
-@dataclass
-class MyFoxEntryDataApi:
-    client_id: str = None
-    client_secret: str = None
-    username: str = None
-    password: str = None
-    access_token: str = None
-    refresh_token: str = None
-    expires_in: int = 0
-    expires_time: float = 0.0 
-    site: MyFoxSite = None
-    sites: list[MyFoxSite] = field(default_factory=list[MyFoxSite(0)])
-    options: MyFoxOptionsDataApi = None
 
 class MyFoxPolicy(asyncio.DefaultEventLoopPolicy):
    def new_event_loop(self):

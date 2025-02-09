@@ -2,6 +2,7 @@ import logging
 from typing import Any
 
 from homeassistant.components.alarm_control_panel import AlarmControlPanelEntity, AlarmControlPanelState, AlarmControlPanelEntityFeature
+from homeassistant.components.alarm_control_panel.const import CodeFormat
 
 from ..coordinator.myfox_coordinator import (MyFoxCoordinator)
 from ..devices import BaseDevice
@@ -13,7 +14,8 @@ class MyFoxAlarmEntity(AlarmControlPanelEntity, BaseWithValueEntity) :
 
     def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
         super().__init__(coordinator, device, title, key)
-        self._attr_code_arm_required = False
+        self._attr_code_arm_required = coordinator.options.use_code_alarm
+        self._attr_code_format = CodeFormat.NUMBER
         self._attr_supported_features: AlarmControlPanelEntityFeature = (
             AlarmControlPanelEntityFeature.ARM_AWAY
             | AlarmControlPanelEntityFeature.ARM_HOME
@@ -26,10 +28,16 @@ class MyFoxAlarmEntity(AlarmControlPanelEntity, BaseWithValueEntity) :
         value = self.coordinator.data[self.idx]
         if int(value) == 1:
             self._attr_alarm_state = AlarmControlPanelState.DISARMED
+        elif int(value) == 10:
+            self._attr_alarm_state = AlarmControlPanelState.DISARMING
         elif int(value) == 2:
             self._attr_alarm_state = AlarmControlPanelState.ARMED_HOME
+        elif int(value) == 20:
+            self._attr_alarm_state = AlarmControlPanelState.ARMING
         elif int(value) == 4:
             self._attr_alarm_state = AlarmControlPanelState.ARMED_AWAY
+        elif int(value) == 40:
+            self._attr_alarm_state = AlarmControlPanelState.ARMING
         else:
             self._attr_alarm_state = AlarmControlPanelState.PENDING
         
@@ -38,19 +46,16 @@ class MyFoxAlarmEntity(AlarmControlPanelEntity, BaseWithValueEntity) :
 
     async def async_alarm_disarm(self, code=None) -> None:
         """Send disarm command."""
-        self._attr_alarm_state = AlarmControlPanelState.DISARMING
         coordinator:MyFoxCoordinator = self.coordinator
-        await coordinator.setSecurity("disarmed")
+        await coordinator.setSecurity(self.idx, "disarmed", code)
 
     async def async_alarm_arm_away(self, code=None) -> None:
         """Send arm home command."""
-        self._attr_alarm_state = AlarmControlPanelState.ARMING
         coordinator:MyFoxCoordinator = self.coordinator
-        await coordinator.setSecurity("armed")
+        await coordinator.setSecurity(self.idx, "armed", code)
         
     async def async_alarm_arm_home(self, code=None) -> None:
         """Send arm home command."""
-        self._attr_alarm_state = AlarmControlPanelState.ARMING
         coordinator:MyFoxCoordinator = self.coordinator
-        await coordinator.setSecurity("partial")
+        await coordinator.setSecurity(self.idx, "partial", code)
 
