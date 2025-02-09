@@ -10,6 +10,8 @@ from homeassistant.helpers import selector
 from homeassistant.core import callback
 from homeassistant.helpers import config_entry_oauth2_flow
 
+from .crypto.secure import encode, decode
+
 from . import (DOMAIN_MYFOX, 
                 CONFIG_VERSION)
 from .api.const import (
@@ -26,23 +28,28 @@ from .api.const import (
      KEY_CACHE_CAMERA,
      CACHE_CAMERA,
      KEY_CACHE_SECURITY,
-     CACHE_SECURITY
+     CACHE_SECURITY,
+     KEY_USE_CODE_ALARM,
+     KEY_AUTHORIZED_CODE_ALARM
 )
 
-from .api.myfoxapi import (
+from .api import (
     MyFoxEntryDataApi,
-    MyFoxOptionsDataApi,
+    MyFoxOptionsDataApi
+)
+from .api.myfoxapi import (
     MyFoxApiClient
 )
 from .devices.site import MyFoxSite
 
 _LOGGER = logging.getLogger(__name__)
+
+PREFIX_ENTRY = "myfox-"
     
 class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain=DOMAIN_MYFOX):
     """ Config """
     DOMAIN = DOMAIN_MYFOX
     VERSION = CONFIG_VERSION
-    PREFIX_ENTRY = "myfox-"
 
     # Init des variables locales
     def __init__(self) -> None:
@@ -65,7 +72,7 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
     # Step pour relancer la conf
     async def async_step_reconfigure(self, user_input: dict[str, Any] | None = None): 
         if "entry_id" in self.context and self.context["entry_id"] :
-            unique_id = self.context["entry_id"] #.replace(self.PREFIX_ENTRY, "")
+            unique_id = self.context["entry_id"]
             _LOGGER.debug("Entry trouvee : %s",unique_id)
             existing_entry = self.hass.config_entries.async_get_entry(unique_id)
             if existing_entry:
@@ -125,7 +132,7 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
         _LOGGER.debug("async_oauth_create_entry :  %s", str(info))
         if self.source == SOURCE_REAUTH:
             if self.siteId is not None:
-                device_unique_id = self.PREFIX_ENTRY+str(self.siteId)
+                device_unique_id = PREFIX_ENTRY+str(self.siteId)
                 existing_entry = await self.async_set_unique_id(device_unique_id)
                 data = existing_entry.data.copy()
                 data.update(info)
@@ -190,7 +197,7 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
             for site in self.sites:
                 if site.key == info.get(KEY_SITE_ID) :
                     self.site = site
-            device_unique_id = self.PREFIX_ENTRY+str(self.site.siteId)
+            device_unique_id = PREFIX_ENTRY+str(self.site.siteId)
             
             existing_entry = await self.async_set_unique_id(device_unique_id, raise_on_progress=False)
             
@@ -241,12 +248,22 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
     def __init__(self, config_entry: ConfigEntry) -> None:
         """ Initialize options flow. """
         self.config_entry = config_entry
+        if config_entry.entry_id is not None:
+            self.siteId = config_entry.entry_id.replace(PREFIX_ENTRY, "", 1)
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """ Manage the options. """
         if user_input is not None:
+            if KEY_USE_CODE_ALARM not in user_input:
+                update_infos: dict[str, Any] = {}
+                update_infos[KEY_USE_CODE_ALARM] = False
+                user_input.update(update_infos)
+            if KEY_AUTHORIZED_CODE_ALARM in user_input:
+                update_infos: dict[str, Any] = {}
+                update_infos[KEY_AUTHORIZED_CODE_ALARM] = encode(user_input.get(KEY_AUTHORIZED_CODE_ALARM), self.siteId)
+                user_input.update(update_infos)
             return self.async_create_entry(title="", data=user_input)
 
         cache_expire_in_param = CACHE_EXPIRE_IN
@@ -261,6 +278,12 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
         cache_security = CACHE_SECURITY
         if KEY_CACHE_SECURITY in self.config_entry.options:
             cache_security = int(self.config_entry.options.get(KEY_CACHE_SECURITY))
+        use_code_alarm = False
+        if KEY_USE_CODE_ALARM in self.config_entry.options:
+            use_code_alarm = self.config_entry.options.get(KEY_USE_CODE_ALARM)
+        authorized_codes = ""
+        if KEY_AUTHORIZED_CODE_ALARM in self.config_entry.options:
+            authorized_codes = decode(self.config_entry.options.get(KEY_AUTHORIZED_CODE_ALARM), self.siteId)
      
         return self.async_show_form(
             step_id="init",
@@ -275,13 +298,21 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
                         default=cache_expire_in_param,
                     ): int,
                     vol.Required(
+                        KEY_CACHE_CAMERA,
+                        default=cache_camera,
+                    ): int,
+                    vol.Required(
                         KEY_CACHE_SECURITY,
                         default=cache_security,
                     ): int,
-                    vol.Required(
-                        KEY_CACHE_CAMERA,
-                        default=cache_camera,
-                    ): int
+                    vol.Optional(
+                        KEY_USE_CODE_ALARM,
+                        default=use_code_alarm,
+                    ): bool,
+                    vol.Optional(
+                        KEY_AUTHORIZED_CODE_ALARM,
+                        default=authorized_codes,
+                    ): str
                 }
             ),
         )

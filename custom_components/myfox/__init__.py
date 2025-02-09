@@ -33,11 +33,15 @@ from .api.const import (
     KEY_CACHE_CAMERA,
     CACHE_CAMERA,
     KEY_CACHE_SECURITY,
-    CACHE_SECURITY
+    CACHE_SECURITY,
+    KEY_USE_CODE_ALARM,
+    KEY_AUTHORIZED_CODE_ALARM
+)
+from .api import (
+    MyFoxEntryDataApi,
+    MyFoxOptionsDataApi
 )
 from .api.myfoxapi import (
-    MyFoxEntryDataApi,
-    MyFoxOptionsDataApi,
     MyFoxApiClient
 )
 
@@ -141,6 +145,16 @@ def updateMyFoxOptions(entry: ConfigEntry) -> MyFoxOptionsDataApi :
         options.cache_security_time = entry.options[KEY_CACHE_SECURITY]
     else :
         options.cache_security_time = CACHE_SECURITY
+    # utilisation ou non d'un code de securite pour l'alarme
+    if KEY_USE_CODE_ALARM in entry.options :
+        options.use_code_alarm = entry.options[KEY_USE_CODE_ALARM]
+    else :
+        options.use_code_alarm = False
+    # liste des codes possibles pour l'alarme
+    if KEY_AUTHORIZED_CODE_ALARM in entry.options :
+        options.secure_codes = entry.options[KEY_AUTHORIZED_CODE_ALARM]
+    else :
+        options.secure_codes = ""
 
     return options
 
@@ -172,7 +186,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     myfox_info.options = updateMyFoxOptions(entry)
 
     info_site = None
-    coordinator = MyFoxCoordinator(hass, myfox_info.options.pooling_frequency, entry)
+    coordinator = MyFoxCoordinator(hass, myfox_info.options, entry)
     hass.data.setdefault(MYFOX_KEY, {})[entry.entry_id] = coordinator
     try:
         myfox_client = MyFoxApiClient(myfox_info)
@@ -411,8 +425,9 @@ async def update_listener(hass: HomeAssistant, config_entry: ConfigEntry) -> Non
         hass.config_entries.async_update_entry(config_entry, data=new_data, options=config_entry.options)
 
         # si mise a jour du coordinator, on relance le chargement
-        if coordinator.pooling_frequency !=  myfox_info.options.pooling_frequency :
-            _LOGGER.info("-> Rechargement Entite suite à modification du pooling")
+        if (coordinator.options.pooling_frequency != myfox_info.options.pooling_frequency 
+            or coordinator.options.use_code_alarm != myfox_info.options.use_code_alarm):
+            _LOGGER.info("-> Rechargement Entite suite à modification de parametrage")
             hass.config_entries.async_schedule_reload(config_entry.entry_id)
 
     else :
