@@ -17,10 +17,12 @@ from homeassistant.helpers.selector import (
 
 from .crypto.secure import encode, decode
 
-from . import (DOMAIN_MYFOX, 
-                CONFIG_VERSION)
+from .const import (
+     DOMAIN_MYFOX, 
+     CONFIG_VERSION,
+     PREFIX_ENTRY
+)
 from .api.const import (
-     PREFIX_ENTRY,
      KEY_SITE_ID,
      KEY_TOKEN,
      KEY_ACCESS_TOKEN,
@@ -54,12 +56,13 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
     """ Options pour l'integration """
     def __init__(self) -> None:
         """ Initialize options flow. """
-        if self.config_entry.entry_id is not None:
-            self.siteId = self.config_entry.unique_id.replace(PREFIX_ENTRY, "", 1)
+        self.siteId: int | None = None
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
+        if self.config_entry.entry_id is not None:
+            self.siteId = self.config_entry.unique_id.replace(PREFIX_ENTRY, "", 1)
         """ Manage the options. """
         if user_input is not None:
             if KEY_USE_CODE_ALARM not in user_input or not user_input.get(KEY_USE_CODE_ALARM):
@@ -329,4 +332,3 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
     ) -> MyFoxOptionsFlowHandler:
         """ Create the options flow. """
         return MyFoxOptionsFlowHandler()
-

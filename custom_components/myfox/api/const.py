@@ -23,8 +23,6 @@ KEY_CACHE_SECURITY         : Final = "cache_security"
 KEY_USE_CODE_ALARM         : Final = "utilisation_code"
 KEY_AUTHORIZED_CODE_ALARM  : Final = "autorisation_codes"
 
-PREFIX_ENTRY               : Final = "myfox-"
-
 GRANT_TYPE_PASSWORD           : Final = "password"
 GRANT_TYPE_AUTHORIZATION_CODE : Final = "authorization_code"
 GRANT_REFRESH_TOKEN           : Final = "refresh_token"
