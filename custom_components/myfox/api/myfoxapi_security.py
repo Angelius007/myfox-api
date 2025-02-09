@@ -66,7 +66,7 @@ class MyFoxApiSecurityClient(MyFoxApiClient) :
         try:
             if self.myfox_info.options.use_code_alarm:
                 codes = decode(self.myfox_info.options.secure_codes, self.myfox_info.site.siteId)
-                if code not in codes :
+                if str(code) not in codes :
                     raise MyFoxException(401, "Code incorrect")
             response = await self.callMyFoxApiPost(MYFOX_SECURITY_SET % (self.myfox_info.site.siteId , securityLevel))
             _LOGGER.debug("setSecurity : %s",str(response))
