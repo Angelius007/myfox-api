@@ -276,7 +276,7 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
             use_code_alarm = self.config_entry.options.get(KEY_USE_CODE_ALARM)
         authorized_codes = ""
         if KEY_AUTHORIZED_CODE_ALARM in self.config_entry.options:
-            authorized_codes = encode(self.config_entry.options.get(KEY_AUTHORIZED_CODE_ALARM), self.siteId)
+            authorized_codes = decode(self.config_entry.options.get(KEY_AUTHORIZED_CODE_ALARM), self.siteId)
      
         return self.async_show_form(
             step_id="init",
@@ -304,7 +304,7 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
                     ): bool,
                     vol.Optional(
                         KEY_AUTHORIZED_CODE_ALARM,
-                        default=decode(authorized_codes, self.siteId),
+                        default=authorized_codes,
                     ): str
                 }
             ),
