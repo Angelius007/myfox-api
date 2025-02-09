@@ -284,8 +284,8 @@ class TestClients :
         _LOGGER.info("results:"+str(results))
 
     def testEncryptDecrypt(loop : AbstractEventLoop):
-        password = "toto&€@-124"
-        message = "1205"
+        password = "1326"
+        message = "1111 2222 3333"
         list_str: dict[str, Any] = {}
         list_str[KEY_AUTHORIZED_CODE_ALARM] = message
         encode_str: dict[str, Any] = {}

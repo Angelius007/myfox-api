@@ -9,6 +9,11 @@ from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers import selector
 from homeassistant.core import callback
 from homeassistant.helpers import config_entry_oauth2_flow
+from homeassistant.helpers.selector import (
+    TextSelector,
+    TextSelectorConfig,
+    TextSelectorType,
+)
 
 from .crypto.secure import encode, decode
 
@@ -249,20 +254,25 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
         """ Initialize options flow. """
         self.config_entry = config_entry
         if config_entry.entry_id is not None:
-            self.siteId = config_entry.entry_id.replace(PREFIX_ENTRY, "", 1)
+            self.siteId = config_entry.unique_id.replace(PREFIX_ENTRY, "", 1)
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """ Manage the options. """
         if user_input is not None:
-            if KEY_USE_CODE_ALARM not in user_input:
+            if KEY_USE_CODE_ALARM not in user_input or not user_input.get(KEY_USE_CODE_ALARM):
                 update_infos: dict[str, Any] = {}
                 update_infos[KEY_USE_CODE_ALARM] = False
+                update_infos[KEY_AUTHORIZED_CODE_ALARM] = ""
                 user_input.update(update_infos)
-            if KEY_AUTHORIZED_CODE_ALARM in user_input:
+            if KEY_AUTHORIZED_CODE_ALARM in user_input and len(user_input.get(KEY_AUTHORIZED_CODE_ALARM).strip()) > 0:
                 update_infos: dict[str, Any] = {}
-                update_infos[KEY_AUTHORIZED_CODE_ALARM] = encode(user_input.get(KEY_AUTHORIZED_CODE_ALARM), self.siteId)
+                update_infos[KEY_AUTHORIZED_CODE_ALARM] = encode(user_input.get(KEY_AUTHORIZED_CODE_ALARM).strip(), self.siteId)
+                user_input.update(update_infos)
+            else :
+                update_infos : dict[str, Any] = {}
+                update_infos[KEY_AUTHORIZED_CODE_ALARM] = ""
                 user_input.update(update_infos)
             return self.async_create_entry(title="", data=user_input)
 
@@ -282,7 +292,8 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
         if KEY_USE_CODE_ALARM in self.config_entry.options:
             use_code_alarm = self.config_entry.options.get(KEY_USE_CODE_ALARM)
         authorized_codes = ""
-        if KEY_AUTHORIZED_CODE_ALARM in self.config_entry.options:
+        if (KEY_AUTHORIZED_CODE_ALARM in self.config_entry.options 
+            and len(self.config_entry.options.get(KEY_AUTHORIZED_CODE_ALARM).strip()) > 0):
             authorized_codes = decode(self.config_entry.options.get(KEY_AUTHORIZED_CODE_ALARM), self.siteId)
      
         return self.async_show_form(
@@ -311,8 +322,11 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
                     ): bool,
                     vol.Optional(
                         KEY_AUTHORIZED_CODE_ALARM,
-                        default=authorized_codes,
-                    ): str
+                        default=authorized_codes): TextSelector(
+                        TextSelectorConfig(
+                            type=TextSelectorType.PASSWORD
+                        )
+                    )
                 }
-            ),
+            )
         )
