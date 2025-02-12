@@ -5,7 +5,6 @@ from abc import ABC
 from homeassistant.components.alarm_control_panel import AlarmControlPanelEntity
 from homeassistant.components.camera import Camera
 from homeassistant.components.button import ButtonEntity
-from homeassistant.components.number import NumberEntity
 from homeassistant.components.select import SelectEntity
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.switch import SwitchEntity
@@ -29,9 +28,6 @@ class BaseDevice(ABC):
         self.device_info = device_info
 
     def sensors(self, coordinator) -> list[SensorEntity]:
-        return []
-
-    def numbers(self, coordinator) -> list[NumberEntity]:
         return []
 
     def switches(self, coordinator) -> list[SwitchEntity]:

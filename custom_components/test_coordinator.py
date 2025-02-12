@@ -108,181 +108,190 @@ class TestClients :
         # site_list = list()
         # for site in results[0]:
         #     site_list.append(site.key)
-        results = loop.run_until_complete(asyncio.gather(*[client.login()]))
+        results = loop.run_until_complete(asyncio.gather(*[client.login()]))[0]
         _LOGGER.info("results:"+str(results))
 
-        results = loop.run_until_complete(asyncio.gather(*[client.getInfoSite(1326, forceInit)]))
+        results = loop.run_until_complete(asyncio.gather(*[client.getInfoSite(1326, forceInit)]))[0]
         _LOGGER.info("results:"+str(results))
 
-        # results = loop.run_until_complete(asyncio.gather(*[client.refreshToken()]))
+        # results = loop.run_until_complete(asyncio.gather(*[client.refreshToken()]))[0]
         #_LOGGER.info("results:"+str(results))
         
-        #results = loop.run_until_complete(asyncio.gather(*[client.getHistory()]))
+        #results = loop.run_until_complete(asyncio.gather(*[client.getHistory()]))[0]
         #_LOGGER.info("results:"+str(results))
         
 
     def testScenario(loop : AbstractEventLoop, client : MyFoxApiSecenarioClient):
 
-        results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
+        results = loop.run_until_complete(asyncio.gather(*[client.getList()]))[0]
         _LOGGER.info("results:"+str(results))
-        results = loop.run_until_complete(asyncio.gather(*[client.disableScenario(219)]))
+        results = loop.run_until_complete(asyncio.gather(*[client.disableScenario(219)]))[0]
         _LOGGER.info("results:"+str(results))
-        results = loop.run_until_complete(asyncio.gather(*[client.enableScenario(219)]))
+        results = loop.run_until_complete(asyncio.gather(*[client.enableScenario(219)]))[0]
         _LOGGER.info("results:"+str(results))
-        results = loop.run_until_complete(asyncio.gather(*[client.playScenario(321)]))
+        results = loop.run_until_complete(asyncio.gather(*[client.playScenario(321)]))[0]
         _LOGGER.info("results:"+str(results))
 
     def testSecurity(loop : AbstractEventLoop, client : MyFoxApiSecurityClient):
-        results = loop.run_until_complete(asyncio.gather(*[client.getSecurity()]))
+        results = loop.run_until_complete(asyncio.gather(*[client.getSecurity()]))[0]
         _LOGGER.info("results:"+str(results))
-        #results = loop.run_until_complete(asyncio.gather(*[client.setSecurity("armed")]))
+        #results = loop.run_until_complete(asyncio.gather(*[client.setSecurity("armed")]))[0]
         #_LOGGER.info("results:"+str(results))
-        results = loop.run_until_complete(asyncio.gather(*[client.setSecurity("partial")]))
+        results = loop.run_until_complete(asyncio.gather(*[client.setSecurity("partial")]))[0]
         _LOGGER.info("results:"+str(results))
-        results = loop.run_until_complete(asyncio.gather(*[client.setSecurity("disarmed")]))
+        results = loop.run_until_complete(asyncio.gather(*[client.setSecurity("disarmed")]))[0]
         _LOGGER.info("results:"+str(results))
 
     def testCamera(loop : AbstractEventLoop, client : MyFoxApiCameraClient):
-        #results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
+        #results = loop.run_until_complete(asyncio.gather(*[client.getList()]))[0]
         #_LOGGER.info("results:"+str(results))
         #camera = results[0][0]
         #camera.protocol = "rtmp"
-        #results = loop.run_until_complete(asyncio.gather(*[client.cameraLiveStart(1027535)]))
+        #results = loop.run_until_complete(asyncio.gather(*[client.cameraLiveStart(1027535)]))[0]
         #_LOGGER.info("results:"+str(results))
-        #results = loop.run_until_complete(asyncio.gather(*[client.cameraLiveExtend(1027535)]))
+        #results = loop.run_until_complete(asyncio.gather(*[client.cameraLiveExtend(1027535)]))[0]
         #_LOGGER.info("results:"+str(results))
-        #results = loop.run_until_complete(asyncio.gather(*[client.cameraLiveStop(1027535)]))
+        #results = loop.run_until_complete(asyncio.gather(*[client.cameraLiveStop(1027535)]))[0]
         #_LOGGER.info("results:"+str(results))
-        #results = loop.run_until_complete(asyncio.gather(*[client.cameraPreviewTake(1027535)]))
+        #results = loop.run_until_complete(asyncio.gather(*[client.cameraPreviewTake(1027535)]))[0]
         #_LOGGER.info("results:"+str(results))
-        results = loop.run_until_complete(asyncio.gather(*[client.cameraSnapshotTake(1027535)]))
+        results = loop.run_until_complete(asyncio.gather(*[client.cameraSnapshotTake(1027535)]))[0]
         _LOGGER.info("results:"+str(results))
-        #results = loop.run_until_complete(asyncio.gather(*[client.cameraRecordingStart(1027535)]))
+        #results = loop.run_until_complete(asyncio.gather(*[client.cameraRecordingStart(1027535)]))[0]
         #_LOGGER.info("results:"+str(results))
-        #results = loop.run_until_complete(asyncio.gather(*[client.cameraRecordingStop(1027535)]))
+        #results = loop.run_until_complete(asyncio.gather(*[client.cameraRecordingStop(1027535)]))[0]
         #_LOGGER.info("results:"+str(results))
 
     def testLightSensor(loop : AbstractEventLoop, client : MyFoxApiLightClient):
-        results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
+        results = loop.run_until_complete(asyncio.gather(*[client.getList()]))[0]
         _LOGGER.info("results:"+str(results))
         #camera = results[0][0]
         #camera.protocol = "rtmp"
-        #results = loop.run_until_complete(asyncio.gather(*[client.cameraLiveStart(65714)]))
+        #results = loop.run_until_complete(asyncio.gather(*[client.cameraLiveStart(65714)]))[0]
         #_LOGGER.info("results:"+str(results))
-        #results = loop.run_until_complete(asyncio.gather(*[client.cameraLiveExtend(65714)]))
+        #results = loop.run_until_complete(asyncio.gather(*[client.cameraLiveExtend(65714)]))[0]
         #_LOGGER.info("results:"+str(results))
-        #results = loop.run_until_complete(asyncio.gather(*[client.cameraLiveStop(65714)]))
+        #results = loop.run_until_complete(asyncio.gather(*[client.cameraLiveStop(65714)]))[0]
         #_LOGGER.info("results:"+str(results))
-        #results = loop.run_until_complete(asyncio.gather(*[client.cameraPreviewTake(65714)]))
+        #results = loop.run_until_complete(asyncio.gather(*[client.cameraPreviewTake(65714)]))[0]
         #_LOGGER.info("results:"+str(results))
-        results = loop.run_until_complete(asyncio.gather(*[client.getLightHistory(65714)]))
+        results = loop.run_until_complete(asyncio.gather(*[client.getLightHistory(65714)]))[0]
         _LOGGER.info("results:"+str(results))
 
     def testGenericSensor(loop : AbstractEventLoop, client : MyFoxApiAlerteStateClient):
-        results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
+        results = loop.run_until_complete(asyncio.gather(*[client.getList()]))[0]
         _LOGGER.info("results:"+str(results))
 
     def testSensor(loop : AbstractEventLoop, client : MyFoxApiStateClient):
-        results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
+        results = loop.run_until_complete(asyncio.gather(*[client.getList()]))[0]
         _LOGGER.info("results:"+str(results))
-        # results = loop.run_until_complete(asyncio.gather(*[client.getDeviceWithState(123)]))
+        # results = loop.run_until_complete(asyncio.gather(*[client.getDeviceWithState(123)]))[0]
         # _LOGGER.info("results:"+str(results))
 
     def testTemperatureSensor(loop : AbstractEventLoop, client : MyFoxApiTemperatureClient):
-        results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
-        results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
+        results = loop.run_until_complete(asyncio.gather(*[client.getList()]))[0]
         _LOGGER.info("results:"+str(results[0]))
 
-        for capteur in results[0] :
+        for capteur in results :
             _LOGGER.debug(str(capteur))
             #capteur.
             client.configure_device(capteur["deviceId"],capteur["label"],capteur["modelId"],capteur["modelLabel"])
             #device = MyFoxTemperatureSensor(65714, "device", 0, "xx", "")
-            #results = loop.run_until_complete(asyncio.gather(*[client.getTemperature(capteur["deviceId"])]))
+            #results = loop.run_until_complete(asyncio.gather(*[client.getTemperature(capteur["deviceId"])]))[0]
             #_LOGGER.info("results:"+str(results))
 
     def testGate(loop : AbstractEventLoop, client : MyFoxApiGateClient):
-        results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
+        results = loop.run_until_complete(asyncio.gather(*[client.getList()]))[0]
         _LOGGER.info("results:"+str(results))
-        #results = loop.run_until_complete(asyncio.gather(*[client.performeOne(65714)]))
+        #results = loop.run_until_complete(asyncio.gather(*[client.performeOne(65714)]))[0]
         #_LOGGER.info("results:"+str(results))
-        #results = loop.run_until_complete(asyncio.gather(*[client.performeTwo(65714)]))
+        #results = loop.run_until_complete(asyncio.gather(*[client.performeTwo(65714)]))[0]
         #_LOGGER.info("results:"+str(results))
 
     def testModule(loop : AbstractEventLoop, client : MyFoxApiModuleClient):
-        results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
+        results = loop.run_until_complete(asyncio.gather(*[client.getList()]))[0]
         _LOGGER.info("results:"+str(results))
 
     def testShutter(loop : AbstractEventLoop, client : MyFoxApiShutterClient):
-        results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
+        results = loop.run_until_complete(asyncio.gather(*[client.getList()]))[0]
         _LOGGER.info("results:"+str(results))
-        # results = loop.run_until_complete(asyncio.gather(*[client.setFavorite(947805)]))
+        # results = loop.run_until_complete(asyncio.gather(*[client.setFavorite(947805)]))[0]
         # _LOGGER.info("results:"+str(results))
-        # results = loop.run_until_complete(asyncio.gather(*[client.setOpen(947805)]))
+        # results = loop.run_until_complete(asyncio.gather(*[client.setOpen(947805)]))[0]
         # _LOGGER.info("results:"+str(results))
-        # results = loop.run_until_complete(asyncio.gather(*[client.setClose(947805)]))
+        # results = loop.run_until_complete(asyncio.gather(*[client.setClose(947805)]))[0]
         # _LOGGER.info("results:"+str(results))
 
     def testSocket(loop : AbstractEventLoop, client : MyFoxApiSocketClient):
-        results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
+        results = loop.run_until_complete(asyncio.gather(*[client.getList()]))[0]
         _LOGGER.info("results:"+str(results))
-        #results = loop.run_until_complete(asyncio.gather(*[client.setOff(2262)]))
+        #results = loop.run_until_complete(asyncio.gather(*[client.setOff(2262)]))[0]
         #_LOGGER.info("results:"+str(results))
-        # results = loop.run_until_complete(asyncio.gather(*[client.setOn(2262)]))
+        # results = loop.run_until_complete(asyncio.gather(*[client.setOn(2262)]))[0]
         #_LOGGER.info("results:"+str(results))
 
     def testLibrairie(loop : AbstractEventLoop, client : MyFoxApiLibraryClient):
-        #results = loop.run_until_complete(asyncio.gather(*[client.getImageList()]))
+        #results = loop.run_until_complete(asyncio.gather(*[client.getImageList()]))[0]
         #_LOGGER.info("results:"+str(results))
-        results = loop.run_until_complete(asyncio.gather(*[client.getVideoList()]))
+        results = loop.run_until_complete(asyncio.gather(*[client.getVideoList()]))[0]
         _LOGGER.info("results:"+str(results))
 
     def testGroupElectric(loop : AbstractEventLoop, client : MyFoxApiGroupElectricClient):
-        #results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
+        #results = loop.run_until_complete(asyncio.gather(*[client.getList()]))[0]
         #_LOGGER.info("results:"+str(results))
-        results = loop.run_until_complete(asyncio.gather(*[client.setOff(24467)]))
+        results = loop.run_until_complete(asyncio.gather(*[client.setOff(24467)]))[0]
         _LOGGER.info("results:"+str(results))
-        results = loop.run_until_complete(asyncio.gather(*[client.setOn(24467)]))
+        results = loop.run_until_complete(asyncio.gather(*[client.setOn(24467)]))[0]
         _LOGGER.info("results:"+str(results))
 
     def testGroupShutter(loop : AbstractEventLoop, client : MyFoxApiGroupShutterClient):
-        #results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
+        #results = loop.run_until_complete(asyncio.gather(*[client.getList()]))[0]
         #_LOGGER.info("results:"+str(results))
-        results = loop.run_until_complete(asyncio.gather(*[client.setOpen(24389)]))
+        results = loop.run_until_complete(asyncio.gather(*[client.setOpen(24389)]))[0]
         _LOGGER.info("results:"+str(results))
-        results = loop.run_until_complete(asyncio.gather(*[client.setClose(24389)]))
+        results = loop.run_until_complete(asyncio.gather(*[client.setClose(24389)]))[0]
         _LOGGER.info("results:"+str(results))
 
     def testHeater(loop : AbstractEventLoop, client : MyFoxApiHeaterClient):
-        #results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
+        #results = loop.run_until_complete(asyncio.gather(*[client.getList()]))[0]
         #_LOGGER.info("results:"+str(results))
-        results = loop.run_until_complete(asyncio.gather(*[client.setEco(66172)]))
+        results = loop.run_until_complete(asyncio.gather(*[client.setEco(66172)]))[0]
         _LOGGER.info("results:"+str(results))
-        results = loop.run_until_complete(asyncio.gather(*[client.setFrost(66172)]))
+        results = loop.run_until_complete(asyncio.gather(*[client.setFrost(66172)]))[0]
         _LOGGER.info("results:"+str(results))
-        results = loop.run_until_complete(asyncio.gather(*[client.setOn(66172)]))
+        results = loop.run_until_complete(asyncio.gather(*[client.setOn(66172)]))[0]
         _LOGGER.info("results:"+str(results))
-        results = loop.run_until_complete(asyncio.gather(*[client.setOff(66172)]))
+        results = loop.run_until_complete(asyncio.gather(*[client.setOff(66172)]))[0]
         _LOGGER.info("results:"+str(results))
 
     def testThermo(loop : AbstractEventLoop, client : MyFoxApThermoClient):
-        results = loop.run_until_complete(asyncio.gather(*[client.getList()]))
+        results = loop.run_until_complete(asyncio.gather(*[client.getList()]))[0]
         _LOGGER.info("results:"+str(results))
 
 
-        #results = loop.run_until_complete(asyncio.gather(*[client.setAuto(66172)]))
+        #results = loop.run_until_complete(asyncio.gather(*[client.setAuto(66172)]))[0]
         #_LOGGER.info("results:"+str(results))
-        #results = loop.run_until_complete(asyncio.gather(*[client.setAway(66172)]))
+        #results = loop.run_until_complete(asyncio.gather(*[client.setAway(66172)]))[0]
         #_LOGGER.info("results:"+str(results))
-        #results = loop.run_until_complete(asyncio.gather(*[client.setBoost(66172)]))
+        #results = loop.run_until_complete(asyncio.gather(*[client.setBoost(66172)]))[0]
         #_LOGGER.info("results:"+str(results))
-        #results = loop.run_until_complete(asyncio.gather(*[client.setOff(66172)]))
+        #results = loop.run_until_complete(asyncio.gather(*[client.setOff(66172)]))[0]
         #_LOGGER.info("results:"+str(results))
 
     def testHistory(loop : AbstractEventLoop, client : MyFoxApiClient):
-        results = loop.run_until_complete((asyncio.gather(*[client.getHistory()])))
+        results = loop.run_until_complete((asyncio.gather(*[client.getHistory(type="security")])))[0]
         _LOGGER.info("results:"+str(results))
+        for temp in results:
+            _LOGGER.info("temp:"+str(temp))
 
+#'logId' =
+#889915829
+#'label' =
+#'Désactivation de la protection depuis internet'
+#'type' =
+#'security'
+#'createdAt' =
+#'2025-02-09T20:30:59Z'
     def testEncryptDecrypt(loop : AbstractEventLoop):
         password = "1326"
         message = "1111 2222 3333"
@@ -355,8 +364,8 @@ if __name__ == "__main__" :
         # TestClients.testGroupShutter(loop, MyFoxApiGroupShutterClient(myfox_info))
         # TestClients.testHeater(loop, MyFoxApiHeaterClient(myfox_info))
         # TestClients.testThermo(loop, MyFoxApThermoClient(myfox_info))
-        # TestClients.testHistory(loop, MyFoxApiClient(myfox_info))
-        TestClients.testEncryptDecrypt(loop)
+        TestClients.testHistory(loop, MyFoxApiClient(myfox_info))
+        # TestClients.testEncryptDecrypt(loop)
         
 
     finally :

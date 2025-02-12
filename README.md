@@ -250,11 +250,11 @@ Ou bien cliquez sur le lien [![Open your Home Assistant instance and start setti
 - Changement niveau alarme (Disarmed/Partial/Armed)
 
 </p></details>
-<details><summary> Gestion de l'historique <i>(0 services sur 1)</i> </summary>
+<details><summary> Gestion de l'historique <i>(1 services sur 1)</i> </summary>
 <p>
 
 *Services*
-- _(not implemented)_ /site/{siteId}/history : historique de la centrale
+- /site/{siteId}/history : historique de la centrale
 
 </p></details>
 <details><summary> Gestion des médias <i>(0 services sur 3)</i> </summary>
