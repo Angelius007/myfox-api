@@ -33,7 +33,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> MyFoxSocketDevice <i>(buttons: 2)</i> </summary>
+<details><summary> MyFoxGroupSocketDevice <i>(buttons: 2)</i> </summary>
 <p>
 
 *Buttons*
@@ -42,7 +42,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> MyFoxShuttereDevice <i>(buttons: 2)</i> </summary>
+<details><summary> MyFoxGroupShuttereDevice <i>(buttons: 2)</i> </summary>
 <p>
 
 *Buttons*
