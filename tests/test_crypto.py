@@ -37,14 +37,15 @@ class TestCrypto :
 
         _LOGGER.info("message:\t\t\t"+str(message))
         #encrypt
-        results = encode(message, password)
-        _LOGGER.info("results chiffré:\t\t"+str(results))
-        _LOGGER.info("results intermediaire:\t"+decode_base64(results))
-        _LOGGER.info("results intermediaire (2):\t"+decode_base64(decode_base64(results)))
-        _LOGGER.info("results intermediaire (3):\t"+decode_base64(decode_base64(decode_base64(results))))
+        input = encode(message, password)
+        _LOGGER.info("results chiffré:\t\t"+str(input))
         #decryt
-        results = decode(results, password)
+        results = decode(input, password)
         _LOGGER.info("results chiffré/déchiffré:\t"+str(results))
+        # decode with bas64?
+        _LOGGER.info("results intermediaire:\t"+decode_base64(input))
+        _LOGGER.info("results intermediaire (2):\t"+decode_base64(decode_base64(input)))
+        _LOGGER.info("results intermediaire (3):\t"+decode_base64(decode_base64(decode_base64(input))))
 
         assert encode(message, password) != message
         assert decode(encode(message, password), password) == message
