@@ -673,6 +673,45 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 valeur[device_option] = device_action_id
                 self.addToParams(params, listening_idx, valeur)
                 self.async_set_updated_data(params)
+                await self.getLastHistoryEvent(idx, device_action)
+            return action_ok
+        except InvalidTokenMyFoxException as err:   
+            # Raising ConfigEntryAuthFailed will cancel future updates
+            # and start a config flow with SOURCE_REAUTH (async_step_reauth)
+            raise ConfigEntryAuthFailed from err
+        except MyFoxException as exception:
+            _LOGGER.error(exception)
+            return action_ok
+        except Exception as err:
+            raise UpdateFailed(f"Error with API setSecurity: {err}")
+
+    async def getLastHistoryEvent(self, idx:str, device_action:str) -> bool:
+        action_ok = False
+        try:
+            _LOGGER.info("getLastSecurityEvent : %s/%s from %s", idx, device_action, str(self.name))
+            valeurs = idx.split("|", 2)
+            device_id = valeurs[0]
+            device_option = valeurs[1]
+            label = ""
+            for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
+                if myfoxApiClient.__class__ == MyFoxApiClient :
+                    client:MyFoxApiClient = myfoxApiClient
+                    # verification device
+                    _LOGGER.debug("getHistory '%s' ", str(device_action) )
+                    results = await client.getHistory("security")
+                    label = results[0]["label"]
+                    action_ok = True
+                    break
+                    
+            if action_ok and len(label) > 0 :
+                params = dict[str, Any]()
+                listening_idx = set()
+                listening_idx.add(idx)
+                valeur = dict[str, Any]()
+                valeur["deviceId"] = device_id
+                valeur[device_option] = label
+                self.addToParams(params, listening_idx, valeur)
+                self.async_set_updated_data(params)
             return action_ok
         except InvalidTokenMyFoxException as err:   
             # Raising ConfigEntryAuthFailed will cancel future updates

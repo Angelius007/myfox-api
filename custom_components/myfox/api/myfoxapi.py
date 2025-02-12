@@ -39,6 +39,8 @@ class MyFoxApiClient:
         self.devices: dict[str, BaseDevice] = {}
         self.scenes: dict[str, BaseScene] = {}
         self.infoSites_times = 0
+        self.history = list()
+        self.history_time = 0
         self.saveMyFoxInfo(myfox_info)
 
     def saveMyFoxInfo(self, myfox_info:MyFoxEntryDataApi) :
@@ -456,29 +458,35 @@ class MyFoxApiClient:
             _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(exception)
 
-    async def getHistory(self, type:str="alarm"):
+    async def getHistory(self, type:str="security"):
         """ Recuperation info site """
         try:
-            data = {
-                "type"      : type,
-                #"dateFrom"  : "xxx",
-                #"dateTo"    : "yyy",
-                "dateOrder" : -1
-            }
-            response = await self.callMyFoxApiGet(MYFOX_HISTORY_GET % self.myfox_info.site.siteId, data)
-            items = response["payload"]["items"]
+            if self.isCacheExpire(self.history_time) :
+                data = {
+                    #"dateFrom"  : "xxx",
+                    #"dateTo"    : "yyy",
+                    "dateOrder" : -1
+                }
+                if type is not None:
+                    data["type"] = type
+                response = await self.callMyFoxApiGet(MYFOX_HISTORY_GET % self.myfox_info.site.siteId, data)
+                items = response["payload"]["items"]
 
-            for item in items :
-                # SiteEvent {
-                # logId (integer): The event identifier,
-                # label (string): The event label,
-                # type (string) = ['scenario' or 'homeAuto' or 'security' or 'config' or 'alarm' or 'access' or 'account' or 'diagnosis']: The event type,
-                # createdAt (string): The event date
-                # }
-                _LOGGER.debug(str(item))
-                break
+                self.history = items
+                self.history_time = time.time()
+                for item in items :
+                    # SiteEvent {
+                    # logId (integer): The event identifier,
+                    # label (string): The event label,
+                    # type (string) = ['scenario' or 'homeAuto' or 'security' or 'config' or 'alarm' or 'access' or 'account' or 'diagnosis']: The event type,
+                    # createdAt (string): The event date
+                    # }
+                    _LOGGER.debug(str(item))
+                    break
+            else :
+                _LOGGER.debug("MyFoxApiClient.getHistory -> Cache ")
 
-            return items
+            return self.history
 
         except MyFoxException as exception:
             raise exception

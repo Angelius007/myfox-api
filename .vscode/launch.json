@@ -10,8 +10,11 @@
       "request": "launch",
       "program": "${file}",
       "console": "integratedTerminal",
-      "args": ["${command:pickArgs}"],
-      "justMyCode" : false
+      //"args": ["${command:pickArgs}"],
+      "env": {
+
+      },
+      "cwd": "${workspaceFolder}/custom_components/myfox"
     },
     {
       "name": "Python Debugger: Current File",
@@ -19,7 +22,22 @@
       "request": "launch",
       "program": "${file}",
       "console": "integratedTerminal",
-      "justMyCode" : false
-    }
+      "justMyCode" : false,
+      "cwd": "${workspaceFolder}/custom_components/myfox"
+    },
+    {
+        "name": "Gen Docs",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "gen.py",
+        "env": {
+            "PYTHONPATH": "${workspaceFolder}/;$PYTHONPATH"
+        },
+        "cwd": "${workspaceFolder}/docs",
+        "justMyCode": false,
+        "args": [
+            "--debug",
+        ]
+    },
   ]
 }

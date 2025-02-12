@@ -14,13 +14,14 @@ class BaseSelectEntity(SelectEntity, BaseWithValueEntity):
     pass
 
 class DictStateBaseSelectEntity(BaseSelectEntity):
+
     def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str, options: dict[str, int]=None):
         super().__init__(coordinator, device, title, key)
         if options :
             self._options_dict = options
         if self._options_dict :
             self._attr_options = list(self._options_dict.keys())
-        self._attr_current_option = self.current_option
+        #self._attr_current_option = self.current_option
 
     def setOptions(self, options: dict[str, int]) :
         self._options_dict = options
@@ -54,13 +55,14 @@ class DictStateBaseSelectEntity(BaseSelectEntity):
         await coordinator.selectOption(self.idx, str(self.getOptionValue(option)))
 
 class DictStateStrBaseSelectEntity(BaseSelectEntity):
+
     def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str, options: dict[str, str]=None):
         super().__init__(coordinator, device, title, key)
         if options :
             self._options_dict = options
         if self._options_dict :
             self._attr_options = list(self._options_dict.keys())
-        self._attr_current_option = self.current_option
+        #self._attr_current_option = self.current_option
 
     def setOptions(self, options: dict[str, str]) :
         self._options_dict = options

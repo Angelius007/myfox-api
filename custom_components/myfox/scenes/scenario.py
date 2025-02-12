@@ -26,8 +26,12 @@ class MyFoxScenarioDevice(BaseScene) :
         if self.scene_info.typeLabel == "scheduled" or self.scene_info.typeLabel == "onEvent" or self.scene_info.typeLabel == "simulation" :
             _LOGGER.debug("Ajout ActivabledSceneEntity sur scene %s", str(self.scene_info.scenarioId))
             return [ActivabledSceneEntity(coordinator, self, f"Scenario {self.scene_info.label}", "enabled")]
+        else:
+            return []
     
     def scenes(self, coordinator) -> list[Scene]:
         if self.scene_info.typeLabel == "onDemand" :
             _LOGGER.debug("Ajout OnDemandSceneEntity sur scene %s", str(self.scene_info.scenarioId))
             return [OnDemandSceneEntity(coordinator, self, f"Scenario {self.scene_info.label}", self.scene_info.typeLabel)]    
+        else:
+            return []

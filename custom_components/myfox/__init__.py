@@ -69,7 +69,6 @@ _LOGGER = logging.getLogger(__name__)
 MYFOX_KEY: HassEntryKey["MyFoxCoordinator"] = HassEntryKey(DOMAIN_MYFOX)
 
 _PLATFORMS = {
-    Platform.NUMBER,
     Platform.SELECT,
     Platform.SENSOR,
     Platform.SWITCH,

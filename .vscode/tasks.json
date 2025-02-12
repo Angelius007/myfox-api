@@ -2,6 +2,20 @@
     "version": "2.0.0",
     "tasks": [
         {
+          "label": "Generate Docs",
+          "type": "shell",
+          "options": {
+            "env": {
+              "PYTHONPATH": "${workspaceFolder}/;$PYTHONPATH"
+            },
+            "cwd": "${workspaceFolder}/docs"
+          },
+          "command": "python gen.py",
+          "problemMatcher": [
+            "$python"
+          ]
+        },
+        {
             "label": "Preview",
             "type": "shell",
             "command": "hass -c ./config",
