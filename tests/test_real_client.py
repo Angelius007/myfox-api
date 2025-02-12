@@ -25,8 +25,6 @@ from custom_components.myfox.api.myfoxapi_group_electric import (MyFoxApiGroupEl
 from custom_components.myfox.api.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
 from custom_components.myfox.api.myfoxapi_heater import (MyFoxApiHeaterClient)
 from custom_components.myfox.api.myfoxapi_thermo import (MyFoxApThermoClient)
-from custom_components.myfox.crypto.secure import encode, decode
-from custom_components.myfox.api.const import KEY_AUTHORIZED_CODE_ALARM
 
 from custom_components.myfox.devices.site import (MyFoxSite)
 
@@ -284,37 +282,6 @@ class TestClients :
         for temp in results:
             _LOGGER.info("temp:"+str(temp))
 
-#'logId' =
-#889915829
-#'label' =
-#'Désactivation de la protection depuis internet'
-#'type' =
-#'security'
-#'createdAt' =
-#'2025-02-09T20:30:59Z'
-    def testEncryptDecrypt(loop : AbstractEventLoop):
-        password = "1326"
-        message = "1111 2222 3333"
-        list_str: dict[str, Any] = {}
-        list_str[KEY_AUTHORIZED_CODE_ALARM] = message
-        encode_str: dict[str, Any] = {}
-        _LOGGER.info("map:\t\t\t"+str(list_str))
-        encode_str[KEY_AUTHORIZED_CODE_ALARM] = encode(list_str.get(KEY_AUTHORIZED_CODE_ALARM), password)
-        list_str.update(encode_str)
-        _LOGGER.info("map:\t\t\t"+str(list_str))
-
-        _LOGGER.info("message:\t\t\t"+str(message))
-        #encrypt
-        results = encode(message, password)
-        _LOGGER.info("results chiffré:\t\t"+str(results))
-        #decryt
-        results = decode(results, password)
-        _LOGGER.info("results chiffré/déchiffré:\t"+str(results))
-
-        assert encode(message, password) != message
-        assert decode(encode(message, password), password) == message
-
-    
     def testSetUpdate() :
         params = dict[str, Any]()
         listening_idx = set()
