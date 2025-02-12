@@ -81,11 +81,11 @@ class MyFoxApiClient:
     def configure_scene(self, scenarioId: int, label: str, typeLabel: str, enabled: str):
         """ Configuration device """
         info = self.__create_scene_info(scenarioId, label, typeLabel, enabled)
-        from ..scenes.registry import scene_by_client_key
+        from ..scenes.registry import scene_by_typeLabel_key
         scene = None
         # Type indique dans l'implementation de l'api
-        if self.client_key in scene_by_client_key:
-            scene = scene_by_client_key[str(self.client_key)](info)
+        if info.typeLabel in scene_by_typeLabel_key:
+            scene = scene_by_typeLabel_key[str(info.typeLabel)](info)
         # Sinon, on positionne en Diagnostic
         else:
             scene = DiagnosticScene(info)

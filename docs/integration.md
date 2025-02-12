@@ -18,5 +18,8 @@ Liste des devices :
 - [MyFoxHeaterWithStateDevice](devices/MyFoxHeaterWithStateDevice.md)
 
 Liste des scenes : 
-- [MyFoxScenarioDevice](scenes/MyFoxScenarioDevice.md)
+- [MyFoxScheduledScenarioScene](scenes/MyFoxScheduledScenarioScene.md)
+- [MyFoxOnEventScenarioScene](scenes/MyFoxOnEventScenarioScene.md)
+- [MyFoxSimulationScenarioScene](scenes/MyFoxSimulationScenarioScene.md)
+- [MyFoxOnDemandScenarioScene](scenes/MyFoxOnDemandScenarioScene.md)
 

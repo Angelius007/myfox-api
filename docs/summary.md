@@ -134,27 +134,31 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> MyFoxScenarioDevice (API) <i>(scenes: 1, switches: 3)</i> </summary><p>
-
-### scheduled
+<details><summary> MyFoxScheduledScenarioScene (API) <i>(scenes: 0, switches: 1)</i> </summary><p>
 
 *Switches*
 - MyFox-Scenario LABEL-1|enabled (ActivabledSceneEntity)
 
-### onEvent
+</p></details>
+
+<details><summary> MyFoxOnEventScenarioScene (API) <i>(scenes: 0, switches: 1)</i> </summary><p>
 
 *Switches*
-- MyFox-Scenario LABEL-2|enabled (ActivabledSceneEntity)
+- MyFox-Scenario LABEL-1|enabled (ActivabledSceneEntity)
 
-### simulation
+</p></details>
+
+<details><summary> MyFoxSimulationScenarioScene (API) <i>(scenes: 0, switches: 1)</i> </summary><p>
 
 *Switches*
-- MyFox-Scenario LABEL-3|enabled (ActivabledSceneEntity)
+- MyFox-Scenario LABEL-1|enabled (ActivabledSceneEntity)
 
-### onDemand
+</p></details>
+
+<details><summary> MyFoxOnDemandScenarioScene (API) <i>(scenes: 1, switches: 0)</i> </summary><p>
 
 *Scenes*
-- MyFox-Scenario LABEL-4|onDemand (OnDemandSceneEntity)
+- MyFox-Scenario LABEL-1|onDemand (OnDemandSceneEntity)
 
 </p></details>
 

@@ -9,7 +9,7 @@ from custom_components.myfox.devices.registry import (
     device_by_client_key
 )
 from custom_components.myfox.scenes.registry import (
-    scene_by_client_key
+    scene_by_typeLabel_key
 )
 
 from custom_components.myfox.entities.entity import (
@@ -35,11 +35,8 @@ scene_info = MyFoxSceneInfo(
 def get_device_data(deviceType: str) -> List[MyFoxDeviceInfo]:
     return [MyFoxDeviceInfo(1, "LABEL", 1, "MODEL_LABEL")]
 
-def get_scene_data(deviceType: str) -> List[MyFoxDeviceInfo]:
-    return [MyFoxSceneInfo(1, "LABEL", "scheduled", "ENABLED"),
-            MyFoxSceneInfo(2, "LABEL", "onEvent", "ENABLED"),
-            MyFoxSceneInfo(3, "LABEL", "simulation", "ENABLED"),
-            MyFoxSceneInfo(4, "LABEL", "onDemand", "ENABLED")]
+def get_scene_data(typeLabel: str) -> List[MyFoxDeviceInfo]:
+    return [MyFoxSceneInfo(1, "LABEL", typeLabel, "ENABLED")]
 
 def get_devices(deviceType: str, dev: type[BaseDevice]) -> List[BaseDevice]:
     real_devices = []
@@ -48,9 +45,9 @@ def get_devices(deviceType: str, dev: type[BaseDevice]) -> List[BaseDevice]:
         real_devices.append(device)
     return real_devices
 
-def get_scenes(deviceType: str, dev: type[BaseScene]) -> List[BaseScene]:
+def get_scenes(typeLabel: str, dev: type[BaseScene]) -> List[BaseScene]:
     real_devices = []
-    for device_info in get_scene_data(deviceType):
+    for device_info in get_scene_data(typeLabel):
         device = dev(device_info)
         real_devices.append(device)
     return real_devices
@@ -192,7 +189,7 @@ def render_brief_summary():
             content_summary+="</p></details>\n"
             content_summary+="\n"
 
-    for dt, dev in scene_by_client_key.items():
+    for dt, dev in scene_by_typeLabel_key.items():
         if dt != "generic":
             content = ""
             real_scenes = get_scenes(dt, dev)
@@ -230,7 +227,7 @@ def update_full_summary():
             content_integration+="- [%s](devices/%s.md)\n" % (dev.__name__, dev.__name__)
     content_integration+="\n"
     content_integration+="Liste des scenes : \n"
-    for dt, dev in scene_by_client_key.items():
+    for dt, dev in scene_by_typeLabel_key.items():
         if dt != "generic":
             content = ""
             real_scenes = get_scenes(dt, dev)
