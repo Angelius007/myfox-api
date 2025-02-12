@@ -221,12 +221,13 @@ def update_full_summary():
             real_devices = get_devices(dt, dev)
             for device in real_devices:
                 if len(real_devices) > 1:
-                    content = content + f"\n### {device.device_info.modelLabel}\n"
-                content = content + render_device_summary(device)
+                    content+= f"\n### {device.device_info.modelLabel}\n"
+                content+= render_device_summary(device)
             with open("devices/%s.md" % dt, "w+") as f:
                 f.write("## %s\n" % dt)
                 f.write(content)
                 f.write("\n\n")
+                f.write("[Retour liste des integrations](../../integration.md)\n")
 
             #print("- [%s](devices/%s.md)" % (dt, dt))
             content_integration+="- [%s](devices/%s.md)\n" % (dt, dt)
@@ -244,6 +245,7 @@ def update_full_summary():
                 f.write("## %s\n" % dt)
                 f.write(content)
                 f.write("\n\n")
+                f.write("[Retour liste des integrations](../../integration.md)\n")
 
             #print("- [%s](scenes/%s.md)" % (dt, dt))
             content_integration+="- [%s](scenes/%s.md)\n" % (dt, dt)

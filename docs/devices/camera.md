@@ -12,3 +12,4 @@
 - MyFox-LABEL-1|camera
 
 
+[Retour liste des integrations](../../integration.md)
