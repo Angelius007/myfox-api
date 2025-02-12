@@ -5,4 +5,4 @@
 - MyFox-Off LABEL-1|off
 
 
-[Retour liste des integrations](../../integration.md)
+[Retour liste des integrations](../integration.md)

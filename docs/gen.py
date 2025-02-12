@@ -227,7 +227,7 @@ def update_full_summary():
                 f.write("## %s\n" % dt)
                 f.write(content)
                 f.write("\n\n")
-                f.write("[Retour liste des integrations](../../integration.md)\n")
+                f.write("[Retour liste des integrations](../integration.md)\n")
 
             #print("- [%s](devices/%s.md)" % (dt, dt))
             content_integration+="- [%s](devices/%s.md)\n" % (dt, dt)
@@ -245,7 +245,7 @@ def update_full_summary():
                 f.write("## %s\n" % dt)
                 f.write(content)
                 f.write("\n\n")
-                f.write("[Retour liste des integrations](../../integration.md)\n")
+                f.write("[Retour liste des integrations](../integration.md)\n")
 
             #print("- [%s](scenes/%s.md)" % (dt, dt))
             content_integration+="- [%s](scenes/%s.md)\n" % (dt, dt)

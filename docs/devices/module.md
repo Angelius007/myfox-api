@@ -5,4 +5,4 @@
 - MyFox-Two - LABEL-1|performeTwo
 
 
-[Retour liste des integrations](../../integration.md)
+[Retour liste des integrations](../integration.md)

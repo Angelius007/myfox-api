@@ -5,4 +5,4 @@
 - MyFox-Fermeture LABEL-1|close
 
 
-[Retour liste des integrations](../../integration.md)
+[Retour liste des integrations](../integration.md)
