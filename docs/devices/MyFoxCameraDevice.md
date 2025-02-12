@@ -1,4 +1,4 @@
-## camera
+## MyFoxCameraDevice
 
 *Buttons*
 - MyFox-LABEL Snapshot-1|snapshot (CameraButtonEntity)

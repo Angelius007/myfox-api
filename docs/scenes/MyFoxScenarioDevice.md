@@ -1,4 +1,4 @@
-## scenario
+## MyFoxScenarioDevice
 
 ### scheduled
 

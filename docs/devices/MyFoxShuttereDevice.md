@@ -1,4 +1,4 @@
-## shutter
+## MyFoxShuttereDevice
 
 *Buttons*
 - MyFox-Ouverture LABEL-1|open (ShutterButtonEntity)

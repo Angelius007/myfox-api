@@ -186,7 +186,7 @@ def render_brief_summary():
                 if len(real_devices) > 1:
                     content = content + f"\n### {device.device_info.modelLabel}\n"
                 content = content + render_device_summary(device, True)
-            content_summary+="<details><summary> %s <i>(%s)</i> </summary>\n" % (dt, device_summary(real_devices))
+            content_summary+="<details><summary> %s <i>(%s)</i> </summary>\n" % (dev.__name__, device_summary(real_devices))
             content_summary+="<p>\n"
             content_summary+="%s\n" % content
             content_summary+="</p></details>\n"
@@ -200,7 +200,7 @@ def render_brief_summary():
                 if len(real_scenes) > 1:
                     content = content + f"\n### {scene.scene_info.typeLabel}\n"
                 content = content + render_scene_summary(scene, True)
-            content_summary+="<details><summary> %s (API) <i>(%s)</i> </summary>" % (dt, scene_summary(real_scenes))
+            content_summary+="<details><summary> %s (API) <i>(%s)</i> </summary>" % (dev.__name__, scene_summary(real_scenes))
             content_summary+="<p>\n"
             content_summary+="%s\n" % content
             content_summary+="</p></details>\n"
@@ -221,14 +221,13 @@ def update_full_summary():
                 if len(real_devices) > 1:
                     content+= f"\n### {device.device_info.modelLabel}\n"
                 content+= render_device_summary(device)
-            with open("devices/%s.md" % dt, "w+") as f:
-                f.write("## %s\n" % dt)
+            with open("devices/%s.md" % dev.__name__, "w+") as f:
+                f.write("## %s\n" % dev.__name__)
                 f.write(content)
                 f.write("\n\n")
                 f.write("[Retour liste des integrations](../integration.md)\n")
 
-            #print("- [%s](devices/%s.md)" % (dt, dt))
-            content_integration+="- [%s](devices/%s.md)\n" % (dt, dt)
+            content_integration+="- [%s](devices/%s.md)\n" % (dev.__name__, dev.__name__)
     content_integration+="\n"
     content_integration+="Liste des scenes : \n"
     for dt, dev in scene_by_client_key.items():
@@ -239,14 +238,14 @@ def update_full_summary():
                 if len(real_scenes) > 1:
                     content = content + f"\n### {scene.scene_info.typeLabel}\n"
                 content = content + render_scene_summary(scene)
-            with open("scenes/%s.md" % dt, "w+") as f:
-                f.write("## %s\n" % dt)
+            with open("scenes/%s.md" % dev.__name__, "w+") as f:
+                f.write("## %s\n" % dev.__name__)
                 f.write(content)
                 f.write("\n\n")
                 f.write("[Retour liste des integrations](../integration.md)\n")
 
             #print("- [%s](scenes/%s.md)" % (dt, dt))
-            content_integration+="- [%s](scenes/%s.md)\n" % (dt, dt)
+            content_integration+="- [%s](scenes/%s.md)\n" % (dev.__name__, dev.__name__)
     print(content_integration)
     with open("integration.md" , "w+") as f_integration:
         f_integration.write(content_integration)
