@@ -44,8 +44,6 @@ class TestCrypto :
         _LOGGER.info("results chiffré/déchiffré:\t"+str(results))
         # decode with bas64?
         _LOGGER.info("results intermediaire:\t"+decode_base64(input))
-        _LOGGER.info("results intermediaire (2):\t"+decode_base64(decode_base64(input)))
-        _LOGGER.info("results intermediaire (3):\t"+decode_base64(decode_base64(decode_base64(input))))
 
         assert encode(message, password) != message
         assert decode(encode(message, password), password) == message
@@ -59,7 +57,6 @@ if __name__ == "__main__" :
     try :
         """ """
         TestCrypto.testEncryptDecrypt(loop)
-        
 
     finally :
         _LOGGER.info("**** Fin ****")

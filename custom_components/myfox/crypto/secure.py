@@ -9,13 +9,16 @@ def encode(string:str, password:str):
     """
     encode code
     """
-    return encode_base64(encode_base64(encode_base64(password) + CODE_SEPARATOR) + encode_base64(string))
+    return encode_base64(seed_(password) + encode_base64(string))
 
 def decode(string:str, password:str):
     """
     decode code
     """
-    return decode_base64(decode_base64(string).replace(encode_base64(encode_base64(password) + CODE_SEPARATOR), "", 1))
+    return decode_base64(decode_base64(string).replace(seed_(password), "", 1))
+
+def seed_(string:str):
+    return encode_base64(encode_base64(string) + CODE_SEPARATOR).replace("==","")
 
 def encode_base64(string:str):
     """
