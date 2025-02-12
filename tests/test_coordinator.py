@@ -7,28 +7,28 @@ import json
 
 from asyncio import AbstractEventLoop
 
-from myfox.api import (MyFoxEntryDataApi, MyFoxOptionsDataApi)
-from myfox.api.myfoxapi import (MyFoxPolicy, MyFoxApiClient)
-from myfox.api.myfoxapi_camera import (MyFoxApiCameraClient)
-from myfox.api.myfoxapi_light import (MyFoxApiLightClient)
-from myfox.api.myfoxapi_security import (MyFoxApiSecurityClient)
-from myfox.api.myfoxapi_scenario import (MyFoxApiSecenarioClient)
-from myfox.api.myfoxapi_state import (MyFoxApiStateClient)
-from myfox.api.myfoxapi_state_alerte import (MyFoxApiAlerteStateClient)
-from myfox.api.myfoxapi_temperature import (MyFoxApiTemperatureClient)
-from myfox.api.myfoxapi_gate import (MyFoxApiGateClient)
-from myfox.api.myfoxapi_module import (MyFoxApiModuleClient)
-from myfox.api.myfoxapi_shutter import (MyFoxApiShutterClient)
-from myfox.api.myfoxapi_socket import (MyFoxApiSocketClient)
-from myfox.api.myfoxapi_library import (MyFoxApiLibraryClient)
-from myfox.api.myfoxapi_group_electric import (MyFoxApiGroupElectricClient)
-from myfox.api.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
-from myfox.api.myfoxapi_heater import (MyFoxApiHeaterClient)
-from myfox.api.myfoxapi_thermo import (MyFoxApThermoClient)
-from myfox.crypto.secure import encode, decode
-from myfox.api.const import KEY_AUTHORIZED_CODE_ALARM
+from custom_components.myfox.api import (MyFoxEntryDataApi, MyFoxOptionsDataApi)
+from custom_components.myfox.api.myfoxapi import (MyFoxPolicy, MyFoxApiClient)
+from custom_components.myfox.api.myfoxapi_camera import (MyFoxApiCameraClient)
+from custom_components.myfox.api.myfoxapi_light import (MyFoxApiLightClient)
+from custom_components.myfox.api.myfoxapi_security import (MyFoxApiSecurityClient)
+from custom_components.myfox.api.myfoxapi_scenario import (MyFoxApiSecenarioClient)
+from custom_components.myfox.api.myfoxapi_state import (MyFoxApiStateClient)
+from custom_components.myfox.api.myfoxapi_state_alerte import (MyFoxApiAlerteStateClient)
+from custom_components.myfox.api.myfoxapi_temperature import (MyFoxApiTemperatureClient)
+from custom_components.myfox.api.myfoxapi_gate import (MyFoxApiGateClient)
+from custom_components.myfox.api.myfoxapi_module import (MyFoxApiModuleClient)
+from custom_components.myfox.api.myfoxapi_shutter import (MyFoxApiShutterClient)
+from custom_components.myfox.api.myfoxapi_socket import (MyFoxApiSocketClient)
+from custom_components.myfox.api.myfoxapi_library import (MyFoxApiLibraryClient)
+from custom_components.myfox.api.myfoxapi_group_electric import (MyFoxApiGroupElectricClient)
+from custom_components.myfox.api.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
+from custom_components.myfox.api.myfoxapi_heater import (MyFoxApiHeaterClient)
+from custom_components.myfox.api.myfoxapi_thermo import (MyFoxApThermoClient)
+from custom_components.myfox.crypto.secure import encode, decode
+from custom_components.myfox.api.const import KEY_AUTHORIZED_CODE_ALARM
 
-from myfox.devices.site import (MyFoxSite)
+from custom_components.myfox.devices.site import (MyFoxSite)
 
 
 logging.config.fileConfig('logging.conf', None, True)
