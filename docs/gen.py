@@ -100,8 +100,6 @@ def device_summary(base_devices: List[BaseDevice]) -> str:
         if total_alarms > 0:
              total_info=add_stats_(total_info, f"alarms: {total_alarms}")
     return total_info
-    #f"sensors: {total_sensors}, switches: {total_switches}, selects: {total_selects}, buttons: {total_buttons}, texts: {total_texts}, cameras: {total_cameras}, medias: {total_medias}, alarms: {total_alarms}"
-    #f"switches: {}, selects: {total_selects}, buttons: {total_buttons}, texts: {total_texts}, cameras: {total_cameras}, medias: {total_medias}, alarms: {total_alarms}"
 
 def scene_summary(base_scenes: List[BaseScene]) -> str:
     total_scenes = 0
