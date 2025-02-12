@@ -248,7 +248,7 @@ def update_full_summary():
             #print("- [%s](scenes/%s.md)" % (dt, dt))
             content_integration+="- [%s](scenes/%s.md)\n" % (dt, dt)
     print(content_integration)
-    with open("ntegration.md" , "w+") as f_integration:
+    with open("integration.md" , "w+") as f_integration:
         f_integration.write(content_integration)
         f_integration.write("\n")
 
