@@ -197,7 +197,7 @@ def render_brief_summary():
                 if len(real_scenes) > 1:
                     content = content + f"\n### {scene.scene_info.typeLabel}\n"
                 content = content + render_scene_summary(scene, True)
-            content_summary+="<details><summary> %s (API) <i>(%s)</i> </summary>" % (dev.__name__, scene_summary(real_scenes))
+            content_summary+="<details><summary> %s <i>(%s)</i> </summary>" % (dev.__name__, scene_summary(real_scenes))
             content_summary+="<p>\n"
             content_summary+="%s\n" % content
             content_summary+="</p></details>\n"
