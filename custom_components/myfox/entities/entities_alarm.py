@@ -29,21 +29,24 @@ class MyFoxAlarmEntity(AlarmControlPanelEntity, BaseWithValueEntity) :
         # 2 : partial
         # 4 : armed
         value = self.coordinator.data[self.idx]
-        if int(value) == 1:
-            self._attr_alarm_state = AlarmControlPanelState.DISARMED
-        elif int(value) == 10:
-            self._attr_alarm_state = AlarmControlPanelState.DISARMING
-        elif int(value) == 2:
-            self._attr_alarm_state = AlarmControlPanelState.ARMED_HOME
-        elif int(value) == 20:
-            self._attr_alarm_state = AlarmControlPanelState.ARMING
-        elif int(value) == 4:
-            self._attr_alarm_state = AlarmControlPanelState.ARMED_AWAY
-        elif int(value) == 40:
-            self._attr_alarm_state = AlarmControlPanelState.ARMING
-        else:
-            self._attr_alarm_state = AlarmControlPanelState.PENDING
-        
+        if type(value) is int :
+            if int(value) == 1:
+                self._attr_alarm_state = AlarmControlPanelState.DISARMED
+            elif int(value) == 10:
+                self._attr_alarm_state = AlarmControlPanelState.DISARMING
+            elif int(value) == 2:
+                self._attr_alarm_state = AlarmControlPanelState.ARMED_HOME
+            elif int(value) == 20:
+                self._attr_alarm_state = AlarmControlPanelState.ARMING
+            elif int(value) == 4:
+                self._attr_alarm_state = AlarmControlPanelState.ARMED_AWAY
+            elif int(value) == 40:
+                self._attr_alarm_state = AlarmControlPanelState.ARMING
+            else:
+                self._attr_alarm_state = AlarmControlPanelState.PENDING
+        elif type(value) is str :
+            self._attr_changed_by = value
+
         return True
 
 
