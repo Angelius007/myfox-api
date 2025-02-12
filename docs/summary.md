@@ -1,6 +1,6 @@
 Liste des integrations :
 
-<details><summary> alerte_state_sensor <i>(sensors: 1, )</i> </summary>
+<details><summary> alerte_state_sensor <i>(sensors: 1)</i> </summary>
 <p>
 
 *Sensors*
@@ -8,7 +8,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> camera <i>(buttons: 6, cameras: 1, )</i> </summary>
+<details><summary> camera <i>(buttons: 6, cameras: 1)</i> </summary>
 <p>
 
 *Buttons*
@@ -24,7 +24,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> gate <i>(buttons: 2, )</i> </summary>
+<details><summary> gate <i>(buttons: 2)</i> </summary>
 <p>
 
 *Buttons*
@@ -33,7 +33,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> group_electric <i>(buttons: 2, )</i> </summary>
+<details><summary> group_electric <i>(buttons: 2)</i> </summary>
 <p>
 
 *Buttons*
@@ -42,7 +42,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> group_shutter <i>(buttons: 2, )</i> </summary>
+<details><summary> group_shutter <i>(buttons: 2)</i> </summary>
 <p>
 
 *Buttons*
@@ -51,7 +51,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> heater <i>(selects: 1, )</i> </summary>
+<details><summary> heater <i>(selects: 1)</i> </summary>
 <p>
 
 *Selects*
@@ -64,7 +64,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> light <i>(sensors: 1, )</i> </summary>
+<details><summary> light <i>(sensors: 1)</i> </summary>
 <p>
 
 *Sensors*
@@ -72,7 +72,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> module <i>(buttons: 2, )</i> </summary>
+<details><summary> module <i>(buttons: 2)</i> </summary>
 <p>
 
 *Buttons*
@@ -89,7 +89,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> shutter <i>(buttons: 2, )</i> </summary>
+<details><summary> shutter <i>(buttons: 2)</i> </summary>
 <p>
 
 *Buttons*
@@ -98,7 +98,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> socket <i>(buttons: 2, )</i> </summary>
+<details><summary> socket <i>(buttons: 2)</i> </summary>
 <p>
 
 *Buttons*
@@ -107,7 +107,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> state <i>(sensors: 1, )</i> </summary>
+<details><summary> state <i>(sensors: 1)</i> </summary>
 <p>
 
 *Sensors*
@@ -115,7 +115,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> temperature <i>(sensors: 1, )</i> </summary>
+<details><summary> temperature <i>(sensors: 1)</i> </summary>
 <p>
 
 *Sensors*
@@ -123,7 +123,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> thermo <i>(sensors: 1, selects: 1, )</i> </summary>
+<details><summary> thermo <i>(sensors: 1, selects: 1)</i> </summary>
 <p>
 
 *Sensors*

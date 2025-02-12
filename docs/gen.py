@@ -55,6 +55,13 @@ def get_scenes(deviceType: str, dev: type[BaseScene]) -> List[BaseScene]:
         real_devices.append(device)
     return real_devices
 
+def add_stats_(info_global:str, new_info:str) -> str: 
+    """ update info avec , si besoin """
+    if len(info_global) > 0:
+        info_global+=", "
+    info_global+=new_info
+    return info_global 
+
 def device_summary(base_devices: List[BaseDevice]) -> str:
     total_sensors = 0
     total_switches = 0
@@ -70,28 +77,28 @@ def device_summary(base_devices: List[BaseDevice]) -> str:
         coordinator.data = []
         total_sensors += len(device.sensors(coordinator))
         if total_sensors > 0:
-            total_info+=f"sensors: {total_sensors}, "
+            total_info=add_stats_(total_info, f"sensors: {total_sensors}")
         total_switches += len(device.switches(coordinator))
         if total_switches > 0:
-            total_info+=f"switches: {total_switches}, "
+             total_info=add_stats_(total_info, f"switches: {total_switches}")
         total_selects += len(device.selects(coordinator))
         if total_selects > 0:
-            total_info+=f"selects: {total_selects}, "
+             total_info=add_stats_(total_info, f"selects: {total_selects}")
         total_buttons += len(device.buttons(coordinator))
         if total_buttons > 0:
-            total_info+=f"buttons: {total_buttons}, "
+             total_info=add_stats_(total_info, f"buttons: {total_buttons}")
         total_texts += len(device.texts(coordinator))
         if total_texts > 0:
-            total_info+=f"texts: {total_texts}, "
+             total_info=add_stats_(total_info, f"texts: {total_texts}")
         total_cameras += len(device.cameras(coordinator))
         if total_cameras > 0:
-            total_info+=f"cameras: {total_cameras}, "
+             total_info=add_stats_(total_info, f"cameras: {total_cameras}")
         total_medias += len(device.medias(coordinator))
         if total_medias > 0:
-            total_info+=f"medias: {total_medias}, "
+             total_info=add_stats_(total_info, f"medias: {total_medias}")
         total_alarms += len(device.alarms(coordinator))
         if total_alarms > 0:
-            total_info+=f"alarms: {total_alarms}"
+             total_info=add_stats_(total_info, f"alarms: {total_alarms}")
     return total_info
     #f"sensors: {total_sensors}, switches: {total_switches}, selects: {total_selects}, buttons: {total_buttons}, texts: {total_texts}, cameras: {total_cameras}, medias: {total_medias}, alarms: {total_alarms}"
     #f"switches: {}, selects: {total_selects}, buttons: {total_buttons}, texts: {total_texts}, cameras: {total_cameras}, medias: {total_medias}, alarms: {total_alarms}"
