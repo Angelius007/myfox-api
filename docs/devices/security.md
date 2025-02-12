@@ -1,7 +1,7 @@
 ## security
 
 *Alarms*
-- MyFox-Security-1|status
+- MyFox-Security-1|status (MyFoxAlarmEntity)
 
 
 [Retour liste des integrations](../integration.md)

@@ -114,7 +114,7 @@ def scene_summary(base_scenes: List[BaseScene]) -> str:
     return f"scenes: {total_scenes}, switches: {total_switches}"
 
 def render_generic(sw: MyFoxAbstractDeviceEntity) -> str:
-    return "- %s" % sw._attr_unique_id
+    return "- %s (%s)" % (sw._attr_unique_id, sw.__class__.__name__)
 
 def render_device_summary(device: BaseDevice, brief: bool = False) -> str:
     coordinator = Mock()
