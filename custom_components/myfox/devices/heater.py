@@ -7,7 +7,7 @@ from homeassistant.components.sensor import SensorEntity
 
 from ..devices import BaseDevice, MyFoxDeviceInfo
 from ..entities.entities_select import HeaterSelectEntity
-from ..entities.entities_sensor import TempSensorEntity
+from ..entities.entities_sensor import TempSensorNotEnabledByDefautEntity
 _LOGGER = logging.getLogger(__name__)
 
 #Heater {
@@ -40,7 +40,7 @@ class MyFoxHeaterWithStateDevice(BaseDevice) :
         super().__init__(device_info)
 
     def sensors(self, coordinator) -> list[SensorEntity]:
-        return [TempSensorEntity(coordinator, self, f"Temperature {self.device_info.label}", "lastTemperature")]
+        return [TempSensorNotEnabledByDefautEntity(coordinator, self, f"Temperature {self.device_info.label}", "lastTemperature")]
 
     def selects(self, coordinator) -> list[SelectEntity]:
         _LOGGER.debug("Ajout HeaterSelectEntity sur device %s", str(self.device_info.deviceId))

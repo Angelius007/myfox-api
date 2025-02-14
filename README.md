@@ -39,6 +39,10 @@ Une fois installé, ajouter via les intégrations -> MyFox.
 
 Ou bien cliquez sur le lien [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=myfox)
 
+Le déclenchement de l'installation ou la demande d'ajout d'une nouvelle entrée débranchera vers la page d'autorisation d'ouverture de l'API [API MyFox](https://api.myfox.me/). Les appareils et entités seront ensuite automatiquement récupérés et disponibles dans HomeAssistant.
+
+Les différents types d'appareils disponibles : [Integrations MyFox](docs/integration.md)
+
 ## Endpoints implémentés / non implémentés :
 <details><summary> Recherche des sites <i>(1 service sur 1, 1 entry)</i> </summary>
 <p>
@@ -267,6 +271,13 @@ Ou bien cliquez sur le lien [![Open your Home Assistant instance and start setti
 
 </p></details>
 
+## Data updates
+
+L'intégration charge toutes les données disponibles lors de l'installation.
+Ensuite, une mise à jour sera déclenchée par défaut toutes les 2 minutes. 
+Pour limiter le nombre d'appels aux API MyFox, certaines données sont stockées en cache local (la fréquence de mise à jour peut donc être réduite).
+Cette fréquence de "pooling" et de "cache" est personnalisable dans la configuration de l'intégration. 
+
 ## Configurations :
 
 <details><summary>Fréquence de pooling (en minutes) / Pooling frequency (in minutes) </summary>
@@ -310,6 +321,28 @@ Après installation :
 - ajouter dans le configuration.yaml la ligne : 
         homeassistant: 
            customize_glob : !include custom_components/myfox/customize.yaml
+
+
+## Désinstallation
+
+### Suppression de l'intégration
+
+Cette intégration suit les standards de suppression des intégrations.
+La suppression se fait donc via le paramétrage des intégrations, puis Supprimer
+
+### Suppression des tokens
+
+Depuis l'écran des intégrations, rendez vous sur sur les "..." en haut à droite, puis "Informations d'identification de l'applications".
+S'il reste une clef commençant par "MyFox", vous pouvez la supprimer
+
+### Suppression des autorisations sur l'api myfox
+
+Si vous ne voulez plus exposer votre alarme MyFox aux API, vous pouvez supprimer les accès sur la page [https://api.myfox.me/dev/apps](https://api.myfox.me/dev/apps)
+
+## Limitations connues
+
+Cette intégration ne reçoit pas d'événement actif de l'alarme (tel qu'un événement de déclenchement d'alarme par exemple).
+Les données sont uniquement récupérées via les API MyFox dont le nombre est limité par rapport à ce que peut fournir l'application officielle MyFox.
 
 ## Pour les développeurs
 

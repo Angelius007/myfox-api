@@ -76,6 +76,10 @@ class TempSensorEntity(BaseSensorEntity):
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_native_value = -1
 
+        
+class TempSensorNotEnabledByDefautEntity(TempSensorEntity):
+    _attr_entity_registry_enabled_default = False
+
 
 class LightSensorEntity(DictStateBaseSensorEntity):
     _attr_device_class = SensorDeviceClass.ENUM

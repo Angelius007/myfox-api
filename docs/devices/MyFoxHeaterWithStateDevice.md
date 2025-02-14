@@ -1,7 +1,7 @@
 ## MyFoxHeaterWithStateDevice
 
 *Sensors*
-- MyFox-Temperature LABEL-1|lastTemperature (TempSensorEntity)
+- MyFox-Temperature LABEL-1|lastTemperature (TempSensorNotEnabledByDefautEntity)
 
 *Selects*
 - MyFox-Consigne-Thermo LABEL-1|stateLabel (HeaterSelectEntity)
