@@ -16,7 +16,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
         self.client_key = "camera"
-        self.nb_retry = 3
+        self.nb_retry = 2
         self.camera = list()
         self.camera_time = 0
         self.lastPreview:bytes = None
