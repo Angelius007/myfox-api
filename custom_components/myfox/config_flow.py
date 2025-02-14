@@ -61,9 +61,10 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
+        """ Manage the options. """
         if self.config_entry.entry_id is not None:
             self.siteId = self.config_entry.unique_id.replace(PREFIX_ENTRY, "", 1)
-        """ Manage the options. """
+        options = self.config_entry.options
         if user_input is not None:
             if KEY_USE_CODE_ALARM not in user_input or not user_input.get(KEY_USE_CODE_ALARM):
                 update_infos: dict[str, Any] = {}
@@ -81,24 +82,24 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
             return self.async_create_entry(title="", data=user_input)
 
         cache_expire_in_param = CACHE_EXPIRE_IN
-        if KEY_CACHE_EXPIRE_IN in self.config_entry.options:
-            cache_expire_in_param = int(self.config_entry.options.get(KEY_CACHE_EXPIRE_IN))
+        if KEY_CACHE_EXPIRE_IN in options:
+            cache_expire_in_param = int(options.get(KEY_CACHE_EXPIRE_IN))
         pooling_interval = POOLING_INTERVAL_DEF
-        if KEY_POOLING_INTERVAL in self.config_entry.options:
-            pooling_interval = int(self.config_entry.options.get(KEY_POOLING_INTERVAL))
+        if KEY_POOLING_INTERVAL in options:
+            pooling_interval = int(options.get(KEY_POOLING_INTERVAL))
         cache_camera = CACHE_CAMERA
-        if KEY_CACHE_CAMERA in self.config_entry.options:
-            cache_camera = int(self.config_entry.options.get(KEY_CACHE_CAMERA))
+        if KEY_CACHE_CAMERA in options:
+            cache_camera = int(options.get(KEY_CACHE_CAMERA))
         cache_security = CACHE_SECURITY
-        if KEY_CACHE_SECURITY in self.config_entry.options:
-            cache_security = int(self.config_entry.options.get(KEY_CACHE_SECURITY))
+        if KEY_CACHE_SECURITY in options:
+            cache_security = int(options.get(KEY_CACHE_SECURITY))
         use_code_alarm = False
-        if KEY_USE_CODE_ALARM in self.config_entry.options:
-            use_code_alarm = self.config_entry.options.get(KEY_USE_CODE_ALARM)
+        if KEY_USE_CODE_ALARM in options:
+            use_code_alarm = options.get(KEY_USE_CODE_ALARM)
         authorized_codes = ""
-        if (KEY_AUTHORIZED_CODE_ALARM in self.config_entry.options 
-            and len(self.config_entry.options.get(KEY_AUTHORIZED_CODE_ALARM).strip()) > 0):
-            authorized_codes = decode(self.config_entry.options.get(KEY_AUTHORIZED_CODE_ALARM), self.siteId)
+        if (KEY_AUTHORIZED_CODE_ALARM in options 
+            and len(options.get(KEY_AUTHORIZED_CODE_ALARM).strip()) > 0):
+            authorized_codes = decode(options.get(KEY_AUTHORIZED_CODE_ALARM), self.siteId)
      
         return self.async_show_form(
             step_id="init",
@@ -265,12 +266,12 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
             self.myfox_client = MyFoxApiClient(myfox_info)
             if self.myfox_client.getExpireDelay() > 0 :
                 await self.myfox_client.getInfoSites()
-                """Recherche des devices."""
+                """Recherche des sites."""
                 self.sites = self.myfox_client.myfox_info.sites
             else :
                 login_ok = await self.myfox_client.login()
                 if login_ok :
-                    """Recherche des devices."""
+                    """Recherche des sites."""
                     self.sites = self.myfox_client.myfox_info.sites
             self.data.update(info)
             return await self.async_step_select_site()
