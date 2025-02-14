@@ -1,4 +1,4 @@
-## socket
+## MyFoxGroupSocketDevice
 
 *Buttons*
 - MyFox-On LABEL-1|on (SocketButtonEntity)

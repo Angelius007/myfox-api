@@ -1,4 +1,4 @@
-## security
+## MyFoxAlarmeDevice
 
 *Alarms*
 - MyFox-Security-1|status (MyFoxAlarmEntity)

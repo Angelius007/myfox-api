@@ -1,0 +1,11 @@
+{
+    "CLIENT_ID": "xxx", 
+    "CLIENT_SECRET": "xxx", 
+    "MYFOX_USER": "xxx", 
+    "MYFOX_PSWD": "xxx", 
+    "access_token": "", 
+    "refresh_token": "", 
+    "expires_in": 3600, 
+    "expires_time": 0.0, 
+    "site_id": 0
+}

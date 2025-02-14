@@ -1,6 +1,6 @@
 Liste des integrations :
 
-<details><summary> alerte_state_sensor <i>(sensors: 1)</i> </summary>
+<details><summary> MyFoxAlerteStateDevice <i>(sensors: 1)</i> </summary>
 <p>
 
 *Sensors*
@@ -8,7 +8,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> camera <i>(buttons: 6, cameras: 1)</i> </summary>
+<details><summary> MyFoxCameraDevice <i>(buttons: 6, cameras: 1)</i> </summary>
 <p>
 
 *Buttons*
@@ -24,7 +24,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> gate <i>(buttons: 2)</i> </summary>
+<details><summary> MyFoxGateDevice <i>(buttons: 2)</i> </summary>
 <p>
 
 *Buttons*
@@ -33,7 +33,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> group_electric <i>(buttons: 2)</i> </summary>
+<details><summary> MyFoxGroupSocketDevice <i>(buttons: 2)</i> </summary>
 <p>
 
 *Buttons*
@@ -42,7 +42,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> group_shutter <i>(buttons: 2)</i> </summary>
+<details><summary> MyFoxGroupShuttereDevice <i>(buttons: 2)</i> </summary>
 <p>
 
 *Buttons*
@@ -51,7 +51,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> heater <i>(selects: 1)</i> </summary>
+<details><summary> MyFoxHeaterDevice <i>(selects: 1)</i> </summary>
 <p>
 
 *Selects*
@@ -59,12 +59,12 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> librairie <i>()</i> </summary>
+<details><summary> MyFoxMediaDevice <i>()</i> </summary>
 <p>
 
 </p></details>
 
-<details><summary> light <i>(sensors: 1)</i> </summary>
+<details><summary> MyFoxLightDevice <i>(sensors: 1)</i> </summary>
 <p>
 
 *Sensors*
@@ -72,7 +72,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> module <i>(buttons: 2)</i> </summary>
+<details><summary> MyFoxModuleDevice <i>(buttons: 2)</i> </summary>
 <p>
 
 *Buttons*
@@ -81,7 +81,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> security <i>(alarms: 1)</i> </summary>
+<details><summary> MyFoxAlarmeDevice <i>(alarms: 1)</i> </summary>
 <p>
 
 *Alarms*
@@ -89,7 +89,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> shutter <i>(buttons: 2)</i> </summary>
+<details><summary> MyFoxShuttereDevice <i>(buttons: 2)</i> </summary>
 <p>
 
 *Buttons*
@@ -98,7 +98,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> socket <i>(buttons: 2)</i> </summary>
+<details><summary> MyFoxSocketDevice <i>(buttons: 2)</i> </summary>
 <p>
 
 *Buttons*
@@ -107,7 +107,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> state <i>(sensors: 1)</i> </summary>
+<details><summary> MyFoxStateDevice <i>(sensors: 1)</i> </summary>
 <p>
 
 *Sensors*
@@ -115,7 +115,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> temperature <i>(sensors: 1)</i> </summary>
+<details><summary> MyFoxTemperatureDevice <i>(sensors: 1)</i> </summary>
 <p>
 
 *Sensors*
@@ -123,7 +123,7 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> thermo <i>(sensors: 1, selects: 1)</i> </summary>
+<details><summary> MyFoxHeaterWithStateDevice <i>(sensors: 1, selects: 1)</i> </summary>
 <p>
 
 *Sensors*
@@ -134,27 +134,31 @@ Liste des integrations :
 
 </p></details>
 
-<details><summary> scenario (API) <i>(scenes: 1, switches: 3)</i> </summary><p>
-
-### scheduled
+<details><summary> MyFoxScheduledScenarioScene <i>(scenes: 0, switches: 1)</i> </summary><p>
 
 *Switches*
 - MyFox-Scenario LABEL-1|enabled (ActivabledSceneEntity)
 
-### onEvent
+</p></details>
+
+<details><summary> MyFoxOnEventScenarioScene <i>(scenes: 0, switches: 1)</i> </summary><p>
 
 *Switches*
-- MyFox-Scenario LABEL-2|enabled (ActivabledSceneEntity)
+- MyFox-Scenario LABEL-1|enabled (ActivabledSceneEntity)
 
-### simulation
+</p></details>
+
+<details><summary> MyFoxSimulationScenarioScene <i>(scenes: 0, switches: 1)</i> </summary><p>
 
 *Switches*
-- MyFox-Scenario LABEL-3|enabled (ActivabledSceneEntity)
+- MyFox-Scenario LABEL-1|enabled (ActivabledSceneEntity)
 
-### onDemand
+</p></details>
+
+<details><summary> MyFoxOnDemandScenarioScene <i>(scenes: 1, switches: 0)</i> </summary><p>
 
 *Scenes*
-- MyFox-Scenario LABEL-4|onDemand (OnDemandSceneEntity)
+- MyFox-Scenario LABEL-1|onDemand (OnDemandSceneEntity)
 
 </p></details>
 

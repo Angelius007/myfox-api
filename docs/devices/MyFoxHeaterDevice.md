@@ -1,4 +1,4 @@
-## heater
+## MyFoxHeaterDevice
 
 *Selects*
 - MyFox-Consigne LABEL-1|stateLabel (HeaterSelectEntity)

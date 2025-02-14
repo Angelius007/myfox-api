@@ -7,28 +7,26 @@ import json
 
 from asyncio import AbstractEventLoop
 
-from myfox.api import (MyFoxEntryDataApi, MyFoxOptionsDataApi)
-from myfox.api.myfoxapi import (MyFoxPolicy, MyFoxApiClient)
-from myfox.api.myfoxapi_camera import (MyFoxApiCameraClient)
-from myfox.api.myfoxapi_light import (MyFoxApiLightClient)
-from myfox.api.myfoxapi_security import (MyFoxApiSecurityClient)
-from myfox.api.myfoxapi_scenario import (MyFoxApiSecenarioClient)
-from myfox.api.myfoxapi_state import (MyFoxApiStateClient)
-from myfox.api.myfoxapi_state_alerte import (MyFoxApiAlerteStateClient)
-from myfox.api.myfoxapi_temperature import (MyFoxApiTemperatureClient)
-from myfox.api.myfoxapi_gate import (MyFoxApiGateClient)
-from myfox.api.myfoxapi_module import (MyFoxApiModuleClient)
-from myfox.api.myfoxapi_shutter import (MyFoxApiShutterClient)
-from myfox.api.myfoxapi_socket import (MyFoxApiSocketClient)
-from myfox.api.myfoxapi_library import (MyFoxApiLibraryClient)
-from myfox.api.myfoxapi_group_electric import (MyFoxApiGroupElectricClient)
-from myfox.api.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
-from myfox.api.myfoxapi_heater import (MyFoxApiHeaterClient)
-from myfox.api.myfoxapi_thermo import (MyFoxApThermoClient)
-from myfox.crypto.secure import encode, decode
-from myfox.api.const import KEY_AUTHORIZED_CODE_ALARM
+from custom_components.myfox.api import (MyFoxEntryDataApi, MyFoxOptionsDataApi)
+from custom_components.myfox.api.myfoxapi import (MyFoxPolicy, MyFoxApiClient)
+from custom_components.myfox.api.myfoxapi_camera import (MyFoxApiCameraClient)
+from custom_components.myfox.api.myfoxapi_light import (MyFoxApiLightClient)
+from custom_components.myfox.api.myfoxapi_security import (MyFoxApiSecurityClient)
+from custom_components.myfox.api.myfoxapi_scenario import (MyFoxApiSecenarioClient)
+from custom_components.myfox.api.myfoxapi_state import (MyFoxApiStateClient)
+from custom_components.myfox.api.myfoxapi_state_alerte import (MyFoxApiAlerteStateClient)
+from custom_components.myfox.api.myfoxapi_temperature import (MyFoxApiTemperatureClient)
+from custom_components.myfox.api.myfoxapi_gate import (MyFoxApiGateClient)
+from custom_components.myfox.api.myfoxapi_module import (MyFoxApiModuleClient)
+from custom_components.myfox.api.myfoxapi_shutter import (MyFoxApiShutterClient)
+from custom_components.myfox.api.myfoxapi_socket import (MyFoxApiSocketClient)
+from custom_components.myfox.api.myfoxapi_library import (MyFoxApiLibraryClient)
+from custom_components.myfox.api.myfoxapi_group_electric import (MyFoxApiGroupElectricClient)
+from custom_components.myfox.api.myfoxapi_group_shutter import (MyFoxApiGroupShutterClient)
+from custom_components.myfox.api.myfoxapi_heater import (MyFoxApiHeaterClient)
+from custom_components.myfox.api.myfoxapi_thermo import (MyFoxApThermoClient)
 
-from myfox.devices.site import (MyFoxSite)
+from custom_components.myfox.devices.site import (MyFoxSite)
 
 
 logging.config.fileConfig('logging.conf', None, True)
@@ -284,37 +282,6 @@ class TestClients :
         for temp in results:
             _LOGGER.info("temp:"+str(temp))
 
-#'logId' =
-#889915829
-#'label' =
-#'Désactivation de la protection depuis internet'
-#'type' =
-#'security'
-#'createdAt' =
-#'2025-02-09T20:30:59Z'
-    def testEncryptDecrypt(loop : AbstractEventLoop):
-        password = "1326"
-        message = "1111 2222 3333"
-        list_str: dict[str, Any] = {}
-        list_str[KEY_AUTHORIZED_CODE_ALARM] = message
-        encode_str: dict[str, Any] = {}
-        _LOGGER.info("map:\t\t\t"+str(list_str))
-        encode_str[KEY_AUTHORIZED_CODE_ALARM] = encode(list_str.get(KEY_AUTHORIZED_CODE_ALARM), password)
-        list_str.update(encode_str)
-        _LOGGER.info("map:\t\t\t"+str(list_str))
-
-        _LOGGER.info("message:\t\t\t"+str(message))
-        #encrypt
-        results = encode(message, password)
-        _LOGGER.info("results chiffré:\t\t"+str(results))
-        #decryt
-        results = decode(results, password)
-        _LOGGER.info("results chiffré/déchiffré:\t"+str(results))
-
-        assert encode(message, password) != message
-        assert decode(encode(message, password), password) == message
-
-    
     def testSetUpdate() :
         params = dict[str, Any]()
         listening_idx = set()
