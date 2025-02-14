@@ -266,12 +266,12 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
             self.myfox_client = MyFoxApiClient(myfox_info)
             if self.myfox_client.getExpireDelay() > 0 :
                 await self.myfox_client.getInfoSites()
-                """Recherche des devices."""
+                """Recherche des sites."""
                 self.sites = self.myfox_client.myfox_info.sites
             else :
                 login_ok = await self.myfox_client.login()
                 if login_ok :
-                    """Recherche des devices."""
+                    """Recherche des sites."""
                     self.sites = self.myfox_client.myfox_info.sites
             self.data.update(info)
             return await self.async_step_select_site()
