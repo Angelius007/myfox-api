@@ -12,9 +12,9 @@
       "console": "integratedTerminal",
       //"args": ["${command:pickArgs}"],
       "env": {
-
+            "PYTHONPATH": "${workspaceFolder}/;$PYTHONPATH"
       },
-      "cwd": "${workspaceFolder}/custom_components/myfox"
+      "cwd": "${workspaceFolder}/tests"
     },
     {
       "name": "Python Debugger: Current File",
@@ -22,8 +22,11 @@
       "request": "launch",
       "program": "${file}",
       "console": "integratedTerminal",
+      "env": {
+            "PYTHONPATH": "${workspaceFolder}/;$PYTHONPATH"
+      },
       "justMyCode" : false,
-      "cwd": "${workspaceFolder}/custom_components/myfox"
+      "cwd": "${workspaceFolder}/tests"
     },
     {
         "name": "Gen Docs",

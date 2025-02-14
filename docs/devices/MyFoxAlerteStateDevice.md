@@ -1,4 +1,4 @@
-## alerte_state_sensor
+## MyFoxAlerteStateDevice
 
 *Sensors*
 - MyFox-Etat LABEL-1|state (AlerteStateSensorEntity)

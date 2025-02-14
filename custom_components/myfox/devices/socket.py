@@ -16,6 +16,7 @@ _LOGGER = logging.getLogger(__name__)
 #modelLabel (string): The device model label
 #}
 
+
 @dataclass
 class MyFoxSocketDevice(BaseDevice) :
     """ """
@@ -27,3 +28,10 @@ class MyFoxSocketDevice(BaseDevice) :
         _LOGGER.debug("Ajout SocketButtonEntity sur device %s", str(self.device_info.deviceId))
         return [SocketButtonEntity(coordinator, self,f"On {self.device_info.label}", "on"),
                 SocketButtonEntity(coordinator, self, f"Off {self.device_info.label}", "off")]
+
+@dataclass
+class MyFoxGroupSocketDevice(MyFoxSocketDevice) :
+    """ """
+
+    def __init__(self, device_info:MyFoxDeviceInfo):
+        super().__init__(device_info)

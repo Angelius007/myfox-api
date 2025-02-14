@@ -1,4 +1,4 @@
-## module
+## MyFoxGateDevice
 
 *Buttons*
 - MyFox-One - LABEL-1|performeOne (PerformButtonEntity)

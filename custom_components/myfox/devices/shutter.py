@@ -26,3 +26,10 @@ class MyFoxShuttereDevice(BaseDevice) :
         _LOGGER.debug("Ajout ShutterButtonEntity sur device %s", str(self.device_info.deviceId))
         return [ShutterButtonEntity(coordinator, self,f"Ouverture {self.device_info.label}", "open"),
                 ShutterButtonEntity(coordinator, self, f"Fermeture {self.device_info.label}", "close")]
+
+@dataclass
+class MyFoxGroupShuttereDevice(MyFoxShuttereDevice) :
+    """ """
+
+    def __init__(self, device_info:MyFoxDeviceInfo):
+        super().__init__(device_info)

@@ -1,4 +1,4 @@
-## group_electric
+## MyFoxSocketDevice
 
 *Buttons*
 - MyFox-On LABEL-1|on (SocketButtonEntity)

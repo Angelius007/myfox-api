@@ -167,5 +167,3 @@ preview-*.jpeg
 preview-*.jpg
 myenv/*
 
-# temp exclusion
-tests/*
