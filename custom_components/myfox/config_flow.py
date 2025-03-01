@@ -38,7 +38,9 @@ from .api.const import (
      KEY_CACHE_SECURITY,
      CACHE_SECURITY,
      KEY_USE_CODE_ALARM,
-     KEY_AUTHORIZED_CODE_ALARM
+     KEY_AUTHORIZED_CODE_ALARM,
+     KEY_NB_RETRY_DEFAULT,
+     KEY_NB_RETRY_CAMERA
 )
 
 from .api import (
@@ -100,7 +102,14 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
         if (KEY_AUTHORIZED_CODE_ALARM in options 
             and len(options.get(KEY_AUTHORIZED_CODE_ALARM).strip()) > 0):
             authorized_codes = decode(options.get(KEY_AUTHORIZED_CODE_ALARM), self.siteId)
-     
+        nb_retry_default = 5
+        if KEY_NB_RETRY_DEFAULT in options:
+            nb_retry_default = int(options.get(KEY_NB_RETRY_DEFAULT))
+        nb_retry_camera = 2
+        if KEY_NB_RETRY_CAMERA in options:
+            nb_retry_camera = int(options.get(KEY_NB_RETRY_CAMERA))
+
+
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema(
@@ -120,6 +129,14 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
                     vol.Required(
                         KEY_CACHE_SECURITY,
                         default=cache_security,
+                    ): int,
+                    vol.Required(
+                        KEY_NB_RETRY_DEFAULT,
+                        default=nb_retry_default,
+                    ): int,
+                    vol.Required(
+                        KEY_NB_RETRY_CAMERA,
+                        default=nb_retry_camera,
                     ): int,
                     vol.Optional(
                         KEY_USE_CODE_ALARM,

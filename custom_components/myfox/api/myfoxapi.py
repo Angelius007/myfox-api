@@ -35,7 +35,6 @@ class MyFoxApiClient:
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         self.client_key = "generic"
         self.client = None
-        self.nb_retry = 5
         self.devices: dict[str, BaseDevice] = {}
         self.scenes: dict[str, BaseScene] = {}
         self.infoSites_times = 0
@@ -46,6 +45,7 @@ class MyFoxApiClient:
     def saveMyFoxInfo(self, myfox_info:MyFoxEntryDataApi) :
         self.myfox_info:MyFoxEntryDataApi = myfox_info
         self.cache_expire_in = myfox_info.options.cache_time
+        self.nb_retry = myfox_info.options.nb_retry_default
 
     def configure_device(self, deviceId: int, label: str, modelId: int, modelLabel: str):
         """ Configuration device """

@@ -16,7 +16,6 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
         self.client_key = "camera"
-        self.nb_retry = 2
         self.camera = list()
         self.camera_time = 0
         self.lastPreview:bytes = None
@@ -26,6 +25,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
     def saveMyFoxInfo(self, myfox_info:MyFoxEntryDataApi) :
         super().saveMyFoxInfo(myfox_info)
         self.camera_cache_expire_in = myfox_info.options.cache_camera_time
+        self.nb_retry = myfox_info.options.nb_retry_camera
 
     async def getList(self):
         """ Recuperation scenarios """
