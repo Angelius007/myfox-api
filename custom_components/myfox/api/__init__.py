@@ -16,6 +16,8 @@ class MyFoxOptionsDataApi:
     pooling_frequency:int = 0
     cache_camera_time:int = 0
     cache_security_time:int = 0
+    nb_retry_default:int = 0
+    nb_retry_camera:int = 0
     use_code_alarm:bool = False
     secure_codes:str = False
 
