@@ -22,6 +22,8 @@ KEY_CACHE_CAMERA           : Final = "cache_camera"
 KEY_CACHE_SECURITY         : Final = "cache_security"
 KEY_USE_CODE_ALARM         : Final = "utilisation_code"
 KEY_AUTHORIZED_CODE_ALARM  : Final = "autorisation_codes"
+KEY_NB_RETRY_DEFAULT       : Final = "nb_retry_default"
+KEY_NB_RETRY_CAMERA        : Final = "nb_retry_camera"
 
 GRANT_TYPE_PASSWORD           : Final = "password"
 GRANT_TYPE_AUTHORIZATION_CODE : Final = "authorization_code"

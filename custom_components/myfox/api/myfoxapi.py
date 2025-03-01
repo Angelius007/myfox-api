@@ -35,7 +35,6 @@ class MyFoxApiClient:
     def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
         self.client_key = "generic"
         self.client = None
-        self.nb_retry = 5
         self.devices: dict[str, BaseDevice] = {}
         self.scenes: dict[str, BaseScene] = {}
         self.infoSites_times = 0
@@ -46,6 +45,7 @@ class MyFoxApiClient:
     def saveMyFoxInfo(self, myfox_info:MyFoxEntryDataApi) :
         self.myfox_info:MyFoxEntryDataApi = myfox_info
         self.cache_expire_in = myfox_info.options.cache_time
+        self.nb_retry = myfox_info.options.nb_retry_default
 
     def configure_device(self, deviceId: int, label: str, modelId: int, modelLabel: str):
         """ Configuration device """
@@ -143,7 +143,7 @@ class MyFoxApiClient:
     async def callMyFoxApi(self, path:str, data:str = None, method:str = "POST", responseClass:str = "json", retry:int = 0):
         """ Appel API """
         async with aiohttp.ClientSession() as session:
-            try:                
+            try:
                 headers = {
                     "content-type": "application/json"
                 }
@@ -155,11 +155,11 @@ class MyFoxApiClient:
                         urlApi = urlApi + "&" + str(params)
                 _LOGGER.debug("Appel : " + urlApi)
                 if method == "POST":
-                    resp = await session.post(urlApi, headers=headers, json=data) 
-                    retour = await self._get_response(resp, responseClass)
+                    async with session.post(urlApi, headers=headers, json=data) as resp :
+                        retour = await self._get_response(resp, responseClass)
                 else :
-                    resp = await session.get(urlApi, headers=headers, json=data) 
-                    retour = await self._get_response(resp, responseClass)
+                    async with session.get(urlApi, headers=headers, json=data) as resp :
+                        retour = await self._get_response(resp, responseClass)
                 if retry > 0 :
                     _LOGGER.info(f"Relance de la requete {path} : OK (Tentative : {(retry)}/{self.nb_retry})")
                 return retour

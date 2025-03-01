@@ -35,7 +35,9 @@ from .api.const import (
     KEY_CACHE_SECURITY,
     CACHE_SECURITY,
     KEY_USE_CODE_ALARM,
-    KEY_AUTHORIZED_CODE_ALARM
+    KEY_AUTHORIZED_CODE_ALARM,
+    KEY_NB_RETRY_DEFAULT,
+    KEY_NB_RETRY_CAMERA
 )
 from .api import (
     MyFoxEntryDataApi,
@@ -144,6 +146,16 @@ def updateMyFoxOptions(entry: ConfigEntry) -> MyFoxOptionsDataApi :
         options.cache_security_time = entry.options[KEY_CACHE_SECURITY]
     else :
         options.cache_security_time = CACHE_SECURITY
+    # nb tentative en cas d'echec d'appel d'api (par defaut)
+    if KEY_NB_RETRY_DEFAULT in entry.options :
+        options.nb_retry_default = entry.options[KEY_NB_RETRY_DEFAULT]
+    else :
+        options.nb_retry_default = 5
+    # nb tentative en cas d'echec d'appel d'api (camera)
+    if KEY_NB_RETRY_CAMERA in entry.options :
+        options.nb_retry_camera = entry.options[KEY_NB_RETRY_CAMERA]
+    else :
+        options.nb_retry_camera = 2
     # utilisation ou non d'un code de securite pour l'alarme
     if KEY_USE_CODE_ALARM in entry.options :
         options.use_code_alarm = entry.options[KEY_USE_CODE_ALARM]
