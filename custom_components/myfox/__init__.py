@@ -37,7 +37,8 @@ from .api.const import (
     KEY_USE_CODE_ALARM,
     KEY_AUTHORIZED_CODE_ALARM,
     KEY_NB_RETRY_DEFAULT,
-    KEY_NB_RETRY_CAMERA
+    KEY_NB_RETRY_CAMERA,
+    KEY_DELAY_BETWEEN_RETRY
 )
 from .api import (
     MyFoxEntryDataApi,
@@ -156,6 +157,11 @@ def updateMyFoxOptions(entry: ConfigEntry) -> MyFoxOptionsDataApi :
         options.nb_retry_camera = entry.options[KEY_NB_RETRY_CAMERA]
     else :
         options.nb_retry_camera = 2
+    # delai en secondes entre deux essais
+    if KEY_DELAY_BETWEEN_RETRY in entry.options :
+        options.delay_between_retry = entry.options[KEY_DELAY_BETWEEN_RETRY]
+    else :
+        options.delay_between_retry = 30
     # utilisation ou non d'un code de securite pour l'alarme
     if KEY_USE_CODE_ALARM in entry.options :
         options.use_code_alarm = entry.options[KEY_USE_CODE_ALARM]
