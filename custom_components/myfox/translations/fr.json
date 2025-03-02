@@ -25,6 +25,7 @@
           "cache_camera": "Durée du cache de la camera (en secondes)",
           "nb_retry_default": "Nombre de relance (defaut)",
           "nb_retry_camera": "Nombre de relance (Camera)",
+          "delay_between_retry" : "Délai entre deux essais (en secondes)",
           "utilisation_code": "Utilisation d'un code pour l'alarme",
           "autorisation_codes" : "Codes autorisés (séparés par des espaces et necommençant pas par 0)"
         }

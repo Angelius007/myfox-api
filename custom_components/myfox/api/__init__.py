@@ -12,12 +12,13 @@ class MyFoxEntryData:
 
 @dataclass
 class MyFoxOptionsDataApi:
-    cache_time:int = 0
-    pooling_frequency:int = 0
-    cache_camera_time:int = 0
-    cache_security_time:int = 0
-    nb_retry_default:int = 0
-    nb_retry_camera:int = 0
+    cache_time:int = 600
+    pooling_frequency:int = 2
+    cache_camera_time:int = 300
+    cache_security_time:int = 300
+    nb_retry_default:int = 5
+    nb_retry_camera:int = 2
+    delay_between_retry:int = 30
     use_code_alarm:bool = False
     secure_codes:str = False
 

@@ -300,6 +300,21 @@ Durée du cache spécifique à l'alarme (pour récupérer l'état de l'armement)
 Durée du cache spécifique à la caméra (pour récupérer un aperçu des caméras).
 </p></details>
 
+<details><summary>Nombre de relance (defaut) / Number of retry (default) </summary>
+<p>
+En cas d'échec d'un appel à l'API MyFox, nombre de tentative avant d'abandonner la requête
+</p></details>
+
+<details><summary>Nombre de relance (Camera) / Number of retry (Camera) </summary>
+<p>
+En cas d'échec d'un appel à l'API MyFox, nombre de tentative avant d'abandonner la requête (spécifique à la caméra)
+</p></details>
+
+<details><summary>Délai entre deux essais (en secondes) / Delay between two tries (in seconds) </summary>
+<p>
+Délai entre deux essaies en cas d'erreur sur l'appel d'API
+</p></details>
+
 <details><summary>Utilisation d'un code pour l'alarme</summary>
 <p>
 Activation du code pour accéder au changement de niveau de sécurité.<br />

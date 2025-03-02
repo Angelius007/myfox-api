@@ -40,7 +40,8 @@ from .api.const import (
      KEY_USE_CODE_ALARM,
      KEY_AUTHORIZED_CODE_ALARM,
      KEY_NB_RETRY_DEFAULT,
-     KEY_NB_RETRY_CAMERA
+     KEY_NB_RETRY_CAMERA,
+     KEY_DELAY_BETWEEN_RETRY
 )
 
 from .api import (
@@ -108,6 +109,9 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
         nb_retry_camera = 2
         if KEY_NB_RETRY_CAMERA in options:
             nb_retry_camera = int(options.get(KEY_NB_RETRY_CAMERA))
+        delay_between_retry = 30
+        if KEY_DELAY_BETWEEN_RETRY in options:
+            delay_between_retry = int(options.get(KEY_DELAY_BETWEEN_RETRY))
 
 
         return self.async_show_form(
@@ -137,6 +141,10 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
                     vol.Required(
                         KEY_NB_RETRY_CAMERA,
                         default=nb_retry_camera,
+                    ): int,
+                    vol.Required(
+                        KEY_DELAY_BETWEEN_RETRY,
+                        default=delay_between_retry,
                     ): int,
                     vol.Optional(
                         KEY_USE_CODE_ALARM,

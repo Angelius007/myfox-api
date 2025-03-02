@@ -25,6 +25,7 @@
           "cache_camera": "Camera Cache duration (in seconds)",
           "nb_retry_default": "Number of retry (default)",
           "nb_retry_camera": "Number of retry (Camera)",
+          "delay_between_retry" : "Delay between two tries (in seconds)",
           "utilisation_code": "Using code for alarm",
           "autorisation_codes" : "Authorized codes (spaces to separate and do not start with 0)"
         }
