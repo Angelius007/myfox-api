@@ -182,6 +182,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         except MyFoxException as exception:
                             _LOGGER.error(exception)
                         except Exception as err:
+                            _LOGGER.error(f"Exception : {err} - Last action : {last_action}")
                             _LOGGER.error(err)
 
                     # cas d'un client security
