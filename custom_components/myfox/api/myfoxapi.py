@@ -143,6 +143,7 @@ class MyFoxApiClient:
 
     async def callMyFoxApi(self, path:str, data:str = None, method:str = "POST", responseClass:str = "json", retry:int = 0):
         """ Appel API """
+        _LOGGER.debug(f"Appel : {path}/{method}/{responseClass} - Essai : {retry}/{self.nb_retry}")
         async with aiohttp.ClientSession() as session:
             try:
                 headers = {
@@ -154,7 +155,7 @@ class MyFoxApiClient:
                     if data is not None :
                         params = urllib.parse.urlencode(data)
                         urlApi = urlApi + "&" + str(params)
-                _LOGGER.debug("Appel : " + urlApi)
+                _LOGGER.debug(f"Appel : {urlApi} - Essai : {retry}/{self.nb_retry}")
                 if method == "POST":
                     async with session.post(urlApi, headers=headers, json=data) as resp :
                         retour = await self._get_response(resp, responseClass)
@@ -165,6 +166,7 @@ class MyFoxApiClient:
                     _LOGGER.info(f"Relance de la requete {path} : OK (Tentative : {(retry)}/{self.nb_retry})")
                 return retour
             except InvalidTokenMyFoxException as exception:
+                _LOGGER.error(f"InvalidTokenMyFoxException : {exception.status} - {exception.message}")
                 raise exception
             except MyFoxException as exception:
                 """ Retry """
@@ -400,7 +402,7 @@ class MyFoxApiClient:
     def isCacheExpireWithParam(self, start_time, param_expire) -> float :
         current_time = time.time()
         expiration = (current_time - start_time)
-        _LOGGER.debug("Expiration cache [%s / %s]", expiration, param_expire)
+        _LOGGER.debug("Expiration cache - %s [%s / %s]", self.client_key, expiration, param_expire)
         return expiration >= param_expire
     
     async def getInfoSite(self, siteId:int, forceCall:bool=False) -> MyFoxSite:
