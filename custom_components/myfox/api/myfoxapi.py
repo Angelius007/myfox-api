@@ -8,19 +8,18 @@ import urllib
 
 from abc import abstractmethod
 from typing import Any
-from aiohttp import ClientResponse
+from aiohttp import ClientResponse, hdrs
 from .const import (
     DEFAULT_MYFOX_URL_API, MYFOX_TOKEN_PATH, MYFOX_INFO_SITE_PATH,MYFOX_HISTORY_GET,
     KEY_GRANT_TYPE, KEY_CLIENT_ID, KEY_CLIENT_SECRET, KEY_MYFOX_USER, KEY_MYFOX_PSWD, KEY_REFRESH_TOKEN,
     KEY_EXPIRE_IN, KEY_EXPIRE_AT, KEY_ACCESS_TOKEN, GRANT_TYPE_PASSWORD, GRANT_REFRESH_TOKEN,SEUIL_EXPIRE_MIN,
+    CONTENT_TYPE_JSON, CONTENT_TYPE_HTML
 )
 from ..scenes import (BaseScene, DiagnosticScene, MyFoxSceneInfo)
 from ..devices import (BaseDevice, DiagnosticDevice, MyFoxDeviceInfo)
 from ..devices.site import MyFoxSite
 from .myfoxapi_exception import (MyFoxException, InvalidTokenMyFoxException, RetryMyFoxException)
 from . import MyFoxEntryDataApi
-
-#from homeassistant.config_entries import ConfigEntry, ConfigEntryState
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -147,7 +146,7 @@ class MyFoxApiClient:
         async with aiohttp.ClientSession() as session:
             try:
                 headers = {
-                    "content-type": "application/json"
+                    hdrs.CONTENT_TYPE: CONTENT_TYPE_JSON
                 }
                 urlApi = self.getUrlMyFoxApi(path)
                 if not data or KEY_GRANT_TYPE not in data :
@@ -174,17 +173,17 @@ class MyFoxApiClient:
                     await asyncio.sleep(self.delay_between_retry) # tempo de qqes secondes pour relancer la requete
                     return await self.callMyFoxApi(path=path, data=data, method=method, responseClass=responseClass, retry=(retry+1))
                 else :
-                    _LOGGER.error(f"Erreur {exception.status}. Echec des relances {path} (Tentative : {(retry)}/{self.nb_retry})")
+                    _LOGGER.error(f"Erreur {exception.status}. Echec des relances {path} (Tentative : {retry}/{self.nb_retry})")
                     raise exception
             except Exception as exception:
                 """ Retry """
                 if retry < self.nb_retry :
-                    _LOGGER.warning(f"Exception {exception}. Relance de la requete {path} (Tentative : {(retry+1)}/{self.nb_retry})")
+                    _LOGGER.warning(f"Exception {str(exception)}. Relance de la requete {path} (Tentative : {(retry+1)}/{self.nb_retry})")
                     await asyncio.sleep(self.delay_between_retry) # tempo de qqes secondes pour relancer la requete
                     return await self.callMyFoxApi(path=path, data=data, method=method, responseClass=responseClass, retry=(retry+1))
                 else :
                     _LOGGER.error(exception)
-                    _LOGGER.error(f"Erreur {str(exception)}. Echec des relances {path} (Tentative : {(retry)}/{self.nb_retry})")
+                    _LOGGER.error(f"Erreur {str(exception)}. Echec des relances {path} (Tentative : {retry}/{self.nb_retry})")
                     raise MyFoxException(exception)
 
     async def _get_response(self, resp: ClientResponse, responseClass:str = "json"):
@@ -197,10 +196,15 @@ class MyFoxApiClient:
         
     async def _get_binary_response(self, resp: ClientResponse):
         """ Traitement de la reponse """
+        ctype = resp.headers.get(hdrs.CONTENT_TYPE, "").lower()
         if resp.status == 401:
             try:
-                json_resp = await resp.json()
-                raise InvalidTokenMyFoxException(resp.status, f"Error : {json_resp["error"]}")
+                if CONTENT_TYPE_JSON not in ctype :
+                    json_resp = await resp.json()
+                    raise InvalidTokenMyFoxException(resp.status, f"Error : {json_resp["error"]}")
+                else : 
+                    html_resp = await resp.text()
+                    raise InvalidTokenMyFoxException(resp.status, f"Error : {html_resp}")
             except MyFoxException as exception:
                 raise exception 
             except Exception as error:
@@ -230,45 +234,52 @@ class MyFoxApiClient:
     
     async def _get_json_response(self, resp: ClientResponse):
         """ Traitement de la reponse """
+        ctype = resp.headers.get(hdrs.CONTENT_TYPE, "").lower()
+        if CONTENT_TYPE_HTML in ctype :
+            html_resp = await resp.text()
+            raise RetryMyFoxException(resp.status, f"Failed json call: {html_resp} - Error: unexpected mimetype")
         if resp.status == 401:
             try:
-                json_resp = await resp.json()
-                if "error" in json_resp :
-                    raise InvalidTokenMyFoxException(resp.status, f"Error : {json_resp["error"]}")
+                if CONTENT_TYPE_JSON in ctype :
+                    json_resp = await resp.json()
+                    if "error" in json_resp :
+                        raise InvalidTokenMyFoxException(resp.status, f"Error : {json_resp["error"]}")
+                    else :
+                        raise InvalidTokenMyFoxException(resp.status, f"Error no detail : {resp.status}")
                 else :
-                    raise InvalidTokenMyFoxException(resp.status, f"Error no detail : {resp.status}")
+                    raise MyFoxException(resp.status, f"Failed to parse response: Format {ctype} - Error: unexpected mimetype")
             except MyFoxException as exception:
                 raise exception 
             except Exception as error:
                 _LOGGER.error(error)
-                raise MyFoxException(f"Failed to parse response: {resp.text} Error: {error}")
+                raise MyFoxException(resp.status, f"Failed to parse response: {resp.text} Error: {error}")
         
         if resp.status != 200:
-            raise MyFoxException(f"Got HTTP status code {resp.status}: {resp.reason}")
+            raise MyFoxException(resp.status, f"Got HTTP status code {resp.status}: {resp.reason}")
 
         try:
-            json_resp = await resp.json()
-            if "status" in json_resp and json_resp["status"] == "KO":
-                statut = 999
-                description = ""
-                error = ""
-                if "error_description" in json_resp:
-                    description = json_resp["error_description"]
-                if "error" in json_resp:
-                    error = json_resp["error"]
-                    if "(632)" in error :
-                        """ Erreur temporaire. Tentative de relance """
-                        raise RetryMyFoxException(632, f"Error : {error} - Description: {description}")
-                raise MyFoxException(statut, f"Error : {error} - Description: {description}")
-
-        except RetryMyFoxException as exception:
-            raise exception 
+            if CONTENT_TYPE_JSON in ctype :
+                json_resp = await resp.json()
+                if "status" in json_resp and json_resp["status"] == "KO":
+                    statut = 999
+                    description = ""
+                    error = ""
+                    if "error_description" in json_resp:
+                        description = json_resp["error_description"]
+                    if "error" in json_resp:
+                        error = json_resp["error"]
+                        if "(632)" in error :
+                            """ Erreur temporaire. Tentative de relance """
+                            raise RetryMyFoxException(632, f"Error : {error} - Description: {description}")
+                    raise MyFoxException(statut, f"Error : {error} - Description: {description}")
+            else :
+                raise MyFoxException(resp.status, f"Failed to parse response: Format {ctype} - Error: unexpected mimetype")
+                
         except MyFoxException as exception:
-            _LOGGER.error(error)
             raise exception 
         except Exception as error:
             _LOGGER.error(error)
-            raise MyFoxException(f"Failed to parse response: {resp.text} Error: {error}")
+            raise MyFoxException(resp.status, f"Failed to parse response: {resp.text} Error: {error}")
 
         return json_resp
     
