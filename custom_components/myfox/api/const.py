@@ -2,6 +2,9 @@ from typing import Final
 
 DEFAULT_MYFOX_URL_API: Final = "https://api.myfox.me/"
 
+CONTENT_TYPE_JSON: Final = "application/json"
+CONTENT_TYPE_HTML: Final = "text/html"
+
 KEY_CLIENT_ID    : Final = "client_id"
 KEY_CLIENT_SECRET: Final = "client_secret"
 KEY_MYFOX_USER   : Final = "username"
