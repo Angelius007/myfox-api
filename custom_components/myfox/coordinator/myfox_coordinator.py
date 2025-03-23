@@ -275,9 +275,9 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
             raise ConfigEntryAuthFailed from err
         except MyFoxException as err:
-            raise UpdateFailed(f"Error communicating with API: {err} - Last Action : {last_action}")
+            raise UpdateFailed(f"Error communicating with API: {str(err)} - Last Action : {last_action}")
         except Exception as err:
-            raise UpdateFailed(f"Error with API _async_update_data: {err} - Last Action : {last_action}")
+            raise UpdateFailed(f"Error with API _async_update_data: {str(err)} - Last Action : {last_action}")
         
     def addToParams(self, params:dict[str, Any], listening_idx:set,temp:Any):
         """ Ajout des parames de la liste si correspond aux attentes """

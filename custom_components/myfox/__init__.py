@@ -225,9 +225,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         """Recherche des devices."""
         # add Alarme
         retour &= await addSecurity(hass, entry, myfox_info)
-        # cameraCount: int = 0
-        if myfox_client.myfox_info.site.cameraCount > 0 :
-            retour &= await addCamera(hass, entry, myfox_info)
         # gateCount: int = 0
         if myfox_client.myfox_info.site.gateCount > 0 :
             retour &= await addGate(hass, entry, myfox_info)
@@ -258,6 +255,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         # Sondes de temperature
         if myfox_client.myfox_info.site.deviceTemperatureCount > 0 :
             retour &= await addTemperatureDevice(hass, entry, myfox_info)
+        # cameraCount: int = 0
+        if myfox_client.myfox_info.site.cameraCount > 0 :
+            retour &= await addCamera(hass, entry, myfox_info)
 
         if not retour:
             raise ConfigEntryNotReady("Service partiellement chargé")
