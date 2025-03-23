@@ -150,6 +150,9 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 raise ConfigEntryAuthFailed from err
             except MyFoxException as exception:
                 _LOGGER.error(exception)
+            except Exception as err:
+                _LOGGER.error(err)
+                raise ConfigEntryAuthFailed from err
 
     async def _async_update_data(self):
         """Fetch data from API endpoint.
@@ -178,6 +181,8 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                             await myfoxApiClient.getList()
                         except MyFoxException as exception:
                             _LOGGER.error(exception)
+                        except Exception as err:
+                            _LOGGER.error(err)
 
                     # cas d'un client security
                     if myfoxApiClient.__class__ == MyFoxApiSecurityClient :

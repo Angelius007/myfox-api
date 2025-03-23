@@ -237,6 +237,7 @@ class MyFoxApiClient:
     async def _get_json_response(self, resp: ClientResponse):
         """ Traitement de la reponse """
         ctype = resp.headers.get(hdrs.CONTENT_TYPE, "").lower()
+        json_resp = None
         if CONTENT_TYPE_HTML in ctype :
             html_resp = await resp.text()
             _LOGGER.debug(f"Erreur : {resp.status} / {html_resp}")
