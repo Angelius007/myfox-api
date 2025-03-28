@@ -25,7 +25,7 @@ L'utilisation du token "Personal application" reste disponible pour le moment po
 
 ### Installation de l'intégration
 3 méthodes disponibles pour l'installation :
-- Installation via HACS _(prochainement)_
+- Installation via HACS 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Angelius007&repository=myfox-api)
 - Installation avec "Dépôts personnalisés / custom repository" via HACS :
    - Dépôt : https://github.com/Angelius007/myfox-api
