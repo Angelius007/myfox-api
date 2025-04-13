@@ -8,6 +8,8 @@
 [![HACS validation](https://github.com/Angelius007/myfox-api/workflows/HACS%20validation/badge.svg)](https://github.com/Angelius007/myfox-api/actions?query=workflow:"HACS+validation")
 [![Validate with hassfest](https://github.com/Angelius007/myfox-api/workflows/Validate%20with%20hassfest/badge.svg)](https://github.com/Angelius007/myfox-api/actions?query=workflow:"Validate+with+hassfest")
 
+<img src="https://github.com/Angelius007/myfox-api/blob/main/custom_components/myfox/logo.png?raw=true" alt="" />
+
 Implémentation Custom pour interfaçage avec les API MyFox (racheté par Somfy).
 
 Récupère l'ensemble des items dispo via les API MyFox et ajoute les "appareils" et "entités" associées
