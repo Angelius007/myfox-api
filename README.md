@@ -7,6 +7,7 @@
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
 [![HACS validation](https://github.com/Angelius007/myfox-api/workflows/HACS%20validation/badge.svg)](https://github.com/Angelius007/myfox-api/actions?query=workflow:"HACS+validation")
 [![Validate with hassfest](https://github.com/Angelius007/myfox-api/workflows/Validate%20with%20hassfest/badge.svg)](https://github.com/Angelius007/myfox-api/actions?query=workflow:"Validate+with+hassfest")
+[![Python application](https://github.com/Angelius007/myfox-api/actions/workflows/python-app.yml/badge.svg)](https://github.com/Angelius007/myfox-api/actions/workflows/python-app.yml)
 
 <img src="https://github.com/Angelius007/myfox-api/blob/main/custom_components/myfox/logo.png?raw=true" alt="" />
 
