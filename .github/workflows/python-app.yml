@@ -38,3 +38,7 @@ jobs:
     - name: Test with pytest
       run: |
         pytest -q --disable-warnings --log-cli-level=DEBUG
+    - name: Python version
+      run: python --version
+    - name: pip version
+      run: pip freeze

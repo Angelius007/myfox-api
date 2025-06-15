@@ -11,7 +11,7 @@ _module = sys.modules[__name__]
 pytest_socket.enable_socket()
 
 # 2️⃣  On autorise loopback uniquement (asyncio.socketpair bosse en local)
-pytest_socket.socket_allow_hosts(["127.0.0.1"])
+pytest_socket.socket_allow_hosts(["127.0.0.1", "::1"])
 
 # 3️⃣  On rend disable_socket inoffensif pour le reste de la session
 def _noop(*_a, **_kw):  # pylint: disable=unused-argument
