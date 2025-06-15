@@ -14,6 +14,9 @@ from custom_components.myfox.api.const import KEY_AUTHORIZED_CODE_ALARM
 logging.config.fileConfig('logging.conf', None, True)
 _LOGGER = logging.getLogger(__name__)
 
+asyncio.set_event_loop_policy(MyFoxPolicy())
+loop = asyncio.get_event_loop()
+
 class TestCrypto :
 
 #'logId' =
@@ -24,7 +27,7 @@ class TestCrypto :
 #'security'
 #'createdAt' =
 #'2025-02-09T20:30:59Z'
-    def testEncryptDecrypt(loop : AbstractEventLoop):
+    def testEncryptDecrypt(self):
         password = "1326"
         message = "1111 2222 3333"
         list_str: dict[str, Any] = {}
@@ -47,17 +50,3 @@ class TestCrypto :
 
         assert encode(message, password) != message
         assert decode(encode(message, password), password) == message
-
-if __name__ == "__main__" :
-    _LOGGER.info("**** Debut ****")
-    asyncio.set_event_loop_policy(MyFoxPolicy())
-    loop = asyncio.get_event_loop()
-
-
-    try :
-        """ """
-        TestCrypto.testEncryptDecrypt(loop)
-
-    finally :
-        _LOGGER.info("**** Fin ****")
-
