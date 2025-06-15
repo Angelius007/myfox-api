@@ -154,6 +154,7 @@ class MyFoxMockCache :
             "expires_in": myfox_info.expires_in,
             "site_id": myfox_info.site.siteId
         }
+        print(f"⭐️ writeCache.data: {data}")
         f.write(json.dumps(data))
         f.close()
 

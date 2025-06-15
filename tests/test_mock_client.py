@@ -49,11 +49,13 @@ async def test_client_login():
         client = MyFoxApiClient(myfox_info)
         client.nb_retry = 1
         client.delay_between_retry = 1
+        _LOGGER.info(f"info:{str(myfox_info)}")
         results = await client.login()
         _LOGGER.info("login(1):"+str(results))
         assert results == True
         assert access_token_initial != client.myfox_info.access_token
         assert refresh_token_initial != client.myfox_info.refresh_token
+        myfox_info=client.myfox_info
 
     except MyFoxException as exception:
         _LOGGER.error("Exception: Un mock non implémenté à vérifier")
@@ -74,6 +76,7 @@ async def test_client_site():
         client.nb_retry = 1
         client.delay_between_retry = 1
 
+        _LOGGER.info(f"info:{str(myfox_info)}")
         results = await client.getInfoSite(myfox_info.site.siteId, True)
         _LOGGER.info("getInfoSite(1):"+str(results))
         assert results.siteId == myfox_info.site.siteId
