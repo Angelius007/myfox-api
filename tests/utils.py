@@ -5,6 +5,7 @@ import json
 import logging.config
 from multidict import CIMultiDictProxy, CIMultiDict
 import secrets
+from unittest.mock import AsyncMock, MagicMock
 
 from custom_components.myfox.api import (MyFoxEntryDataApi, MyFoxOptionsDataApi)
 from custom_components.myfox.devices.site import (MyFoxSite)
@@ -108,6 +109,17 @@ def fake_http_call(url: str, *args, **kwargs):
 
     return FakeResponse(404, {"status": "KO", "error": "Service not implemented", "error_description" : "No Mock found"})
 
+class FakeClientSession:
+    def __init__(self, *args, **kwargs):
+        self.get  = MagicMock(side_effect=fake_http_call)
+        self.post = MagicMock(side_effect=fake_http_call)
+
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        return None
 
 class MyFoxMockCache :
     @staticmethod
