@@ -1,8 +1,8 @@
 {
-    "CLIENT_ID": "xxx", 
-    "CLIENT_SECRET": "xxx", 
-    "MYFOX_USER": "xxx", 
-    "MYFOX_PSWD": "xxx", 
+    "CLIENT_ID": "mock_xxx",
+    "CLIENT_SECRET": "mock_yyy",
+    "MYFOX_USER": "mock",
+    "MYFOX_PSWD": "mock",
     "access_token": "", 
     "refresh_token": "", 
     "expires_in": 3600, 
