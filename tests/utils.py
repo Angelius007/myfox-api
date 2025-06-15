@@ -194,5 +194,6 @@ class MyFoxMockCache :
                                        expires_time=expires_time, site=MyFoxSite(site_id))
         options = MyFoxOptionsDataApi()
         myfox_info.options = options
+        print(f"⭐️ getMyFoxEntryDataFromCache.myfox_info: {myfox_info}")
         _LOGGER.info(str(myfox_info))
         return myfox_info
