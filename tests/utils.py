@@ -41,14 +41,14 @@ def fake_http_call(url: str, *args, **kwargs):
         token1 = str(base64.b64encode(secrets.token_bytes(32))).replace("==","")
         token2 = str(base64.b64encode(secrets.token_bytes(32))).replace("==","")
 
-        return FakeResponse(200, {"status": "OK", "access_token":token1, "refresh_token":token2, "expires_in":3600, "site_id": 1326})
+        return FakeResponse(200, {"status": "OK", "access_token":token1, "refresh_token":token2, "expires_in":3600, "site_id": 1234})
 
     elif "v2/client/site/items" in url:
         return FakeResponse(200, {"status": "OK",
                                   "payload" :
                                       {"items": [
                                           {
-                                              "siteId" : 1326,
+                                              "siteId" : 1234,
                                               "label" : "Alarme Mock",
                                               "brand" : "Mock",
                                               "timezone" : "Europe/Paris",
@@ -68,7 +68,7 @@ def fake_http_call(url: str, *args, **kwargs):
                                       ]}
                                   })
 
-    elif "v2/site/1326/scenario/items" in url:
+    elif "v2/site/1234/scenario/items" in url:
         return FakeResponse(200, {"status": "OK",
                                   "payload" :
                                       {"items": [
@@ -92,15 +92,15 @@ def fake_http_call(url: str, *args, **kwargs):
                                           }
                                       ]}
                                   })
-    elif "v2/site/1326/scenario/123/play" in url or  "v2/site/1326/scenario/456/play" in url or  "v2/site/1326/scenario/789/play" in url:
+    elif "v2/site/1234/scenario/123/play" in url or  "v2/site/1234/scenario/456/play" in url or  "v2/site/1234/scenario/789/play" in url:
         return FakeResponse(200, {"status": "OK"})
-    elif "v2/site/1326/scenario" in url and  "/play" in url:
+    elif "v2/site/1234/scenario" in url and  "/play" in url:
         return FakeResponse(200, {"status": "KO", "error" : "404", "error_description" : "Unknown scenario ID"})
-    elif "v2/site/1326/scenario/123/disable" in url or  "v2/site/1326/scenario/456/disable" in url or  "v2/site/1326/scenario/789/disable" in url:
+    elif "v2/site/1234/scenario/123/disable" in url or  "v2/site/1234/scenario/456/disable" in url or  "v2/site/1234/scenario/789/disable" in url:
         return FakeResponse(200, {"status": "OK"})
-    elif "v2/site/1326/scenario/123/enable" in url or  "v2/site/1326/scenario/456/enable" in url or  "v2/site/1326/scenario/789/enable" in url:
+    elif "v2/site/1234/scenario/123/enable" in url or  "v2/site/1234/scenario/456/enable" in url or  "v2/site/1234/scenario/789/enable" in url:
         return FakeResponse(200, {"status": "OK"})
-    elif "v2/site/1326/xxx" in url:
+    elif "v2/site/1234/xxx" in url:
         return FakeResponse(200, {"status": "OK",
                                   "payload":
                                       {"items": [
