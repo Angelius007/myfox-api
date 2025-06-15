@@ -17,9 +17,9 @@ class FakeResponse():
     def __init__(self, status: int, payload: dict):
         self.status = status
         self._payload = payload
-        headers = CIMultiDict()
-        headers[hdrs.CONTENT_TYPE] = "application/json"
-        self.headers: CIMultiDictProxy[str] = CIMultiDictProxy(headers)
+        _h = CIMultiDict()
+        _h[hdrs.CONTENT_TYPE] = "application/json"
+        self.headers: CIMultiDictProxy[str] = CIMultiDictProxy(_h)
         self.reason = ""
 
     async def json(self):

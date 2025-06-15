@@ -41,4 +41,4 @@ jobs:
       run: pip freeze
     - name: Test with pytest
       run: |
-        pytest -q --disable-warnings --log-cli-level=DEBUG
+        pytest -vv --log-cli-level=DEBUG
