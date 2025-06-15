@@ -37,6 +37,7 @@ class FakeResponse():
 def fake_http_call(url: str, *args, **kwargs):
     """Route les URL vers des FakeResponse adaptées."""
 
+    print(f"⭐️ fake_http_call for {url}")
     if "oauth2/token" in url:
         token1 = str(base64.b64encode(secrets.token_bytes(32))).replace("==","")
         token2 = str(base64.b64encode(secrets.token_bytes(32))).replace("==","")
