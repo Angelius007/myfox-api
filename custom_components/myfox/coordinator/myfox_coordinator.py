@@ -84,7 +84,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
 
         _LOGGER.info("Init " + str(self.name) + " avec un pooling de " + str(options.pooling_frequency) + " minutes")
 
-    async def update_entry(self, myfoxApiclient: MyFoxApiClient) :
+    async def update_entry(self, myfoxApiClient: MyFoxApiClient) :
         try:
 
             existing_entry = self.hass.config_entries.async_get_entry(self.entry.entry_id)
@@ -122,7 +122,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
     def stop(self) :
         """ Arret des process """
 
-    def add_client(self, myfoxApiclient: MyFoxApiClient):
+    def add_client(self, myfoxApiClient: MyFoxApiClient):
         """ Ajout d'un nouveau client """
         # Si le client existe deja, on ajoute les devices au client existant
         if myfoxApiClient.client_key in self.myfoxApiClients :
