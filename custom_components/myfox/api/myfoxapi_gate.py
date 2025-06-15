@@ -2,7 +2,7 @@ import logging
 import time
 
 from .myfoxapi_exception import (MyFoxException)
-from . import (MyFoxEntryDataApi )
+from . import (MyFoxEntryDataApi)
 from .myfoxapi import (MyFoxApiClient)
 
 from .const import (
@@ -12,9 +12,10 @@ from .const import (
 )
 _LOGGER = logging.getLogger(__name__)
 
+
 class MyFoxApiGateClient(MyFoxApiClient) :
 
-    def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
+    def __init__(self, myfox_info: MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
         self.client_key = "gate"
         self.gate = list()
@@ -38,15 +39,15 @@ class MyFoxApiGateClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
-    
-    async def performeOne(self, deviceId:int) -> list:
+            raise MyFoxException(args=exception)
+
+    async def performeOne(self, deviceId: int) -> bool:
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_GATE_PERFORM_ONE % (self.myfox_info.site.siteId, deviceId))
             _LOGGER.debug("Response : %s", str(response))
-            
-            statut_ok =  ("status" in response and response["status"] == "OK")
+
+            statut_ok = ("status" in response and response["status"] == "OK")
             if statut_ok :
                 self.gate_time = 0
             return statut_ok
@@ -55,15 +56,15 @@ class MyFoxApiGateClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
-    
-    async def performeTwo(self, deviceId:int) -> list:
+            raise MyFoxException(args=exception)
+
+    async def performeTwo(self, deviceId: int) -> bool:
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_GATE_PERFORM_TWO % (self.myfox_info.site.siteId, deviceId))
             _LOGGER.debug("Response : %s", str(response))
-            
-            statut_ok =  ("status" in response and response["status"] == "OK")
+
+            statut_ok = ("status" in response and response["status"] == "OK")
             if statut_ok :
                 self.gate_time = 0
             return statut_ok
@@ -72,4 +73,4 @@ class MyFoxApiGateClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)

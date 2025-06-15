@@ -2,7 +2,7 @@ import logging
 import time
 
 from .myfoxapi_exception import (MyFoxException)
-from . import (MyFoxEntryDataApi )
+from . import (MyFoxEntryDataApi)
 from .myfoxapi import (MyFoxApiClient)
 
 from .const import (
@@ -12,9 +12,10 @@ from .const import (
 )
 _LOGGER = logging.getLogger(__name__)
 
+
 class MyFoxApiModuleClient(MyFoxApiClient) :
 
-    def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
+    def __init__(self, myfox_info: MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
         self.client_key = "module"
         self.module = list()
@@ -31,7 +32,7 @@ class MyFoxApiModuleClient(MyFoxApiClient) :
             if self.isCacheExpire(self.module_time) :
                 response = await self.callMyFoxApiGet(MYFOX_DEVICE_MODULE_LIST % (self.myfox_info.site.siteId))
                 items = response["payload"]["items"]
-                _LOGGER.debug("getList : %s",str(items))
+                _LOGGER.debug("getList : %s", str(items))
                 self.module = items
                 self.module_time = time.time()
 
@@ -44,15 +45,15 @@ class MyFoxApiModuleClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
-    
-    async def performeOne(self, deviceId:int) -> list:
+            raise MyFoxException(args=exception)
+
+    async def performeOne(self, deviceId: int) -> list:
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_MODULE_PERFORM_ONE % (self.myfox_info.site.siteId, deviceId))
             _LOGGER.debug("Response : %s", str(response))
-            
-            statut_ok =  ("status" in response and response["status"] == "OK")
+
+            statut_ok = ("status" in response and response["status"] == "OK")
             if statut_ok :
                 self.module_time = 0
             return statut_ok
@@ -61,15 +62,15 @@ class MyFoxApiModuleClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
-    
-    async def performeTwo(self, deviceId:int) -> list:
+            raise MyFoxException(args=exception)
+
+    async def performeTwo(self, deviceId: int) -> list:
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_MODULE_PERFORM_TWO % (self.myfox_info.site.siteId, deviceId))
             _LOGGER.debug("Response : %s", str(response))
-            
-            statut_ok =  ("status" in response and response["status"] == "OK")
+
+            statut_ok = ("status" in response and response["status"] == "OK")
             if statut_ok :
                 self.module_time = 0
             return statut_ok
@@ -78,4 +79,4 @@ class MyFoxApiModuleClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)

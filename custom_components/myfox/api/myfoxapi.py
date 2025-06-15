@@ -10,9 +10,9 @@ from abc import abstractmethod
 from typing import Any
 from aiohttp import ClientResponse, hdrs
 from .const import (
-    DEFAULT_MYFOX_URL_API, MYFOX_TOKEN_PATH, MYFOX_INFO_SITE_PATH,MYFOX_HISTORY_GET,
+    DEFAULT_MYFOX_URL_API, MYFOX_TOKEN_PATH, MYFOX_INFO_SITE_PATH, MYFOX_HISTORY_GET,
     KEY_GRANT_TYPE, KEY_CLIENT_ID, KEY_CLIENT_SECRET, KEY_MYFOX_USER, KEY_MYFOX_PSWD, KEY_REFRESH_TOKEN,
-    KEY_EXPIRE_IN, KEY_EXPIRE_AT, KEY_ACCESS_TOKEN, GRANT_TYPE_PASSWORD, GRANT_REFRESH_TOKEN,SEUIL_EXPIRE_MIN,
+    KEY_EXPIRE_IN, KEY_EXPIRE_AT, KEY_ACCESS_TOKEN, GRANT_TYPE_PASSWORD, GRANT_REFRESH_TOKEN, SEUIL_EXPIRE_MIN,
     CONTENT_TYPE_JSON, CONTENT_TYPE_HTML
 )
 from ..scenes import (BaseScene, DiagnosticScene, MyFoxSceneInfo)
@@ -25,13 +25,14 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class MyFoxPolicy(asyncio.DefaultEventLoopPolicy):
-   def new_event_loop(self):
-      selector = selectors.SelectSelector()
-      return asyncio.SelectorEventLoop(selector)
-   
+    def new_event_loop(self):
+        selector = selectors.SelectSelector()
+        return asyncio.SelectorEventLoop(selector)
+
+
 class MyFoxApiClient:
 
-    def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
+    def __init__(self, myfox_info: MyFoxEntryDataApi) -> None:
         self.client_key = "generic"
         self.client = None
         self.devices: dict[str, BaseDevice] = {}
@@ -41,12 +42,11 @@ class MyFoxApiClient:
         self.history_time = 0
         self.saveMyFoxInfo(myfox_info)
 
-    def saveMyFoxInfo(self, myfox_info:MyFoxEntryDataApi) :
-        self.myfox_info:MyFoxEntryDataApi = myfox_info
+    def saveMyFoxInfo(self, myfox_info: MyFoxEntryDataApi) :
+        self.myfox_info: MyFoxEntryDataApi = myfox_info
         self.cache_expire_in = myfox_info.options.cache_time
         self.nb_retry = myfox_info.options.nb_retry_default
         self.delay_between_retry = myfox_info.options.delay_between_retry
-        
 
     def configure_device(self, deviceId: int, label: str, modelId: int, modelLabel: str):
         """ Configuration device """
@@ -65,7 +65,7 @@ class MyFoxApiClient:
         # Sinon, on positionne en Diagnostic
         else:
             device = DiagnosticDevice(info)
-        _LOGGER.debug("New device : %s",str(device))
+        _LOGGER.debug("New device : %s", str(device))
         self.add_device(device)
 
     def add_device(self, device: BaseDevice):
@@ -73,12 +73,11 @@ class MyFoxApiClient:
             self.devices[str(device.device_info.deviceId)] = device
 
     def __create_device_info(self, deviceId: int, label: str, modelId: int, modelLabel: str) -> MyFoxDeviceInfo:
-        return MyFoxDeviceInfo(
-                deviceId,
-                label,
-                modelId,
-                modelLabel
-        )
+        return MyFoxDeviceInfo(deviceId,
+                               label,
+                               modelId,
+                               modelLabel)
+
     def configure_scene(self, scenarioId: int, label: str, typeLabel: str, enabled: str):
         """ Configuration device """
         info = self.__create_scene_info(scenarioId, label, typeLabel, enabled)
@@ -90,7 +89,7 @@ class MyFoxApiClient:
         # Sinon, on positionne en Diagnostic
         else:
             scene = DiagnosticScene(info)
-        _LOGGER.debug("New scene : %s",str(scene))
+        _LOGGER.debug("New scene : %s", str(scene))
         self.add_scene(scene)
 
     def add_scene(self, scene: BaseScene):
@@ -98,41 +97,23 @@ class MyFoxApiClient:
             self.scenes[str(scene.scene_info.scenarioId)] = scene
 
     def __create_scene_info(self, scenarioId: int, label: str, typeLabel: str, enabled: str) -> MyFoxSceneInfo:
-        return MyFoxSceneInfo(
-                scenarioId,
-                label,
-                typeLabel,
-                enabled
-        )
-    
-    def getUrlMyFoxApi(self, path:str) :
+        return MyFoxSceneInfo(scenarioId,
+                              label,
+                              typeLabel,
+                              enabled)
+
+    def getUrlMyFoxApi(self, path: str) :
         """ Formattage URL """
         url = f"{DEFAULT_MYFOX_URL_API}{path}"
         return url
-    
-    async def callMyFoxApiGet(self, path:str, data:str = None):
-        """ Appel API en GET """
-        return await self.callMyFoxApi(path, data, "GET")
-    
-    async def callMyFoxApiBinaryGet(self, path:str, data:str = None):
-        """ Appel API en GET """
-        return await self.callMyFoxApi(path, data, "GET", "binary")
-    
-    async def callMyFoxApiPost(self, path:str, data:str = None):
-        """ Appel API en POST """
-        return await self.callMyFoxApi(path, data, "POST")
-    
-    async def callMyFoxApiBinaryPost(self, path:str, data:str = None):
-        """ Appel API en POST """
-        return await self.callMyFoxApi(path, data, "POST", "binary")
-        
+
     async def updateDevices(self) :
         """ Mise a jour de chaque device """
         for device in self.devices :
             await self.updateDevices(device)
 
     @abstractmethod
-    async def updateDevice(self, device:BaseDevice) :
+    async def updateDevice(self, device: BaseDevice) :
         """ Miser a jour d'un device """
         pass
 
@@ -141,61 +122,87 @@ class MyFoxApiClient:
         """ Liste """
         pass
 
-    async def callMyFoxApi(self, path:str, data:str = None, method:str = "POST", responseClass:str = "json", retry:int = 0):
+    async def callMyFoxApiGet(self, path: str, data: str = None, retry: int = 0):
+        """ Appel API en GET """
+        return await self.callMyFoxApiWithSession_(path, data, "GET", "json", retry=retry)
+
+    async def callMyFoxApiBinaryGet(self, path: str, data: str = None, retry: int = 0):
+        """ Appel API en GET """
+        return await self.callMyFoxApiWithSession_(path, data, "GET", "binary", retry)
+
+    async def callMyFoxApiPost(self, path: str, data: str = None, retry: int = 0):
+        """ Appel API en POST """
+        return await self.callMyFoxApiWithSession_(path, data, "POST", "json", retry=retry)
+
+    async def callMyFoxApiBinaryPost(self, path: str, data: str = None, retry: int = 0):
+        """ Appel API en POST """
+        return await self.callMyFoxApiWithSession_(path, data, "POST", "binary", retry)
+
+    async def callMyFoxApiWithSession_(self, path: str, data: str = None, method: str = "POST",
+                                       responseClass: str = "json", retry: int = 0):
+        """ Appel API """
+        try:
+            async with aiohttp.ClientSession() as session:
+                return await self.callMyFoxApi_(session, path, data, method, responseClass, retry)
+        except MyFoxException as exception:
+            """ Retry """
+            if retry < self.nb_retry :
+                await asyncio.sleep(self.delay_between_retry)  # tempo de qqes secondes pour relancer la requete
+                return await self.callMyFoxApiWithSession_(path, data, method, responseClass, retry=(retry + 1))
+            else :
+                _LOGGER.warning(exception)
+                raise exception
+        except Exception as exception:
+            """ Retry """
+            if retry < self.nb_retry :
+                await asyncio.sleep(self.delay_between_retry)  # tempo de qqes secondes pour relancer la requete
+                return await self.callMyFoxApiWithSession_(path, data, method, responseClass, retry=(retry + 1))
+            else :
+                _LOGGER.error(exception)
+                raise MyFoxException(args=exception)
+
+    async def callMyFoxApi_(self, session: aiohttp.ClientSession, path: str, data: str = None, method: str = "POST",
+                            responseClass: str = "json", retry: int = 0):
         """ Appel API """
         _LOGGER.debug(f"Appel : {path}/{method}/{responseClass} - Essai : {retry}/{self.nb_retry}")
-        async with aiohttp.ClientSession() as session:
-            try:
-                headers = {
-                    hdrs.CONTENT_TYPE: CONTENT_TYPE_JSON
-                }
-                urlApi = self.getUrlMyFoxApi(path)
-                if not data or KEY_GRANT_TYPE not in data :
-                    urlApi = urlApi + "?access_token=" + await self.getToken()
-                    if data is not None :
-                        params = urllib.parse.urlencode(data)
-                        urlApi = urlApi + "&" + str(params)
-                _LOGGER.debug(f"Appel : {urlApi} - Essai : {retry}/{self.nb_retry}")
-                if method == "POST":
-                    async with session.post(urlApi, headers=headers, json=data) as resp :
-                        retour = await self._get_response(resp, responseClass)
-                else :
-                    async with session.get(urlApi, headers=headers, json=data) as resp :
-                        retour = await self._get_response(resp, responseClass)
-                if retry > 0 :
-                    _LOGGER.info(f"Relance de la requete {path} : OK (Tentative : {(retry)}/{self.nb_retry})")
-                return retour
-            except InvalidTokenMyFoxException as exception:
-                _LOGGER.error(f"InvalidTokenMyFoxException : {exception.status} - {exception.message}")
-                raise exception
-            except MyFoxException as exception:
-                """ Retry """
-                if retry < self.nb_retry :
-                    _LOGGER.warning(f"Erreur {exception.status} - {exception.message}. Relance de la requete {path} (Tentative : {(retry+1)}/{self.nb_retry})")
-                    await asyncio.sleep(self.delay_between_retry) # tempo de qqes secondes pour relancer la requete
-                    return await self.callMyFoxApi(path=path, data=data, method=method, responseClass=responseClass, retry=(retry+1))
-                else :
-                    _LOGGER.error(f"Erreur {exception.status} - {exception.message}. Echec des relances {path} (Tentative : {retry}/{self.nb_retry})")
-                    raise exception
-            except Exception as exception:
-                """ Retry """
-                if retry < self.nb_retry :
-                    _LOGGER.warning(f"Exception {str(exception)}. Relance de la requete {path} (Tentative : {(retry+1)}/{self.nb_retry})")
-                    await asyncio.sleep(self.delay_between_retry) # tempo de qqes secondes pour relancer la requete
-                    return await self.callMyFoxApi(path=path, data=data, method=method, responseClass=responseClass, retry=(retry+1))
-                else :
-                    _LOGGER.error(exception)
-                    _LOGGER.error(f"Erreur {str(exception)}. Echec des relances {path} (Tentative : {retry}/{self.nb_retry})")
-                    raise MyFoxException(exception)
+        try:
+            headers = {
+                hdrs.CONTENT_TYPE: CONTENT_TYPE_JSON
+            }
+            urlApi = self.getUrlMyFoxApi(path)
+            if not data or KEY_GRANT_TYPE not in data :
+                urlApi = urlApi + "?access_token=" + await self.getToken()
+                if data is not None :
+                    params = urllib.parse.urlencode(data)
+                    urlApi = urlApi + "&" + str(params)
+            _LOGGER.debug(f"Appel : {urlApi} - Essai : {retry}/{self.nb_retry}")
+            if method == "POST":
+                async with session.post(urlApi, headers=headers, json=data) as resp :
+                    retour = await self._get_response(resp, responseClass)
+            else :
+                async with session.get(urlApi, headers=headers, json=data) as resp :
+                    retour = await self._get_response(resp, responseClass)
+            if retry > 0 :
+                _LOGGER.info(f"Relance de la requete {path} : OK (Tentative : {(retry)}/{self.nb_retry})")
+            return retour
+        except InvalidTokenMyFoxException as exception:
+            _LOGGER.error(f"InvalidTokenMyFoxException : {exception.status} - {exception.message}")
+            raise exception
+        except MyFoxException as exception:
+            raise exception
+        except Exception as exception:
+            _LOGGER.error(exception)
+            _LOGGER.error(f"Erreur {str(exception)}. Echec des relances {path} (Tentative : {retry}/{self.nb_retry})")
+            raise MyFoxException(args=exception)
 
-    async def _get_response(self, resp: ClientResponse, responseClass:str = "json"):
+    async def _get_response(self, resp: ClientResponse, responseClass: str = "json"):
         if responseClass == "json" :
             return await self._get_json_response(resp)
         elif responseClass == "binary" :
             return await self._get_binary_response(resp)
         else :
             raise MyFoxException(f"Erreur de format pour la reponse : {responseClass}. (Choix possibles : json/binary)")
-        
+
     async def _get_binary_response(self, resp: ClientResponse):
         """ Traitement de la reponse """
         ctype = resp.headers.get(hdrs.CONTENT_TYPE, "").lower()
@@ -204,36 +211,36 @@ class MyFoxApiClient:
                 if CONTENT_TYPE_JSON not in ctype :
                     json_resp = await resp.json()
                     raise InvalidTokenMyFoxException(resp.status, f"Error : {json_resp["error"]}")
-                else : 
+                else :
                     html_resp = await resp.text()
                     raise InvalidTokenMyFoxException(resp.status, f"Error : {html_resp}")
             except MyFoxException as exception:
-                raise exception 
+                raise exception
             except Exception as error:
                 _LOGGER.error(error)
-                raise MyFoxException(f"Failed to parse response: {resp.text} Error: {error}")
-        
+                raise MyFoxException(resp.status, f"Failed to parse response: {resp.text} Error: {error}")
+
         if resp.status != 200:
-            raise MyFoxException(f"Got HTTP status code {resp.status}: {resp.reason}")
+            raise MyFoxException(resp.status, f"Got HTTP status code {resp.status}: {resp.reason}")
 
         try:
             response = {
-                "filename":str,
-                "binary":bytes
+                "filename": str,
+                "binary": bytes
             }
             response["binary"] = await resp.read()
             response["filename"] = "undefined"
             if resp and resp.content_disposition and resp.content_disposition.filename :
-                filename=resp.content_disposition.filename
+                filename = resp.content_disposition.filename
                 _LOGGER.info(filename)
                 response["filename"] = filename
 
             return response
-        
+
         except Exception as error:
             _LOGGER.error(error)
             raise MyFoxException(f"Failed to parse response: {resp.text} Error: {error}")
-    
+
     async def _get_json_response(self, resp: ClientResponse):
         """ Traitement de la reponse """
         ctype = resp.headers.get(hdrs.CONTENT_TYPE, "").lower()
@@ -253,11 +260,11 @@ class MyFoxApiClient:
                 else :
                     raise MyFoxException(resp.status, f"Failed to parse response: Format {ctype} - Error: unexpected mimetype")
             except MyFoxException as exception:
-                raise exception 
+                raise exception
             except Exception as error:
                 _LOGGER.error(error)
                 raise MyFoxException(resp.status, f"Failed to parse response: {resp.text} Error: {error}")
-        
+
         if resp.status != 200:
             raise MyFoxException(resp.status, f"Got HTTP status code {resp.status}: {resp.reason}")
 
@@ -278,30 +285,30 @@ class MyFoxApiClient:
                     raise MyFoxException(statut, f"Error : {error} - Description: {description}")
             else :
                 raise MyFoxException(resp.status, f"Failed to parse response: Format {ctype} - Error: unexpected mimetype")
-                
+
         except MyFoxException as exception:
-            raise exception 
+            raise exception
         except Exception as error:
             _LOGGER.error(error)
             raise MyFoxException(resp.status, f"Failed to parse response: {resp.text} Error: {error}")
 
         return json_resp
-    
+
     def stop(self) -> bool:
         return True
-    
+
     async def login(self) -> bool :
         """ Recuperation des tokens """
         try:
             data = {
-                KEY_GRANT_TYPE:GRANT_TYPE_PASSWORD, 
-                KEY_CLIENT_ID:self.myfox_info.client_id, 
-                KEY_CLIENT_SECRET:self.myfox_info.client_secret,
-                KEY_MYFOX_USER:self.myfox_info.username,
-                KEY_MYFOX_PSWD:self.myfox_info.password
+                KEY_GRANT_TYPE: GRANT_TYPE_PASSWORD,
+                KEY_CLIENT_ID: self.myfox_info.client_id,
+                KEY_CLIENT_SECRET: self.myfox_info.client_secret,
+                KEY_MYFOX_USER: self.myfox_info.username,
+                KEY_MYFOX_PSWD: self.myfox_info.password
             }
-            
-            response = await self.callMyFoxApiPost(MYFOX_TOKEN_PATH, data)
+
+            response = await self.callMyFoxApiPost(MYFOX_TOKEN_PATH, str(data))
             # save des tokens
             self.saveToken(response)
             # en cas d'absence, recuperation du site
@@ -309,24 +316,24 @@ class MyFoxApiClient:
 
             return True
         except MyFoxException as exception:
-            raise exception 
+            raise exception
         except Exception as exception:
             _LOGGER.error(exception)
             _LOGGER.error("Error : " + str(exception))
             return False
-        
+
     async def refreshToken(self) -> bool:
         """ Rafraichissement des tokens """
         try:
             data = {
-                KEY_GRANT_TYPE:GRANT_REFRESH_TOKEN, 
-                KEY_CLIENT_ID:self.myfox_info.client_id, 
-                KEY_CLIENT_SECRET:self.myfox_info.client_secret,
-                KEY_REFRESH_TOKEN:self.myfox_info.refresh_token
+                KEY_GRANT_TYPE: GRANT_REFRESH_TOKEN,
+                KEY_CLIENT_ID: self.myfox_info.client_id,
+                KEY_CLIENT_SECRET: self.myfox_info.client_secret,
+                KEY_REFRESH_TOKEN: self.myfox_info.refresh_token
             }
             _LOGGER.debug("Refresh token utilise : %s", str(self.myfox_info.refresh_token))
-            
-            response = await self.callMyFoxApiPost(MYFOX_TOKEN_PATH, data)
+
+            response = await self.callMyFoxApiPost(MYFOX_TOKEN_PATH, str(data))
             # save des tokens
             self.saveToken(response)
             # en cas d'absence, recuperation du site
@@ -361,16 +368,16 @@ class MyFoxApiClient:
         except KeyError as key:
             _LOGGER.error("Error : " + str(key))
             raise MyFoxException(f"Failed to extract key {key} from response: {response}")
-    
+
     async def getToken(self) -> str:
         """ Recuperation des derniers tokens ou renouvellement si expire """
         try:
             expireDelay = self.getExpireDelay()
-            if expireDelay == 0: # jeton expire
+            if expireDelay == 0:  # jeton expire
                 _LOGGER.debug("Jeton expire -> demande de renouvellement")
                 await self.refreshToken()
                 expireDelay = self.getExpireDelay()
-            elif expireDelay < (SEUIL_EXPIRE_MIN): # si jeton valide - de 5 min, on renouvelle
+            elif expireDelay < (SEUIL_EXPIRE_MIN):  # si jeton valide - de 5 min, on renouvelle
                 # Token expire, on renouvelle
                 _LOGGER.debug("Jeton bientot expire -> demande de renouvellement")
                 await self.refreshToken()
@@ -383,7 +390,7 @@ class MyFoxApiClient:
         except Exception as exception:
             _LOGGER.error(exception)
             _LOGGER.error("Error : " + exception)
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
 
     def getExpireDelay(self) -> float :
         """ Calcul du temps restant """
@@ -405,8 +412,8 @@ class MyFoxApiClient:
         expiration = (current_time - start_time)
         _LOGGER.debug("Expiration cache - %s [%s / %s]", self.client_key, expiration, param_expire)
         return expiration >= param_expire
-    
-    async def getInfoSite(self, siteId:int, forceCall:bool=False) -> MyFoxSite:
+
+    async def getInfoSite(self, siteId: int, forceCall: bool = False) -> MyFoxSite:
         """ Recuperation info site """
         try:
             if self.myfox_info.site is None or self.myfox_info.site.siteId == 0 :
@@ -429,12 +436,11 @@ class MyFoxApiClient:
         except Exception as exception:
             _LOGGER.error(exception)
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
-        
-    async def getInfoSites(self, forceCall:bool=False) -> list[MyFoxSite]:
+            raise MyFoxException(args=exception)
+
+    async def getInfoSites(self, forceCall: bool = False) -> list[MyFoxSite]:
         """ Recuperation info site """
         try:
-            
             if self.isCacheExpire(self.infoSites_times) or forceCall:
                 _LOGGER.debug("Recherches de sites : (Forcage : %s)", str(forceCall))
                 response = await self.callMyFoxApiGet(MYFOX_INFO_SITE_PATH)
@@ -442,26 +448,26 @@ class MyFoxApiClient:
 
                 for item in items :
                     site = MyFoxSite(int(item["siteId"]),
-                                                    item["label"],
-                                                    str(item["siteId"]) + " - " + str(item["label"]),
-                                                    item["brand"],
-                                                    item["timezone"],
-                                                    item["AXA"],
-                                                    int(item["cameraCount"]),
-                                                    int(item["gateCount"]),
-                                                    int(item["shutterCount"]),
-                                                    int(item["socketCount"]),
-                                                    int(item["moduleCount"]),
-                                                    int(item["heaterCount"]),
-                                                    int(item["scenarioCount"]),
-                                                    int(item["deviceTemperatureCount"]),
-                                                    int(item["deviceStateCount"]),
-                                                    int(item["deviceLightCount"]),
-                                                    int(item["deviceDetectorCount"]))
+                                     item["label"],
+                                     str(item["siteId"]) + " - " + str(item["label"]),
+                                     item["brand"],
+                                     item["timezone"],
+                                     item["AXA"],
+                                     int(item["cameraCount"]),
+                                     int(item["gateCount"]),
+                                     int(item["shutterCount"]),
+                                     int(item["socketCount"]),
+                                     int(item["moduleCount"]),
+                                     int(item["heaterCount"]),
+                                     int(item["scenarioCount"]),
+                                     int(item["deviceTemperatureCount"]),
+                                     int(item["deviceStateCount"]),
+                                     int(item["deviceLightCount"]),
+                                     int(item["deviceDetectorCount"]))
                     self.myfox_info.sites.append(site)
-                    _LOGGER.debug("site_id:"+str(site.siteId))
+                    _LOGGER.debug("site_id:" + str(site.siteId))
                     _LOGGER.debug("Nouveau site : %s", str(site))
-                    #break
+                    # break
                 self.infoSites_times = time.time()
             else :
                 _LOGGER.debug("Sites en cache : %s", str(self.myfox_info.sites))
@@ -473,20 +479,20 @@ class MyFoxApiClient:
         except Exception as exception:
             _LOGGER.error(exception)
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
 
-    async def getHistory(self, type:str="security"):
+    async def getHistory(self, type: str = "security"):
         """ Recuperation info site """
         try:
             if self.isCacheExpire(self.history_time) :
                 data = {
-                    #"dateFrom"  : "xxx",
-                    #"dateTo"    : "yyy",
+                    # "dateFrom"  : "xxx",
+                    # "dateTo"    : "yyy",
                     "dateOrder" : -1
                 }
                 if type is not None:
                     data["type"] = type
-                response = await self.callMyFoxApiGet(MYFOX_HISTORY_GET % self.myfox_info.site.siteId, data)
+                response = await self.callMyFoxApiGet(MYFOX_HISTORY_GET % self.myfox_info.site.siteId, str(data))
                 items = response["payload"]["items"]
 
                 self.history = items
@@ -510,4 +516,4 @@ class MyFoxApiClient:
         except Exception as exception:
             _LOGGER.error(exception)
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)

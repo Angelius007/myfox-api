@@ -9,6 +9,7 @@ from .api.oauth import MyFoxImplementation
 
 _LOGGER = logging.getLogger(__name__)
 
+
 async def async_get_auth_implementation(
     hass: HomeAssistant, auth_domain: str, credential: ClientCredential
 ) -> config_entry_oauth2_flow.AbstractOAuth2Implementation:
@@ -19,4 +20,3 @@ async def async_get_auth_implementation(
         auth_domain,
         credential,
     )
-

@@ -14,13 +14,14 @@ MYFOX_KEY: HassEntryKey["MyFoxCoordinator"] = HassEntryKey(DOMAIN_MYFOX)
 
 PARALLEL_UPDATES = 0
 
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
     """ Chargement des scenes """
-    coordinator:MyFoxCoordinator = hass.data.setdefault(MYFOX_KEY, {})[entry.entry_id]
+    coordinator: MyFoxCoordinator = hass.data.setdefault(MYFOX_KEY, {})[entry.entry_id]
     known_scenes: set[str] = set()
-    
+
     def _check_scene() -> None:
-        for (client_key,client_item) in coordinator.myfoxApiClients.items() :
+        for (client_key, client_item) in coordinator.myfoxApiClients.items() :
             client: MyFoxApiClient = client_item
 
             for (scenarioId, scene) in client.scenes.items():

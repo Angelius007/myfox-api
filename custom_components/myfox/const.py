@@ -34,10 +34,10 @@ HEATER_OPTIONS = {
     "OFF": "off",
     "Mode ECO": "eco",
     "Hors GEL": "frost",
-    #"Absent": "away",
-    #"Auto": "auto",
-    #"Boost": "boost",
-    #"Thermostat OFF": "thermostatoff",
+    # "Absent": "away",
+    # "Auto": "auto",
+    # "Boost": "boost",
+    # "Thermostat OFF": "thermostatoff",
 }
 HEATER_EXTENDED_OPTIONS = {
     "ON": "on",

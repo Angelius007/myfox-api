@@ -11,12 +11,14 @@ from ..devices import BaseDevice
 from ..coordinator.myfox_coordinator import (MyFoxCoordinator)
 
 _LOGGER = logging.getLogger(__name__)
- 
+
+
 class BaseSensorEntity(SensorEntity, BaseWithValueEntity):
     pass
 
+
 class DictStateBaseSensorEntity(BaseSensorEntity):
-    def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str, options: dict[str, int]=None):
+    def __init__(self, coordinator: MyFoxCoordinator, device: BaseDevice, title: str, key: str, options: dict[str, int] = None):
         super().__init__(coordinator, device, title, key)
         if options :
             self._options_dict = options
@@ -29,7 +31,7 @@ class DictStateBaseSensorEntity(BaseSensorEntity):
 
     def options_dict(self) -> dict[str, int]:
         return self._options_dict
-    
+
     def _update_value(self, val: Any) -> bool:
         if self._options_dict :
             ival = int(val)
@@ -42,8 +44,9 @@ class DictStateBaseSensorEntity(BaseSensorEntity):
         else :
             return False
 
+
 class DictStateStrBaseSensorEntity(BaseSensorEntity):
-    def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str, options: dict[str, str]=None):
+    def __init__(self, coordinator: MyFoxCoordinator, device: BaseDevice, title: str, key: str, options: dict[str, str] = None):
         super().__init__(coordinator, device, title, key)
         if options :
             self._options_dict = options
@@ -56,7 +59,7 @@ class DictStateStrBaseSensorEntity(BaseSensorEntity):
 
     def options_dict(self) -> dict[str, str]:
         return self._options_dict
-    
+
     def _update_value(self, val: Any) -> bool:
         if self._options_dict :
             ival = str(val)
@@ -68,7 +71,8 @@ class DictStateStrBaseSensorEntity(BaseSensorEntity):
                 return False
         else :
             return False
-        
+
+
 class TempSensorEntity(BaseSensorEntity):
     _attr_device_class = SensorDeviceClass.TEMPERATURE
     _attr_entity_category = EntityCategory.DIAGNOSTIC
@@ -76,7 +80,7 @@ class TempSensorEntity(BaseSensorEntity):
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_native_value = -1
 
-        
+
 class TempSensorNotEnabledByDefautEntity(TempSensorEntity):
     _attr_entity_registry_enabled_default = False
 
@@ -89,20 +93,21 @@ class LightSensorEntity(DictStateBaseSensorEntity):
     @property
     def icon(self) -> str | None:
         if self._attr_native_value in LIGHT_OPTIONS:
-            if self._attr_native_value == "Pleine lumière": 
+            if self._attr_native_value == "Pleine lumière":
                 return "mdi:weather-sunny"
-            elif self._attr_native_value == "Lumière du jour": 
+            elif self._attr_native_value == "Lumière du jour":
                 return "mdi:weather-sunny"
-            elif self._attr_native_value == "Lumière basse": 
+            elif self._attr_native_value == "Lumière basse":
                 return "mdi:weather-partly-cloudy"
-            elif self._attr_native_value == "Pénombre": 
+            elif self._attr_native_value == "Pénombre":
                 return "mdi:weather-cloudy"
-            elif self._attr_native_value == "Obscurité": 
+            elif self._attr_native_value == "Obscurité":
                 return "mdi:weather-night"
             else:
                 return "mdi:weather-sunny-off"
         else :
             return "mdi:weather-sunny-off"
+
 
 class OnlineSateSensorEntity(DictStateBaseSensorEntity):
     _attr_device_class = SensorDeviceClass.ENUM
@@ -112,15 +117,16 @@ class OnlineSateSensorEntity(DictStateBaseSensorEntity):
     @property
     def icon(self) -> str | None:
         if self._attr_native_value in ONLINE_OPTIONS:
-            if self._attr_native_value == "Online": 
+            if self._attr_native_value == "Online":
                 return "mdi:toggle-switch"
-            elif self._attr_native_value == "Offline": 
+            elif self._attr_native_value == "Offline":
                 return "mdi:toggle-switch-off"
             else:
                 return "mdi:toggle-switch-off-outline"
         else :
             return "mdi:toggle-switch-off-outline"
-        
+
+
 class AlerteStateSensorEntity(DictStateBaseSensorEntity):
     _attr_device_class = SensorDeviceClass.ENUM
     _attr_entity_category = EntityCategory.DIAGNOSTIC
@@ -129,14 +135,15 @@ class AlerteStateSensorEntity(DictStateBaseSensorEntity):
     @property
     def icon(self) -> str | None:
         if self._attr_native_value in ALERTE_OPTIONS:
-            if self._attr_native_value == "OK": 
+            if self._attr_native_value == "OK":
                 return "mdi:check-circle"
-            elif self._attr_native_value == "ALERTE": 
+            elif self._attr_native_value == "ALERTE":
                 return "mdi:alert"
             else:
                 return "mdi:bell-outline"
         else :
             return "mdi:bell-outline"
+
 
 class StateSensorEntity(DictStateBaseSensorEntity):
     _attr_device_class = SensorDeviceClass.ENUM

@@ -12,12 +12,14 @@ from homeassistant.components.media_player import MediaPlayerEntity
 
 _LOGGER = logging.getLogger(__name__)
 
+
 @dataclasses.dataclass
 class MyFoxDeviceInfo:
     deviceId: int
     label: str
     modelId: int
     modelLabel: str
+
 
 class BaseDevice(ABC):
 
@@ -44,13 +46,14 @@ class BaseDevice(ABC):
 
     def cameras(self, coordinator) -> list[Camera]:
         return []
-    
+
     def medias(self, coordinator) -> list[MediaPlayerEntity]:
         return []
-    
+
     def alarms(self, coordinator) -> list[AlarmControlPanelEntity]:
         return []
-    
+
+
 class DiagnosticDevice(BaseDevice):
 
     def __init__(self, device_info: MyFoxDeviceInfo):

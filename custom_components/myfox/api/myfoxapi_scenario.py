@@ -2,7 +2,7 @@ import logging
 import time
 
 from .myfoxapi_exception import (MyFoxException)
-from . import (MyFoxEntryDataApi )
+from . import (MyFoxEntryDataApi)
 from .myfoxapi import (MyFoxApiClient)
 
 from .const import (
@@ -11,9 +11,10 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
+
 class MyFoxApiSecenarioClient(MyFoxApiClient) :
 
-    def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
+    def __init__(self, myfox_info: MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
         self.client_key = "scenario"
         self.scenarii = list()
@@ -30,7 +31,7 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
             if self.isCacheExpire(self.scenarii_time) :
                 response = await self.callMyFoxApiGet(MYFOX_SCENARIO_ITEMS % self.myfox_info.site.siteId)
                 items = response["payload"]["items"]
-                _LOGGER.debug("getScenarii : %s",str(items))
+                _LOGGER.debug("getScenarii : %s", str(items))
                 self.scenarii = items
                 self.scenarii_time = time.time()
 
@@ -43,15 +44,15 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
 
     async def enableScenario(self, scenarioId: int):
         """ Enable scenario """
         try:
             response = await self.callMyFoxApiPost(MYFOX_SCENARIO_ENABLE % (self.myfox_info.site.siteId , scenarioId))
             _LOGGER.debug("Response : %s", str(response))
-            
-            statut_ok =  ("status" in response and response["status"] == "OK")
+
+            statut_ok = ("status" in response and response["status"] == "OK")
             if statut_ok :
                 self.scenarii_time = 0
             return statut_ok
@@ -60,15 +61,15 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
-        
+            raise MyFoxException(args=exception)
+
     async def disableScenario(self, scenarioId: int):
         """ Disable scenario """
         try:
             response = await self.callMyFoxApiPost(MYFOX_SCENARIO_DISABLE % (self.myfox_info.site.siteId , scenarioId))
             _LOGGER.debug("Response : %s", str(response))
-            
-            statut_ok =  ("status" in response and response["status"] == "OK")
+
+            statut_ok = ("status" in response and response["status"] == "OK")
             if statut_ok :
                 self.scenarii_time = 0
             return statut_ok
@@ -77,15 +78,15 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
 
     async def playScenario(self, scenarioId: int):
         """ Play scenario """
         try:
             response = await self.callMyFoxApiPost(MYFOX_SCENARIO_PLAY % (self.myfox_info.site.siteId , scenarioId))
             _LOGGER.debug("Response : %s", str(response))
-            
-            statut_ok =  ("status" in response and response["status"] == "OK")
+
+            statut_ok = ("status" in response and response["status"] == "OK")
             if statut_ok :
                 self.scenarii_time = 0
             return statut_ok
@@ -94,4 +95,4 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)

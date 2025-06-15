@@ -1,7 +1,7 @@
 import logging
 
 from .myfoxapi_exception import (MyFoxException)
-from . import (MyFoxEntryDataApi )
+from . import (MyFoxEntryDataApi)
 from .myfoxapi import (MyFoxApiClient)
 
 from .const import (
@@ -11,9 +11,10 @@ from .const import (
 )
 _LOGGER = logging.getLogger(__name__)
 
+
 class MyFoxApiLibraryClient(MyFoxApiClient) :
 
-    def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
+    def __init__(self, myfox_info: MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
         self.client_key = "librarie"
         self.video = list()
@@ -31,7 +32,7 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
             if self.isCacheExpire(self.image_time) :
                 response = await self.callMyFoxApiGet(MYFOX_LIBRARY_IMAGE_LIST % (self.myfox_info.site.siteId))
                 items = response["payload"]["items"]
-                _LOGGER.debug("getImageList : %s",str(items))
+                _LOGGER.debug("getImageList : %s", str(items))
                 self.image = items
 
             else :
@@ -43,17 +44,16 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
-    
+            raise MyFoxException(args=exception)
+
     async def getVideoList(self) -> list:
         """ Get vdieo list """
         try:
             if self.isCacheExpire(self.video_time) :
                 response = await self.callMyFoxApiGet(MYFOX_LIBRARY_VIDEO_LIST % (self.myfox_info.site.siteId))
                 items = response["payload"]["items"]
-                _LOGGER.debug("getVideoList : %s",str(items))
+                _LOGGER.debug("getVideoList : %s", str(items))
                 self.video = items
-
 
             else :
                 _LOGGER.debug("MyFoxApiLibraryClient.getVideoList -> Cache ")
@@ -64,13 +64,13 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
-    
-    async def playVideo(self, videoId:int) -> str:
+            raise MyFoxException(args=exception)
+
+    async def playVideo(self, videoId: int) -> str:
         """ Get video """
         try:
             response = await self.callMyFoxApiGet(MYFOX_LIBRARY_VIDEO_PLAY % (self.myfox_info.site.siteId, videoId))
-            _LOGGER.debug("playVideo : %s",str(response))
+            _LOGGER.debug("playVideo : %s", str(response))
 
             return response
 
@@ -78,13 +78,13 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
 
-    async def getImage(self, image_url:int) -> bytes:
+    async def getImage(self, image_url: int) -> bytes:
         """ Get image """
         try:
             response = await self.callMyFoxApiBinaryGet(image_url)
-            _LOGGER.debug("playVideo : %s",str(response))
+            _LOGGER.debug("playVideo : %s", str(response))
 
             return response["binary"]
 
@@ -92,4 +92,4 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)

@@ -2,7 +2,7 @@ from typing import Type, OrderedDict
 
 from . import state
 
-from ..devices import (BaseDevice, DiagnosticDevice, 
+from ..devices import (BaseDevice, DiagnosticDevice,
                        camera, gate, heater, alarme,
                        media, light, module, shutter, socket, temperature)
 

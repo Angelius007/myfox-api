@@ -2,10 +2,8 @@ import logging
 import time
 
 from .myfoxapi_exception import (MyFoxException)
-from . import (MyFoxEntryDataApi )
+from . import (MyFoxEntryDataApi)
 from .myfoxapi import (MyFoxApiClient)
-
-
 
 from .const import (
     MYFOX_DEVICE_TEMPERATURE_LIST,
@@ -13,9 +11,10 @@ from .const import (
 )
 _LOGGER = logging.getLogger(__name__)
 
+
 class MyFoxApiTemperatureClient(MyFoxApiClient) :
 
-    def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
+    def __init__(self, myfox_info: MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
         self.client_key = "temperature"
         self.temperature = list()
@@ -30,13 +29,13 @@ class MyFoxApiTemperatureClient(MyFoxApiClient) :
         self.temperature_time = 0
         self.temperatureRecord_time = 0
         return True
-    
+
     async def getList(self) -> list:
         """ Get security site """
         try:
             if self.isCacheExpire(self.temperature_time) :
                 response = await self.callMyFoxApiGet(MYFOX_DEVICE_TEMPERATURE_LIST % (self.myfox_info.site.siteId))
-                _LOGGER.debug("getList.response : %s",str(response))
+                _LOGGER.debug("getList.response : %s", str(response))
                 items = response["payload"]["items"]
 
                 # for item in items :
@@ -51,19 +50,19 @@ class MyFoxApiTemperatureClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
-    
-    async def updateDevice(self, deviceId:int) :
-        """ """
-        #self.getTemperature(device.sensor)
+            raise MyFoxException(args=exception)
 
-    async def getTemperature(self, deviceId:int) -> list:
+    async def updateDevice(self, deviceId: int) :
+        """ """
+        # self.getTemperature(device.sensor)
+
+    async def getTemperature(self, deviceId: int) -> list:
         """ Get security site """
         try:
             if self.isCacheExpire(self.temperatureRecord_time) :
                 response = await self.callMyFoxApiGet(MYFOX_DEVICE_TEMPERATURE_GET % (self.myfox_info.site.siteId, deviceId))
                 items = response["payload"]["items"]
-                _LOGGER.debug("getTemperature : %s",str(items))
+                _LOGGER.debug("getTemperature : %s", str(items))
                 self.temperatureRecord = items
                 self.temperatureRecord_time = time.time()
             else :
@@ -75,4 +74,4 @@ class MyFoxApiTemperatureClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
