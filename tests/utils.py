@@ -102,6 +102,33 @@ def fake_http_call(url: str, *args, **kwargs):
         return FakeResponse(200, {"status": "OK"})
     elif "v2/site/1234/scenario/123/enable" in url or "v2/site/1234/scenario/456/enable" in url or "v2/site/1234/scenario/789/enable" in url:
         return FakeResponse(200, {"status": "OK"})
+    elif "v2/site/1234/security/set/armed" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {
+                                       "request": "OK"
+                                       }
+                                  })
+    elif "v2/site/1234/security/set/partial" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {
+                                       "request": "OK"
+                                       }
+                                  })
+    elif "v2/site/1234/security/set/disarmed" in url:
+        return FakeResponse(200, {"status": "OK",
+                                      "payload": {
+                                          "request": "OK"
+                                       }
+                                  })
+    elif "v2/site/1234/security" in url:
+        return FakeResponse(200, {"status": "OK",
+                                      "payload": {
+                                          "status": 1,
+                                          "statusLabel": "disarmed"
+                                       }
+                                  })
     elif "v2/site/1234/xxx" in url:
         return FakeResponse(200, {"status": "OK",
                                   "payload":
