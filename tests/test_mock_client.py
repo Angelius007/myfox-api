@@ -30,8 +30,6 @@ from tests.utils import fake_http_call, MyFoxMockCache    # ⬅️ le helper ci�
 logging.config.fileConfig('logging.conf', None, True)
 _LOGGER = logging.getLogger(__name__)
 
-asyncio.set_event_loop_policy(MyFoxPolicy())
-loop = asyncio.get_event_loop()
 
 @pytest.mark.asyncio
 async def test_client_login():
