@@ -29,28 +29,29 @@ class MyFoxApiSecurityClient(MyFoxApiClient) :
         super().stop()
         return True
 
+    @property
     async def getList(self) -> list:
         """ Generation d'une entite fictive pour l'alarme """
         if self.isCacheExpireWithParam(self.security_time, self.security_cache_expire_in) :
             statutSecurity = await self.getSecurity()
             self.security.clear()
-            if "status" in statutSecurity and "statusLabel" in statutSecurity :
+            if "status" in statutSecurity and "statusLabel" in statutSecurity:
                 self.security.append({'deviceId': self.myfox_info.site.siteId,
                                       'label': 'Alarme MyFox',
                                       'modelId': 99,
                                       'modelLabel': 'Alarme MyFox',
-                                      "status" : statutSecurity["status"],
-                                      "statusLabel" : statutSecurity["statusLabel"]
+                                      "status": statutSecurity["status"],
+                                      "statusLabel": statutSecurity["statusLabel"]
                                       })
                 self.security_time = time.time()
-        else :
+        else:
             _LOGGER.debug("MyFoxApiSecurityClient.getList -> Cache ")
         return self.security
 
     async def getSecurity(self):
         """ Get security site """
         try:
-            response = await self.callMyFoxApiGet(MYFOX_SECURITY_GET % (self.myfox_info.site.siteId))
+            response = await self.callMyFoxApiGet(MYFOX_SECURITY_GET % self.myfox_info.site.siteId)
             statutSecurity = response["payload"]
             _LOGGER.debug("getSecurity : %s", str(statutSecurity))
 
@@ -66,7 +67,7 @@ class MyFoxApiSecurityClient(MyFoxApiClient) :
         """ Mise a jour security site """
         try:
             if self.myfox_info.options.use_code_alarm:
-                codes = decode(self.myfox_info.options.secure_codes, self.myfox_info.site.siteId)
+                codes = decode(self.myfox_info.options.secure_codes, str(self.myfox_info.site.siteId))
                 code_trouve = False
                 for local_code in codes.split(" ") :
                     if str(code) == str(local_code) :
