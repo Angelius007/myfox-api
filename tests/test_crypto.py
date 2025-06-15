@@ -14,9 +14,6 @@ from custom_components.myfox.api.const import KEY_AUTHORIZED_CODE_ALARM
 logging.config.fileConfig('logging.conf', None, True)
 _LOGGER = logging.getLogger(__name__)
 
-asyncio.set_event_loop_policy(MyFoxPolicy())
-loop = asyncio.get_event_loop()
-
 class TestCrypto :
 
 #'logId' =
