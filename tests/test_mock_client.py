@@ -30,9 +30,16 @@ from tests.utils import fake_http_call, MyFoxMockCache, FakeClientSession
 logging.config.fileConfig('logging.conf', None, True)
 _LOGGER = logging.getLogger(__name__)
 
+PATCHES = [
+    "custom_components.myfox.api.myfoxapi.aiohttp.ClientSession",
+]
+
+@pytest.fixture(autouse=True)
+def patch_aiohttp(monkeypatch):
+    for target in PATCHES:
+        monkeypatch.setattr(target, FakeClientSession, raising=True)
 
 @pytest.mark.asyncio
-@patch("custom_components.myfox.api.myfoxapi.aiohttp.ClientSession", new=FakeClientSession)
 async def test_client_login():
     _LOGGER.info("**** Debut ****")
     myfox_info = MyFoxMockCache.getMyFoxEntryDataFromCache()
@@ -59,7 +66,6 @@ async def test_client_login():
         _LOGGER.info("**** Fin ****")
 
 @pytest.mark.asyncio
-@patch("custom_components.myfox.api.myfoxapi.aiohttp.ClientSession", new=FakeClientSession)
 async def test_client_site():
     _LOGGER.info("**** Debut ****")
     myfox_info = MyFoxMockCache.getMyFoxEntryDataFromCache()
@@ -87,7 +93,6 @@ async def test_client_site():
         _LOGGER.info("**** Fin ****")
 
 @pytest.mark.asyncio
-@patch("custom_components.myfox.api.myfoxapi.aiohttp.ClientSession", new=FakeClientSession)
 async def test_client_refresh_token():
     _LOGGER.info("**** Debut ****")
     myfox_info = MyFoxMockCache.getMyFoxEntryDataFromCache()
@@ -115,7 +120,6 @@ async def test_client_refresh_token():
         _LOGGER.info("**** Fin ****")
 
 @pytest.mark.asyncio
-@patch("custom_components.myfox.api.myfoxapi.aiohttp.ClientSession", new=FakeClientSession)
 async def test_client_scenario():
     _LOGGER.info("**** Debut ****")
     myfox_info = MyFoxMockCache.getMyFoxEntryDataFromCache()

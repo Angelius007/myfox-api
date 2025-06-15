@@ -113,6 +113,7 @@ class FakeClientSession:
     def __init__(self, *args, **kwargs):
         self.get  = MagicMock(side_effect=fake_http_call)
         self.post = MagicMock(side_effect=fake_http_call)
+        print(f"⭐️ FakeClientSession constructed via {__name__}")
 
 
     async def __aenter__(self):
