@@ -1,7 +1,7 @@
 import logging
-from typing import  Any
+from typing import Any
 
-from homeassistant.components.media_player import (MediaPlayerEntity, MediaClass,  MediaType, MediaPlayerEntityFeature, MediaPlayerEnqueue)
+from homeassistant.components.media_player import (MediaPlayerEntity, MediaClass, MediaType, MediaPlayerEntityFeature, MediaPlayerEnqueue)
 from homeassistant.components.media_player.browse_media import BrowseMedia  # noqa: F401
 from homeassistant.components import media_source
 
@@ -57,7 +57,7 @@ class ImageMediaEntity(BaseMediaEntity):
 class VideoMediaEntity(BaseMediaEntity):
     def __init__(self, coordinator: MyFoxCoordinator, device: BaseDevice, title: str, key: str):
         super().__init__(coordinator, device, title, key)
-        self._attr_supported_features = MediaPlayerEntityFeature.BROWSE_MEDIA|MediaPlayerEntityFeature.PLAY
+        self._attr_supported_features = MediaPlayerEntityFeature.BROWSE_MEDIA | MediaPlayerEntityFeature.PLAY
         self._attr_media_content_type = MediaType.VIDEO
 
     async def async_play_media(
@@ -68,5 +68,5 @@ class VideoMediaEntity(BaseMediaEntity):
         announce: bool | None = None, **kwargs: Any
     ) -> None:
         """Play a piece of media."""
-        coordinator:MyFoxCoordinator = self.coordinator
+        coordinator: MyFoxCoordinator = self.coordinator
         await coordinator.playVideo(self.idx, int(media_id))

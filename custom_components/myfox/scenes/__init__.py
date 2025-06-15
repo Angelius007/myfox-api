@@ -30,6 +30,7 @@ class BaseScene(ABC):
     def scenes(self, coordinator) -> list[Scene]:
         return []
 
+
 class DiagnosticScene(BaseScene):
 
     def switches(self, coordinator) -> list[SwitchEntity]:

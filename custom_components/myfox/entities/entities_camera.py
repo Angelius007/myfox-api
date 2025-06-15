@@ -47,7 +47,6 @@ class MyFoxCameraEntity(BaseCameraEntity) :
                 _LOGGER.info("The MyFoxCameraEntity-async_camera_image is unavailable: %s", ex)
                 self._unavailable_state = True
 
-
     async def stream_source(self) -> str | None:
         """Return the source of the stream."""
         _LOGGER.debug("Recuperation source du Stream pour %s", str(self.idx))

@@ -13,7 +13,7 @@ from homeassistant.helpers.update_coordinator import (
 )
 from homeassistant.exceptions import ConfigEntryAuthFailed
 
-from ..api import (MyFoxEntryDataApi )
+from ..api import (MyFoxEntryDataApi)
 from ..api.myfoxapi import (
     MyFoxApiClient
 )
@@ -45,8 +45,9 @@ from ..api.const import (
 )
 _LOGGER = logging.getLogger(__name__)
 
-
 _T = TypeVar("_T")
+
+
 class BoundFifoList(List):
 
     def __init__(self, maxlen=30) -> None:
@@ -83,7 +84,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
 
         _LOGGER.info("Init " + str(self.name) + " avec un pooling de " + str(options.pooling_frequency) + " minutes")
 
-    async def update_entry(self, myfoxApiClient:MyFoxApiClient) :
+    async def update_entry(self, myfoxApiclient: MyFoxApiClient) :
         try:
 
             existing_entry = self.hass.config_entries.async_get_entry(self.entry.entry_id)
@@ -96,10 +97,10 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             if data[KEY_TOKEN][KEY_ACCESS_TOKEN] != myfoxApiClient.myfox_info.access_token :
                 new_data = {}
                 new_data[KEY_TOKEN] = data[KEY_TOKEN].copy() # copy pour casser la reference memoire
-                new_data[KEY_TOKEN][KEY_ACCESS_TOKEN]  = myfoxApiClient.myfox_info.access_token
+                new_data[KEY_TOKEN][KEY_ACCESS_TOKEN] = myfoxApiClient.myfox_info.access_token
                 new_data[KEY_TOKEN][KEY_REFRESH_TOKEN] = myfoxApiClient.myfox_info.refresh_token
-                new_data[KEY_TOKEN][KEY_EXPIRE_IN]     = myfoxApiClient.myfox_info.expires_in
-                new_data[KEY_TOKEN][KEY_EXPIRE_AT]     = myfoxApiClient.myfox_info.expires_time
+                new_data[KEY_TOKEN][KEY_EXPIRE_IN] = myfoxApiClient.myfox_info.expires_in
+                new_data[KEY_TOKEN][KEY_EXPIRE_AT] = myfoxApiClient.myfox_info.expires_time
                 data.update(new_data)
                 # maj conf  
                 if self.hass.config_entries.async_update_entry(existing_entry, data=data, options=new_options) :
@@ -121,11 +122,11 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
     def stop(self) :
         """ Arret des process """
 
-    def add_client(self, myfoxApiClient:MyFoxApiClient):
+    def add_client(self, myfoxApiclient: MyFoxApiClient):
         """ Ajout d'un nouveau client """
         # Si le client existe deja, on ajoute les devices au client existant
         if myfoxApiClient.client_key in self.myfoxApiClients :
-            for deviceId,device in myfoxApiClient.devices.items() :
+            for deviceId, device in myfoxApiClient.devices.items() :
                 self.myfoxApiClients[myfoxApiClient.client_key].devices[deviceId] = device
         # Sinon, on ajoute le client directement
         else :
@@ -177,7 +178,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
                     if len(listening_idx) > 0:
                         try:
-                            last_action = "getList from "+str(myfoxApiClient.__class__)
+                            last_action = "getList from " + str(myfoxApiClient.__class__)
                             await myfoxApiClient.getList()
                         except MyFoxException as exception:
                             _LOGGER.error(exception)
@@ -188,8 +189,8 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # cas d'un client security
                     if myfoxApiClient.__class__ == MyFoxApiSecurityClient :
                         
-                        last_action = "addToParams from "+str(myfoxApiClient.__class__)
-                        client:MyFoxApiSecurityClient = myfoxApiClient
+                        last_action = "addToParams from " + str(myfoxApiClient.__class__)
+                        client: MyFoxApiSecurityClient = myfoxApiClient
                         for temp in client.security :
                             self.addToParams(params, listening_idx, temp)
                         last_action = "update_entry from {myfoxApiClient.__class__}"
@@ -198,47 +199,47 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # cas d'un client temperature
                     elif myfoxApiClient.__class__ == MyFoxApiTemperatureClient :
                         
-                        last_action = "addToParams from "+str(myfoxApiClient.__class__)
-                        client:MyFoxApiTemperatureClient = myfoxApiClient
+                        last_action = "addToParams from " + str(myfoxApiClient.__class__)
+                        client: MyFoxApiTemperatureClient = myfoxApiClient
                         for temp in client.temperature :
                             self.addToParams(params, listening_idx, temp)
 
                     # cas d'un client light
                     elif myfoxApiClient.__class__ == MyFoxApiLightClient :
                         
-                        last_action = "addToParams from "+str(myfoxApiClient.__class__)
-                        client:MyFoxApiLightClient = myfoxApiClient
+                        last_action = "addToParams from " + str(myfoxApiClient.__class__)
+                        client: MyFoxApiLightClient = myfoxApiClient
                         for temp in client.ligth :
                             self.addToParams(params, listening_idx, temp)
                     
                     # cas d'un client sensor alert
                     elif myfoxApiClient.__class__ == MyFoxApiAlerteStateClient :
                         
-                        last_action = "addToParams from "+str(myfoxApiClient.__class__)
-                        client:MyFoxApiAlerteStateClient = myfoxApiClient
+                        last_action = "addToParams from " + str(myfoxApiClient.__class__)
+                        client: MyFoxApiAlerteStateClient = myfoxApiClient
                         for temp in client.sensor :
                             self.addToParams(params, listening_idx, temp)
 
                     # cas d'un client sensor alert
                     elif myfoxApiClient.__class__ == MyFoxApiStateClient :
                         
-                        last_action = "addToParams from "+str(myfoxApiClient.__class__)
-                        client:MyFoxApiStateClient = myfoxApiClient
+                        last_action = "addToParams from " + str(myfoxApiClient.__class__)
+                        client: MyFoxApiStateClient = myfoxApiClient
                         for temp in client.sensor :
                             self.addToParams(params, listening_idx, temp)
 
                     # cas d'un client heater
                     elif myfoxApiClient.__class__ == MyFoxApiHeaterClient :
                         
-                        last_action = "addToParams from "+str(myfoxApiClient.__class__)
-                        client:MyFoxApiHeaterClient = myfoxApiClient
+                        last_action = "addToParams from " + str(myfoxApiClient.__class__)
+                        client: MyFoxApiHeaterClient = myfoxApiClient
                         for temp in client.heater :
                             self.addToParams(params, listening_idx, temp)
 
                     # cas d'un client thermo
                     elif myfoxApiClient.__class__ == MyFoxApThermoClient :
                         
-                        last_action = "addToParams from "+str(myfoxApiClient.__class__)
+                        last_action = "addToParams from " + str(myfoxApiClient.__class__)
                         client:MyFoxApThermoClient = myfoxApiClient
                         for temp in client.heater :
                             self.addToParams(params, listening_idx, temp)
@@ -246,29 +247,29 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # cas d'un client scenario
                     elif myfoxApiClient.__class__ == MyFoxApiSecenarioClient :
                         
-                        last_action = "addToParams from "+str(myfoxApiClient.__class__)
-                        client:MyFoxApiSecenarioClient = myfoxApiClient
+                        last_action = "addToParams from " + str(myfoxApiClient.__class__)
+                        client: MyFoxApiSecenarioClient = myfoxApiClient
                         for temp in client.scenarii :
                             self.addToParams(params, listening_idx, temp)
 
                     # cas d'un client gate
                     elif myfoxApiClient.__class__ == MyFoxApiGateClient :
                         
-                        last_action = "addToParams from "+str(myfoxApiClient.__class__)
-                        client:MyFoxApiGateClient = myfoxApiClient
+                        last_action = "addToParams from " + str(myfoxApiClient.__class__)
+                        client: MyFoxApiGateClient = myfoxApiClient
                         for temp in client.gate :
                             self.addToParams(params, listening_idx, temp)
 
                     # cas d'un client module
                     elif myfoxApiClient.__class__ == MyFoxApiModuleClient :
                         
-                        last_action = "addToParams from "+str(myfoxApiClient.__class__)
-                        client:MyFoxApiModuleClient = myfoxApiClient
+                        last_action = "addToParams from " + str(myfoxApiClient.__class__)
+                        client: MyFoxApiModuleClient = myfoxApiClient
                         for temp in client.module :
                             self.addToParams(params, listening_idx, temp)
                     # cas du client natif
                     elif myfoxApiClient.__class__ == MyFoxApiClient :
-                        client:MyFoxApiClient = myfoxApiClient
+                        client: MyFoxApiClient = myfoxApiClient
                         # Si besoin denouvellement de token
                         await self.update_entry(client)
 
@@ -311,7 +312,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             # recherche du client et du device
             for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
                 if myfoxApiClient.__class__ == MyFoxApiShutterClient :
-                    client:MyFoxApiShutterClient = myfoxApiClient
+                    client: MyFoxApiShutterClient = myfoxApiClient
                     # verification device
                     if device_id in client.devices :
                         """ """
@@ -330,9 +331,9 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         else :
                             """ inconnu """
                             _LOGGER.error("pressButton %s  non reconnue pour le device %s", str(device_action), str(device_id))
-                    _LOGGER.debug("pressButton %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok) )
+                    _LOGGER.debug("pressButton %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok))
                 elif myfoxApiClient.__class__ == MyFoxApiGroupShutterClient :
-                    client:MyFoxApiGroupShutterClient = myfoxApiClient
+                    client: MyFoxApiGroupShutterClient = myfoxApiClient
                     # verification device
                     if device_id in client.devices :
                         """ """
@@ -347,9 +348,9 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         else :
                             """ inconnu """
                             _LOGGER.error("pressButton %s  non reconnue pour le device %s", str(device_action), str(device_id))
-                    _LOGGER.debug("pressButton %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok) )
+                    _LOGGER.debug("pressButton %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok))
                 elif myfoxApiClient.__class__ == MyFoxApiSocketClient :
-                    client:MyFoxApiSocketClient = myfoxApiClient
+                    client: MyFoxApiSocketClient = myfoxApiClient
                     # verification device
                     if device_id in client.devices :
                         """ """
@@ -364,9 +365,9 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         else :
                             """ inconnu """
                             _LOGGER.error("pressButton %s  non reconnue pour le device %s", str(device_action), str(device_id))
-                    _LOGGER.debug("pressButton %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok) )
+                    _LOGGER.debug("pressButton %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok))
                 elif myfoxApiClient.__class__ == MyFoxApiGroupElectricClient :
-                    client:MyFoxApiGroupElectricClient = myfoxApiClient
+                    client: MyFoxApiGroupElectricClient = myfoxApiClient
                     # verification device
                     if device_id in client.devices :
                         """ """
@@ -382,7 +383,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                             """ inconnu """
                             _LOGGER.error("pressButton %s  non reconnue pour le device %s", str(device_action), str(device_id))
                 elif myfoxApiClient.__class__ == MyFoxApiCameraClient :
-                    client:MyFoxApiCameraClient = myfoxApiClient
+                    client: MyFoxApiCameraClient = myfoxApiClient
                     # verification device
                     if device_id in client.devices :
                         """ """
@@ -422,7 +423,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                             """ inconnu """
                             _LOGGER.error("pressButton %s  non reconnue pour le device %s", str(device_action), str(device_id))
                 elif myfoxApiClient.__class__ == MyFoxApiGateClient :
-                    client:MyFoxApiGateClient = myfoxApiClient
+                    client: MyFoxApiGateClient = myfoxApiClient
                     # verification device
                     if device_id in client.devices :
                         """ """
@@ -438,7 +439,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                             """ inconnu """
                             _LOGGER.error("pressButton %s  non reconnue pour le device %s", str(device_action), str(device_id))
                 elif myfoxApiClient.__class__ == MyFoxApiModuleClient :
-                    client:MyFoxApiModuleClient = myfoxApiClient
+                    client: MyFoxApiModuleClient = myfoxApiClient
                     # verification device
                     if device_id in client.devices :
                         """ """
@@ -453,7 +454,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         else :
                             """ inconnu """
                             _LOGGER.error("pressButton %s  non reconnue pour le device %s", str(device_action), str(device_id))
-            _LOGGER.debug("pressButton %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok) )
+            _LOGGER.debug("pressButton %s pour le volet %s : %s", str(device_action), str(device_id), str(action_ok))
 
             if action_ok :
                 params = dict[str, Any]()
@@ -482,13 +483,13 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             valeurs = idx.split("|", 2)
             scenario_id = valeurs[0]
             scenario_type = valeurs[1]
-            for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
+            for (client_key, myfoxApiClient) in self.myfoxApiClients.items() :
                 if myfoxApiClient.__class__ == MyFoxApiSecenarioClient :
-                    client:MyFoxApiSecenarioClient = myfoxApiClient
+                    client: MyFoxApiSecenarioClient = myfoxApiClient
                     if scenario_id in client.scenes :
                         action_ok = await client.playScenario(int(scenario_id))
                         break
-            _LOGGER.debug("playScenario %s : %s", str(idx), str(action_ok) )
+            _LOGGER.debug("playScenario %s : %s", str(idx), str(action_ok))
 
             if action_ok :
                 params = dict[str, Any]()
@@ -510,20 +511,20 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         except Exception as err:
             raise UpdateFailed(f"Error with API playScenario: {err}")
 
-    async def enableScenario(self, idx:str) -> bool :
+    async def enableScenario(self, idx: str) -> bool :
         action_ok = False
         try:
             _LOGGER.info("enableScenario : %s from %s", idx, str(self.name))
             valeurs = idx.split("|", 2)
             scenario_id = valeurs[0]
             scenario_type = valeurs[1]
-            for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
+            for (client_key, myfoxApiClient) in self.myfoxApiClients.items() :
                 if myfoxApiClient.__class__ == MyFoxApiSecenarioClient :
-                    client:MyFoxApiSecenarioClient = myfoxApiClient
+                    client: MyFoxApiSecenarioClient = myfoxApiClient
                     if scenario_id in client.scenes :
                         action_ok = await client.enableScenario(int(scenario_id))
                         break
-            _LOGGER.debug("enableScenario %s : %s", str(idx), str(action_ok) )
+            _LOGGER.debug("enableScenario %s : %s", str(idx), str(action_ok))
 
             if action_ok :
                 params = dict[str, Any]()
@@ -545,20 +546,20 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         except Exception as err:
             raise UpdateFailed(f"Error with API enableScenario: {err}")
 
-    async def disableScenario(self, idx:str) -> bool :
+    async def disableScenario(self, idx: str) -> bool :
         action_ok = False
         try:
             _LOGGER.info("disableScenario : %s from %s", idx, str(self.name))
             valeurs = idx.split("|", 2)
             scenario_id = valeurs[0]
             scenario_type = valeurs[1]
-            for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
+            for (client_key, myfoxApiClient) in self.myfoxApiClients.items() :
                 if myfoxApiClient.__class__ == MyFoxApiSecenarioClient :
-                    client:MyFoxApiSecenarioClient = myfoxApiClient
+                    client: MyFoxApiSecenarioClient = myfoxApiClient
                     if scenario_id in client.scenes :
                         action_ok = await client.disableScenario(int(scenario_id))
                         break
-            _LOGGER.debug("disableScenario %s : %s", str(idx), str(action_ok) )
+            _LOGGER.debug("disableScenario %s : %s", str(idx), str(action_ok))
 
             if action_ok :
                 params = dict[str, Any]()
@@ -570,7 +571,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 valeur["enabled"] = False
                 self.addToParams(params, listening_idx, valeur)
                 self.async_set_updated_data(params)
-        except InvalidTokenMyFoxException as err:   
+        except InvalidTokenMyFoxException as err:
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
             raise ConfigEntryAuthFailed from err
@@ -580,7 +581,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         except Exception as err:
             raise UpdateFailed(f"Error with API disableScenario: {err}")
 
-    async def selectOption(self, idx:str, option:str) -> bool :
+    async def selectOption(self, idx: str, option: str) -> bool :
         """ Selection option et transmission au bon client """
         action_ok = False
         try:
@@ -590,11 +591,11 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             device_option = valeurs[1]
             device_action = option
             # recherche du client et du device
-            for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
+            for (client_key, myfoxApiClient) in self.myfoxApiClients.items() :
                 if myfoxApiClient.__class__ == MyFoxApiHeaterClient :
-                    client:MyFoxApiHeaterClient = myfoxApiClient
+                    client: MyFoxApiHeaterClient = myfoxApiClient
                     # verification device
-                    _LOGGER.debug("selectOption '%s' for '%s'", str(device_action), str(device_option) )
+                    _LOGGER.debug("selectOption '%s' for '%s'", str(device_action), str(device_option))
                     if device_id in client.devices :
                         """ """
                         if device_action == "on" :
@@ -616,7 +617,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         else :
                             """ inconnu """
                             _LOGGER.error("selectOption '%s' non reconnue pour le device %s", str(device_action), str(device_id))
-            _LOGGER.debug("selectOption %s pour %s : %s", str(device_action), str(idx), str(action_ok) )
+            _LOGGER.debug("selectOption %s pour %s : %s", str(device_action), str(idx), str(action_ok))
 
             if action_ok :
                 params = dict[str, Any]()
@@ -627,9 +628,9 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 valeur[device_option] = device_action
                 self.addToParams(params, listening_idx, valeur)
                 self.async_set_updated_data(params)
-                
+
             return action_ok
-        except InvalidTokenMyFoxException as err:   
+        except InvalidTokenMyFoxException as err:
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
             raise ConfigEntryAuthFailed from err
@@ -647,11 +648,11 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             device_id = valeurs[0]
             device_option = valeurs[1]
             device_action_id = 0
-            for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
+            for (client_key, myfoxApiClient) in self.myfoxApiClients.items() :
                 if myfoxApiClient.__class__ == MyFoxApiSecurityClient :
-                    client:MyFoxApiSecurityClient = myfoxApiClient
+                    client: MyFoxApiSecurityClient = myfoxApiClient
                     # verification device
-                    _LOGGER.debug("setSecurity '%s' ", str(device_action) )
+                    _LOGGER.debug("setSecurity '%s' ", str(device_action))
                     if device_action == "disarmed" or (type(device_action) is int and int(device_action) == 1):
                         """ Disarmed """
                         device_action_id = 10
@@ -681,7 +682,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 self.async_set_updated_data(params)
                 await self.getLastHistoryEvent(idx, device_action)
             return action_ok
-        except InvalidTokenMyFoxException as err:   
+        except InvalidTokenMyFoxException as err:
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
             raise ConfigEntryAuthFailed from err
@@ -691,7 +692,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         except Exception as err:
             raise UpdateFailed(f"Error with API setSecurity: {err}")
 
-    async def getLastHistoryEvent(self, idx:str, device_action:str) -> bool:
+    async def getLastHistoryEvent(self, idx: str, device_action: str) -> bool:
         action_ok = False
         try:
             _LOGGER.info("getLastSecurityEvent : %s/%s from %s", idx, device_action, str(self.name))
@@ -699,16 +700,16 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             device_id = valeurs[0]
             device_option = valeurs[1]
             label = ""
-            for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
+            for (client_key, myfoxApiClient) in self.myfoxApiClients.items() :
                 if myfoxApiClient.__class__ == MyFoxApiClient :
-                    client:MyFoxApiClient = myfoxApiClient
+                    client: MyFoxApiClient = myfoxApiClient
                     # verification device
-                    _LOGGER.debug("getHistory '%s' ", str(device_action) )
+                    _LOGGER.debug("getHistory '%s' ", str(device_action))
                     results = await client.getHistory("security")
                     label = results[0]["label"]
                     action_ok = True
                     break
-                    
+
             if action_ok and len(label) > 0 :
                 params = dict[str, Any]()
                 listening_idx = set()
@@ -719,7 +720,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 self.addToParams(params, listening_idx, valeur)
                 self.async_set_updated_data(params)
             return action_ok
-        except InvalidTokenMyFoxException as err:   
+        except InvalidTokenMyFoxException as err:
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
             raise ConfigEntryAuthFailed from err
@@ -729,17 +730,17 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         except Exception as err:
             raise UpdateFailed(f"Error with API setSecurity: {err}")
 
-    async def cameraLiveStart(self, idx:str, protocol:str) -> str :
+    async def cameraLiveStart(self, idx: str, protocol: str) -> str :
         """ Selection option et transmission au bon client """
-        retour_url:str = None
+        retour_url: str = None
         try:
             _LOGGER.debug("cameraLiveStart : %s from %s with protocol %s", idx, str(self.name), protocol)
             valeurs = idx.split("|", 2)
             device_id = valeurs[0]
             # recherche du client et du device
-            for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
+            for (client_key, myfoxApiClient) in self.myfoxApiClients.items() :
                 if myfoxApiClient.__class__ == MyFoxApiCameraClient :
-                    client:MyFoxApiCameraClient = myfoxApiClient
+                    client: MyFoxApiCameraClient = myfoxApiClient
                     # verification device
                     if device_id in client.devices :
                         """ live """
@@ -747,7 +748,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         break
 
             return retour_url
-        except InvalidTokenMyFoxException as err:   
+        except InvalidTokenMyFoxException as err:
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
             raise ConfigEntryAuthFailed from err
@@ -756,8 +757,8 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             return retour_url
         except Exception as err:
             raise UpdateFailed(f"Error with API cameraLiveStart: {err}")
-        
-    async def cameraLiveStop(self, idx:str) -> bytes :
+
+    async def cameraLiveStop(self, idx: str) -> bytes :
         """ Selection option et transmission au bon client """
         retour_url = None
         try:
@@ -765,15 +766,15 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             valeurs = idx.split("|", 2)
             device_id = valeurs[0]
             # recherche du client et du device
-            for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
+            for (client_key, myfoxApiClient) in self.myfoxApiClients.items() :
                 if myfoxApiClient.__class__ == MyFoxApiCameraClient :
-                    client:MyFoxApiCameraClient = myfoxApiClient
+                    client: MyFoxApiCameraClient = myfoxApiClient
                     # verification device
                     if device_id in client.devices :
                         """ """
                         retour_url = await client.cameraLiveStop(int(device_id))
                         break
-               
+
             return retour_url
         except InvalidTokenMyFoxException as err:   
             # Raising ConfigEntryAuthFailed will cancel future updates
@@ -786,7 +787,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             raise UpdateFailed(f"Error with API cameraLiveStop: {err}")
 
 
-    async def cameraPreviewTake(self, idx:str) -> bytes :
+    async def cameraPreviewTake(self, idx: str) -> bytes :
         """ Selection option et transmission au bon client """
         retour_byte:bytes = None
         try:
@@ -794,9 +795,9 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             valeurs = idx.split("|", 2)
             device_id = valeurs[0]
             # recherche du client et du device
-            for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
+            for (client_key, myfoxApiClient) in self.myfoxApiClients.items() :
                 if myfoxApiClient.__class__ == MyFoxApiCameraClient :
-                    client:MyFoxApiCameraClient = myfoxApiClient
+                    client: MyFoxApiCameraClient = myfoxApiClient
                     # verification device
                     if device_id in client.devices :
                         """ """
@@ -805,7 +806,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         break
 
             return retour_byte
-        except InvalidTokenMyFoxException as err:   
+        except InvalidTokenMyFoxException as err:
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
             raise ConfigEntryAuthFailed from err
@@ -815,24 +816,24 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         except Exception as err:
             raise UpdateFailed(f"Error with API cameraPreviewTake: {err}")
 
-    async def getMedia(self, idx:str) :
+    async def getMedia(self, idx: str) :
         retour = []
         try:
             _LOGGER.info("getMedia : %s from %s", idx, str(self.name))
             valeurs = idx.split("|", 2)
             device_option = valeurs[1]
-            for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
+            for (client_key, myfoxApiClient) in self.myfoxApiClients.items() :
                 if myfoxApiClient.__class__ == MyFoxApiLibraryClient :
-                    client:MyFoxApiLibraryClient = myfoxApiClient
+                    client: MyFoxApiLibraryClient = myfoxApiClient
                     if device_option == "images" :
                         retour = await client.getImageList()
                         break
                     elif device_option == "videos" :
                         retour = await client.getVideoList()
                         break
-            _LOGGER.debug("getMedia %s : %s", str(idx), str(retour) )
+            _LOGGER.debug("getMedia %s : %s", str(idx), str(retour))
             return retour
-        except InvalidTokenMyFoxException as err:   
+        except InvalidTokenMyFoxException as err:
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
             raise ConfigEntryAuthFailed from err
@@ -842,19 +843,19 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         except Exception as err:
             raise UpdateFailed(f"Error with API getMedia: {err}")
 
-    async def playVideo(self, idx:str, videoId:int) -> bool :
+    async def playVideo(self, idx: str, videoId: int) -> bool :
         action_ok = False
         try:
             _LOGGER.info("playVideo : %s from %s", idx, str(self.name))
 
-            for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
+            for (client_key, myfoxApiClient) in self.myfoxApiClients.items() :
                 if myfoxApiClient.__class__ == MyFoxApiLibraryClient :
-                    client:MyFoxApiLibraryClient = myfoxApiClient
+                    client: MyFoxApiLibraryClient = myfoxApiClient
                     if videoId in client.scenes :
                         action_ok = await client.playVideo(int(videoId))
                         break
-            _LOGGER.debug("playVideo %s : %s", str(idx), str(action_ok) )
-        except InvalidTokenMyFoxException as err:   
+            _LOGGER.debug("playVideo %s : %s", str(idx), str(action_ok))
+        except InvalidTokenMyFoxException as err:
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
             raise ConfigEntryAuthFailed from err
@@ -863,21 +864,21 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             raise exception
         except Exception as err:
             raise UpdateFailed(f"Error with API playVideo: {err}")
-        
-    async def getImage(self, idx:str, image_url:int) -> bytes :
+
+    async def getImage(self, idx: str, image_url: int) -> bytes :
         try:
             _LOGGER.info("getImage : %s from %s", idx, str(self.name))
             retour = None
-            for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
+            for (client_key, myfoxApiClient) in self.myfoxApiClients.items() :
                 if myfoxApiClient.__class__ == MyFoxApiLibraryClient :
-                    client:MyFoxApiLibraryClient = myfoxApiClient
+                    client: MyFoxApiLibraryClient = myfoxApiClient
                     retour = await client.getImage(image_url)
                     break
-            
-            _LOGGER.debug("getImage %s : %s", str(idx), str(image_url) )
+
+            _LOGGER.debug("getImage %s : %s", str(idx), str(image_url))
             return retour
 
-        except InvalidTokenMyFoxException as err:   
+        except InvalidTokenMyFoxException as err:
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
             raise ConfigEntryAuthFailed from err
@@ -886,17 +887,17 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             raise exception
         except Exception as err:
             raise UpdateFailed(f"Error with API getImage: {err}")
-        
+
     def getMyFoxInfo(self) -> MyFoxEntryDataApi :
         try:
             _LOGGER.debug("get MyFoxInfo")
             retour = None
-            for (client_key,myfoxApiClient) in self.myfoxApiClients.items() :
+            for (client_key, myfoxApiClient) in self.myfoxApiClients.items() :
                 if myfoxApiClient.__class__ == MyFoxApiClient :
-                    client:MyFoxApiClient = myfoxApiClient
+                    client: MyFoxApiClient = myfoxApiClient
                     retour = client.myfox_info
                     break
-            
+
             return retour
 
         except MyFoxException as exception:

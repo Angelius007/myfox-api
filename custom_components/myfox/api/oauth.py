@@ -8,9 +8,10 @@ from homeassistant.components.application_credentials import (
 )
 from homeassistant.core import HomeAssistant
 from .const import (
-   DEFAULT_MYFOX_URL_API, MYFOX_TOKEN_PATH, MYFOX_AUTORIZE_PATH
+DEFAULT_MYFOX_URL_API, MYFOX_TOKEN_PATH, MYFOX_AUTORIZE_PATH
 )
 _LOGGER = logging.getLogger(__name__)
+
 
 class MyFoxImplementation(AuthImplementation):
     """MyFox API user Oauth2 implementation."""
@@ -32,7 +33,7 @@ class MyFoxImplementation(AuthImplementation):
 
     async def async_refresh_token(self, token: dict) -> dict:
         """ Rafraichissement token"""
-        _LOGGER.debug("Refresh Old Token %s", str(token) )
-        new_token =  await super().async_refresh_token(token)
-        _LOGGER.debug("New Token %s", str(new_token) )
+        _LOGGER.debug("Refresh Old Token %s", str(token))
+        new_token = await super().async_refresh_token(token)
+        _LOGGER.debug("New Token %s", str(new_token))
         return new_token

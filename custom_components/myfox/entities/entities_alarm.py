@@ -50,20 +50,17 @@ class MyFoxAlarmEntity(AlarmControlPanelEntity, BaseWithValueEntity) :
 
         return True
 
-
     async def async_alarm_disarm(self, code=None) -> None:
         """Send disarm command."""
         coordinator: MyFoxCoordinator = self.coordinator
         await coordinator.setSecurity(self.idx, "disarmed", code)
-
 
     async def async_alarm_arm_away(self, code=None) -> None:
         """Send arm home command."""
         coordinator: MyFoxCoordinator = self.coordinator
         await coordinator.setSecurity(self.idx, "armed", code)
 
-
-    async def async_alarm_arm_home(self, code=None) -> None:
+    async def async_alarm_arm_home(self, code = None) -> None:
         """Send arm home command."""
         coordinator: MyFoxCoordinator = self.coordinator
         await coordinator.setSecurity(self.idx, "partial", code)

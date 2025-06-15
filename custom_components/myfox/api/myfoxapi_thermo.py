@@ -14,9 +14,10 @@ from .const import (
 )
 _LOGGER = logging.getLogger(__name__)
 
+
 class MyFoxApThermoClient(MyFoxApiClient) :
 
-    def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
+    def __init__(self, myfox_info: MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
         self.client_key = "thermo"
         self.heater = list()
@@ -54,8 +55,8 @@ class MyFoxApThermoClient(MyFoxApiClient) :
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_HEATER_THERMO_SET_AUTO % (self.myfox_info.site.siteId, deviceId))
             _LOGGER.debug("Response : %s", str(response))
-            
-            statut_ok =  ("status" in response and response["status"] == "OK")
+
+            statut_ok = ("status" in response and response["status"] == "OK")
             if statut_ok :
                 self.heater_time = 0
             return statut_ok
@@ -71,8 +72,8 @@ class MyFoxApThermoClient(MyFoxApiClient) :
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_HEATER_THERMO_SET_AWAY % (self.myfox_info.site.siteId, deviceId))
             _LOGGER.debug("Response : %s", str(response))
-            
-            statut_ok =  ("status" in response and response["status"] == "OK")
+
+            statut_ok = ("status" in response and response["status"] == "OK")
             if statut_ok :
                 self.heater_time = 0
             return statut_ok
@@ -88,8 +89,8 @@ class MyFoxApThermoClient(MyFoxApiClient) :
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_HEATER_THERMO_SET_BOOST % (self.myfox_info.site.siteId, deviceId))
             _LOGGER.debug("Response : %s", str(response))
-            
-            statut_ok =  ("status" in response and response["status"] == "OK")
+
+            statut_ok = ("status" in response and response["status"] == "OK")
             if statut_ok :
                 self.heater_time = 0
             return statut_ok
@@ -105,8 +106,8 @@ class MyFoxApThermoClient(MyFoxApiClient) :
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_HEATER_THERMO_SET_OFF % (self.myfox_info.site.siteId, deviceId))
             _LOGGER.debug("Response : %s", str(response))
-            
-            statut_ok =  ("status" in response and response["status"] == "OK")
+
+            statut_ok = ("status" in response and response["status"] == "OK")
             if statut_ok :
                 self.heater_time = 0
             return statut_ok

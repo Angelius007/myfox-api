@@ -1,6 +1,6 @@
 import logging
 from dataclasses import field
-from typing import  Any
+from typing import Any
 import voluptuous as vol
 from collections.abc import Mapping
 
@@ -18,30 +18,30 @@ from homeassistant.helpers.selector import (
 from .crypto.secure import encode, decode
 
 from .const import (
-     DOMAIN_MYFOX, 
-     CONFIG_VERSION,
-     PREFIX_ENTRY
+ DOMAIN_MYFOX,
+ CONFIG_VERSION,
+ PREFIX_ENTRY
 )
 from .api.const import (
-     KEY_SITE_ID,
-     KEY_TOKEN,
-     KEY_ACCESS_TOKEN,
-     KEY_REFRESH_TOKEN,
-     KEY_EXPIRE_IN,
-     KEY_EXPIRE_AT,
-     KEY_CACHE_EXPIRE_IN,
-     CACHE_EXPIRE_IN,
-     POOLING_INTERVAL_DEF,
-     KEY_POOLING_INTERVAL,
-     KEY_CACHE_CAMERA,
-     CACHE_CAMERA,
-     KEY_CACHE_SECURITY,
-     CACHE_SECURITY,
-     KEY_USE_CODE_ALARM,
-     KEY_AUTHORIZED_CODE_ALARM,
-     KEY_NB_RETRY_DEFAULT,
-     KEY_NB_RETRY_CAMERA,
-     KEY_DELAY_BETWEEN_RETRY
+ KEY_SITE_ID,
+ KEY_TOKEN,
+ KEY_ACCESS_TOKEN,
+ KEY_REFRESH_TOKEN,
+ KEY_EXPIRE_IN,
+ KEY_EXPIRE_AT,
+ KEY_CACHE_EXPIRE_IN,
+ CACHE_EXPIRE_IN,
+ POOLING_INTERVAL_DEF,
+ KEY_POOLING_INTERVAL,
+ KEY_CACHE_CAMERA,
+ CACHE_CAMERA,
+ KEY_CACHE_SECURITY,
+ CACHE_SECURITY,
+ KEY_USE_CODE_ALARM,
+ KEY_AUTHORIZED_CODE_ALARM,
+ KEY_NB_RETRY_DEFAULT,
+ KEY_NB_RETRY_CAMERA,
+ KEY_DELAY_BETWEEN_RETRY
 )
 
 from .api import (
@@ -54,6 +54,7 @@ from .api.myfoxapi import (
 from .devices.site import MyFoxSite
 
 _LOGGER = logging.getLogger(__name__)
+
 
 class MyFoxOptionsFlowHandler(OptionsFlow):
     """ Options pour l'integration """
@@ -100,9 +101,8 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
         if KEY_USE_CODE_ALARM in options:
             use_code_alarm = options.get(KEY_USE_CODE_ALARM)
         authorized_codes = ""
-        if (KEY_AUTHORIZED_CODE_ALARM in options 
-            and len(options.get(KEY_AUTHORIZED_CODE_ALARM).strip()) > 0):
-            authorized_codes = decode(options.get(KEY_AUTHORIZED_CODE_ALARM), self.siteId)
+        if KEY_AUTHORIZED_CODE_ALARM in options and len(options.get(KEY_AUTHORIZED_CODE_ALARM).strip()) > 0:
+           authorized_codes = decode(options.get(KEY_AUTHORIZED_CODE_ALARM), self.siteId)
         nb_retry_default = 5
         if KEY_NB_RETRY_DEFAULT in options:
             nb_retry_default = int(options.get(KEY_NB_RETRY_DEFAULT))
@@ -112,7 +112,6 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
         delay_between_retry = 30
         if KEY_DELAY_BETWEEN_RETRY in options:
             delay_between_retry = int(options.get(KEY_DELAY_BETWEEN_RETRY))
-
 
         return self.async_show_form(
             step_id="init",
@@ -161,6 +160,7 @@ class MyFoxOptionsFlowHandler(OptionsFlow):
             )
         )
 
+
 class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain=DOMAIN_MYFOX):
     """ Config """
     DOMAIN = DOMAIN_MYFOX
@@ -168,7 +168,7 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
 
     # Init des variables locales
     def __init__(self) -> None:
-        self.myfox_client:MyFoxApiClient = None
+        self.myfox_client: MyFoxApiClient = None
         self.siteId = None
         self.site: MyFoxSite = None
         self.sites: list[MyFoxSite] = field(default_factory=list[MyFoxSite])
@@ -183,12 +183,12 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
     def logger(self) -> logging.Logger:
         """Return logger."""
         return _LOGGER
-    
+
     # Step pour relancer la conf
-    async def async_step_reconfigure(self, user_input: dict[str, Any] | None = None): 
+    async def async_step_reconfigure(self, user_input: dict[str, Any] | None = None):
         if "entry_id" in self.context and self.context["entry_id"] :
             unique_id = self.context["entry_id"]
-            _LOGGER.debug("Entry trouvee : %s",unique_id)
+            _LOGGER.debug("Entry trouvee : %s", unique_id)
             existing_entry = self.hass.config_entries.async_get_entry(unique_id)
             if existing_entry:
                 self.data = existing_entry.data.copy()
@@ -204,9 +204,8 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
             if user_input is not None:
                 self.data.update(user_input)
         else :
-            _LOGGER.debug("Entry non trouvee dans le context [%s]",str(self.context))
+            _LOGGER.debug("Entry non trouvee dans le context [%s]", str(self.context))
         return await self.async_step_user()
-
 
     # 1er step authent
     async def async_step_user(
@@ -234,7 +233,7 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
     ) -> ConfigFlowResult:
         """Confirm reauth dialog."""
         _LOGGER.debug("async_step_reauth_confirm :  %s", str(user_input))
-        
+
         if user_input is None:
             return self.async_show_form(
                 step_id="reauth_confirm",
@@ -247,7 +246,7 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
         _LOGGER.debug("async_oauth_create_entry :  %s", str(info))
         if self.source == SOURCE_REAUTH:
             if self.siteId is not None:
-                device_unique_id = PREFIX_ENTRY+str(self.siteId)
+                device_unique_id = PREFIX_ENTRY + str(self.siteId)
                 existing_entry = await self.async_set_unique_id(device_unique_id)
                 data = existing_entry.data.copy()
                 data.update(info)
@@ -276,14 +275,14 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
                 myfox_info.refresh_token = self.refresh_token
             # nouveaux token
             if KEY_TOKEN in info:
-                if KEY_ACCESS_TOKEN in  info[KEY_TOKEN] :
-                    myfox_info.access_token =  info[KEY_TOKEN][KEY_ACCESS_TOKEN]
-                if KEY_REFRESH_TOKEN in  info[KEY_TOKEN] :
-                    myfox_info.refresh_token =  info[KEY_TOKEN][KEY_REFRESH_TOKEN]
-                if KEY_EXPIRE_IN in  info[KEY_TOKEN] :
-                    myfox_info.expires_in =  info[KEY_TOKEN][KEY_EXPIRE_IN]
-                if KEY_EXPIRE_AT in  info[KEY_TOKEN] :
-                    myfox_info.expires_time =  info[KEY_TOKEN][KEY_EXPIRE_AT]
+                if KEY_ACCESS_TOKEN in info[KEY_TOKEN] :
+                    myfox_info.access_token = info[KEY_TOKEN][KEY_ACCESS_TOKEN]
+                if KEY_REFRESH_TOKEN in info[KEY_TOKEN] :
+                    myfox_info.refresh_token = info[KEY_TOKEN][KEY_REFRESH_TOKEN]
+                if KEY_EXPIRE_IN in info[KEY_TOKEN] :
+                    myfox_info.expires_in = info[KEY_TOKEN][KEY_EXPIRE_IN]
+                if KEY_EXPIRE_AT in info[KEY_TOKEN] :
+                    myfox_info.expires_time = info[KEY_TOKEN][KEY_EXPIRE_AT]
 
             options = MyFoxOptionsDataApi()
             options.cache_time = CACHE_EXPIRE_IN
@@ -302,7 +301,7 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
             return await self.async_step_select_site()
 
         return await self.async_step_user()
-    
+
     # Step de selection du site
     async def async_step_select_site(self, info: dict[str, Any] | None = None) -> FlowResult:
         """ Selection du site"""
@@ -312,10 +311,10 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
             for site in self.sites:
                 if site.key == info.get(KEY_SITE_ID) :
                     self.site = site
-            device_unique_id = PREFIX_ENTRY+str(self.site.siteId)
-            
+            device_unique_id = PREFIX_ENTRY + str(self.site.siteId)
+
             existing_entry = await self.async_set_unique_id(device_unique_id, raise_on_progress=False)
-            
+
             new_data = {
                 KEY_SITE_ID: str(self.site.siteId),
             }
@@ -334,23 +333,26 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
                 self.data.update(info)
                 self.data.update(new_data)
                 return self.async_create_entry(title=device_unique_id, data=self.data, options=options)
-        
+
         site_list = list()
         default_site = None
         for site in self.sites:
             site_list.append(site.key)
             if self.siteId and int(self.siteId) == int(site.siteId) :
-                default_site = site 
+                default_site = site
 
         SITE_STEP_SCHEMA = vol.Schema({
             vol.Required(KEY_SITE_ID, default=default_site): selector.SelectSelector(
-                selector.SelectSelectorConfig(options=site_list,
-                                                mode=selector.SelectSelectorMode.DROPDOWN))
+                selector.SelectSelectorConfig(
+                    options=site_list,
+                    mode=selector.SelectSelectorMode.DROPDOWN
+                )
+            )
         })
-        
+
         return self.async_show_form(
             step_id="select_site", data_schema=SITE_STEP_SCHEMA)
-    
+
     @staticmethod
     @callback
     def async_get_options_flow(

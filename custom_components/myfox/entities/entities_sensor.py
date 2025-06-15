@@ -59,7 +59,7 @@ class DictStateStrBaseSensorEntity(BaseSensorEntity):
 
     def options_dict(self) -> dict[str, str]:
         return self._options_dict
-    
+
     def _update_value(self, val: Any) -> bool:
         if self._options_dict :
             ival = str(val)
@@ -93,15 +93,15 @@ class LightSensorEntity(DictStateBaseSensorEntity):
     @property
     def icon(self) -> str | None:
         if self._attr_native_value in LIGHT_OPTIONS:
-            if self._attr_native_value == "Pleine lumière": 
+            if self._attr_native_value == "Pleine lumière":
                 return "mdi:weather-sunny"
-            elif self._attr_native_value == "Lumière du jour": 
+            elif self._attr_native_value == "Lumière du jour":
                 return "mdi:weather-sunny"
-            elif self._attr_native_value == "Lumière basse": 
+            elif self._attr_native_value == "Lumière basse":
                 return "mdi:weather-partly-cloudy"
-            elif self._attr_native_value == "Pénombre": 
+            elif self._attr_native_value == "Pénombre":
                 return "mdi:weather-cloudy"
-            elif self._attr_native_value == "Obscurité": 
+            elif self._attr_native_value == "Obscurité":
                 return "mdi:weather-night"
             else:
                 return "mdi:weather-sunny-off"

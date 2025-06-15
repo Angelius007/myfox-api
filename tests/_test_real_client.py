@@ -1,7 +1,7 @@
 import logging
 import logging.config
 
-from typing import  Any
+from typing import Any
 import asyncio
 import json
 
@@ -48,14 +48,14 @@ class MyFoxCache() :
                 _LOGGER.debug("Cache : " + data)
                 f.close()
                 return json.loads(data)
-            except Exception : 
+            except Exception :
                 f = open("init_cache.txt", "r")
                 data = f.read()
                 _LOGGER.debug("Cache : " + data)
                 f.close()
                 return json.loads(data)
 
-    def writeCache(myfox_info:MyFoxEntryDataApi) :
+    def writeCache(myfox_info: MyFoxEntryDataApi) :
         f = open("cache.txt", "w")
         data = {
             "CLIENT_ID"      : myfox_info.client_id,
@@ -91,9 +91,12 @@ class MyFoxCache() :
             expires_time = data["expires_time"]
         if "site_id" in data:
             site_id = int(data["site_id"])
-                    
-        myfox_info = MyFoxEntryDataApi(client_id=client_id, client_secret=client_secret, username=myxof_user, password=myfox_pswd,
-                        access_token=access_token, refresh_token=refresh_token, expires_in=expires_in, expires_time=expires_time, site=MyFoxSite(site_id))
+
+        myfox_info = MyFoxEntryDataApi(client_id=client_id, client_secret=client_secret,
+                                       username=myxof_user, password=myfox_pswd,
+                                       access_token=access_token, refresh_token=refresh_token,
+                                       expires_in=expires_in, expires_time=expires_time,
+                                       site=MyFoxSite(site_id))
         options = MyFoxOptionsDataApi()
         myfox_info.options = options
         _LOGGER.info(str(myfox_info))
@@ -193,7 +196,7 @@ class TestClients :
         for capteur in results :
             _LOGGER.debug(str(capteur))
             # capteur.
-            client.configure_device(capteur["deviceId"],capteur["label"],capteur["modelId"],capteur["modelLabel"])
+            client.configure_device(capteur["deviceId"], capteur["label"], capteur["modelId"], capteur["modelLabel"])
             # device = MyFoxTemperatureSensor(65714, "device", 0, "xx", "")
             # results = loop.run_until_complete(asyncio.gather(*[client.getTemperature(capteur["deviceId"])]))[0]
             # _LOGGER.info("results:" + str(results))

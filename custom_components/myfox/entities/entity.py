@@ -24,7 +24,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class MyFoxAbstractDeviceEntity(CoordinatorEntity[MyFoxCoordinator], Entity):
-    
+
     _attr_has_entity_name = True
 
     def __init__(self, coordinator: MyFoxCoordinator, device: BaseDevice, title: str, key: str):
@@ -44,6 +44,7 @@ class MyFoxAbstractDeviceEntity(CoordinatorEntity[MyFoxCoordinator], Entity):
             model_id=str(self._device.device_info.modelId),
             serial_number=str(self._device.device_info.deviceId),
         )
+
 
 class BaseWithValueEntity(MyFoxAbstractDeviceEntity):
     def __init__(self, coordinator: MyFoxCoordinator, device: BaseDevice, title: str, key: str):
@@ -73,7 +74,7 @@ class MyFoxAbstractSceneEntity(CoordinatorEntity[MyFoxCoordinator], Entity):
 
     def __init__(self, coordinator: MyFoxCoordinator, scene: BaseScene, title: str, key: str):
         super().__init__(coordinator, context=str(scene.scene_info.scenarioId) + "|" + key)
-        self.idx = str(scene.scene_info.scenarioId)+"|"+key 
+        self.idx = str(scene.scene_info.scenarioId) + "|" + key
         self._scene: BaseScene = scene
         self._attr_name = title
         self._attr_unique_id = "MyFox-" + title + "-" + self.idx

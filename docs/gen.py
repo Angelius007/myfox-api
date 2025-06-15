@@ -15,7 +15,7 @@ from custom_components.myfox.entities.entity import (
     MyFoxAbstractDeviceEntity
 )
 
-MARKER_VALUE=-66666
+MARKER_VALUE = -66666
 
 device_info = MyFoxDeviceInfo(
     deviceId=1,
