@@ -10,9 +10,10 @@ from .entity import BaseWithValueEntity
 
 _LOGGER = logging.getLogger(__name__)
 
+
 class MyFoxAlarmEntity(AlarmControlPanelEntity, BaseWithValueEntity) :
 
-    def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
+    def __init__(self, coordinator: MyFoxCoordinator, device: BaseDevice, title: str, key: str):
         super().__init__(coordinator, device, title, key)
         self._attr_code_arm_required = coordinator.options.use_code_alarm
         if self._attr_code_arm_required:
@@ -52,16 +53,17 @@ class MyFoxAlarmEntity(AlarmControlPanelEntity, BaseWithValueEntity) :
 
     async def async_alarm_disarm(self, code=None) -> None:
         """Send disarm command."""
-        coordinator:MyFoxCoordinator = self.coordinator
+        coordinator: MyFoxCoordinator = self.coordinator
         await coordinator.setSecurity(self.idx, "disarmed", code)
+
 
     async def async_alarm_arm_away(self, code=None) -> None:
         """Send arm home command."""
-        coordinator:MyFoxCoordinator = self.coordinator
+        coordinator: MyFoxCoordinator = self.coordinator
         await coordinator.setSecurity(self.idx, "armed", code)
-        
+
+
     async def async_alarm_arm_home(self, code=None) -> None:
         """Send arm home command."""
-        coordinator:MyFoxCoordinator = self.coordinator
+        coordinator: MyFoxCoordinator = self.coordinator
         await coordinator.setSecurity(self.idx, "partial", code)
-

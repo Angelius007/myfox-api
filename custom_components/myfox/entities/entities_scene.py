@@ -10,12 +10,13 @@ from ..scenes import BaseScene
 
 _LOGGER = logging.getLogger(__name__)
  
-## ////////////////////////////////////////////////////////////////////////////
-## SCENES
-## ////////////////////////////////////////////////////////////////////////////
+# # ////////////////////////////////////////////////////////////////////////////
+# # SCENES
+# # ////////////////////////////////////////////////////////////////////////////
+
 
 class BaseSceneEntity(Scene, MyFoxAbstractSceneEntity):
-    def __init__(self, coordinator:MyFoxCoordinator, device: BaseScene, title: str, key: str):
+    def __init__(self, coordinator: MyFoxCoordinator, device: BaseScene, title: str, key: str):
         super().__init__(coordinator, device, title, key)
 
     async def async_activate(self, **kwargs: Any) -> None:
@@ -23,8 +24,9 @@ class BaseSceneEntity(Scene, MyFoxAbstractSceneEntity):
         coordinator:MyFoxCoordinator = self.coordinator
         await coordinator.playScenario(self.idx)
 
+
 class BaseSwitchEntity(SwitchEntity, BaseSceneWithValueEntity):
-    def __init__(self, coordinator:MyFoxCoordinator, device: BaseScene, title: str, key: str):
+    def __init__(self, coordinator: MyFoxCoordinator, device: BaseScene, title: str, key: str):
         super().__init__(coordinator, device, title, key)
 
     def _update_value(self, val: Any) -> bool:
@@ -41,8 +43,10 @@ class BaseSwitchEntity(SwitchEntity, BaseSceneWithValueEntity):
         coordinator:MyFoxCoordinator = self.coordinator
         await coordinator.disableScenario(self.idx)
 
+
 class OnDemandSceneEntity(BaseSceneEntity) :
     """ """
+
 
 class ActivabledSceneEntity(BaseSwitchEntity) :
     """ """

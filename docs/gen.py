@@ -1,5 +1,4 @@
 from typing import List
-import json
 import sys
 from unittest.mock import Mock
 
@@ -16,20 +15,20 @@ from custom_components.myfox.entities.entity import (
     MyFoxAbstractDeviceEntity
 )
 
-MARKER_VALUE = -66666
+MARKER_VALUE=-66666
 
 device_info = MyFoxDeviceInfo(
-    deviceId = 1,
-    label = "LABEL",
-    modelId = 1,
-    modelLabel = "MODEL_LABEL"
+    deviceId=1,
+    label="LABEL",
+    modelId=1,
+    modelLabel="MODEL_LABEL"
 )
 
 scene_info = MyFoxSceneInfo(
-    scenarioId = 1,
-    label = "LABEL",
-    typeLabel = "TYPE_LABEL",
-    enabled = "ENABLED"
+    scenarioId=1,
+    label="LABEL",
+    typeLabel="TYPE_LABEL",
+    enabled="ENABLED"
 )
 
 
@@ -57,12 +56,12 @@ def get_scenes(typeLabel: str, dev: type[BaseScene]) -> List[BaseScene]:
     return real_devices
 
 
-def add_stats_(info_global:str, new_info:str) -> str: 
+def add_stats_(info_global: str, new_info: str) -> str:
     """ update info avec , si besoin """
     if len(info_global) > 0:
-        info_global+=", "
-    info_global+=new_info
-    return info_global 
+        info_global += ", "
+    info_global += new_info
+    return info_global
 
 
 def device_summary(base_devices: List[BaseDevice]) -> str:
@@ -80,29 +79,30 @@ def device_summary(base_devices: List[BaseDevice]) -> str:
         coordinator.data = []
         total_sensors += len(device.sensors(coordinator))
         if total_sensors > 0:
-            total_info=add_stats_(total_info, f"sensors: {total_sensors}")
+            total_info = add_stats_(total_info, f"sensors: {total_sensors}")
         total_switches += len(device.switches(coordinator))
         if total_switches > 0:
-            total_info=add_stats_(total_info, f"switches: {total_switches}")
+            total_info = add_stats_(total_info, f"switches: {total_switches}")
         total_selects += len(device.selects(coordinator))
         if total_selects > 0:
-            total_info=add_stats_(total_info, f"selects: {total_selects}")
+            total_info = add_stats_(total_info, f"selects: {total_selects}")
         total_buttons += len(device.buttons(coordinator))
         if total_buttons > 0:
-            total_info=add_stats_(total_info, f"buttons: {total_buttons}")
+            total_info = add_stats_(total_info, f"buttons: {total_buttons}")
         total_texts += len(device.texts(coordinator))
         if total_texts > 0:
-            total_info=add_stats_(total_info, f"texts: {total_texts}")
+            total_info = add_stats_(total_info, f"texts: {total_texts}")
         total_cameras += len(device.cameras(coordinator))
         if total_cameras > 0:
-            total_info=add_stats_(total_info, f"cameras: {total_cameras}")
+            total_info = add_stats_(total_info, f"cameras: {total_cameras}")
         total_medias += len(device.medias(coordinator))
         if total_medias > 0:
-            total_info=add_stats_(total_info, f"medias: {total_medias}")
+            total_info = add_stats_(total_info, f"medias: {total_medias}")
         total_alarms += len(device.alarms(coordinator))
         if total_alarms > 0:
-            total_info=add_stats_(total_info, f"alarms: {total_alarms}")
+            total_info = add_stats_(total_info, f"alarms: {total_alarms}")
     return total_info
+
 
 def scene_summary(base_scenes: List[BaseScene]) -> str:
     total_scenes = 0
@@ -114,8 +114,10 @@ def scene_summary(base_scenes: List[BaseScene]) -> str:
         total_switches += len(scene.switches(coordinator))
     return f"scenes: {total_scenes}, switches: {total_switches}"
 
+
 def render_generic(sw: MyFoxAbstractDeviceEntity) -> str:
     return "- %s (%s)" % (sw._attr_unique_id, sw.__class__.__name__)
+
 
 def render_device_summary(device: BaseDevice, brief: bool = False) -> str:
     coordinator = Mock()
@@ -163,6 +165,7 @@ def render_device_summary(device: BaseDevice, brief: bool = False) -> str:
 
     return res
 
+
 def render_scene_summary(scene: BaseScene, brief: bool = False) -> str:
     coordinator = Mock()
     coordinator.data = []
@@ -178,6 +181,7 @@ def render_scene_summary(scene: BaseScene, brief: bool = False) -> str:
             res += render_generic(sw) + "\n"
 
     return res
+
 
 def render_brief_summary():
     content_summary = "Liste des integrations :\n\n"
@@ -213,9 +217,10 @@ def render_brief_summary():
         f_summary.write(content_summary)
         f_summary.write("\n")
 
+
 def update_full_summary():
     content_integration = "Liste des integrations\n\n"
-    content_integration +="Liste des devices : \n"
+    content_integration += "Liste des devices : \n"
     for dt, dev in device_by_client_key.items():
         if dt != "generic":
             content = ""
@@ -230,7 +235,7 @@ def update_full_summary():
                 f.write("\n\n")
                 f.write("[Retour liste des integrations](../integration.md)\n")
 
-            content_integration+="- [%s](devices/%s.md)\n" % (dev.__name__, dev.__name__)
+            content_integration += "- [%s](devices/%s.md)\n" % (dev.__name__, dev.__name__)
     content_integration += "\n"
     content_integration += "Liste des scenes : \n"
     for dt, dev in scene_by_typeLabel_key.items():

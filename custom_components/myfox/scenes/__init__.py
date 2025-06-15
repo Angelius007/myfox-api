@@ -7,12 +7,14 @@ from homeassistant.components.switch import SwitchEntity
 
 _LOGGER = logging.getLogger(__name__)
 
+
 @dataclasses.dataclass
 class MyFoxSceneInfo:
     scenarioId: int
     label: str
     typeLabel: str
     enabled: str
+
 
 class BaseScene(ABC):
 
@@ -24,14 +26,14 @@ class BaseScene(ABC):
 
     def switches(self, coordinator) -> list[SwitchEntity]:
         return []
-    
+
     def scenes(self, coordinator) -> list[Scene]:
         return []
-    
+
 class DiagnosticScene(BaseScene):
 
     def switches(self, coordinator) -> list[SwitchEntity]:
         return []
-    
+
     def scenes(self, coordinator) -> list[Scene]:
         return []

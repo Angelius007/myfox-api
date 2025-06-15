@@ -8,14 +8,15 @@ from ..devices import BaseDevice
 from ..coordinator.myfox_coordinator import (MyFoxCoordinator)
 
 _LOGGER = logging.getLogger(__name__)
- 
+
+
 class BaseButtonEntity(ButtonEntity, MyFoxAbstractDeviceEntity):
-    def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
+    def __init__(self, coordinator: MyFoxCoordinator, device: BaseDevice, title: str, key: str):
         super().__init__(coordinator, device, title, key)
 
     async def async_press(self) -> None:
         """Handle the button press."""
-        coordinator:MyFoxCoordinator = self.coordinator
+        coordinator: MyFoxCoordinator = self.coordinator
         await coordinator.pressButton(self.idx)
 
 
@@ -41,7 +42,7 @@ class CameraButtonEntity(BaseButtonEntity):
     _attr_device_class = ButtonDeviceClass.IDENTIFY
     _attr_entity_category = EntityCategory.CONFIG
     _attr_should_poll = False
-    
+
     @property
     def icon(self) -> str | None:
         if self.idx.endswith("snapshot"):
@@ -59,6 +60,7 @@ class CameraButtonEntity(BaseButtonEntity):
         else :
             return ""
 
+
 class SocketButtonEntity(BaseButtonEntity):
     """ """
     _attr_device_class = ButtonDeviceClass.IDENTIFY
@@ -72,7 +74,8 @@ class SocketButtonEntity(BaseButtonEntity):
             return "mdi:toggle-switch-variant-off"
         else :
             return "mdi:eye"
-    
+
+
 class PerformButtonEntity(BaseButtonEntity):
     """ """
     _attr_device_class = ButtonDeviceClass.IDENTIFY

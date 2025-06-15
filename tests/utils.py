@@ -40,8 +40,8 @@ def fake_http_call(url: str, *args, **kwargs):
 
     print(f"⭐️ fake_http_call for {url}")
     if "oauth2/token" in url:
-        token1 = str(base64.b64encode(secrets.token_bytes(32))).replace("==","")
-        token2 = str(base64.b64encode(secrets.token_bytes(32))).replace("==","")
+        token1 = str(base64.b64encode(secrets.token_bytes(32))).replace("==", "")
+        token2 = str(base64.b64encode(secrets.token_bytes(32))).replace("==", "")
 
         return FakeResponse(200, {"status": "OK", "access_token": token1, "refresh_token": token2, "expires_in": 3600, "site_id": 1234})
 
@@ -94,13 +94,13 @@ def fake_http_call(url: str, *args, **kwargs):
                                           }
                                       ]}
                                   })
-    elif "v2/site/1234/scenario/123/play" in url or  "v2/site/1234/scenario/456/play" in url or  "v2/site/1234/scenario/789/play" in url:
+    elif "v2/site/1234/scenario/123/play" in url or "v2/site/1234/scenario/456/play" in url or "v2/site/1234/scenario/789/play" in url:
         return FakeResponse(200, {"status": "OK"})
-    elif "v2/site/1234/scenario" in url and  "/play" in url:
+    elif "v2/site/1234/scenario" in url and "/play" in url:
         return FakeResponse(200, {"status": "KO", "error" : "404", "error_description" : "Unknown scenario ID"})
-    elif "v2/site/1234/scenario/123/disable" in url or  "v2/site/1234/scenario/456/disable" in url or  "v2/site/1234/scenario/789/disable" in url:
+    elif "v2/site/1234/scenario/123/disable" in url or "v2/site/1234/scenario/456/disable" in url or "v2/site/1234/scenario/789/disable" in url:
         return FakeResponse(200, {"status": "OK"})
-    elif "v2/site/1234/scenario/123/enable" in url or  "v2/site/1234/scenario/456/enable" in url or  "v2/site/1234/scenario/789/enable" in url:
+    elif "v2/site/1234/scenario/123/enable" in url or "v2/site/1234/scenario/456/enable" in url or "v2/site/1234/scenario/789/enable" in url:
         return FakeResponse(200, {"status": "OK"})
     elif "v2/site/1234/xxx" in url:
         return FakeResponse(200, {"status": "OK",
@@ -115,7 +115,7 @@ def fake_http_call(url: str, *args, **kwargs):
 
 class FakeClientSession:
     def __init__(self, *args, **kwargs):
-        self.get  = MagicMock(side_effect=fake_http_call)
+        self.get = MagicMock(side_effect=fake_http_call)
         self.post = MagicMock(side_effect=fake_http_call)
         print(f"⭐️ FakeClientSession constructed via {__name__}")
 

@@ -11,12 +11,13 @@ from ..coordinator.myfox_coordinator import (MyFoxCoordinator)
 
 _LOGGER = logging.getLogger(__name__)
 
-## ////////////////////////////////////////////////////////////////////////////
-## DEVICES
-## ////////////////////////////////////////////////////////////////////////////
+# # ////////////////////////////////////////////////////////////////////////////
+# # DEVICES
+# # ////////////////////////////////////////////////////////////////////////////
+
 
 class BaseMediaEntity(MediaPlayerEntity, MyFoxAbstractDeviceEntity):
-    def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
+    def __init__(self, coordinator: MyFoxCoordinator, device: BaseDevice, title: str, key: str):
         super().__init__(coordinator, device, title, key)
 
     async def async_browse_media(
@@ -25,12 +26,12 @@ class BaseMediaEntity(MediaPlayerEntity, MyFoxAbstractDeviceEntity):
         """Implement the websocket media browsing helper."""
         browserMedias = None
         if media_content_type == MediaType.IMAGE or media_content_type == MediaType.VIDEO:
-            coordinator:MyFoxCoordinator = self.coordinator
+            coordinator: MyFoxCoordinator = self.coordinator
             medias = await coordinator.getMedia(self.idx)
             if media_content_type == MediaType.IMAGE :
-                browserMedias = BrowseMedia("*", MediaClass.DIRECTORY, self.idx, MediaType.IMAGE, "Images-"+self.idx, False, False)
+                browserMedias = BrowseMedia("*", MediaClass.DIRECTORY, self.idx, MediaType.IMAGE, "Images-" + self.idx, False, False)
             elif media_content_type == MediaType.VIDEO :
-                browserMedias = BrowseMedia("*", MediaClass.DIRECTORY, self.idx, MediaType.VIDEO, "Videos-"+self.idx, False, False)
+                browserMedias = BrowseMedia("*", MediaClass.DIRECTORY, self.idx, MediaType.VIDEO, "Videos-" + self.idx, False, False)
             for media in medias:
                 if "imageId" in media :
                     browserMedia = BrowseMedia("*", MediaClass.IMAGE, media["imageId"], MediaType.IMAGE, media["cameraLabel"], False, False)
@@ -44,15 +45,17 @@ class BaseMediaEntity(MediaPlayerEntity, MyFoxAbstractDeviceEntity):
             media_content_id,
             content_filter=lambda item: item.media_content_type.startswith("video/"),
         )
-    
+
+
 class ImageMediaEntity(BaseMediaEntity):
-    def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
+    def __init__(self, coordinator: MyFoxCoordinator, device: BaseDevice, title: str, key: str):
         super().__init__(coordinator, device, title, key)
         self._attr_supported_features = MediaPlayerEntityFeature.BROWSE_MEDIA
         self._attr_media_content_type = MediaType.IMAGE
 
+
 class VideoMediaEntity(BaseMediaEntity):
-    def __init__(self, coordinator:MyFoxCoordinator, device: BaseDevice, title: str, key: str):
+    def __init__(self, coordinator: MyFoxCoordinator, device: BaseDevice, title: str, key: str):
         super().__init__(coordinator, device, title, key)
         self._attr_supported_features = MediaPlayerEntityFeature.BROWSE_MEDIA|MediaPlayerEntityFeature.PLAY
         self._attr_media_content_type = MediaType.VIDEO
@@ -66,4 +69,4 @@ class VideoMediaEntity(BaseMediaEntity):
     ) -> None:
         """Play a piece of media."""
         coordinator:MyFoxCoordinator = self.coordinator
-        await coordinator.playVideo(self.idx)
+        await coordinator.playVideo(self.idx, int(media_id))
