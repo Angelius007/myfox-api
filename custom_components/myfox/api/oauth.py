@@ -8,8 +8,7 @@ from homeassistant.components.application_credentials import (
 )
 from homeassistant.core import HomeAssistant
 from .const import (DEFAULT_MYFOX_URL_API,
-    MYFOX_TOKEN_PATH, MYFOX_AUTORIZE_PATH
-)
+                    MYFOX_TOKEN_PATH, MYFOX_AUTORIZE_PATH)
 _LOGGER = logging.getLogger(__name__)
 
 
