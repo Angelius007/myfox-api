@@ -188,9 +188,9 @@ class MyFoxMockCache :
         myfox_info = MyFoxEntryDataApi(client_id=client_id, client_secret=client_secret, username=myfox_user,
                                        password=myfox_pswd,
                                        access_token=access_token, refresh_token=refresh_token, expires_in=expires_in,
-                                       expires_time=expires_time, site=MyFoxSite(site_id))
+                                       expires_time=expires_time, site=MyFoxSite(siteId=site_id))
         options = MyFoxOptionsDataApi()
         myfox_info.options = options
-        print(f"⭐️ getMyFoxEntryDataFromCache.myfox_info: {myfox_info}")
+        print(f"⭐️ getMyFoxEntryDataFromCache.myfox_info: {data} -> {myfox_info}")
         _LOGGER.info(str(myfox_info))
         return myfox_info
