@@ -58,7 +58,7 @@ class MyFoxApiGroupShutterClient(MyFoxApiClient) :
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(args=exception)
-    
+
     async def setClose(self, groupId: int) -> bool:
         """ Get security site """
         try:

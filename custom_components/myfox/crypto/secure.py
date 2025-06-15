@@ -21,7 +21,7 @@ def decode(string: str, password: str):
 
 
 def seed_(string: str):
-    return encode_base64(encode_base64(string) + CODE_SEPARATOR).replace("==","")
+    return encode_base64(encode_base64(string) + CODE_SEPARATOR).replace("==", "")
 
 
 def encode_base64(string: str):

@@ -34,11 +34,11 @@ GRANT_TYPE_AUTHORIZATION_CODE : Final = "authorization_code"
 GRANT_REFRESH_TOKEN           : Final = "refresh_token"
 
 # SEUILS
-POOLING_INTERVAL_DEF:int = 2  # 2 min
-SEUIL_EXPIRE_MIN:int = (5 * 60)  # 5 min
-CACHE_EXPIRE_IN:int = (10 * 60)  # 10 min
-CACHE_CAMERA:int = (5 * 60)  # 5 min
-CACHE_SECURITY:int = (5 * 60)  # 5 min
+POOLING_INTERVAL_DEF: int = 2  # 2 min
+SEUIL_EXPIRE_MIN: int = (5 * 60)  # 5 min
+CACHE_EXPIRE_IN: int = (10 * 60)  # 10 min
+CACHE_CAMERA: int = (5 * 60)  # 5 min
+CACHE_SECURITY: int = (5 * 60)  # 5 min
 
 # token
 MYFOX_TOKEN_PATH: Final = "oauth2/token"

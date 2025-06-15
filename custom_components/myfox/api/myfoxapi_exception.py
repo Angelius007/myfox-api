@@ -3,11 +3,10 @@ from typing import Optional
 
 
 class MyFoxException(Exception):
-    def __init__(
-        self,
-        status: Optional[int] = None,
-        message: Optional[str] = "",
-        *args, **kwargs) -> None:
+    def __init__(self,
+                 status: Optional[int] = None,
+                 message: Optional[str] = "",
+                 *args, **kwargs) -> None:
         if status is not None:
             self.status = status
         else:

@@ -18,29 +18,28 @@ from homeassistant.helpers.selector import (
 from .crypto.secure import encode, decode
 
 from .const import (DOMAIN_MYFOX,
-    CONFIG_VERSION,
-    PREFIX_ENTRY
-)
+                    CONFIG_VERSION,
+                    PREFIX_ENTRY)
 from .api.const import (KEY_SITE_ID,
-    KEY_TOKEN,
-    KEY_ACCESS_TOKEN,
-    KEY_REFRESH_TOKEN,
-    KEY_EXPIRE_IN,
-    KEY_EXPIRE_AT,
-    KEY_CACHE_EXPIRE_IN,
-    CACHE_EXPIRE_IN,
-    POOLING_INTERVAL_DEF,
-    KEY_POOLING_INTERVAL,
-    KEY_CACHE_CAMERA,
-    CACHE_CAMERA,
-    KEY_CACHE_SECURITY,
-    CACHE_SECURITY,
-    KEY_USE_CODE_ALARM,
-    KEY_AUTHORIZED_CODE_ALARM,
-    KEY_NB_RETRY_DEFAULT,
-    KEY_NB_RETRY_CAMERA,
-    KEY_DELAY_BETWEEN_RETRY
-)
+                        KEY_TOKEN,
+                        KEY_ACCESS_TOKEN,
+                        KEY_REFRESH_TOKEN,
+                        KEY_EXPIRE_IN,
+                        KEY_EXPIRE_AT,
+                        KEY_CACHE_EXPIRE_IN,
+                        CACHE_EXPIRE_IN,
+                        POOLING_INTERVAL_DEF,
+                        KEY_POOLING_INTERVAL,
+                        KEY_CACHE_CAMERA,
+                        CACHE_CAMERA,
+                        KEY_CACHE_SECURITY,
+                        CACHE_SECURITY,
+                        KEY_USE_CODE_ALARM,
+                        KEY_AUTHORIZED_CODE_ALARM,
+                        KEY_NB_RETRY_DEFAULT,
+                        KEY_NB_RETRY_CAMERA,
+                        KEY_DELAY_BETWEEN_RETRY
+                        )
 
 from .api import (
     MyFoxEntryDataApi,

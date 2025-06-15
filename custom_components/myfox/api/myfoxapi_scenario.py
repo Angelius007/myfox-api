@@ -14,7 +14,7 @@ _LOGGER = logging.getLogger(__name__)
 
 class MyFoxApiSecenarioClient(MyFoxApiClient) :
 
-    def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
+    def __init__(self, myfox_info: MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
         self.client_key = "scenario"
         self.scenarii = list()
@@ -31,7 +31,7 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
             if self.isCacheExpire(self.scenarii_time) :
                 response = await self.callMyFoxApiGet(MYFOX_SCENARIO_ITEMS % self.myfox_info.site.siteId)
                 items = response["payload"]["items"]
-                _LOGGER.debug("getScenarii : %s",str(items))
+                _LOGGER.debug("getScenarii : %s", str(items))
                 self.scenarii = items
                 self.scenarii_time = time.time()
 
@@ -62,7 +62,7 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(args=exception)
-        
+
     async def disableScenario(self, scenarioId: int):
         """ Disable scenario """
         try:

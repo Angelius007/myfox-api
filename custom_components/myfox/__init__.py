@@ -182,7 +182,7 @@ def updateMyFoxOptions(entry: ConfigEntry) -> MyFoxOptionsDataApi :
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     if DOMAIN_MYFOX not in hass.data:
         hass.data.setdefault(MYFOX_KEY, {})
-    
+
     client_id = None
     if KEY_CLIENT_ID in entry.data :
         client_id = entry.data[KEY_CLIENT_ID]
@@ -192,7 +192,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     credential: ClientCredential = getClientCredential(hass, entry)
     if credential :
-        client_id     = credential.client_id
+        client_id = credential.client_id
         client_secret = credential.client_secret
 
     myfox_info = MyFoxEntryDataApi(client_id=client_id,
@@ -275,10 +275,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         await hass.config_entries.async_forward_entry_setups(entry, _PLATFORMS)
         entry.async_on_unload(entry.add_update_listener(update_listener))
 
-
         return retour
     else :
-        _LOGGER.warning("Pas de site trouve pour l'identifiant %s",entry.data[KEY_SITE_ID])
+        _LOGGER.warning("Pas de site trouve pour l'identifiant %s", entry.data[KEY_SITE_ID])
         raise ConfigEntryNotReady("Service temporairement indisponible")
 
 
@@ -303,7 +302,7 @@ async def addSecurity(hass: HomeAssistant, entry: ConfigEntry, myfox_info: MyFox
 async def addShutter(hass: HomeAssistant, entry: ConfigEntry, myfox_info: MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Shutter")
-    retour  = await addClientToCoordinator(hass, entry, MyFoxApiShutterClient(myfox_info))
+    retour = await addClientToCoordinator(hass, entry, MyFoxApiShutterClient(myfox_info))
     _LOGGER.debug("Add Group Shutter")
     retour &= await addClientToCoordinator(hass, entry, MyFoxApiGroupShutterClient(myfox_info))
     return retour
@@ -312,7 +311,7 @@ async def addShutter(hass: HomeAssistant, entry: ConfigEntry, myfox_info: MyFoxE
 async def addSocket(hass: HomeAssistant, entry: ConfigEntry, myfox_info: MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Socket")
-    retour  = await addClientToCoordinator(hass, entry, MyFoxApiSocketClient(myfox_info))
+    retour = await addClientToCoordinator(hass, entry, MyFoxApiSocketClient(myfox_info))
     _LOGGER.debug("Add Group Socket")
     retour &= await addClientToCoordinator(hass, entry, MyFoxApiGroupElectricClient(myfox_info))
     return retour
@@ -343,6 +342,7 @@ async def addDeviceState(hass: HomeAssistant, entry: ConfigEntry, myfox_info: My
     """ """
     _LOGGER.debug("Add State Device")
     return await addClientToCoordinator(hass, entry, MyFoxApiStateClient(myfox_info))
+
 
 async def addDeviceLight(hass: HomeAssistant, entry: ConfigEntry, myfox_info: MyFoxEntryDataApi):
     """ """
@@ -430,10 +430,10 @@ async def update_listener(hass: HomeAssistant, config_entry: ConfigEntry) -> Non
     coordinator: MyFoxCoordinator = hass.data.setdefault(MYFOX_KEY, {})[config_entry.entry_id]
     new_data = {**config_entry.data}
 
-    credential:ClientCredential = getClientCredential(hass, config_entry)
+    credential: ClientCredential = getClientCredential(hass, config_entry)
     if credential and coordinator :
         myfox_info: MyFoxEntryDataApi = coordinator.getMyFoxInfo()
-        myfox_info.client_id  = credential.client_id
+        myfox_info.client_id = credential.client_id
         myfox_info.client_secret = credential.client_secret
 
         # mise a jour des options

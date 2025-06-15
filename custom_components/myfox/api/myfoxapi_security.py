@@ -36,12 +36,12 @@ class MyFoxApiSecurityClient(MyFoxApiClient) :
             self.security.clear()
             if "status" in statutSecurity and "statusLabel" in statutSecurity :
                 self.security.append({'deviceId': self.myfox_info.site.siteId,
-                    'label': 'Alarme MyFox',
-                    'modelId': 99,
-                    'modelLabel': 'Alarme MyFox',
-                    "status" : statutSecurity["status"],
-                    "statusLabel" : statutSecurity["statusLabel"]
-                })
+                                      'label': 'Alarme MyFox',
+                                      'modelId': 99,
+                                      'modelLabel': 'Alarme MyFox',
+                                      "status" : statutSecurity["status"],
+                                      "statusLabel" : statutSecurity["statusLabel"]
+                                      })
                 self.security_time = time.time()
         else :
             _LOGGER.debug("MyFoxApiSecurityClient.getList -> Cache ")

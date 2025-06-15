@@ -211,7 +211,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         client: MyFoxApiLightClient = myfoxApiClient
                         for temp in client.ligth :
                             self.addToParams(params, listening_idx, temp)
-                    
+
                     # cas d'un client sensor alert
                     elif myfoxApiClient.__class__ == MyFoxApiAlerteStateClient :
 
@@ -640,7 +640,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         except Exception as err:
             raise UpdateFailed(f"Error with API selectOption: {err}")
 
-    async def setSecurity(self, idx: str, device_action:str, code: str = None) -> bool:
+    async def setSecurity(self, idx: str, device_action: str, code: str = None) -> bool:
         action_ok = False
         try:
             _LOGGER.info("Security Option : %s/%s from %s", idx, device_action, str(self.name))
@@ -776,7 +776,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         break
 
             return retour_url
-        except InvalidTokenMyFoxException as err:   
+        except InvalidTokenMyFoxException as err:
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
             raise ConfigEntryAuthFailed from err

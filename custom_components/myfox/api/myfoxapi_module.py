@@ -2,7 +2,7 @@ import logging
 import time
 
 from .myfoxapi_exception import (MyFoxException)
-from . import (MyFoxEntryDataApi )
+from . import (MyFoxEntryDataApi)
 from .myfoxapi import (MyFoxApiClient)
 
 from .const import (
@@ -32,7 +32,7 @@ class MyFoxApiModuleClient(MyFoxApiClient) :
             if self.isCacheExpire(self.module_time) :
                 response = await self.callMyFoxApiGet(MYFOX_DEVICE_MODULE_LIST % (self.myfox_info.site.siteId))
                 items = response["payload"]["items"]
-                _LOGGER.debug("getList : %s",str(items))
+                _LOGGER.debug("getList : %s", str(items))
                 self.module = items
                 self.module_time = time.time()
 
@@ -46,7 +46,7 @@ class MyFoxApiModuleClient(MyFoxApiClient) :
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(args=exception)
-    
+
     async def performeOne(self, deviceId: int) -> list:
         """ Get security site """
         try:
@@ -63,7 +63,7 @@ class MyFoxApiModuleClient(MyFoxApiClient) :
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(args=exception)
-    
+
     async def performeTwo(self, deviceId: int) -> list:
         """ Get security site """
         try:

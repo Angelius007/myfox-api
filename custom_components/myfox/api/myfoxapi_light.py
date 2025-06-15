@@ -30,7 +30,7 @@ class MyFoxApiLightClient(MyFoxApiClient) :
             if self.isCacheExpire(self.light_time) :
                 response = await self.callMyFoxApiGet(MYFOX_LIGHT_LIST % (self.myfox_info.site.siteId))
                 items = response["payload"]["items"]
-                _LOGGER.debug("getLightList : %s",str(items))
+                _LOGGER.debug("getLightList : %s", str(items))
                 self.ligth = items
                 self.light_time = time.time()
 
@@ -49,7 +49,7 @@ class MyFoxApiLightClient(MyFoxApiClient) :
         """ Mise a jour security site """
         try:
             response = await self.callMyFoxApiGet(MYFOX_LIGHT_HISTORY % (self.myfox_info.site.siteId , deviceId))
-            _LOGGER.debug("getLightHistory : %s",str(response))
+            _LOGGER.debug("getLightHistory : %s", str(response))
             return response
 
         except MyFoxException as exception:

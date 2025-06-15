@@ -14,16 +14,16 @@ _LOGGER = logging.getLogger(__name__)
 
 class MyFoxApiCameraClient(MyFoxApiClient) :
 
-    def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
+    def __init__(self, myfox_info: MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
         self.client_key = "camera"
         self.camera = list()
         self.camera_time = 0
-        self.lastPreview:bytes = None
-        self.lastPreviewFilename:str = None
+        self.lastPreview: bytes = None
+        self.lastPreviewFilename: str = None
         self.lastPreview_time = 0
 
-    def saveMyFoxInfo(self, myfox_info:MyFoxEntryDataApi) :
+    def saveMyFoxInfo(self, myfox_info: MyFoxEntryDataApi) :
         super().saveMyFoxInfo(myfox_info)
         self.camera_cache_expire_in = myfox_info.options.cache_camera_time
         self.nb_retry = myfox_info.options.nb_retry_camera
@@ -47,7 +47,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(args=exception)
-        
+
     async def cameraLiveStart(self, deviceId: int, protocol: str):
         """ Recuperation scenarios """
         try:
@@ -61,7 +61,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(args=exception)
-        
+
     async def cameraLiveExtend(self, deviceId: int):
         """ Recuperation scenarios """
         try:
@@ -93,8 +93,8 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
         try:
             if self.isCacheExpireWithParam(self.lastPreview_time, self.camera_cache_expire_in) :
                 response = await self.callMyFoxApiBinaryPost(MYFOX_CAMERA_PREV_TAKE % (self.myfox_info.site.siteId, deviceId))
-                if("binary" in response and "filename" in response) :
-                    self.lastPreview         = response["binary"]
+                if ("binary" in response and "filename" in response) :
+                    self.lastPreview = response["binary"]
                     self.lastPreviewFilename = response["filename"]
                     if response["filename"] == "default.jpg" :
                         # Pas de cache si on a l'umage par defaut
@@ -112,7 +112,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(args=exception)
-        
+
     async def cameraSnapshotTake(self, deviceId: int):
         """ Recuperation scenarios """
         try:
@@ -125,7 +125,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(args=exception)
-        
+
     async def cameraRecordingStart(self, deviceId: int):
         """ Recuperation scenarios """
         try:
@@ -138,7 +138,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(args=exception)
-        
+
     async def cameraRecordingStop(self, deviceId: int):
         """ Recuperation scenarios """
         try:
@@ -164,7 +164,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(args=exception)
-        
+
     async def cameraShutterClose(self, deviceId: int):
         """ Recuperation scenarios """
         try:

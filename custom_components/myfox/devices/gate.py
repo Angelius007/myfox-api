@@ -24,5 +24,5 @@ class MyFoxGateDevice(BaseDevice):
 
     def buttons(self, coordinator) -> list[ButtonEntity]:
         _LOGGER.debug("Ajout PerformButtonEntity sur device %s", str(self.device_info.deviceId))
-        return [PerformButtonEntity(coordinator, self,f"One - {self.device_info.label}", "performeOne"),
+        return [PerformButtonEntity(coordinator, self, f"One - {self.device_info.label}", "performeOne"),
                 PerformButtonEntity(coordinator, self, f"Two - {self.device_info.label}", "performeTwo")]

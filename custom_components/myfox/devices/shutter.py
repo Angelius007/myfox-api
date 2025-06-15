@@ -25,7 +25,7 @@ class MyFoxShuttereDevice(BaseDevice) :
 
     def buttons(self, coordinator) -> list[ButtonEntity]:
         _LOGGER.debug("Ajout ShutterButtonEntity sur device %s", str(self.device_info.deviceId))
-        return [ShutterButtonEntity(coordinator, self,f"Ouverture {self.device_info.label}", "open"),
+        return [ShutterButtonEntity(coordinator, self, f"Ouverture {self.device_info.label}", "open"),
                 ShutterButtonEntity(coordinator, self, f"Fermeture {self.device_info.label}", "close")]
 
 

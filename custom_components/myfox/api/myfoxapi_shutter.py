@@ -17,7 +17,7 @@ _LOGGER = logging.getLogger(__name__)
 
 class MyFoxApiShutterClient(MyFoxApiClient) :
 
-    def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
+    def __init__(self, myfox_info: MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
         self.client_key = "shutter"
         self.module = list()
@@ -34,7 +34,7 @@ class MyFoxApiShutterClient(MyFoxApiClient) :
             if self.isCacheExpire(self.module_time) :
                 response = await self.callMyFoxApiGet(MYFOX_DEVICE_SHUTTER_LIST % (self.myfox_info.site.siteId))
                 items = response["payload"]["items"]
-                _LOGGER.debug("getList : %s",str(items))
+                _LOGGER.debug("getList : %s", str(items))
                 self.module = items
                 self.module_time = time.time()
 
@@ -48,8 +48,8 @@ class MyFoxApiShutterClient(MyFoxApiClient) :
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(args=exception)
-    
-    async def setFavorite(self, deviceId: int) -> list:
+
+    async def setFavorite(self, deviceId: int) -> bool:
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_DEVICE_SHUTTER_MY % (self.myfox_info.site.siteId, deviceId))
@@ -65,7 +65,7 @@ class MyFoxApiShutterClient(MyFoxApiClient) :
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(args=exception)
-    
+
     async def setOpen(self, deviceId: int) -> list:
         """ Get security site """
         try:
