@@ -133,7 +133,7 @@ class MyFoxMockCache :
             _LOGGER.debug("Cache : " + data)
             f.close()
             return json.loads(data)
-        except Exception:
+        except Exception as exception:
             _LOGGER.error("Erreur chargement du cache", exception)
 
     @staticmethod
