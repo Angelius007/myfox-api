@@ -194,24 +194,11 @@ class MyFoxApiClient:
             _LOGGER.error(f"InvalidTokenMyFoxException : {exception.status} - {exception.message}")
             raise exception
         except MyFoxException as exception:
-            """ Retry """
-            if retry < self.nb_retry :
-                _LOGGER.warning(f"Erreur {exception.status} - {exception.message}. Relance de la requete {path} (Tentative : {(retry+1)}/{self.nb_retry})")
-                await asyncio.sleep(self.delay_between_retry) # tempo de qqes secondes pour relancer la requete
-                return await self.callMyFoxApi_(session=session, path=path, data=data, method=method, responseClass=responseClass, retry=(retry+1))
-            else :
-                _LOGGER.error(f"Erreur {exception.status} - {exception.message}. Echec des relances {path} (Tentative : {retry}/{self.nb_retry})")
-                raise exception
+            raise exception
         except Exception as exception:
-            """ Retry """
-            if retry < self.nb_retry :
-                _LOGGER.warning(f"Exception {str(exception)}. Relance de la requete {path} (Tentative : {(retry+1)}/{self.nb_retry})")
-                await asyncio.sleep(self.delay_between_retry) # tempo de qqes secondes pour relancer la requete
-                return await self.callMyFoxApi_(session=session, path=path, data=data, method=method, responseClass=responseClass, retry=(retry+1))
-            else :
-                _LOGGER.error(exception)
-                _LOGGER.error(f"Erreur {str(exception)}. Echec des relances {path} (Tentative : {retry}/{self.nb_retry})")
-                raise MyFoxException(args=exception)
+            _LOGGER.error(exception)
+            _LOGGER.error(f"Erreur {str(exception)}. Echec des relances {path} (Tentative : {retry}/{self.nb_retry})")
+            raise MyFoxException(args=exception)
 
     async def _get_response(self, resp: ClientResponse, responseClass:str = "json"):
         if responseClass == "json" :
