@@ -43,7 +43,7 @@ class MyFoxApiSocketClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
     
     async def setOn(self, deviceId:int) -> list:
         """ Get security site """
@@ -60,7 +60,7 @@ class MyFoxApiSocketClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
     
     async def setOff(self, deviceId:int) -> list:
         """ Get security site """
@@ -79,4 +79,4 @@ class MyFoxApiSocketClient(MyFoxApiClient) :
         except Exception as exception:
             _LOGGER.error(exception)
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)

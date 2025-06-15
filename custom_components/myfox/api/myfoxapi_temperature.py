@@ -51,7 +51,7 @@ class MyFoxApiTemperatureClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
     
     async def updateDevice(self, deviceId:int) :
         """ """
@@ -75,4 +75,4 @@ class MyFoxApiTemperatureClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)

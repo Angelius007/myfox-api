@@ -41,7 +41,7 @@ class MyFoxAbstractDeviceEntity(CoordinatorEntity[MyFoxCoordinator], Entity):
             manufacturer="MyFox",
             name=self._device.device_info.label,
             model=self._device.device_info.modelLabel,
-            model_id=self._device.device_info.modelId,
+            model_id=str(self._device.device_info.modelId),
             serial_number=str(self._device.device_info.deviceId),
         )
 
@@ -129,6 +129,6 @@ class MyFoxAbstractCameraEntity(Camera):
             manufacturer="MyFox",
             name=self._device.device_info.label,
             model=self._device.device_info.modelLabel,
-            model_id=self._device.device_info.modelId,
+            model_id=str(self._device.device_info.modelId),
             serial_number=str(self._device.device_info.deviceId),
         )

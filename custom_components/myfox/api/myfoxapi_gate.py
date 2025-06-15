@@ -38,7 +38,7 @@ class MyFoxApiGateClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
     
     async def performeOne(self, deviceId:int) -> list:
         """ Get security site """
@@ -55,7 +55,7 @@ class MyFoxApiGateClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
     
     async def performeTwo(self, deviceId:int) -> list:
         """ Get security site """
@@ -72,4 +72,4 @@ class MyFoxApiGateClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)

@@ -46,7 +46,7 @@ class MyFoxApiStateClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
     
     async def getDeviceWithState(self, deviceId:int):
         """ Get security site """
@@ -66,4 +66,4 @@ class MyFoxApiStateClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)

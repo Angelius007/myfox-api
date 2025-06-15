@@ -5,13 +5,14 @@ class MyFoxException(Exception):
     def __init__(
         self,
         status: Optional[int] = None,
-        message: str = "") -> None:
-
+        message: Optional[str] = "",
+        *args, **kwargs) -> None:
         if status is not None:
             self.status = status
         else:
-            self.status = 0
+            self.status = 999
         self.message = message
+        super().__init__(args, kwargs)
 
 class InvalidTokenMyFoxException(MyFoxException) :
     """Client token expire or invalid """
@@ -21,6 +22,7 @@ class RetryMyFoxException(MyFoxException) :
     def __init__(
         self,
         status: Optional[int] = 632,
-        message: str = "") -> None:
+        message: str = "",
+        *args, **kwargs) -> None:
 
-        super().__init__(status, message)
+        super().__init__(status, message,args, kwargs)

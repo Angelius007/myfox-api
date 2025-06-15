@@ -43,7 +43,7 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
 
     async def enableScenario(self, scenarioId: int):
         """ Enable scenario """
@@ -60,7 +60,7 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
         
     async def disableScenario(self, scenarioId: int):
         """ Disable scenario """
@@ -77,7 +77,7 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
 
     async def playScenario(self, scenarioId: int):
         """ Play scenario """
@@ -94,4 +94,4 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)

@@ -39,7 +39,7 @@ class MyFoxApiGroupElectricClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
     
     async def setOn(self, groupId:int) -> list:
         """ Get security site """
@@ -56,7 +56,7 @@ class MyFoxApiGroupElectricClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
     
     async def setOff(self, groupId:int) -> list:
         """ Get security site """
@@ -73,4 +73,4 @@ class MyFoxApiGroupElectricClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)

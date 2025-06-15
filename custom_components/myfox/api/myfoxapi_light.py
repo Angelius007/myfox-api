@@ -42,7 +42,7 @@ class MyFoxApiLightClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
 
     async def getLightHistory(self, deviceId:int):
         """ Mise a jour security site """
@@ -55,4 +55,4 @@ class MyFoxApiLightClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)

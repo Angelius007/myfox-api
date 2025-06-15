@@ -59,7 +59,7 @@ class MyFoxApiSecurityClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
 
     async def setSecurity(self, securityLevel: str, code:str = None):
         """ Mise a jour security site """
@@ -87,4 +87,4 @@ class MyFoxApiSecurityClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)

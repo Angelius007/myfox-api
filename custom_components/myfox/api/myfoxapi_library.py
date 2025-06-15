@@ -43,7 +43,7 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
     
     async def getVideoList(self) -> list:
         """ Get vdieo list """
@@ -64,7 +64,7 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
     
     async def playVideo(self, videoId:int) -> str:
         """ Get video """
@@ -78,7 +78,7 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
 
     async def getImage(self, image_url:int) -> bytes:
         """ Get image """
@@ -92,4 +92,4 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)

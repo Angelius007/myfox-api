@@ -45,7 +45,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
         
     async def cameraLiveStart(self, deviceId:int, protocol:str):
         """ Recuperation scenarios """
@@ -59,7 +59,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
         
     async def cameraLiveExtend(self, deviceId:int):
         """ Recuperation scenarios """
@@ -72,7 +72,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
 
     async def cameraLiveStop(self, deviceId:int):
         """ Recuperation scenarios """
@@ -85,7 +85,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
 
     async def cameraPreviewTake(self, deviceId:int):
         """ Recuperation scenarios """
@@ -110,7 +110,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
         
     async def cameraSnapshotTake(self, deviceId:int):
         """ Recuperation scenarios """
@@ -123,7 +123,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
         
     async def cameraRecordingStart(self, deviceId:int):
         """ Recuperation scenarios """
@@ -136,7 +136,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
         
     async def cameraRecordingStop(self, deviceId:int):
         """ Recuperation scenarios """
@@ -149,7 +149,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
 
     async def cameraShutterOpen(self, deviceId:int):
         """ Recuperation scenarios """
@@ -162,7 +162,7 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
         
     async def cameraShutterClose(self, deviceId:int):
         """ Recuperation scenarios """
@@ -175,4 +175,4 @@ class MyFoxApiCameraClient(MyFoxApiClient) :
             raise exception
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(exception)
+            raise MyFoxException(args=exception)
