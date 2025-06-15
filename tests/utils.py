@@ -134,7 +134,14 @@ class MyFoxMockCache :
             f.close()
             return json.loads(data)
         except Exception as exception:
-            _LOGGER.error("Erreur chargement du cache", exception)
+            try:
+                f = open("tests/init_cache.txt", "r")
+                data = f.read()
+                _LOGGER.debug("Cache : " + data)
+                f.close()
+                return json.loads(data)
+            except Exception as exception:
+                _LOGGER.error("Erreur chargement du cache", exception)
 
     @staticmethod
     def writeCache(myfox_info: MyFoxEntryDataApi):
