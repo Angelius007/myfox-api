@@ -108,6 +108,7 @@ def fake_http_call(url: str, *args, **kwargs):
                                       ]}
                                   })
 
+    print(f"⭐️ fake_http_call : No mock founded for {url}")
     return FakeResponse(404, {"status": "KO", "error": "Service not implemented", "error_description" : "No Mock found"})
 
 class FakeClientSession:
@@ -133,18 +134,11 @@ class MyFoxMockCache :
             f.close()
             return json.loads(data)
         except Exception:
-            try:
-                f = open("cache_save.txt", "r")
-                data = f.read()
-                _LOGGER.debug("Cache : " + data)
-                f.close()
-                return json.loads(data)
-            except Exception:
-                f = open("init_cache.txt", "r")
-                data = f.read()
-                _LOGGER.debug("Cache : " + data)
-                f.close()
-                return json.loads(data)
+            f = open("init_cache.txt", "r")
+            data = f.read()
+            _LOGGER.debug("Cache : " + data)
+            f.close()
+            return json.loads(data)
 
     @staticmethod
     def writeCache(myfox_info: MyFoxEntryDataApi):
@@ -174,7 +168,7 @@ class MyFoxMockCache :
         refresh_token = ""
         expires_in = 0
         expires_time = 0.0
-        site_id = 0
+        site_id = 1234
         if "CLIENT_ID" in data:
             client_id = data["CLIENT_ID"]
         if "CLIENT_SECRET" in data:
