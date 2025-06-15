@@ -1,6 +1,7 @@
 
 from typing import Optional
 
+
 class MyFoxException(Exception):
     def __init__(
         self,
@@ -14,15 +15,17 @@ class MyFoxException(Exception):
         self.message = message
         super().__init__(args, kwargs)
 
+
 class InvalidTokenMyFoxException(MyFoxException) :
     """Client token expire or invalid """
+
 
 class RetryMyFoxException(MyFoxException) :
     """ Exception to retry call """
     def __init__(
-        self,
-        status: Optional[int] = 632,
-        message: str = "",
-        *args, **kwargs) -> None:
+            self,
+            status: Optional[int] = 632,
+            message: str = "",
+            *args, **kwargs) -> None:
 
-        super().__init__(status, message,args, kwargs)
+        super().__init__(status, message, args, kwargs)

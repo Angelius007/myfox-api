@@ -2,7 +2,7 @@ import logging
 import time
 
 from .myfoxapi_exception import (MyFoxException)
-from . import (MyFoxEntryDataApi )
+from . import (MyFoxEntryDataApi)
 from .myfoxapi import (MyFoxApiClient)
 
 from .const import (
@@ -12,9 +12,10 @@ from .const import (
 )
 _LOGGER = logging.getLogger(__name__)
 
+
 class MyFoxApiGroupElectricClient(MyFoxApiClient) :
 
-    def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
+    def __init__(self, myfox_info: MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
         self.client_key = "group_electric"
         self.module = list()
@@ -40,14 +41,14 @@ class MyFoxApiGroupElectricClient(MyFoxApiClient) :
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(args=exception)
-    
-    async def setOn(self, groupId:int) -> list:
+
+    async def setOn(self, groupId: int) -> bool:
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_GROUP_ELECTRIC_SET_ON % (self.myfox_info.site.siteId, groupId))
             _LOGGER.debug("Response : %s", str(response))
-            
-            statut_ok =  ("status" in response and response["status"] == "OK")
+
+            statut_ok = ("status" in response and response["status"] == "OK")
             if statut_ok :
                 self.module_time = 0
             return statut_ok
@@ -57,14 +58,14 @@ class MyFoxApiGroupElectricClient(MyFoxApiClient) :
         except Exception as exception:
             _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(args=exception)
-    
-    async def setOff(self, groupId:int) -> list:
+
+    async def setOff(self, groupId: int) -> bool:
         """ Get security site """
         try:
             response = await self.callMyFoxApiPost(MYFOX_GROUP_ELECTRIC_SET_OFF % (self.myfox_info.site.siteId, groupId))
             _LOGGER.debug("Response : %s", str(response))
-            
-            statut_ok =  ("status" in response and response["status"] == "OK")
+
+            statut_ok = ("status" in response and response["status"] == "OK")
             if statut_ok :
                 self.module_time = 0
             return statut_ok

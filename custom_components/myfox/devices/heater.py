@@ -37,7 +37,7 @@ class MyFoxHeaterDevice(BaseDevice) :
 
 @dataclass
 class MyFoxHeaterWithStateDevice(BaseDevice) :
-    
+
     def __init__(self, device_info: MyFoxDeviceInfo):
         super().__init__(device_info)
 

@@ -212,10 +212,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     try:
         myfox_client = MyFoxApiClient(myfox_info)
         coordinator.add_client(myfox_client)
-        
+
         info_site = await myfox_client.getInfoSite(entry.data[KEY_SITE_ID])
         _LOGGER.debug("Chargement du site %s", str(info_site))
-    except InvalidTokenMyFoxException as err:   
+    except InvalidTokenMyFoxException as err:
         # Raising ConfigEntryAuthFailed will cancel future updates
         # and start a config flow with SOURCE_REAUTH (async_step_reauth)
         raise ConfigEntryAuthFailed from err
@@ -224,7 +224,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         raise ConfigEntryNotReady("Service temporairement indisponible")
 
     retour = True
-        
+
     if info_site :
         """Recherche des devices."""
         # add Alarme
@@ -270,7 +270,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         await coordinator.async_config_entry_first_refresh()
 
         new_data = {**entry.data}
-        
+
         hass.config_entries.async_update_entry(entry, data=new_data, options=entry.options)
         await hass.config_entries.async_forward_entry_setups(entry, _PLATFORMS)
         entry.async_on_unload(entry.add_update_listener(update_listener))
@@ -282,25 +282,25 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         raise ConfigEntryNotReady("Service temporairement indisponible")
 
 
-async def addCamera(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
+async def addCamera(hass: HomeAssistant, entry: ConfigEntry, myfox_info: MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Camera")
     return await addClientToCoordinator(hass, entry, MyFoxApiCameraClient(myfox_info))
 
 
-async def addGate(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
+async def addGate(hass: HomeAssistant, entry: ConfigEntry, myfox_info: MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Gate")
     return await addClientToCoordinator(hass, entry, MyFoxApiGateClient(myfox_info))
 
 
-async def addSecurity(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
+async def addSecurity(hass: HomeAssistant, entry: ConfigEntry, myfox_info: MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Security")
     return await addClientToCoordinator(hass, entry, MyFoxApiSecurityClient(myfox_info))
 
 
-async def addShutter(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
+async def addShutter(hass: HomeAssistant, entry: ConfigEntry, myfox_info: MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Shutter")
     retour  = await addClientToCoordinator(hass, entry, MyFoxApiShutterClient(myfox_info))
@@ -309,7 +309,7 @@ async def addShutter(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEn
     return retour
 
 
-async def addSocket(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
+async def addSocket(hass: HomeAssistant, entry: ConfigEntry, myfox_info: MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Socket")
     retour  = await addClientToCoordinator(hass, entry, MyFoxApiSocketClient(myfox_info))
@@ -318,50 +318,50 @@ async def addSocket(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEnt
     return retour
 
 
-async def addModule(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
+async def addModule(hass: HomeAssistant, entry: ConfigEntry, myfox_info: MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Module")
     return await addClientToCoordinator(hass, entry, MyFoxApiModuleClient(myfox_info))
 
 
-async def addHeater(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
+async def addHeater(hass: HomeAssistant, entry: ConfigEntry, myfox_info: MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Heater")
 
-    retour  = await addClientToCoordinator(hass, entry, MyFoxApiHeaterClient(myfox_info))
+    retour = await addClientToCoordinator(hass, entry, MyFoxApiHeaterClient(myfox_info))
     retour &= await addClientToCoordinator(hass, entry, MyFoxApThermoClient(myfox_info))
     return retour
 
 
-async def addScenario(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
+async def addScenario(hass: HomeAssistant, entry: ConfigEntry, myfox_info: MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Scenario")
     return await addClientToCoordinator(hass, entry, MyFoxApiSecenarioClient(myfox_info))
 
 
-async def addDeviceState(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
+async def addDeviceState(hass: HomeAssistant, entry: ConfigEntry, myfox_info: MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add State Device")
     return await addClientToCoordinator(hass, entry, MyFoxApiStateClient(myfox_info))
 
-async def addDeviceLight(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
+async def addDeviceLight(hass: HomeAssistant, entry: ConfigEntry, myfox_info: MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Light Device")
     return await addClientToCoordinator(hass, entry, MyFoxApiLightClient(myfox_info))
 
 
-async def addDetectorDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
+async def addDetectorDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_info: MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Detector Device")
     return await addClientToCoordinator(hass, entry, MyFoxApiAlerteStateClient(myfox_info))
 
 
-async def addTemperatureDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
+async def addTemperatureDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_info: MyFoxEntryDataApi):
     _LOGGER.debug("Add Temperature Device")
     return await addClientToCoordinator(hass, entry, MyFoxApiTemperatureClient(myfox_info))
 
 
-async def addClientToCoordinator(hass: HomeAssistant, entry: ConfigEntry, client:MyFoxApiClient) :
+async def addClientToCoordinator(hass: HomeAssistant, entry: ConfigEntry, client: MyFoxApiClient) :
     """" """
     _LOGGER.debug("-> Get devices")
     try :
@@ -400,9 +400,9 @@ async def addClientToCoordinator(hass: HomeAssistant, entry: ConfigEntry, client
                 client.configure_scene(scenarioId, label, typeLabel, enabled)
 
         if liste_capteurs.__len__() > 0 :
-            coordinator:MyFoxCoordinator = hass.data.setdefault(MYFOX_KEY, {})[entry.entry_id]
+            coordinator: MyFoxCoordinator = hass.data.setdefault(MYFOX_KEY, {})[entry.entry_id]
             coordinator.add_client(client)
-        
+
         return True
 
     except MyFoxException as exception:
@@ -417,8 +417,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     if not await hass.config_entries.async_unload_platforms(entry, _PLATFORMS):
         return False
 
-    coordinator:MyFoxCoordinator = hass.data.setdefault(MYFOX_KEY, {}).pop(entry.entry_id)
-    for (type,hassclient) in coordinator.myfoxApiClients.items() :
+    coordinator: MyFoxCoordinator = hass.data.setdefault(MYFOX_KEY, {}).pop(entry.entry_id)
+    for (type, hassclient) in coordinator.myfoxApiClients.items() :
         client: MyFoxApiClient = hassclient
         client.stop()
     coordinator.stop()
@@ -427,41 +427,41 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
 
 async def update_listener(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
     _LOGGER.debug("-> Mise à jour Entite")
-    coordinator:MyFoxCoordinator = hass.data.setdefault(MYFOX_KEY, {})[config_entry.entry_id]
+    coordinator: MyFoxCoordinator = hass.data.setdefault(MYFOX_KEY, {})[config_entry.entry_id]
     new_data = {**config_entry.data}
 
     credential:ClientCredential = getClientCredential(hass, config_entry)
     if credential and coordinator :
-        myfox_info:MyFoxEntryDataApi = coordinator.getMyFoxInfo()
-        myfox_info.client_id         = credential.client_id
-        myfox_info.client_secret     = credential.client_secret
+        myfox_info: MyFoxEntryDataApi = coordinator.getMyFoxInfo()
+        myfox_info.client_id  = credential.client_id
+        myfox_info.client_secret = credential.client_secret
 
         # mise a jour des options
         myfox_info.options = updateMyFoxOptions(config_entry)
 
         # Si le token de conf est plus lointain, on ecrase le token client,sinon, on reprend le token client dans la conf
-        expires_time:float = config_entry.data[KEY_TOKEN][KEY_EXPIRE_AT]
-        if(expires_time > myfox_info.expires_time ) :
-            myfox_info.access_token  = config_entry.data[KEY_TOKEN][KEY_ACCESS_TOKEN]
+        expires_time: float = config_entry.data[KEY_TOKEN][KEY_EXPIRE_AT]
+        if (expires_time > myfox_info.expires_time) :
+            myfox_info.access_token = config_entry.data[KEY_TOKEN][KEY_ACCESS_TOKEN]
             myfox_info.refresh_token = config_entry.data[KEY_TOKEN][KEY_REFRESH_TOKEN]
-            myfox_info.expires_in    = config_entry.data[KEY_TOKEN][KEY_EXPIRE_IN]
-            myfox_info.expires_time  = config_entry.data[KEY_TOKEN][KEY_EXPIRE_AT]
+            myfox_info.expires_in = config_entry.data[KEY_TOKEN][KEY_EXPIRE_IN]
+            myfox_info.expires_time = config_entry.data[KEY_TOKEN][KEY_EXPIRE_AT]
         else :
             # Mise a jour des confs
-            new_data[KEY_TOKEN][KEY_ACCESS_TOKEN]  =  myfox_info.access_token
-            new_data[KEY_TOKEN][KEY_REFRESH_TOKEN] =  myfox_info.refresh_token
-            new_data[KEY_TOKEN][KEY_EXPIRE_IN]     =  myfox_info.expires_in
-            new_data[KEY_TOKEN][KEY_EXPIRE_AT]     =  myfox_info.expires_time
-        
+            new_data[KEY_TOKEN][KEY_ACCESS_TOKEN] = myfox_info.access_token
+            new_data[KEY_TOKEN][KEY_REFRESH_TOKEN] = myfox_info.refresh_token
+            new_data[KEY_TOKEN][KEY_EXPIRE_IN] = myfox_info.expires_in
+            new_data[KEY_TOKEN][KEY_EXPIRE_AT] = myfox_info.expires_time
+
         coordinator.updateMyfoxinfo(myfox_info)
         coordinator.updateTokens(new_data[KEY_TOKEN])
         _LOGGER.debug("-> Tokens à jour jusqu'a %s", str(time.ctime(myfox_info.expires_time)))
-        
+
         hass.config_entries.async_update_entry(config_entry, data=new_data, options=config_entry.options)
 
         # si mise a jour du coordinator, on relance le chargement
-        if (coordinator.options.pooling_frequency != myfox_info.options.pooling_frequency 
-            or coordinator.options.use_code_alarm != myfox_info.options.use_code_alarm):
+        if (coordinator.options.pooling_frequency != myfox_info.options.pooling_frequency
+                or coordinator.options.use_code_alarm != myfox_info.options.use_code_alarm):
             _LOGGER.info("-> Rechargement Entite suite à modification de parametrage")
             hass.config_entries.async_schedule_reload(config_entry.entry_id)
 

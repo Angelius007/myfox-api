@@ -2,7 +2,7 @@ import logging
 import time
 
 from .myfoxapi_exception import (MyFoxException)
-from . import (MyFoxEntryDataApi )
+from . import (MyFoxEntryDataApi)
 from .myfoxapi import (MyFoxApiClient)
 
 from .const import (
@@ -10,6 +10,7 @@ from .const import (
 )
 
 _LOGGER = logging.getLogger(__name__)
+
 
 class MyFoxApiSecenarioClient(MyFoxApiClient) :
 
@@ -50,8 +51,8 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
         try:
             response = await self.callMyFoxApiPost(MYFOX_SCENARIO_ENABLE % (self.myfox_info.site.siteId , scenarioId))
             _LOGGER.debug("Response : %s", str(response))
-            
-            statut_ok =  ("status" in response and response["status"] == "OK")
+
+            statut_ok = ("status" in response and response["status"] == "OK")
             if statut_ok :
                 self.scenarii_time = 0
             return statut_ok
@@ -67,8 +68,8 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
         try:
             response = await self.callMyFoxApiPost(MYFOX_SCENARIO_DISABLE % (self.myfox_info.site.siteId , scenarioId))
             _LOGGER.debug("Response : %s", str(response))
-            
-            statut_ok =  ("status" in response and response["status"] == "OK")
+
+            statut_ok = ("status" in response and response["status"] == "OK")
             if statut_ok :
                 self.scenarii_time = 0
             return statut_ok
@@ -84,8 +85,8 @@ class MyFoxApiSecenarioClient(MyFoxApiClient) :
         try:
             response = await self.callMyFoxApiPost(MYFOX_SCENARIO_PLAY % (self.myfox_info.site.siteId , scenarioId))
             _LOGGER.debug("Response : %s", str(response))
-            
-            statut_ok =  ("status" in response and response["status"] == "OK")
+
+            statut_ok = ("status" in response and response["status"] == "OK")
             if statut_ok :
                 self.scenarii_time = 0
             return statut_ok

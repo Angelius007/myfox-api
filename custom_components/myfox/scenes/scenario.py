@@ -15,6 +15,7 @@ _LOGGER = logging.getLogger(__name__)
 # "typeLabel": "onDemand",
 # "enabled": null
 
+
 @dataclass
 class MyFoxScenarioWithSwitchScene(BaseScene) :
     """ """

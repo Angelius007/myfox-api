@@ -2,7 +2,7 @@ import logging
 import time
 
 from .myfoxapi_exception import (MyFoxException)
-from . import (MyFoxEntryDataApi )
+from . import (MyFoxEntryDataApi)
 from .myfoxapi import (MyFoxApiClient)
 
 from .const import (
@@ -10,9 +10,10 @@ from .const import (
 )
 _LOGGER = logging.getLogger(__name__)
 
+
 class MyFoxApiLightClient(MyFoxApiClient) :
 
-    def __init__(self, myfox_info:MyFoxEntryDataApi) -> None:
+    def __init__(self, myfox_info: MyFoxEntryDataApi) -> None:
         super().__init__(myfox_info)
         self.client_key = "light"
         self.ligth = list()
@@ -44,7 +45,7 @@ class MyFoxApiLightClient(MyFoxApiClient) :
             _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(args=exception)
 
-    async def getLightHistory(self, deviceId:int):
+    async def getLightHistory(self, deviceId: int):
         """ Mise a jour security site """
         try:
             response = await self.callMyFoxApiGet(MYFOX_LIGHT_HISTORY % (self.myfox_info.site.siteId , deviceId))

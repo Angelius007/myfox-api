@@ -32,7 +32,7 @@ _LOGGER = logging.getLogger(__name__)
 @dataclass
 class MyFoxCameraDevice(BaseDevice):
     """ """
-    def __init__(self, device_info:MyFoxDeviceInfo):
+    def __init__(self, device_info: MyFoxDeviceInfo):
         super().__init__(device_info)
 
     def cameras(self, coordinator) -> list[Camera]:
