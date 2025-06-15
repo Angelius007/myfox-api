@@ -1,13 +1,6 @@
-import logging
 import logging.config
 
 from typing import  Any
-import asyncio
-
-from asyncio import AbstractEventLoop
-
-
-from custom_components.myfox.api.myfoxapi import (MyFoxPolicy)
 from custom_components.myfox.crypto.secure import encode, decode, decode_base64
 from custom_components.myfox.api.const import KEY_AUTHORIZED_CODE_ALARM
 
@@ -16,14 +9,14 @@ _LOGGER = logging.getLogger(__name__)
 
 class TestCrypto :
 
-#'logId' =
-#889915829
-#'label' =
-#'Désactivation de la protection depuis internet'
-#'type' =
-#'security'
-#'createdAt' =
-#'2025-02-09T20:30:59Z'
+    # 'logId' =
+    # 889915829
+    # 'label' =
+    # 'Désactivation de la protection depuis internet'
+    # 'type' =
+    # 'security'
+    # 'createdAt' =
+    # '2025-02-09T20:30:59Z'
     def testEncryptDecrypt(self):
         password = "1326"
         message = "1111 2222 3333"

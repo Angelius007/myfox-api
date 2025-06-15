@@ -32,6 +32,7 @@ from custom_components.myfox.devices.site import (MyFoxSite)
 logging.config.fileConfig('logging.conf', None, True)
 _LOGGER = logging.getLogger(__name__)
 
+
 class MyFoxCache() :
     def readCache() :
         try :
@@ -97,6 +98,7 @@ class MyFoxCache() :
         myfox_info.options = options
         _LOGGER.info(str(myfox_info))
         return myfox_info
+
 
 class TestClients :
 
@@ -303,6 +305,7 @@ class TestClients :
                 params[control_key] = val
                 _LOGGER.info("addToParams -> deviceId(%s) : %s [%s]", str(device_id), control_key, str(val))
 
+
 if __name__ == "__main__" :
     _LOGGER.info("**** Debut ****")
     asyncio.set_event_loop_policy(MyFoxPolicy())
@@ -333,10 +336,8 @@ if __name__ == "__main__" :
         # TestClients.testThermo(loop, MyFoxApThermoClient(myfox_info))
         TestClients.testHistory(loop, MyFoxApiClient(myfox_info))
         # TestClients.testEncryptDecrypt(loop)
-        
 
     finally :
         _LOGGER.info("-> Sauvegarde du cache ")
         MyFoxCache.writeCache(myfox_info)
         _LOGGER.info("**** Fin ****")
-

@@ -81,6 +81,7 @@ _PLATFORMS = {
     Platform.ALARM_CONTROL_PANEL
 }
 
+
 async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     """Migrate old entry."""
     old_version = config_entry.version
@@ -112,18 +113,20 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         _LOGGER.info("Migration from version %s to version %s successful", old_version, CONFIG_VERSION)
     return True
 
+
 def getClientCredential(hass: HomeAssistant, entry: ConfigEntry) -> ClientCredential :
     if KEY_AUTH_IMPLEMENTATION in entry.data :
         auth_implementation = entry.data[KEY_AUTH_IMPLEMENTATION]
         if DOMAIN_CREDENTIAL in hass.data :
-            application_credential:ApplicationCredentialsStorageCollection = hass.data[DOMAIN_CREDENTIAL]
+            application_credential: ApplicationCredentialsStorageCollection = hass.data[DOMAIN_CREDENTIAL]
             credentials = application_credential.async_client_credentials(DOMAIN_MYFOX)
             if auth_implementation in credentials :
-                credential:ClientCredential = credentials[auth_implementation]
-                client_name   = credential.name
+                credential: ClientCredential = credentials[auth_implementation]
+                client_name = credential.name
                 _LOGGER.debug("Credential selectionne %s", str(client_name))
                 return credential
     return None
+
 
 def updateMyFoxOptions(entry: ConfigEntry) -> MyFoxOptionsDataApi :
     options = MyFoxOptionsDataApi()
@@ -175,6 +178,7 @@ def updateMyFoxOptions(entry: ConfigEntry) -> MyFoxOptionsDataApi :
 
     return options
 
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     if DOMAIN_MYFOX not in hass.data:
         hass.data.setdefault(MYFOX_KEY, {})
@@ -186,7 +190,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     if KEY_CLIENT_SECRET in entry.data :
         client_secret = entry.data[KEY_CLIENT_SECRET]
 
-    credential:ClientCredential = getClientCredential(hass, entry)
+    credential: ClientCredential = getClientCredential(hass, entry)
     if credential :
         client_id     = credential.client_id
         client_secret = credential.client_secret
@@ -277,21 +281,25 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         _LOGGER.warning("Pas de site trouve pour l'identifiant %s",entry.data[KEY_SITE_ID])
         raise ConfigEntryNotReady("Service temporairement indisponible")
 
+
 async def addCamera(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Camera")
     return await addClientToCoordinator(hass, entry, MyFoxApiCameraClient(myfox_info))
+
 
 async def addGate(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Gate")
     return await addClientToCoordinator(hass, entry, MyFoxApiGateClient(myfox_info))
 
+
 async def addSecurity(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Security")
     return await addClientToCoordinator(hass, entry, MyFoxApiSecurityClient(myfox_info))
-    
+
+
 async def addShutter(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Shutter")
@@ -299,7 +307,8 @@ async def addShutter(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEn
     _LOGGER.debug("Add Group Shutter")
     retour &= await addClientToCoordinator(hass, entry, MyFoxApiGroupShutterClient(myfox_info))
     return retour
-    
+
+
 async def addSocket(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Socket")
@@ -308,10 +317,12 @@ async def addSocket(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEnt
     retour &= await addClientToCoordinator(hass, entry, MyFoxApiGroupElectricClient(myfox_info))
     return retour
 
+
 async def addModule(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Module")
     return await addClientToCoordinator(hass, entry, MyFoxApiModuleClient(myfox_info))
+
 
 async def addHeater(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
@@ -321,10 +332,12 @@ async def addHeater(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEnt
     retour &= await addClientToCoordinator(hass, entry, MyFoxApThermoClient(myfox_info))
     return retour
 
+
 async def addScenario(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Scenario")
     return await addClientToCoordinator(hass, entry, MyFoxApiSecenarioClient(myfox_info))
+
 
 async def addDeviceState(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
@@ -336,14 +349,17 @@ async def addDeviceLight(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyF
     _LOGGER.debug("Add Light Device")
     return await addClientToCoordinator(hass, entry, MyFoxApiLightClient(myfox_info))
 
+
 async def addDetectorDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     """ """
     _LOGGER.debug("Add Detector Device")
     return await addClientToCoordinator(hass, entry, MyFoxApiAlerteStateClient(myfox_info))
 
+
 async def addTemperatureDevice(hass: HomeAssistant, entry: ConfigEntry, myfox_info:MyFoxEntryDataApi):
     _LOGGER.debug("Add Temperature Device")
     return await addClientToCoordinator(hass, entry, MyFoxApiTemperatureClient(myfox_info))
+
 
 async def addClientToCoordinator(hass: HomeAssistant, entry: ConfigEntry, client:MyFoxApiClient) :
     """" """
@@ -395,7 +411,8 @@ async def addClientToCoordinator(hass: HomeAssistant, entry: ConfigEntry, client
     except Exception as exception:
         _LOGGER.error("%s : Imposslble de charger le client %s", str(exception), client.__class__)
         return False
-    
+
+
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     if not await hass.config_entries.async_unload_platforms(entry, _PLATFORMS):
         return False
@@ -406,6 +423,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
         client.stop()
     coordinator.stop()
     return True
+
 
 async def update_listener(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
     _LOGGER.debug("-> Mise à jour Entite")

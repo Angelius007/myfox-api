@@ -49,7 +49,6 @@ async def test_client_login():
         client = MyFoxApiClient(myfox_info)
         client.nb_retry = 1
         client.delay_between_retry = 1
-        _LOGGER.info(f"info:{str(myfox_info)}")
         results = await client.login()
         _LOGGER.info("login(1):"+str(results))
         assert results == True
@@ -76,7 +75,6 @@ async def test_client_site():
         client.nb_retry = 1
         client.delay_between_retry = 1
 
-        _LOGGER.info(f"info:{str(myfox_info)}")
         results = await client.getInfoSite(myfox_info.site.siteId, True)
         _LOGGER.info("getInfoSite(1):"+str(results))
         assert results.siteId == myfox_info.site.siteId

@@ -5,13 +5,14 @@ import json
 import logging.config
 from multidict import CIMultiDictProxy, CIMultiDict
 import secrets
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import MagicMock
 
 from custom_components.myfox.api import (MyFoxEntryDataApi, MyFoxOptionsDataApi)
 from custom_components.myfox.devices.site import (MyFoxSite)
 
 logging.config.fileConfig('logging.conf', None, True)
 _LOGGER = logging.getLogger(__name__)
+
 
 class FakeResponse():
     """Objet qui imite aiohttp.ClientResponse pour async with."""
@@ -42,7 +43,7 @@ def fake_http_call(url: str, *args, **kwargs):
         token1 = str(base64.b64encode(secrets.token_bytes(32))).replace("==","")
         token2 = str(base64.b64encode(secrets.token_bytes(32))).replace("==","")
 
-        return FakeResponse(200, {"status": "OK", "access_token":token1, "refresh_token":token2, "expires_in":3600, "site_id": 1234})
+        return FakeResponse(200, {"status": "OK", "access_token": token1, "refresh_token": token2, "expires_in": 3600, "site_id": 1234})
 
     elif "v2/client/site/items" in url:
         return FakeResponse(200, {"status": "OK",
@@ -111,18 +112,19 @@ def fake_http_call(url: str, *args, **kwargs):
     print(f"⭐️ fake_http_call : No mock founded for {url}")
     return FakeResponse(404, {"status": "KO", "error": "Service not implemented", "error_description" : "No Mock found"})
 
+
 class FakeClientSession:
     def __init__(self, *args, **kwargs):
         self.get  = MagicMock(side_effect=fake_http_call)
         self.post = MagicMock(side_effect=fake_http_call)
         print(f"⭐️ FakeClientSession constructed via {__name__}")
 
-
     async def __aenter__(self):
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         return None
+
 
 class MyFoxMockCache :
     @staticmethod
@@ -133,7 +135,7 @@ class MyFoxMockCache :
             _LOGGER.debug("Cache : " + data)
             f.close()
             return json.loads(data)
-        except Exception as exception:
+        except Exception:
             try:
                 f = open("tests/init_cache.txt", "r")
                 data = f.read()
