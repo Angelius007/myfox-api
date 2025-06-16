@@ -129,6 +129,69 @@ def fake_http_call(url: str, *args, **kwargs):
                                           "statusLabel": "disarmed"
                                        }
                                   })
+    elif "v2/site/1234/device/camera/items" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"items": [
+                                          {
+                                          "deviceId" : 123456789,
+                                          "label" : "camera mock",
+                                          "resolutionHeight": 800,
+                                          "resolutionWidth": 600,
+                                          "modelId" : 5,
+                                          "modelLabel" : "Panasonic BL-C131"
+                                          }
+                                      ]}
+                                  })
+    elif "v2/site/1234/device/123456789/camera/live/extend" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"request": "OK"}
+                                  })
+    elif "v2/site/1234/device/123456789/camera/live/start" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {
+                                          "GUID": "2468",
+                                          "location": "here",
+                                          "protocol": "hls"
+                                      }
+                                  })
+    elif "v2/site/1234/device/123456789/camera/live/stop" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"request": "OK"}
+                                  })
+    elif "v2/site/1234/device/123456789/camera/preview/take" in url:
+        return FakeResponse(200, {"status": "OK",
+                                          "binary": "xxx",
+                                          "filename": "mock.jpg"
+                                  })
+    elif "v2/site/1234/device/123456789/camera/recording/start" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"request": "OK"}
+                                  })
+    elif "v2/site/1234/device/123456789/camera/recording/stop" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"request": "OK"}
+                                  })
+    elif "v2/site/1234/device/123456789/camera/snapshot/take" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"request": "OK"}
+                                  })
+    elif "v2/site/1234/device/123456789/camera/shutter/close" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"request": "OK"}
+                                  })
+    elif "v2/site/1234/device/123456789/camera/shutter/open" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"request": "OK"}
+                                  })
     elif "v2/site/1234/xxx" in url:
         return FakeResponse(200, {"status": "OK",
                                   "payload":
