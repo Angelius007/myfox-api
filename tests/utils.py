@@ -1,5 +1,7 @@
 # tests/utils.py
 from aiohttp import hdrs
+from aiohttp.hdrs import CONTENT_DISPOSITION
+from types import SimpleNamespace
 import base64
 import json
 import logging.config
@@ -16,16 +18,30 @@ _LOGGER = logging.getLogger(__name__)
 
 class FakeResponse():
     """Objet qui imite aiohttp.ClientResponse pour async with."""
-    def __init__(self, status: int, payload: dict):
+    def __init__(self, status: int, payload: dict, content_type: str = "application/json", filename: str = "Null", binary_data: bytes = None):
         self.status = status
         self._payload = payload
+        self._binary_data = binary_data
+        self._filename = filename
+
         _h = CIMultiDict()
-        _h[hdrs.CONTENT_TYPE] = "application/json"
-        self.headers: CIMultiDictProxy[str] = CIMultiDictProxy(_h)
+        _h[hdrs.CONTENT_TYPE] = content_type
+
+        # Header HTTP typique pour forcer un download de fichier
+        if content_type == "binary" :
+            self.headers = CIMultiDict({
+                CONTENT_DISPOSITION: f'attachment; filename="{filename}"'
+            })
+            self.content_disposition = SimpleNamespace(filename=filename)
+        else :
+            self.headers: CIMultiDictProxy[str] = CIMultiDictProxy(_h)
         self.reason = ""
 
     async def json(self):
         return self._payload
+
+    async def read(self):
+        return self._binary_data
 
     # ---- async context manager ----
     async def __aenter__(self):
@@ -166,7 +182,7 @@ def fake_http_call(url: str, *args, **kwargs):
         return FakeResponse(200, {"status": "OK",
                                           "binary": "xxx",
                                           "filename": "mock.jpg"
-                                  })
+                                  }, "binary", "fichier_mock.jpg", b"abcd")
     elif "v2/site/1234/device/123456789/camera/recording/start" in url:
         return FakeResponse(200, {"status": "OK",
                                   "payload":

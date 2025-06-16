@@ -131,10 +131,10 @@ async def test_client_camera_preview_take():
         client.nb_retry = 1
         client.delay_between_retry = 1
         # get list
-        # results = await client.cameraPreviewTake(123456789)
-        # _LOGGER.info("cameraPreviewTake(1):" + str(results))
-        # assert "binary" in results and results["binary"] == "xxx"
-        assert True
+        results = await client.cameraPreviewTake(123456789)
+        _LOGGER.info("cameraPreviewTake(1):" + str(results))
+        assert isinstance(results, (bytes, bytearray))
+
     except MyFoxException as exception:
         _LOGGER.error("Exception: Un mock non implémenté à vérifier")
         _LOGGER.debug(exception)
