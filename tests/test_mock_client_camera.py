@@ -33,7 +33,7 @@ async def test_client_camera_list():
         # get list
         results = await client.getList()
         _LOGGER.info("getList(1):" + str(results))
-        assert results.__len__() == 1
+        assert results.__len__() == 2
 
     except MyFoxException as exception:
         _LOGGER.error("Exception: Un mock non implémenté à vérifier")

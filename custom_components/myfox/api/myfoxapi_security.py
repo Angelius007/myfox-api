@@ -29,7 +29,6 @@ class MyFoxApiSecurityClient(MyFoxApiClient) :
         super().stop()
         return True
 
-    @property
     async def getList(self) -> list:
         """ Generation d'une entite fictive pour l'alarme """
         if self.isCacheExpireWithParam(self.security_time, self.security_cache_expire_in) :

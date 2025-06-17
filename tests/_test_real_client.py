@@ -166,16 +166,6 @@ class TestClients :
     def testLightSensor(self, loop : AbstractEventLoop, client : MyFoxApiLightClient):
         results = loop.run_until_complete(asyncio.gather(*[client.getList()]))[0]
         _LOGGER.info("results:" + str(results))
-        # camera = results[0][0]
-        # camera.protocol = "rtmp"
-        # results = loop.run_until_complete(asyncio.gather(*[client.cameraLiveStart(65714)]))[0]
-        # _LOGGER.info("results:" + str(results))
-        # results = loop.run_until_complete(asyncio.gather(*[client.cameraLiveExtend(65714)]))[0]
-        # _LOGGER.info("results:" + str(results))
-        # results = loop.run_until_complete(asyncio.gather(*[client.cameraLiveStop(65714)]))[0]
-        # _LOGGER.info("results:" + str(results))
-        # results = loop.run_until_complete(asyncio.gather(*[client.cameraPreviewTake(65714)]))[0]
-        # _LOGGER.info("results:" + str(results))
         results = loop.run_until_complete(asyncio.gather(*[client.getLightHistory(65714)]))[0]
         _LOGGER.info("results:" + str(results))
 

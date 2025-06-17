@@ -31,7 +31,7 @@ async def test_client_security_list():
         client.nb_retry = 1
         client.delay_between_retry = 1
         # get list
-        results = await client.getList
+        results = await client.getList()
         _LOGGER.info("getList(1):" + str(results))
         assert results.__len__() == 1
 

@@ -156,6 +156,14 @@ def fake_http_call(url: str, *args, **kwargs):
                                           "resolutionWidth": 600,
                                           "modelId" : 5,
                                           "modelLabel" : "Panasonic BL-C131"
+                                          },
+                                          {
+                                          "deviceId" : 123456788,
+                                          "label" : "camera mock 2",
+                                          "resolutionHeight": 800,
+                                          "resolutionWidth": 600,
+                                          "modelId" : 5,
+                                          "modelLabel" : "Panasonic BL-C131"
                                           }
                                       ]}
                                   })
@@ -207,6 +215,62 @@ def fake_http_call(url: str, *args, **kwargs):
         return FakeResponse(200, {"status": "OK",
                                   "payload":
                                       {"request": "OK"}
+                                  })
+    elif "v2/site/1234/device/data/light/items" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"items": [
+                                          {
+                                          "deviceId" : 123456789,
+                                          "label" : "Capteur mock 1",
+                                          "modelId" : 29,
+                                          "light" : 2,
+                                          "modelLabel" : "Capteur température & luminosité"
+                                          },
+                                          {
+                                          "deviceId" : 123456788,
+                                          "label" : "Capteur mock 2",
+                                          "modelId" : 29,
+                                          "light" : 5,
+                                          "modelLabel" : "Capteur température & luminosité"
+                                          }
+                                      ]}
+                                  })
+    elif "v2/site/1234/device/123456789/data/light" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"items": [
+                                          {
+                                              "deviceId": 123456789,
+                                              "level": 4,
+                                              "recordedAt":111
+                                          },
+                                          {
+                                              "deviceId": 123456789,
+                                              "level": 3,
+                                              "recordedAt":112
+                                          }
+                                      ]}
+                                  })
+    elif "v2/site/1234/device/data/other/items" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"items": [
+                                          {
+                                              "deviceId" : 12356,
+                                              "label": "label mock 1",
+                                              "state" : 1,
+                                              "modelId": 99,
+                                              "modelLabel": "model mock"
+                                          },
+                                          {
+                                              "deviceId" : 12357,
+                                              "label": "label mock 2",
+                                              "state" : 1,
+                                              "modelId": 99,
+                                              "modelLabel": "model mock"
+                                          }
+                                      ]}
                                   })
     elif "v2/site/1234/xxx" in url:
         return FakeResponse(200, {"status": "OK",
@@ -265,7 +329,6 @@ class MyFoxMockCache :
             "expires_in": myfox_info.expires_in,
             "site_id": myfox_info.site.siteId
         }
-        print(f"⭐️ writeCache.data: {data}")
         f.write(json.dumps(data))
         f.close()
 
