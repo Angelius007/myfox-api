@@ -272,6 +272,34 @@ def fake_http_call(url: str, *args, **kwargs):
                                           }
                                       ]}
                                   })
+    elif "v2/site/1234/device/data/state/items" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"items": [
+                                          {
+                                              "deviceId": 24689,
+                                              "label": "state",
+                                              "stateLabel": "opened",
+                                              "modelId": 99,
+                                              "modelLabel": "item"
+                                          },
+                                          {
+                                              "deviceId": 24688,
+                                              "label": "state",
+                                              "stateLabel": "closed",
+                                              "modelId": 99,
+                                              "modelLabel": "item"
+                                          }
+                                      ]}
+                                  })
+    elif "v2/site/1234/device/24689/data/state" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {
+                                          "deviceId": 24689,
+                                          "stateLabel": "opened"
+                                      }
+                                  })
     elif "v2/site/1234/xxx" in url:
         return FakeResponse(200, {"status": "OK",
                                   "payload":
