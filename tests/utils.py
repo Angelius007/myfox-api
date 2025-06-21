@@ -147,30 +147,30 @@ def fake_http_call(url: str, *args, **kwargs):
         return FakeResponse(200, {"status": "KO", "error" : "404", "error_description" : "Unknown scenario ID"})
     elif "v2/site/1234/security" in url:
         return FakeResponse(200, {"status": "OK",
-                                      "payload": {
-                                          "status": 1,
-                                          "statusLabel": "disarmed"
-                                       }
+                                  "payload": {
+                                      "status": 1,
+                                      "statusLabel": "disarmed"
+                                  }
                                   })
     elif "v2/site/1234/device/camera/items" in url:
         return FakeResponse(200, {"status": "OK",
                                   "payload":
                                       {"items": [
                                           {
-                                          "deviceId" : 123456789,
-                                          "label" : "camera mock",
-                                          "resolutionHeight": 800,
-                                          "resolutionWidth": 600,
-                                          "modelId" : 5,
-                                          "modelLabel" : "Panasonic BL-C131"
+                                              "deviceId" : 123456789,
+                                              "label" : "camera mock",
+                                              "resolutionHeight": 800,
+                                              "resolutionWidth": 600,
+                                              "modelId" : 5,
+                                              "modelLabel" : "Panasonic BL-C131"
                                           },
                                           {
-                                          "deviceId" : 123456788,
-                                          "label" : "camera mock 2",
-                                          "resolutionHeight": 800,
-                                          "resolutionWidth": 600,
-                                          "modelId" : 5,
-                                          "modelLabel" : "Panasonic BL-C131"
+                                              "deviceId" : 123456788,
+                                              "label" : "camera mock 2",
+                                              "resolutionHeight": 800,
+                                              "resolutionWidth": 600,
+                                              "modelId" : 5,
+                                              "modelLabel" : "Panasonic BL-C131"
                                           }
                                       ]}
                                   })
@@ -185,26 +185,26 @@ def fake_http_call(url: str, *args, **kwargs):
                                   })
     elif "v2/site/1234/device/123456789/camera/preview/take" in url:
         return FakeResponse(200, {"status": "OK",
-                                          "binary": "xxx",
-                                          "filename": "mock.jpg"
+                                  "binary": "xxx",
+                                  "filename": "mock.jpg"
                                   }, "binary", "fichier_mock.jpg", b"abcd")
     elif "v2/site/1234/device/data/light/items" in url:
         return FakeResponse(200, {"status": "OK",
                                   "payload":
                                       {"items": [
                                           {
-                                          "deviceId" : 123456789,
-                                          "label" : "Capteur mock 1",
-                                          "modelId" : 29,
-                                          "light" : 2,
-                                          "modelLabel" : "Capteur température & luminosité"
+                                              "deviceId" : 123456789,
+                                              "label" : "Capteur mock 1",
+                                              "modelId" : 29,
+                                              "light" : 2,
+                                              "modelLabel" : "Capteur température & luminosité"
                                           },
                                           {
-                                          "deviceId" : 123456788,
-                                          "label" : "Capteur mock 2",
-                                          "modelId" : 29,
-                                          "light" : 5,
-                                          "modelLabel" : "Capteur température & luminosité"
+                                              "deviceId" : 123456788,
+                                              "label" : "Capteur mock 2",
+                                              "modelId" : 29,
+                                              "light" : 5,
+                                              "modelLabel" : "Capteur température & luminosité"
                                           }
                                       ]}
                                   })
@@ -215,12 +215,12 @@ def fake_http_call(url: str, *args, **kwargs):
                                           {
                                               "deviceId": 123456789,
                                               "level": 4,
-                                              "recordedAt":111
+                                              "recordedAt": 111
                                           },
                                           {
                                               "deviceId": 123456789,
                                               "level": 3,
-                                              "recordedAt":112
+                                              "recordedAt": 112
                                           }
                                       ]}
                                   })

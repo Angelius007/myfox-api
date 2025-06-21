@@ -66,7 +66,6 @@ async def test_client_scenario_play_ok():
         _LOGGER.info("playScenario(789):" + str(results))
         assert results is True
 
-
     except MyFoxException as exception:
         _LOGGER.error("Exception: Un mock non implémenté à vérifier")
         _LOGGER.debug(exception)

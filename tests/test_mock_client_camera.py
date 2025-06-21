@@ -219,5 +219,3 @@ async def test_client_camera_recording_stop():
     finally :
         MyFoxMockCache.writeCache(myfox_info)
         _LOGGER.info("**** Fin ****")
-
-
