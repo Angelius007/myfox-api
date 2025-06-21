@@ -2,9 +2,8 @@ import logging.config
 
 import pytest
 
-
-from custom_components.myfox.api.myfoxapi import MyFoxApiClient
 from custom_components.myfox.api.myfoxapi_exception import MyFoxException
+from custom_components.myfox.api.myfoxapi_heater import (MyFoxApiHeaterClient)
 
 from tests.utils import MyFoxMockCache, FakeClientSession
 
@@ -23,104 +22,117 @@ def patch_aiohttp(monkeypatch):
 
 
 @pytest.mark.asyncio
-async def test_client_login():
-    _LOGGER.info("**** Debut ****")
-    myfox_info = MyFoxMockCache.getMyFoxEntryDataFromCache()
-    access_token_initial = myfox_info.access_token
-    refresh_token_initial = myfox_info.refresh_token
-    try:
-        client = MyFoxApiClient(myfox_info)
-        client.nb_retry = 1
-        client.delay_between_retry = 1
-        results = await client.login()
-        _LOGGER.info("login(1):" + str(results))
-        assert results is True
-        assert access_token_initial != client.myfox_info.access_token
-        assert refresh_token_initial != client.myfox_info.refresh_token
-        myfox_info = client.myfox_info
-
-    except MyFoxException as exception:
-        _LOGGER.error("Exception: Un mock non implémenté à vérifier")
-        _LOGGER.debug(exception)
-        assert False
-    except Exception as exception:
-        _LOGGER.error("Exception", exception)
-        assert False
-    finally :
-        MyFoxMockCache.writeCache(myfox_info)
-        _LOGGER.info("**** Fin ****")
-
-
-@pytest.mark.asyncio
-async def test_client_site():
+async def test_client_list():
     _LOGGER.info("**** Debut ****")
     myfox_info = MyFoxMockCache.getMyFoxEntryDataFromCache()
     try:
-        client = MyFoxApiClient(myfox_info)
-        client.nb_retry = 1
-        client.delay_between_retry = 1
-
-        results = await client.getInfoSite(myfox_info.site.siteId, True)
-        _LOGGER.info("getInfoSite(1):" + str(results))
-        assert results.siteId == myfox_info.site.siteId
-
-        results = await client.getInfoSites(True)
-        _LOGGER.info("getInfoSites(2):" + str(results))
-        assert results[0].siteId == myfox_info.site.siteId
-
-    except MyFoxException as exception:
-        _LOGGER.error("Exception: Un mock non implémenté à vérifier")
-        _LOGGER.debug(exception)
-        assert False
-    except Exception as exception:
-        _LOGGER.error("Exception", exception)
-        assert False
-    finally :
-        MyFoxMockCache.writeCache(myfox_info)
-        _LOGGER.info("**** Fin ****")
-
-
-@pytest.mark.asyncio
-async def test_client_refresh_token():
-    _LOGGER.info("**** Debut ****")
-    myfox_info = MyFoxMockCache.getMyFoxEntryDataFromCache()
-    access_token_initial = myfox_info.access_token
-    refresh_token_initial = myfox_info.refresh_token
-    try:
-        client = MyFoxApiClient(myfox_info)
-        client.nb_retry = 1
-        client.delay_between_retry = 1
-
-        results = await client.refreshToken()
-        _LOGGER.info("refreshToken(1):" + str(results))
-        assert results is True
-        assert access_token_initial != client.myfox_info.access_token
-        assert refresh_token_initial != client.myfox_info.refresh_token
-
-    except MyFoxException as exception:
-        _LOGGER.error("Exception: Un mock non implémenté à vérifier")
-        _LOGGER.debug(exception)
-        assert False
-    except Exception as exception:
-        _LOGGER.error("Exception", exception)
-        assert False
-    finally :
-        MyFoxMockCache.writeCache(myfox_info)
-        _LOGGER.info("**** Fin ****")
-
-
-@pytest.mark.asyncio
-async def test_client_history():
-    _LOGGER.info("**** Debut ****")
-    myfox_info = MyFoxMockCache.getMyFoxEntryDataFromCache()
-    try:
-        client = MyFoxApiClient(myfox_info)
+        client = MyFoxApiHeaterClient(myfox_info)
         client.nb_retry = 1
         client.delay_between_retry = 1
         # get list
-        results = await client.getHistory()
-        _LOGGER.info("getHistory(1):" + str(results))
+        results = await client.getList()
+        _LOGGER.info("getList(1):" + str(results))
         assert results.__len__() == 2
+
+    except MyFoxException as exception:
+        _LOGGER.error("Exception: Un mock non implémenté à vérifier")
+        _LOGGER.error(exception)
+        assert False
+    except Exception as exception:
+        _LOGGER.error("Exception", exception)
+        assert False
+    finally :
+        MyFoxMockCache.writeCache(myfox_info)
+        _LOGGER.info("**** Fin ****")
+
+
+@pytest.mark.asyncio
+async def test_client_set_eco():
+    _LOGGER.info("**** Debut ****")
+    myfox_info = MyFoxMockCache.getMyFoxEntryDataFromCache()
+    try:
+        client = MyFoxApiHeaterClient(myfox_info)
+        client.nb_retry = 1
+        client.delay_between_retry = 1
+        # get list
+        results = await client.setEco(2468)
+        _LOGGER.info("setEco(1):" + str(results))
+        assert results
+
+    except MyFoxException as exception:
+        _LOGGER.error("Exception: Un mock non implémenté à vérifier")
+        _LOGGER.error(exception)
+        assert False
+    except Exception as exception:
+        _LOGGER.error("Exception", exception)
+        assert False
+    finally :
+        MyFoxMockCache.writeCache(myfox_info)
+        _LOGGER.info("**** Fin ****")
+
+
+@pytest.mark.asyncio
+async def test_client_set_frost():
+    _LOGGER.info("**** Debut ****")
+    myfox_info = MyFoxMockCache.getMyFoxEntryDataFromCache()
+    try:
+        client = MyFoxApiHeaterClient(myfox_info)
+        client.nb_retry = 1
+        client.delay_between_retry = 1
+        # get list
+        results = await client.setFrost(2468)
+        _LOGGER.info("setFrost(1):" + str(results))
+        assert results
+
+    except MyFoxException as exception:
+        _LOGGER.error("Exception: Un mock non implémenté à vérifier")
+        _LOGGER.error(exception)
+        assert False
+    except Exception as exception:
+        _LOGGER.error("Exception", exception)
+        assert False
+    finally :
+        MyFoxMockCache.writeCache(myfox_info)
+        _LOGGER.info("**** Fin ****")
+
+
+@pytest.mark.asyncio
+async def test_client_set_on():
+    _LOGGER.info("**** Debut ****")
+    myfox_info = MyFoxMockCache.getMyFoxEntryDataFromCache()
+    try:
+        client = MyFoxApiHeaterClient(myfox_info)
+        client.nb_retry = 1
+        client.delay_between_retry = 1
+        # get list
+        results = await client.setOn(2468)
+        _LOGGER.info("setOn(1):" + str(results))
+        assert results
+
+    except MyFoxException as exception:
+        _LOGGER.error("Exception: Un mock non implémenté à vérifier")
+        _LOGGER.error(exception)
+        assert False
+    except Exception as exception:
+        _LOGGER.error("Exception", exception)
+        assert False
+    finally :
+        MyFoxMockCache.writeCache(myfox_info)
+        _LOGGER.info("**** Fin ****")
+
+
+@pytest.mark.asyncio
+async def test_client_set_off():
+    _LOGGER.info("**** Debut ****")
+    myfox_info = MyFoxMockCache.getMyFoxEntryDataFromCache()
+    try:
+        client = MyFoxApiHeaterClient(myfox_info)
+        client.nb_retry = 1
+        client.delay_between_retry = 1
+        # get list
+        results = await client.setOff(2468)
+        _LOGGER.info("setOff(1):" + str(results))
+        assert results
 
     except MyFoxException as exception:
         _LOGGER.error("Exception: Un mock non implémenté à vérifier")

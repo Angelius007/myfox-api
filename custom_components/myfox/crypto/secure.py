@@ -6,18 +6,18 @@ ENCODE_BYTES: str = "utf-8"
 CODE_SEPARATOR: str = "=="
 
 
-def encode(string: str, password: str):
+def encode(code: str, site_id: str):
     """
     encode code
     """
-    return encode_base64(seed_(password) + encode_base64(string))
+    return encode_base64(seed_(site_id) + encode_base64(code))
 
 
-def decode(string: str, password: str):
+def decode(code: str, site_id: str):
     """
     decode code
     """
-    return decode_base64(decode_base64(string).replace(seed_(password), "", 1))
+    return decode_base64(decode_base64(code).replace(seed_(site_id), "", 1))
 
 
 def seed_(string: str):

@@ -33,7 +33,7 @@ class MyFoxApiStateClient(MyFoxApiClient) :
         """ Get security site """
         try:
             if self.isCacheExpire(self.sensor_time) :
-                response = await self.callMyFoxApiGet(MYFOX_DEVICE_STATE_LIST % (self.myfox_info.site.siteId))
+                response = await self.callMyFoxApiGet(MYFOX_DEVICE_STATE_LIST % self.myfox_info.site.siteId)
                 items = response["payload"]["items"]
                 _LOGGER.debug("getDeviceWithStateList : %s", str(items))
                 self.sensor = items
@@ -54,7 +54,7 @@ class MyFoxApiStateClient(MyFoxApiClient) :
         try:
             if self.isCacheExpire(self.sensorState_time) :
                 response = await self.callMyFoxApiGet(MYFOX_DEVICE_STATE_GET % (self.myfox_info.site.siteId, deviceId))
-                items = response["payload"]["items"]
+                items = response["payload"]
                 _LOGGER.debug("getDeviceWithState : %s", str(items))
                 self.sensorState = items
                 self.sensorState_time = time.time()
