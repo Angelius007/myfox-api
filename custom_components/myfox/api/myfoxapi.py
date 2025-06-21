@@ -122,23 +122,23 @@ class MyFoxApiClient:
         """ Liste """
         pass
 
-    async def callMyFoxApiGet(self, path: str, data: str = None, retry: int = 0):
+    async def callMyFoxApiGet(self, path: str, data = None, retry: int = 0):
         """ Appel API en GET """
         return await self.callMyFoxApiWithSession_(path, data, "GET", "json", retry=retry)
 
-    async def callMyFoxApiBinaryGet(self, path: str, data: str = None, retry: int = 0):
+    async def callMyFoxApiBinaryGet(self, path: str, data = None, retry: int = 0):
         """ Appel API en GET """
         return await self.callMyFoxApiWithSession_(path, data, "GET", "binary", retry)
 
-    async def callMyFoxApiPost(self, path: str, data: str = None, retry: int = 0):
+    async def callMyFoxApiPost(self, path: str, data = None, retry: int = 0):
         """ Appel API en POST """
         return await self.callMyFoxApiWithSession_(path, data, "POST", "json", retry=retry)
 
-    async def callMyFoxApiBinaryPost(self, path: str, data: str = None, retry: int = 0):
+    async def callMyFoxApiBinaryPost(self, path: str, data = None, retry: int = 0):
         """ Appel API en POST """
         return await self.callMyFoxApiWithSession_(path, data, "POST", "binary", retry)
 
-    async def callMyFoxApiWithSession_(self, path: str, data: str = None, method: str = "POST",
+    async def callMyFoxApiWithSession_(self, path: str, data = None, method: str = "POST",
                                        responseClass: str = "json", retry: int = 0):
         """ Appel API """
         try:
@@ -161,7 +161,7 @@ class MyFoxApiClient:
                 _LOGGER.error(exception)
                 raise MyFoxException(args=exception)
 
-    async def callMyFoxApi_(self, session: aiohttp.ClientSession, path: str, data: str = None, method: str = "POST",
+    async def callMyFoxApi_(self, session: aiohttp.ClientSession, path: str, data = None, method: str = "POST",
                             responseClass: str = "json", retry: int = 0):
         """ Appel API """
         _LOGGER.debug(f"Appel : {path}/{method}/{responseClass} - Essai : {retry}/{self.nb_retry}")
@@ -485,14 +485,14 @@ class MyFoxApiClient:
         """ Recuperation info site """
         try:
             if self.isCacheExpire(self.history_time) :
+                # "dateFrom"  : "xxx",
+                # "dateTo"    : "yyy",
                 data = {
-                    # "dateFrom"  : "xxx",
-                    # "dateTo"    : "yyy",
                     "dateOrder" : -1
                 }
                 if type is not None:
                     data["type"] = type
-                response = await self.callMyFoxApiGet(MYFOX_HISTORY_GET % self.myfox_info.site.siteId, str(data))
+                response = await self.callMyFoxApiGet(MYFOX_HISTORY_GET % self.myfox_info.site.siteId, data)
                 items = response["payload"]["items"]
 
                 self.history = items

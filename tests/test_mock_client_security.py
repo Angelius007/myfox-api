@@ -23,7 +23,7 @@ def patch_aiohttp(monkeypatch):
 
 
 @pytest.mark.asyncio
-async def test_client_security_list():
+async def test_client_list():
     _LOGGER.info("**** Debut ****")
     myfox_info = MyFoxMockCache.getMyFoxEntryDataFromCache()
     try:

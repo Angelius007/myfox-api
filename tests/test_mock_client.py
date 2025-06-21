@@ -107,3 +107,28 @@ async def test_client_refresh_token():
     finally :
         MyFoxMockCache.writeCache(myfox_info)
         _LOGGER.info("**** Fin ****")
+
+
+@pytest.mark.asyncio
+async def test_client_history():
+    _LOGGER.info("**** Debut ****")
+    myfox_info = MyFoxMockCache.getMyFoxEntryDataFromCache()
+    try:
+        client = MyFoxApiClient(myfox_info)
+        client.nb_retry = 1
+        client.delay_between_retry = 1
+        # get list
+        results = await client.getHistory()
+        _LOGGER.info("getHistory(1):" + str(results))
+        assert results.__len__() == 2
+
+    except MyFoxException as exception:
+        _LOGGER.error("Exception: Un mock non implémenté à vérifier")
+        _LOGGER.error(exception)
+        assert False
+    except Exception as exception:
+        _LOGGER.error("Exception", exception)
+        assert False
+    finally :
+        MyFoxMockCache.writeCache(myfox_info)
+        _LOGGER.info("**** Fin ****")

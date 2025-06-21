@@ -70,23 +70,9 @@ class MyFoxApiLibraryClient(MyFoxApiClient) :
         """ Get video """
         try:
             response = await self.callMyFoxApiGet(MYFOX_LIBRARY_VIDEO_PLAY % (self.myfox_info.site.siteId, videoId))
-            _LOGGER.debug("playVideo : %s", str(response))
-
-            return response
-
-        except MyFoxException as exception:
-            raise exception
-        except Exception as exception:
-            _LOGGER.error("Error : " + str(exception))
-            raise MyFoxException(args=exception)
-
-    async def getImage(self, image_url: int) -> bytes:
-        """ Get image """
-        try:
-            response = await self.callMyFoxApiBinaryGet(image_url)
-            _LOGGER.debug("playVideo : %s", str(response))
-
-            return response["binary"]
+            data = response["payload"]
+            _LOGGER.debug("playVideo : %s", str(data))
+            return data
 
         except MyFoxException as exception:
             raise exception

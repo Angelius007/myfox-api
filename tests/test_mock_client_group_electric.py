@@ -3,7 +3,7 @@ import logging.config
 import pytest
 
 from custom_components.myfox.api.myfoxapi_exception import MyFoxException
-from custom_components.myfox.api.myfoxapi_state import (MyFoxApiStateClient)
+from custom_components.myfox.api.myfoxapi_group_electric import (MyFoxApiGroupElectricClient)
 
 from tests.utils import MyFoxMockCache, FakeClientSession
 
@@ -22,17 +22,18 @@ def patch_aiohttp(monkeypatch):
 
 
 @pytest.mark.asyncio
-async def test_client_state_list():
+async def test_client_list():
     _LOGGER.info("**** Debut ****")
     myfox_info = MyFoxMockCache.getMyFoxEntryDataFromCache()
     try:
-        client = MyFoxApiStateClient(myfox_info)
+        client = MyFoxApiGroupElectricClient(myfox_info)
         client.nb_retry = 1
         client.delay_between_retry = 1
         # get list
         results = await client.getList()
         _LOGGER.info("getList(1):" + str(results))
         assert results.__len__() == 2
+        assert results[0]["devices"].__len__() == 2
 
     except MyFoxException as exception:
         _LOGGER.error("Exception: Un mock non implémenté à vérifier")
@@ -47,17 +48,42 @@ async def test_client_state_list():
 
 
 @pytest.mark.asyncio
-async def test_client_state():
+async def test_client_set_on():
     _LOGGER.info("**** Debut ****")
     myfox_info = MyFoxMockCache.getMyFoxEntryDataFromCache()
     try:
-        client = MyFoxApiStateClient(myfox_info)
+        client = MyFoxApiGroupElectricClient(myfox_info)
         client.nb_retry = 1
         client.delay_between_retry = 1
         # get list
-        results = await client.getDeviceWithState(24689)
-        _LOGGER.info("getDeviceWithState(1):" + str(results))
-        assert results is not None and results["stateLabel"] == "opened"
+        results = await client.setOn(2468)
+        _LOGGER.info("setOn(1):" + str(results))
+        assert results
+
+    except MyFoxException as exception:
+        _LOGGER.error("Exception: Un mock non implémenté à vérifier")
+        _LOGGER.error(exception)
+        assert False
+    except Exception as exception:
+        _LOGGER.error("Exception", exception)
+        assert False
+    finally :
+        MyFoxMockCache.writeCache(myfox_info)
+        _LOGGER.info("**** Fin ****")
+
+
+@pytest.mark.asyncio
+async def test_client_set_off():
+    _LOGGER.info("**** Debut ****")
+    myfox_info = MyFoxMockCache.getMyFoxEntryDataFromCache()
+    try:
+        client = MyFoxApiGroupElectricClient(myfox_info)
+        client.nb_retry = 1
+        client.delay_between_retry = 1
+        # get list
+        results = await client.setOff(2468)
+        _LOGGER.info("setOff(1):" + str(results))
+        assert results
 
     except MyFoxException as exception:
         _LOGGER.error("Exception: Un mock non implémenté à vérifier")

@@ -6,7 +6,6 @@ from custom_components.myfox.api.myfoxapi_exception import MyFoxException
 from custom_components.myfox.api.myfoxapi_camera import (MyFoxApiCameraClient)
 
 from tests.utils import MyFoxMockCache, FakeClientSession
-from custom_components.myfox.crypto.secure import encode
 
 logging.config.fileConfig('logging.conf', None, True)
 _LOGGER = logging.getLogger(__name__)
@@ -23,7 +22,7 @@ def patch_aiohttp(monkeypatch):
 
 
 @pytest.mark.asyncio
-async def test_client_camera_list():
+async def test_client_list():
     _LOGGER.info("**** Debut ****")
     myfox_info = MyFoxMockCache.getMyFoxEntryDataFromCache()
     try:

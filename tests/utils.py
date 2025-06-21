@@ -61,6 +61,39 @@ def fake_http_call(url: str, *args, **kwargs):
 
         return FakeResponse(200, {"status": "OK", "access_token": token1, "refresh_token": token2, "expires_in": 3600, "site_id": 1234})
 
+    elif "v2/site/1234/device/2468/socket/on" in url \
+            or "v2/site/1234/device/2468/socket/off" in url \
+            or "v2/site/1234/device/2468/gate/perform/one" in url \
+            or "v2/site/1234/device/2468/gate/perform/two" in url \
+            or "v2/site/1234/device/2468/module/perform/one" in url \
+            or "v2/site/1234/device/2468/module/perform/two" in url \
+            or "v2/site/1234/device/2468/shutter/my" in url \
+            or "v2/site/1234/device/2468/shutter/open" in url \
+            or "v2/site/1234/device/2468/shutter/close" in url \
+            or "v2/site/1234/security/set/armed" in url \
+            or "v2/site/1234/security/set/partial" in url \
+            or "v2/site/1234/security/set/disarmed" in url \
+            or "v2/site/1234/device/123456789/camera/live/extend" in url \
+            or "v2/site/1234/device/123456789/camera/live/stop" in url \
+            or "v2/site/1234/device/123456789/camera/recording/start" in url \
+            or "v2/site/1234/device/123456789/camera/recording/stop" in url \
+            or "v2/site/1234/device/123456789/camera/snapshot/take" in url \
+            or "v2/site/1234/device/123456789/camera/shutter/close" in url \
+            or "v2/site/1234/device/123456789/camera/shutter/open" in url \
+            or "v2/site/1234/scenario/123/play" in url or "v2/site/1234/scenario/456/play" in url or "v2/site/1234/scenario/789/play" in url \
+            or "v2/site/1234/scenario/123/disable" in url or "v2/site/1234/scenario/456/disable" in url or "v2/site/1234/scenario/789/disable" in url \
+            or "v2/site/1234/scenario/123/enable" in url or "v2/site/1234/scenario/456/enable" in url or "v2/site/1234/scenario/789/enable" in url \
+            or "v2/site/1234/group/2468/electric/on" in url or "v2/site/1234/group/2468/electric/off" in url \
+            or "v2/site/1234/group/2468/shutter/close" in url or "v2/site/1234/group/2468/shutter/open" in url \
+            or "v2/site/1234/device/2468/heater/eco" in url or "v2/site/1234/device/2468/heater/frost" in url  \
+            or "v2/site/1234/device/2468/heater/on" in url or "v2/site/1234/device/2468/heater/off" in url  \
+            or "v2/site/1234/device/2468/heater/auto" in url or "v2/site/1234/device/2468/heater/away" in url  \
+            or "v2/site/1234/device/2468/heater/boost" in url or "v2/site/1234/device/2468/heater/thermostatoff" in url :
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"request": "OK"}
+                                  })
+
     elif "v2/client/site/items" in url:
         return FakeResponse(200, {"status": "OK",
                                   "payload" :
@@ -110,34 +143,8 @@ def fake_http_call(url: str, *args, **kwargs):
                                           }
                                       ]}
                                   })
-    elif "v2/site/1234/scenario/123/play" in url or "v2/site/1234/scenario/456/play" in url or "v2/site/1234/scenario/789/play" in url:
-        return FakeResponse(200, {"status": "OK"})
     elif "v2/site/1234/scenario" in url and "/play" in url:
         return FakeResponse(200, {"status": "KO", "error" : "404", "error_description" : "Unknown scenario ID"})
-    elif "v2/site/1234/scenario/123/disable" in url or "v2/site/1234/scenario/456/disable" in url or "v2/site/1234/scenario/789/disable" in url:
-        return FakeResponse(200, {"status": "OK"})
-    elif "v2/site/1234/scenario/123/enable" in url or "v2/site/1234/scenario/456/enable" in url or "v2/site/1234/scenario/789/enable" in url:
-        return FakeResponse(200, {"status": "OK"})
-    elif "v2/site/1234/security/set/armed" in url:
-        return FakeResponse(200, {"status": "OK",
-                                  "payload":
-                                      {
-                                       "request": "OK"
-                                       }
-                                  })
-    elif "v2/site/1234/security/set/partial" in url:
-        return FakeResponse(200, {"status": "OK",
-                                  "payload":
-                                      {
-                                       "request": "OK"
-                                       }
-                                  })
-    elif "v2/site/1234/security/set/disarmed" in url:
-        return FakeResponse(200, {"status": "OK",
-                                      "payload": {
-                                          "request": "OK"
-                                       }
-                                  })
     elif "v2/site/1234/security" in url:
         return FakeResponse(200, {"status": "OK",
                                       "payload": {
@@ -167,11 +174,6 @@ def fake_http_call(url: str, *args, **kwargs):
                                           }
                                       ]}
                                   })
-    elif "v2/site/1234/device/123456789/camera/live/extend" in url:
-        return FakeResponse(200, {"status": "OK",
-                                  "payload":
-                                      {"request": "OK"}
-                                  })
     elif "v2/site/1234/device/123456789/camera/live/start" in url:
         return FakeResponse(200, {"status": "OK",
                                   "payload":
@@ -181,41 +183,11 @@ def fake_http_call(url: str, *args, **kwargs):
                                           "protocol": "hls"
                                       }
                                   })
-    elif "v2/site/1234/device/123456789/camera/live/stop" in url:
-        return FakeResponse(200, {"status": "OK",
-                                  "payload":
-                                      {"request": "OK"}
-                                  })
     elif "v2/site/1234/device/123456789/camera/preview/take" in url:
         return FakeResponse(200, {"status": "OK",
                                           "binary": "xxx",
                                           "filename": "mock.jpg"
                                   }, "binary", "fichier_mock.jpg", b"abcd")
-    elif "v2/site/1234/device/123456789/camera/recording/start" in url:
-        return FakeResponse(200, {"status": "OK",
-                                  "payload":
-                                      {"request": "OK"}
-                                  })
-    elif "v2/site/1234/device/123456789/camera/recording/stop" in url:
-        return FakeResponse(200, {"status": "OK",
-                                  "payload":
-                                      {"request": "OK"}
-                                  })
-    elif "v2/site/1234/device/123456789/camera/snapshot/take" in url:
-        return FakeResponse(200, {"status": "OK",
-                                  "payload":
-                                      {"request": "OK"}
-                                  })
-    elif "v2/site/1234/device/123456789/camera/shutter/close" in url:
-        return FakeResponse(200, {"status": "OK",
-                                  "payload":
-                                      {"request": "OK"}
-                                  })
-    elif "v2/site/1234/device/123456789/camera/shutter/open" in url:
-        return FakeResponse(200, {"status": "OK",
-                                  "payload":
-                                      {"request": "OK"}
-                                  })
     elif "v2/site/1234/device/data/light/items" in url:
         return FakeResponse(200, {"status": "OK",
                                   "payload":
@@ -356,18 +328,6 @@ def fake_http_call(url: str, *args, **kwargs):
                                           }
                                       ]}
                                   })
-    elif "v2/site/1234/device/2468/gate/perform/one" in url:
-        return FakeResponse(200, {"status": "OK",
-                                  "payload":
-                                      {"items": [
-                                      ]}
-                                  })
-    elif "v2/site/1234/device/2468/gate/perform/two" in url:
-        return FakeResponse(200, {"status": "OK",
-                                  "payload":
-                                      {"items": [
-                                      ]}
-                                  })
     elif "v2/site/1234/device/module/items" in url:
         return FakeResponse(200, {"status": "OK",
                                   "payload":
@@ -384,18 +344,6 @@ def fake_http_call(url: str, *args, **kwargs):
                                               "modelId": 32,
                                               "modelLabel": "module",
                                           }
-                                      ]}
-                                  })
-    elif "v2/site/1234/device/2468/module/perform/one" in url:
-        return FakeResponse(200, {"status": "OK",
-                                  "payload":
-                                      {"items": [
-                                      ]}
-                                  })
-    elif "v2/site/1234/device/2468/module/perform/two" in url:
-        return FakeResponse(200, {"status": "OK",
-                                  "payload":
-                                      {"items": [
                                       ]}
                                   })
     elif "v2/site/1234/device/shutter/items" in url:
@@ -416,24 +364,6 @@ def fake_http_call(url: str, *args, **kwargs):
                                           }
                                       ]}
                                   })
-    elif "v2/site/1234/device/2468/shutter/my" in url:
-        return FakeResponse(200, {"status": "OK",
-                                  "payload":
-                                      {"items": [
-                                      ]}
-                                  })
-    elif "v2/site/1234/device/2468/shutter/open" in url:
-        return FakeResponse(200, {"status": "OK",
-                                  "payload":
-                                      {"items": [
-                                      ]}
-                                  })
-    elif "v2/site/1234/device/2468/shutter/close" in url:
-        return FakeResponse(200, {"status": "OK",
-                                  "payload":
-                                      {"items": [
-                                      ]}
-                                  })
     elif "v2/site/1234/device/socket/items" in url:
         return FakeResponse(200, {"status": "OK",
                                   "payload":
@@ -452,16 +382,201 @@ def fake_http_call(url: str, *args, **kwargs):
                                           }
                                       ]}
                                   })
-    elif "v2/site/1234/device/2468/socket/on" in url:
+    elif "v2/site/1234/library/image/items" in url:
         return FakeResponse(200, {"status": "OK",
                                   "payload":
                                       {"items": [
+                                          {
+                                              "imageId" : 2468,
+                                              "cameraId" : 0,
+                                              "cameraLabel" : "camera",
+                                              "height" : 800,
+                                              "width": 600,
+                                              "createdAt": '2024-08-20T17:45:46Z',
+                                              "fileURL": "https://fakeurl.com/toto"
+                                          },
+                                          {
+                                              "imageId" : 2469,
+                                              "cameraId" : 0,
+                                              "cameraLabel" : "camera",
+                                              "height" : 800,
+                                              "width": 600,
+                                              "createdAt": '2024-08-20T17:45:46Z',
+                                              "fileURL": "https://fakeurl.com/toto"
+                                          }
                                       ]}
                                   })
-    elif "v2/site/1234/device/2468/socket/off" in url:
+    elif "v2/site/1234/library/video/items" in url:
         return FakeResponse(200, {"status": "OK",
                                   "payload":
                                       {"items": [
+                                          {
+                                              "videoId" : 2468,
+                                              "cameraId" : 0,
+                                              "cameraLabel" : "camera",
+                                              "duration": 30,
+                                              "height" : 800,
+                                              "width": 600,
+                                              "isRecording": False,
+                                              "createdAt": '2024-08-20T17:45:46Z',
+                                              "fileURL": "https://fakeurl.com/toto",
+                                              "playURL": "https://fakeurl.com/toto",
+                                              "previewURL": "https://fakeurl.com/toto"
+                                          },
+                                          {
+                                              "videoId" : 2469,
+                                              "cameraId" : 0,
+                                              "cameraLabel" : "camera",
+                                              "duration": 30,
+                                              "height" : 800,
+                                              "width": 600,
+                                              "isRecording": False,
+                                              "createdAt": '2024-08-20T17:45:46Z',
+                                              "fileURL": "https://fakeurl.com/toto",
+                                              "playURL": "https://fakeurl.com/toto",
+                                              "previewURL": "https://fakeurl.com/toto"
+                                          }
+                                      ]}
+                                  })
+    elif "v2/site/1234/library/video/2468/play" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {
+                                          "videoId" : 2468,
+                                          "location" : "https://fakeurl.com/toto",
+                                          "protocol" : "hls",
+                                      }
+                                  })
+    elif "v2/site/1234/group/electric/items" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"items": [
+                                          {
+                                              "groupId": 2468,
+                                              "label": "Lampes",
+                                              "type": "Electrical devices",
+                                              "modelLabel": "Prise électrique commandée",
+                                              "devices" : [
+                                                  {
+                                                      "deviceId": 2468,
+                                                      "label": "Lampe1",
+                                                      "modelId": 18,
+                                                      "modelLabel": "Prise électrique commandée"
+                                                  },
+                                                  {
+                                                      "deviceId": 2469,
+                                                      "label": "Lampe2",
+                                                      "modelId": 18,
+                                                      "modelLabel": "Prise électrique commandée"
+                                                  }
+                                              ]
+                                          },
+                                          {
+                                              "groupId": 2469,
+                                              "label": "Lampes 2",
+                                              "type": "Electrical devices",
+                                              "modelLabel": "Prise électrique commandée",
+                                              "devices" : [
+                                                  {
+                                                      "deviceId": 2468,
+                                                      "label": "Lampe1",
+                                                      "modelId": 18,
+                                                      "modelLabel": "Prise électrique commandée"
+                                                  },
+                                                  {
+                                                      "deviceId": 2469,
+                                                      "label": "Lampe2",
+                                                      "modelId": 18,
+                                                      "modelLabel": "Prise électrique commandée"
+                                                  }
+                                              ]
+                                          }
+                                      ]}
+                                  })
+    elif "v2/site/1234/group/shutter/items" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"items": [
+                                          {
+                                              "groupId": 2468,
+                                              "label": "Volets 1",
+                                              "type": "Shutters",
+                                              "devices" : [
+                                                  {
+                                                      "deviceId": 2468,
+                                                      "label": "Volet1",
+                                                      "modelId": 14,
+                                                      "modelLabel": "DIO module for shutter"
+                                                  },
+                                                  {
+                                                      "deviceId": 2469,
+                                                      "label": "Volet2",
+                                                      "modelId": 14,
+                                                      "modelLabel": "DIO module for shutter"
+                                                  }
+                                              ]
+                                          },
+                                          {
+                                              "groupId": 2469,
+                                              "label": "Volets 2",
+                                              "type": "Shutters",
+                                              "devices" : [
+                                                  {
+                                                      "deviceId": 2468,
+                                                      "label": "Volet1",
+                                                      "modelId": 14,
+                                                      "modelLabel": "DIO module for shutter"
+                                                  },
+                                                  {
+                                                      "deviceId": 2469,
+                                                      "label": "Volet2",
+                                                      "modelId": 14,
+                                                      "modelLabel": "DIO module for shutter"
+                                                  }
+                                              ]
+                                          }
+                                      ]}
+                                  })
+    elif "v2/site/1234/device/heater/items" in url or "v2/site/1234/device/heater/items/withthermostat" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"items": [
+                                          {
+                                              "deviceId": 2468,
+                                              "label": "Radiateur 1",
+                                              "modelId": 44,
+                                              "modelLabel": "Module chauffage",
+                                              "modeLabel": "wired",
+                                              "stateLabel": "on",
+                                              "lastTemperature": 25
+                                          },
+                                          {
+                                              "deviceId": 2469,
+                                              "label": "Radiateur 2",
+                                              "modelId": 44,
+                                              "modelLabel": "Module chauffage",
+                                              "modeLabel": "wired",
+                                              "stateLabel": "on",
+                                              "lastTemperature": 25
+                                          }
+                                      ]}
+                                  })
+    elif "v2/site/1234/history" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"items": [
+                                          {
+                                              "logId": 2468,
+                                              "label": "log1",
+                                              "type": "security",
+                                              "createdAt": '2024-08-20T17:45:46Z'
+                                          },
+                                          {
+                                              "logId": 2469,
+                                              "label": "log2",
+                                              "type": "scenario",
+                                              "createdAt": '2024-08-20T17:45:46Z'
+                                          }
                                       ]}
                                   })
     elif "v2/site/1234/xxx" in url:
