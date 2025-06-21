@@ -300,6 +300,170 @@ def fake_http_call(url: str, *args, **kwargs):
                                           "stateLabel": "opened"
                                       }
                                   })
+    elif "v2/site/1234/device/data/temperature/items" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"items": [
+                                          {
+                                              "deviceId": 123456,
+                                              "label": "Capteur Salon",
+                                              "modelId": 29,
+                                              "modelLabel": "Capteur température & luminosité",
+                                              "lastTemperature": 24,
+                                              "lastTemperatureAt": '2024-08-20T17:43:46Z'
+                                          },
+                                          {
+                                              "deviceId": 67891,
+                                              "label": "Capteur Sejour",
+                                              "modelId": 29,
+                                              "modelLabel": "Capteur température & luminosité",
+                                              "lastTemperature": 25,
+                                              "lastTemperatureAt": '2024-08-20T17:43:46Z'
+                                          }
+                                      ]}
+                                  })
+    elif "v2/site/1234/device/123456/data/temperature" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"items": [
+                                          {
+                                              "deviceId": 123456,
+                                              "celsius": 24,
+                                              "recordedAt": '2024-08-20T17:43:46Z'
+                                          },
+                                          {
+                                              "deviceId": 123456,
+                                              "celsius": 25,
+                                              "recordedAt": '2024-08-20T17:45:46Z'
+                                          }
+                                      ]}
+                                  })
+    elif "v2/site/1234/device/gate/items" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"items": [
+                                          {
+                                              "deviceId": 2468,
+                                              "label": "Gate 1",
+                                              "modelId": 31,
+                                              "modelLabel": "gate",
+                                          },
+                                          {
+                                              "deviceId": 2469,
+                                              "label": "Gate 2",
+                                              "modelId": 31,
+                                              "modelLabel": "gate",
+                                          }
+                                      ]}
+                                  })
+    elif "v2/site/1234/device/2468/gate/perform/one" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"items": [
+                                      ]}
+                                  })
+    elif "v2/site/1234/device/2468/gate/perform/two" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"items": [
+                                      ]}
+                                  })
+    elif "v2/site/1234/device/module/items" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"items": [
+                                          {
+                                              "deviceId": 2468,
+                                              "label": "Module 1",
+                                              "modelId": 32,
+                                              "modelLabel": "module",
+                                          },
+                                          {
+                                              "deviceId": 2469,
+                                              "label": "Module 2",
+                                              "modelId": 32,
+                                              "modelLabel": "module",
+                                          }
+                                      ]}
+                                  })
+    elif "v2/site/1234/device/2468/module/perform/one" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"items": [
+                                      ]}
+                                  })
+    elif "v2/site/1234/device/2468/module/perform/two" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"items": [
+                                      ]}
+                                  })
+    elif "v2/site/1234/device/shutter/items" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"items": [
+                                          {
+                                              "deviceId": 2468,
+                                              "label": "Volet 1",
+                                              "modelId": 14,
+                                              "modelLabel": "Module DIO pour volet",
+                                          },
+                                          {
+                                              "deviceId": 2469,
+                                              "label": "Volet 2",
+                                              "modelId": 14,
+                                              "modelLabel": "Module DIO pour volet",
+                                          }
+                                      ]}
+                                  })
+    elif "v2/site/1234/device/2468/shutter/my" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"items": [
+                                      ]}
+                                  })
+    elif "v2/site/1234/device/2468/shutter/open" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"items": [
+                                      ]}
+                                  })
+    elif "v2/site/1234/device/2468/shutter/close" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"items": [
+                                      ]}
+                                  })
+    elif "v2/site/1234/device/socket/items" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"items": [
+                                          {
+                                              "deviceId": 2468,
+                                              "label": "A2",
+                                              "modelId": 18,
+                                              "modelLabel": "Prise électrique commandée",
+                                          },
+                                          {
+                                              "deviceId": 2469,
+                                              "label": "A1",
+                                              "modelId": 19,
+                                              "modelLabel": "Prise électrique commandée DIO First",
+                                          }
+                                      ]}
+                                  })
+    elif "v2/site/1234/device/2468/socket/on" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"items": [
+                                      ]}
+                                  })
+    elif "v2/site/1234/device/2468/socket/off" in url:
+        return FakeResponse(200, {"status": "OK",
+                                  "payload":
+                                      {"items": [
+                                      ]}
+                                  })
     elif "v2/site/1234/xxx" in url:
         return FakeResponse(200, {"status": "OK",
                                   "payload":
