@@ -706,8 +706,9 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     # verification device
                     _LOGGER.debug("getHistory '%s' ", str(device_action))
                     results = await client.getHistory("security")
-                    label = results[0]["label"]
-                    action_ok = True
+                    if results is not None and results.__len__() > 0:
+                        label = results[0]["label"]
+                        action_ok = True
                     break
 
             if action_ok and len(label) > 0 :
@@ -728,7 +729,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             _LOGGER.error(exception)
             return action_ok
         except Exception as err:
-            raise UpdateFailed(f"Error with API setSecurity: {err}")
+            raise UpdateFailed(f"Error with API getLastHistoryEvent: {err}")
 
     async def cameraLiveStart(self, idx: str, protocol: str) -> str :
         """ Selection option et transmission au bon client """
