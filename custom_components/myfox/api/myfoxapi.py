@@ -481,7 +481,7 @@ class MyFoxApiClient:
             _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(args=exception)
 
-    async def getHistory(self, type: str = "security"):
+    async def getHistory(self, type: str = "security") -> list[Any]:
         """ Recuperation info site """
         try:
             if self.isCacheExpire(self.history_time) :
@@ -494,6 +494,7 @@ class MyFoxApiClient:
                     data["type"] = type
                 response = await self.callMyFoxApiGet(MYFOX_HISTORY_GET % self.myfox_info.site.siteId, data)
                 items = response["payload"]["items"]
+                _LOGGER.debug("MyFoxApiClient.getHistory -> items %s", str(items))
 
                 self.history = items
                 self.history_time = time.time()
