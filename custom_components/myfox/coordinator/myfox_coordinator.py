@@ -180,6 +180,10 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                         try:
                             last_action = "getList from " + str(myfoxApiClient.__class__)
                             await myfoxApiClient.getList()
+                        except InvalidTokenMyFoxException as err:
+                            # Raising ConfigEntryAuthFailed will cancel future updates
+                            # and start a config flow with SOURCE_REAUTH (async_step_reauth)
+                            raise err
                         except MyFoxException as exception:
                             _LOGGER.error(exception)
                         except Exception as err:
@@ -502,6 +506,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 valeur["enabled"] = "None"
                 self.addToParams(params, listening_idx, valeur)
                 self.async_set_updated_data(params)
+            return action_ok
         except InvalidTokenMyFoxException as err:
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
@@ -537,6 +542,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 valeur["enabled"] = True
                 self.addToParams(params, listening_idx, valeur)
                 self.async_set_updated_data(params)
+            return action_ok
         except InvalidTokenMyFoxException as err:
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
@@ -572,6 +578,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 valeur["enabled"] = False
                 self.addToParams(params, listening_idx, valeur)
                 self.async_set_updated_data(params)
+            return action_ok
         except InvalidTokenMyFoxException as err:
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
@@ -901,6 +908,10 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
 
             return retour
 
+        except InvalidTokenMyFoxException as err:
+            # Raising ConfigEntryAuthFailed will cancel future updates
+            # and start a config flow with SOURCE_REAUTH (async_step_reauth)
+            raise ConfigEntryAuthFailed from err
         except MyFoxException as exception:
             _LOGGER.error(exception)
             raise exception
