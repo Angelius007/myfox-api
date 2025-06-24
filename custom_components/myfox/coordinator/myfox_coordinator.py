@@ -162,6 +162,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         so entities can quickly look up their data.
         """
         last_action = ""
+        params = dict[str, Any]()
         try:
             _LOGGER.debug("Async update data from : %s", str(self.name))
             # Note: asyncio.TimeoutError and aiohttp.ClientError are already
@@ -170,7 +171,6 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                 # Grab active context variables to limit data required to be fetched from API
                 # Note: using context is not required if there is no need or ability to limit
                 # data retrieved from API.
-                params = dict[str, Any]()
                 listening_idx = set(self.async_contexts())
                 _LOGGER.debug("listening_idx : %s", str(listening_idx))
 
@@ -282,7 +282,8 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
             raise ConfigEntryAuthFailed from err
         except MyFoxException as err:
-            raise UpdateFailed(f"Error communicating with API: {str(err)} - Last Action : {last_action}")
+            _LOGGER.warning(f"Error communicating with API: {str(err)} - Last Action : {last_action}")
+            return params
         except Exception as err:
             raise UpdateFailed(f"Error with API _async_update_data: {str(err)} - Last Action : {last_action}")
 

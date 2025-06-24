@@ -144,6 +144,8 @@ class MyFoxApiClient:
         try:
             async with aiohttp.ClientSession() as session:
                 return await self.callMyFoxApi_(session, path, data, method, responseClass, retry)
+        except InvalidTokenMyFoxException as exception:
+            raise exception
         except MyFoxException as exception:
             """ Retry """
             if retry < self.nb_retry :
