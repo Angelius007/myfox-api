@@ -209,7 +209,7 @@ class MyFoxApiClient:
     async def _get_binary_response(self, resp: ClientResponse):
         """ Traitement de la reponse """
         ctype = resp.headers.get(hdrs.CONTENT_TYPE, "").lower()
-        if resp.status == 401:
+        if resp.status == 400 or resp.status == 401:
             try:
                 if CONTENT_TYPE_JSON not in ctype :
                     json_resp = await resp.json()
@@ -252,7 +252,7 @@ class MyFoxApiClient:
             html_resp = await resp.text()
             _LOGGER.debug(f"Erreur : {resp.status} / {html_resp}")
             raise RetryMyFoxException(resp.status, f"Failed json call: {html_resp}")
-        if resp.status == 401:
+        if resp.status == 400 or resp.status == 401:
             try:
                 if CONTENT_TYPE_JSON in ctype :
                     json_resp = await resp.json()
