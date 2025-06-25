@@ -149,10 +149,11 @@ class MyFoxApiClient:
         except MyFoxException as exception:
             """ Retry """
             if retry < self.nb_retry :
+                _LOGGER.warning(f"Relance de la requete {path} : (Tentative : {(retry+1)}/{self.nb_retry}) - {str(exception)}")
                 await asyncio.sleep(self.delay_between_retry)  # tempo de qqes secondes pour relancer la requete
                 return await self.callMyFoxApiWithSession_(path, data, method, responseClass, retry=(retry + 1))
             else :
-                _LOGGER.warning(exception)
+                _LOGGER.error("Erreur appel API %s - %s", path, str(exception))
                 raise exception
         except Exception as exception:
             """ Retry """
@@ -223,7 +224,7 @@ class MyFoxApiClient:
                 raise MyFoxException(resp.status, f"Failed to parse response: {resp.text} Error: {error}")
 
         if resp.status != 200:
-            raise MyFoxException(resp.status, f"Got HTTP status code {resp.status}: {resp.reason}")
+            raise MyFoxException(resp.status, f"Got HTTP {ctype}. Status code {resp.status}: {resp.reason}")
 
         try:
             response = {
@@ -250,7 +251,7 @@ class MyFoxApiClient:
         if CONTENT_TYPE_HTML in ctype :
             html_resp = await resp.text()
             _LOGGER.debug(f"Erreur : {resp.status} / {html_resp}")
-            raise RetryMyFoxException(resp.status, f"Failed json call: {html_resp} - Error: unexpected mimetype")
+            raise RetryMyFoxException(resp.status, f"Failed json call: {html_resp}")
         if resp.status == 401:
             try:
                 if CONTENT_TYPE_JSON in ctype :
