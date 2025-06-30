@@ -375,16 +375,16 @@ class MyFoxApiClient:
     async def getToken(self) -> str:
         """ Recuperation des derniers tokens ou renouvellement si expire """
         try:
-            expireDelay = self.getExpireDelay()
-            if expireDelay == 0:  # jeton expire
+            expire_delay = self.getExpireDelay()
+            if expire_delay == 0:  # jeton expire
                 _LOGGER.debug("Jeton expire -> demande de renouvellement")
                 await self.refreshToken()
-                expireDelay = self.getExpireDelay()
-            elif expireDelay < (SEUIL_EXPIRE_MIN):  # si jeton valide - de 5 min, on renouvelle
+                expire_delay = self.getExpireDelay()
+            elif expire_delay < SEUIL_EXPIRE_MIN:  # si jeton valide - de SEUIL_EXPIRE_MIN min, on renouvelle
                 # Token expire, on renouvelle
                 _LOGGER.debug("Jeton bientot expire -> demande de renouvellement")
                 await self.refreshToken()
-                expireDelay = self.getExpireDelay()
+                expire_delay = self.getExpireDelay()
             return self.myfox_info.access_token
         except InvalidTokenMyFoxException as exception:
             raise exception
@@ -392,7 +392,7 @@ class MyFoxApiClient:
             raise exception
         except Exception as exception:
             _LOGGER.error(exception)
-            _LOGGER.error("Error : " + exception)
+            _LOGGER.error("Error : " + str(exception))
             raise MyFoxException(args=exception)
 
     def getExpireDelay(self) -> float :
