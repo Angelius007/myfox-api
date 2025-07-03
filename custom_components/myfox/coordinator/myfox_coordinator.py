@@ -1,4 +1,5 @@
 import logging
+import asyncio
 import async_timeout
 import time
 
@@ -17,7 +18,7 @@ from ..api import (MyFoxEntryDataApi)
 from ..api.myfoxapi import (
     MyFoxApiClient
 )
-from ..api.myfoxapi_exception import (MyFoxException, InvalidTokenMyFoxException)
+from ..api.myfoxapi_exception import (MyFoxException, RetryMyFoxException, InvalidTokenMyFoxException)
 from ..api.myfoxapi_shutter import MyFoxApiShutterClient
 from ..api.myfoxapi_group_shutter import MyFoxApiGroupShutterClient
 from ..api.myfoxapi_socket import MyFoxApiSocketClient
@@ -132,6 +133,26 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         else :
             self.myfoxApiClients[myfoxApiClient.client_key] = myfoxApiClient
 
+    async def _call_myfox_(self, myfoxApiClient: MyFoxApiClient, retry: int = 1):
+        """ reccursive call (max 3 try) """
+        try:
+            await myfoxApiClient.getList()
+        except RetryMyFoxException as exception:
+            if retry <= 3 :
+                await asyncio.sleep(10)  # tempo de qqes secondes pour relancer la requete
+                await self._call_myfox_(myfoxApiClient, retry=(retry + 1))
+            else :
+                _LOGGER.error(f"Relance KO : {str(retry)} / 3 : {str(exception)}")
+        except InvalidTokenMyFoxException as err:
+            # Raising ConfigEntryAuthFailed will cancel future updates
+            # and start a config flow with SOURCE_REAUTH (async_step_reauth)
+            raise ConfigEntryAuthFailed from err
+        except MyFoxException as exception:
+            _LOGGER.error(exception)
+        except Exception as err:
+            _LOGGER.error(err)
+            raise ConfigEntryAuthFailed from err
+
     async def _async_setup(self):
         """Set up the coordinator
 
@@ -143,17 +164,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
         """
         _LOGGER.debug("Demarrage de %s", str(self.name))
         for (client_key, myfoxApiClient) in self.myfoxApiClients.items() :
-            try:
-                await myfoxApiClient.getList()
-            except InvalidTokenMyFoxException as err:
-                # Raising ConfigEntryAuthFailed will cancel future updates
-                # and start a config flow with SOURCE_REAUTH (async_step_reauth)
-                raise ConfigEntryAuthFailed from err
-            except MyFoxException as exception:
-                _LOGGER.error(exception)
-            except Exception as err:
-                _LOGGER.error(err)
-                raise ConfigEntryAuthFailed from err
+            await self._call_myfox_(myfoxApiClient)
 
     async def _async_update_data(self):
         """Fetch data from API endpoint.
@@ -167,7 +178,7 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
             _LOGGER.debug("Async update data from : %s", str(self.name))
             # Note: asyncio.TimeoutError and aiohttp.ClientError are already
             # handled by the data update coordinator.
-            async with async_timeout.timeout(10):
+            async with async_timeout.timeout(30):
                 # Grab active context variables to limit data required to be fetched from API
                 # Note: using context is not required if there is no need or ability to limit
                 # data retrieved from API.
@@ -179,13 +190,13 @@ class MyFoxCoordinator(DataUpdateCoordinator) :
                     if len(listening_idx) > 0:
                         try:
                             last_action = "getList from " + str(myfoxApiClient.__class__)
-                            await myfoxApiClient.getList()
+                            await self._call_myfox_(myfoxApiClient)
                         except InvalidTokenMyFoxException as err:
                             # Raising ConfigEntryAuthFailed will cancel future updates
                             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
                             raise err
                         except MyFoxException as exception:
-                            _LOGGER.error(exception)
+                            pass
                         except Exception as err:
                             _LOGGER.error(f"Exception : {err} - Last action : {last_action}")
                             _LOGGER.error(err)
