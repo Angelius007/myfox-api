@@ -145,8 +145,14 @@ class MyFoxApiClient:
             async with aiohttp.ClientSession() as session:
                 return await self.callMyFoxApi_(session, path, data, method, responseClass, retry)
         except InvalidTokenMyFoxException as exception:
+            # Try to refresh token before expire acess
+            if exception.status == 401 :
+                await asyncio.sleep(self.delay_between_retry)  # tempo de qqes secondes pour relancer la requete
+                if await self.refreshToken() :
+                    await asyncio.sleep(self.delay_between_retry)  # tempo de qqes secondes pour relancer la requete
+                    return await self.callMyFoxApiWithSession_(path, data, method, responseClass, retry=(retry + 1))
             raise exception
-        except MyFoxException as exception:
+        except (MyFoxException, RetryMyFoxException) as exception:
             """ Retry """
             if retry < self.nb_retry :
                 _LOGGER.warning(f"Relance de la requete {path} : (Tentative : {(retry+1)}/{self.nb_retry}) - {str(exception)}")
@@ -167,7 +173,7 @@ class MyFoxApiClient:
     async def callMyFoxApi_(self, session: aiohttp.ClientSession, path: str, data=None, method: str = "POST",
                             responseClass: str = "json", retry: int = 0):
         """ Appel API """
-        _LOGGER.debug(f"Appel : {path}/{method}/{responseClass} - Essai : {retry}/{self.nb_retry}")
+        _LOGGER.debug(f"Appel : {path}/{method}/ [{responseClass}] - Essai : {retry}/{self.nb_retry}")
         try:
             headers = {
                 hdrs.CONTENT_TYPE: CONTENT_TYPE_JSON
@@ -191,7 +197,7 @@ class MyFoxApiClient:
         except InvalidTokenMyFoxException as exception:
             _LOGGER.error(f"InvalidTokenMyFoxException : {exception.status} - {exception.message}")
             raise exception
-        except MyFoxException as exception:
+        except (MyFoxException, RetryMyFoxException) as exception:
             raise exception
         except Exception as exception:
             _LOGGER.error(exception)
@@ -213,7 +219,7 @@ class MyFoxApiClient:
             try:
                 if CONTENT_TYPE_JSON not in ctype :
                     json_resp = await resp.json()
-                    raise InvalidTokenMyFoxException(resp.status, f"Error : {json_resp["error"]}")
+                    raise InvalidTokenMyFoxException(resp.status, f"Error : {json_resp}")
                 else :
                     html_resp = await resp.text()
                     raise InvalidTokenMyFoxException(resp.status, f"Error : {html_resp}")
@@ -227,12 +233,7 @@ class MyFoxApiClient:
             raise MyFoxException(resp.status, f"Got HTTP {ctype}. Status code {resp.status}: {resp.reason}")
 
         try:
-            response = {
-                "filename": str,
-                "binary": bytes
-            }
-            response["binary"] = await resp.read()
-            response["filename"] = "undefined"
+            response = {"filename": "undefined", "binary": await resp.read()}
             if resp and resp.content_disposition and resp.content_disposition.filename :
                 filename = resp.content_disposition.filename
                 _LOGGER.info(filename)
@@ -256,10 +257,7 @@ class MyFoxApiClient:
             try:
                 if CONTENT_TYPE_JSON in ctype :
                     json_resp = await resp.json()
-                    if "error" in json_resp :
-                        raise InvalidTokenMyFoxException(resp.status, f"Error : {json_resp["error"]}")
-                    else :
-                        raise InvalidTokenMyFoxException(resp.status, f"Error no detail : {resp.status}")
+                    raise InvalidTokenMyFoxException(resp.status, f"Error : {json_resp}")
                 else :
                     raise MyFoxException(resp.status, f"Failed to parse response: Format {ctype} - Error: unexpected mimetype")
             except MyFoxException as exception:
@@ -289,7 +287,7 @@ class MyFoxApiClient:
             else :
                 raise MyFoxException(resp.status, f"Failed to parse response: Format {ctype} - Error: unexpected mimetype")
 
-        except MyFoxException as exception:
+        except (MyFoxException, RetryMyFoxException) as exception:
             raise exception
         except Exception as error:
             _LOGGER.error(error)
@@ -311,7 +309,7 @@ class MyFoxApiClient:
                 KEY_MYFOX_PSWD: self.myfox_info.password
             }
 
-            response = await self.callMyFoxApiPost(MYFOX_TOKEN_PATH, str(data))
+            response = await self.callMyFoxApiPost(MYFOX_TOKEN_PATH, data)
             # save des tokens
             self.saveToken(response)
             # en cas d'absence, recuperation du site
@@ -334,9 +332,9 @@ class MyFoxApiClient:
                 KEY_CLIENT_SECRET: self.myfox_info.client_secret,
                 KEY_REFRESH_TOKEN: self.myfox_info.refresh_token
             }
-            _LOGGER.debug("Refresh token utilise : %s", str(self.myfox_info.refresh_token))
+            _LOGGER.debug("Refresh token utilise : %s, data:[%s]", str(self.myfox_info.refresh_token), str(data))
 
-            response = await self.callMyFoxApiPost(MYFOX_TOKEN_PATH, str(data))
+            response = await self.callMyFoxApiPost(MYFOX_TOKEN_PATH, data)
             # save des tokens
             self.saveToken(response)
             # en cas d'absence, recuperation du site
@@ -379,12 +377,12 @@ class MyFoxApiClient:
             if expire_delay == 0:  # jeton expire
                 _LOGGER.debug("Jeton expire -> demande de renouvellement")
                 await self.refreshToken()
-                expire_delay = self.getExpireDelay()
+                self.getExpireDelay()
             elif expire_delay < SEUIL_EXPIRE_MIN:  # si jeton valide - de SEUIL_EXPIRE_MIN min, on renouvelle
                 # Token expire, on renouvelle
                 _LOGGER.debug("Jeton bientot expire -> demande de renouvellement")
                 await self.refreshToken()
-                expire_delay = self.getExpireDelay()
+                self.getExpireDelay()
             return self.myfox_info.access_token
         except InvalidTokenMyFoxException as exception:
             raise exception

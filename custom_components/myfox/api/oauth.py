@@ -41,6 +41,6 @@ class MyFoxImplementation(AuthImplementation):
     async def _async_refresh_token(self, token: dict) -> dict:
         """Refresh a token."""
         if "expires_in" in token :
-            token["expires_in"] = int(token["expires_in"]) - 600
+            token["expires_in"] = int(token["expires_in"])
             token["expires_at"] = time.time() + token["expires_in"]
         return token
