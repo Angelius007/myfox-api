@@ -290,7 +290,7 @@ class MyFoxConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain
                 """Recherche des sites."""
                 self.sites = self.myfox_client.myfox_info.sites
             else :
-                login_ok = await self.myfox_client.login()
+                login_ok = await self.myfox_client.refreshToken()
                 if login_ok :
                     """Recherche des sites."""
                     self.sites = self.myfox_client.myfox_info.sites

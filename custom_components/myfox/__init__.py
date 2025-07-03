@@ -441,7 +441,7 @@ async def update_listener(hass: HomeAssistant, config_entry: ConfigEntry) -> Non
 
         # Si le token de conf est plus lointain, on ecrase le token client,sinon, on reprend le token client dans la conf
         expires_time: float = config_entry.data[KEY_TOKEN][KEY_EXPIRE_AT]
-        if (expires_time > myfox_info.expires_time) :
+        if expires_time > myfox_info.expires_time :
             myfox_info.access_token = config_entry.data[KEY_TOKEN][KEY_ACCESS_TOKEN]
             myfox_info.refresh_token = config_entry.data[KEY_TOKEN][KEY_REFRESH_TOKEN]
             myfox_info.expires_in = config_entry.data[KEY_TOKEN][KEY_EXPIRE_IN]
