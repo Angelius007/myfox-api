@@ -9,7 +9,7 @@
 [![Validate with hassfest](https://github.com/Angelius007/myfox-api/workflows/Validate%20with%20hassfest/badge.svg)](https://github.com/Angelius007/myfox-api/actions?query=workflow:"Validate+with+hassfest")
 [![Python application](https://github.com/Angelius007/myfox-api/actions/workflows/python-app.yml/badge.svg)](https://github.com/Angelius007/myfox-api/actions/workflows/python-app.yml)
 
-<img src="https://github.com/Angelius007/myfox-api/blob/main/custom_components/myfox/logo.png?raw=true" alt="" />
+![myfox](./custom_components/myfox/logo.png)
 
 Implémentation Custom pour interfaçage avec les API MyFox (racheté par Somfy).
 
@@ -25,6 +25,9 @@ Rendez-vous sur https://api.myfox.me/dev/apps et créer un accès de type "Comme
 
 L'accès via "Personal application" n'est plus disponible pour cette intégration car imposait de stocker les accès en plus des tokens.
 L'utilisation du token "Personal application" reste disponible pour le moment pour les tests unitaires.
+
+#### Interface myfoxapi : Bien utiliser les identifiants "Commercial applications"
+![myfox](./docs/img/myfoxapi.png)
 
 ### Installation de l'intégration
 3 méthodes disponibles pour l'installation :
