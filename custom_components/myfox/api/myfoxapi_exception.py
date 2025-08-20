@@ -17,6 +17,7 @@ class MyFoxException(Exception):
     def __str__(self):
         return f"{self.__class__.__name__}: {self.status} - {self.message}"
 
+
 class InvalidTokenMyFoxException(MyFoxException) :
     """Client token expire or invalid """
 
