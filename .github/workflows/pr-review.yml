@@ -36,7 +36,7 @@ jobs:
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
 
       - name: Annotate flake8 via reviewdog (inline comments on PR)
-        uses: reviewdog/action-flake8@v1
+        uses: reviewdog/action-flake8@v3.15.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review
