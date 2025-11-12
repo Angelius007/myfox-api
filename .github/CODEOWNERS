@@ -1,0 +1,4 @@
+# Les lignes sont du format: <pattern> <user-or-team>
+# Exemple : tout le code sous /src/ sera assigné à l'équipe frontend
+#        toutes les PR touchant /infra/ seront assignées à @ops-team
+* @Angelius007
