@@ -1,4 +1,4 @@
-name: PR Review - Python (flake8 + reviewdog + pytest)
+name: 'PR Review - Python'
 
 on:
   pull_request:
