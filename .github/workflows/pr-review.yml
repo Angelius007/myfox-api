@@ -43,6 +43,12 @@ jobs:
           level: warning
           flake8_args: --max-line-length=127 --exit-zero
 
+      - name: Python version
+        run: python --version
+
+      - name: pip version
+        run: pip freeze
+
       - name: Test with pytest
         run: |
           pytest -vv --log-cli-level=DEBUG

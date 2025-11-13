@@ -6,7 +6,7 @@ permissions:
 
 on:
   workflow_run:
-    workflows: ["python-app"] # add workflows here
+    workflows: [pr-review] # add workflows here
     types: [completed]
 
 jobs:
