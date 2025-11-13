@@ -1,5 +1,5 @@
 name: 'Copilot Automation'
-on: [issues, pull_request]
+on: [pull_request]
 
 jobs:
   copilot-advanced:
@@ -25,7 +25,7 @@ jobs:
                   "args": [
                     "mcp-server-time",
                     "--local-timezone",
-                    "America/New_York"
+                    "Europe/Paris"
                   ],
                   "tools": ["*"]
                 }

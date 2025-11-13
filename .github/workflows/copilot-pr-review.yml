@@ -1,4 +1,4 @@
-name: 'Copilot Automation - PR Revue'
+name: 'Copilot Automation - PR Review'
 
 on:
   pull_request:
