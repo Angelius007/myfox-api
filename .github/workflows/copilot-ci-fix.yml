@@ -2,7 +2,7 @@ name: 'Copilot Automation - CI'
 
 on:
   workflow_run:
-    workflows: [python-app.yml] # add workflows here
+    workflows: ["python-app"] # add workflows here
     types: [completed]
 
 jobs:
