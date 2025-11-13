@@ -11,7 +11,7 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     steps:
       - uses: actions/checkout@v5
-      - uses: austenstone/copilot-cli@v1.0
+      - uses: austenstone/copilot-cli@main
         with:
           github-token: ${{ secrets.COPILOT_TOKEN }}
           prompt: |
