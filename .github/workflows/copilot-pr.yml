@@ -8,7 +8,7 @@ jobs:
       - name: 'Checkout Repository'
         uses: actions/checkout@v5
       - name: 'Run Copilot with Custom Config'
-        uses: austenstone/copilot-cli@v1
+        uses: austenstone/copilot-cli@v1.0
         with:
           github-token: ${{ secrets.COPILOT_TOKEN }}
           prompt: |

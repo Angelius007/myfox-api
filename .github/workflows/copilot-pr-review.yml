@@ -1,14 +1,16 @@
+name: 'Copilot Automation - PR Revue'
+
 on:
   pull_request:
     types: [opened, reopened, synchronize]
 
 jobs:
-  research:
+  code-review:
     runs-on: ubuntu-latest
     if: ${{ github.event.pull_request.state == 'open' }}
     steps:
       - uses: actions/checkout@v5
-      - uses: austenstone/copilot-cli@main
+      - uses: austenstone/copilot-cli@v1.0
         with:
           github-token: ${{ secrets.COPILOT_TOKEN }}
           prompt: |
