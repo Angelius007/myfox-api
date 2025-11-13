@@ -10,9 +10,14 @@ Notes:
  - limit number of files and length per patch
 """
 
-import json, os, re, sys, urllib.request, urllib.parse
+import json
+import os
+import re
+import sys
+import urllib.request
+import urllib.error
 
-GITHUB_EVENT_PATH = os.environ.get("GITHUB_EVENT_PATH") or os.environ.get("GITHUB_EVENT_PATH".lower())
+GITHUB_EVENT_PATH = os.environ.get("GITHUB_EVENT_PATH")
 REPO = os.environ.get("GITHUB_REPOSITORY")
 TOKEN = os.environ.get("GITHUB_TOKEN")
 PR_NUMBER = os.environ.get("PR_NUMBER")
@@ -38,7 +43,7 @@ def redact(s):
 def trunc(s, n=1000):
     if s is None:
         return None
-    return s if len(s) <= n else s[:n] + '...[TRUNCATED]'
+    return s if len(s) <= n else f"{s[:n]}...[TRUNCATED]"
 
 # Basic sanitized object
 sanitized = {
@@ -62,14 +67,23 @@ headers = {
     "User-Agent": "sanitizer-script"
 }
 
+files = []
 try:
     req = urllib.request.Request(api_url, headers=headers)
     with urllib.request.urlopen(req) as resp:
         files = json.load(resp)
-except Exception as e:
-    # If we fail to fetch files, continue with no file patches
+except urllib.error.HTTPError as e:
+    # HTTP errors (401, 403, 404, etc.)
     files = []
-    sanitized["files_fetch_error"] = str(e)[:200]
+    sanitized["files_fetch_error"] = f"HTTP {e.code}: {str(e)[:200]}"
+except urllib.error.URLError as e:
+    # Network errors
+    files = []
+    sanitized["files_fetch_error"] = f"Network error: {str(e)[:200]}"
+except json.JSONDecodeError as e:
+    # JSON parsing errors
+    files = []
+    sanitized["files_fetch_error"] = f"JSON error: {str(e)[:200]}"
 
 MAX_FILES = 8
 MAX_PATCH_LEN = 2000  # chars per file
@@ -80,7 +94,7 @@ for f in files:
     filename = f.get('filename')
     patch = f.get('patch') or ''
     # Keep only added/removed lines to reduce user-controlled content
-    only_changes = '\n'.join([ln for ln in patch.splitlines() if ln.startswith('+') or ln.startswith('-')])
+    only_changes = '\n'.join([ln for ln in patch.splitlines() if ln and (ln.startswith('+') or ln.startswith('-'))])
     only_changes = redact(only_changes)
     if len(only_changes) > MAX_PATCH_LEN:
         only_changes = only_changes[:MAX_PATCH_LEN] + '\n...[TRUNCATED]'
@@ -104,7 +118,7 @@ github_output = os.environ.get('GITHUB_OUTPUT')
 if not github_output:
     print("GITHUB_OUTPUT not found", file=sys.stderr)
     print(compact)
-    sys.exit(0)
+    sys.exit(1)
 
 with open(github_output, 'a', encoding='utf-8') as ghout:
     ghout.write("sanitized<<EOF\n")
