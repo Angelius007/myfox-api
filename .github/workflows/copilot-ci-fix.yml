@@ -6,7 +6,7 @@ permissions:
 
 on:
   workflow_run:
-    workflows: [pr-review] # add workflows here
+    workflows:  ["PR Review - Python (flake8 + reviewdog + pytest)"] # add workflows here
     types: [completed]
 
 jobs:
