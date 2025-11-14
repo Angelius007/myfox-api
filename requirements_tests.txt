@@ -1,11 +1,12 @@
 # home assistant
-homeassistant>=2024.12.0
+homeassistant>=2025.1.4
 
 # myfox components
 aiohttp>=3.10.1
 attrs>=23.2.0
 jsonpath>=0.82.2
 orjson>=3.10.6
+PyTurboJPEG>=1.8.0
 
 # Tests
 pytest-homeassistant-custom-component>=0.13.191
