@@ -1,5 +1,9 @@
 name: 'PR Review - Python'
 
+permissions:
+  contents: read
+  pull-requests: write
+
 on:
   pull_request:
     types: [opened, synchronize, reopened]
@@ -54,22 +58,6 @@ jobs:
         run: |
           pytest -vv --log-cli-level=DEBUG
 
-      - name: Sanitize PR event and fetch limited diffs
-        if: ${{ always() && steps.tests.conclusion == 'failure' }}
-        id: sanitize
-        env:
-          GITHUB_EVENT_PATH: ${{ github.event_path }}
-        run: |
-          python .github/scripts/sanitize_ci_event.py
-        shell: bash
-
-      - name: Upload sanitized.json for audit
-        if: ${{ always() && steps.tests.conclusion == 'failure' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: sanitized-pr-payload
-          path: sanitized.json
-
       - name: Run Copilot CLI
         if: ${{ always() && steps.tests.conclusion == 'failure' }}
         uses: austenstone/copilot-cli@0654510575df6eb7a593dd5cb0f3d9ee494efe52
@@ -80,8 +68,5 @@ jobs:
             Please analyze the failure and suggest a fix.
             For each identified failure, formulate a review comment with the necessary changes.
             Include the error logs and any relevant information.
+            Submit the Review on GitHub by posting a comment in the current pull_request.
 
-            ## Input Data
-            ```json
-            ${{ steps.sanitize.outputs.sanitized }}
-            ```
