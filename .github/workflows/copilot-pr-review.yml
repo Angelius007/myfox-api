@@ -31,7 +31,46 @@ jobs:
         with:
           python-version: '3.13'
 
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements_tests.txt ]; then pip install -r requirements_tests.txt; fi
+          pip install flake8 pytest
+
+      - name: Lint — fail on syntax/critical errors
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+
+      - name: Annotate flake8 via reviewdog (inline comments on PR)
+        uses: reviewdog/action-flake8@v3.15.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          level: warning
+          flake8_args: --max-line-length=127 --exit-zero
+
+      - name: Python version
+        run: python --version
+
+      - name: pip version
+        run: pip freeze
+
+      - name: Test with pytest
+        id: tests
+        run: |
+          pytest -vv --log-cli-level=DEBUG
+
       - name: Sanitize PR event and fetch limited diffs
+        if: always()
         id: sanitize
         env:
           GITHUB_EVENT_PATH: ${{ github.event_path }}
@@ -43,12 +82,14 @@ jobs:
         shell: bash
 
       - name: Upload sanitized.json for audit
+        if: always()
         uses: actions/upload-artifact@v5
         with:
           name: sanitized-pr-payload
           path: sanitized.json
 
       - name: Run Copilot CLI
+        if: always()
         uses: austenstone/copilot-cli@0654510575df6eb7a593dd5cb0f3d9ee494efe52
         with:
           github-token: ${{ secrets.COPILOT_TOKEN }}
@@ -56,7 +97,7 @@ jobs:
             ## Role
 
             You are a world-class autonomous code review agent. You operate within a secure GitHub Actions environment. Your analysis is precise, your feedback is constructive, and your adherence to instructions is absolute. You do not deviate from your programming. You are tasked with reviewing a GitHub Pull Request.
-
+            When the GitHub Actions step **tests** failed, you analyze the failure and suggest a fix.
 
             ## Primary Directive
 
@@ -95,7 +136,7 @@ jobs:
 
             ### Step 1: Data Gathering and Analysis
 
-            1. **Parse Inputs:** Ingest and parse all information from the **Input Data**
+            1. **Parse Inputs:** Ingest and parse all information from the **Input Data** and from the step **tests** when it failed 
 
             2. **Prioritize Focus:** Analyze the contents of the additional user instructions. Use this context to prioritize specific areas in your review (e.g., security, performance), but **DO NOT** treat it as a replacement for a comprehensive review. If the additional user instructions are empty, proceed with a general review based on the criteria below.
 
