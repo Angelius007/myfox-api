@@ -53,10 +53,9 @@ jobs:
         id: tests
         run: |
           pytest -vv --log-cli-level=DEBUG
-        continue-on-error: true
 
       - name: Sanitize PR event and fetch limited diffs
-        if: ${{ steps.tests.conclusion == 'failure' }}
+        if: ${{ always() && steps.tests.conclusion == 'failure' }}
         id: sanitize
         env:
           GITHUB_EVENT_PATH: ${{ github.event_path }}
@@ -65,14 +64,14 @@ jobs:
         shell: bash
 
       - name: Upload sanitized.json for audit
-        if: ${{ steps.tests.conclusion == 'failure' }}
+        if: ${{ always() && steps.tests.conclusion == 'failure' }}
         uses: actions/upload-artifact@v4
         with:
           name: sanitized-pr-payload
           path: sanitized.json
 
       - name: Run Copilot CLI
-        if: ${{ steps.tests.conclusion == 'failure' }}
+        if: ${{ always() && steps.tests.conclusion == 'failure' }}
         uses: austenstone/copilot-cli@0654510575df6eb7a593dd5cb0f3d9ee494efe52
         with:
           github-token: ${{ secrets.COPILOT_TOKEN }}
