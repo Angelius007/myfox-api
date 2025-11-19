@@ -90,7 +90,7 @@ jobs:
 
       - name: Run Copilot CLI
         if: always()
-        uses: austenstone/copilot-cli@0654510575df6eb7a593dd5cb0f3d9ee494efe52
+        uses: austenstone/copilot-cli@2b241d6eac1be15a15aa4a91ecc7177f889634b4
         with:
           github-token: ${{ secrets.COPILOT_TOKEN }}
           prompt: |
