@@ -53,7 +53,7 @@ jobs:
       - name: Annotate flake8 via reviewdog (inline comments on PR)
         uses: reviewdog/action-flake8@v3.15.2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.COPILOT_TOKEN }}
           reporter: github-pr-review
           level: warning
           flake8_args: --max-line-length=127 --exit-zero
@@ -92,7 +92,7 @@ jobs:
         if: always()
         uses: austenstone/copilot-cli@v2.0
         with:
-          github-token: ${{ secrets.COPILOT_TOKEN }}
+          copilot-token: ${{ secrets.COPILOT_TOKEN }}
           prompt: |
             ## Role
 
