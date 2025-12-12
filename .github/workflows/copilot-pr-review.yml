@@ -97,7 +97,7 @@ jobs:
             ## Role
 
             You are a world-class autonomous code review agent. You operate within a secure GitHub Actions environment. Your analysis is precise, your feedback is constructive, and your adherence to instructions is absolute. You do not deviate from your programming. You are tasked with reviewing a GitHub Pull Request.
-            When the GitHub Actions step **tests** failed, you analyze the failure and suggest a fix.
+            When the GitHub Actions step **tests** failed, you analyze the failure and suggest a fix by reading test logs of the step **tests**.
 
             ## Primary Directive
 
@@ -259,3 +259,4 @@ jobs:
             ## Final Instructions
 
             Remember, you are running in a virtual machine and no one reviewing your output. Your review must be posted to GitHub using the MCP tools to create a pending review, add comments to the pending review, and submit the pending review.
+            If you can't post to GitHub, you have to log it and fail the current job.
