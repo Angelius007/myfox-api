@@ -29,7 +29,26 @@ def extract_json_from_markdown(text: str) -> dict:
 def normalize_summary(summary):
     if summary is None:
         return "📋 Revue automatique\n\nAucun résumé fourni."
+
+    # Cas 1 : déjà une string simple
+    if isinstance(summary, str):
+        return summary.strip()
+
+    # Cas 2 : un dict a reformater
     if isinstance(summary, dict):
+        sections = []
+        for content in summary:
+            sections.append(content.strip())
+            sections.append("\n")
+            detail = summary.get(content)
+            if isinstance(detail, list) and detail:
+                sections.append("\n".join(f"- {item.strip()}" for item in detail if isinstance(item, str)))
+            elif isinstance(detail, str) and detail:
+                sections.append("\n".join(f"- {detail.strip()}"))
+
+        if sections:
+            return "\n".join(sections)
+
         return json.dumps(summary, ensure_ascii=False, indent=2)
     return str(summary).strip()
 
@@ -125,8 +144,7 @@ for f in files:
 compact = json.dumps(sanitized, ensure_ascii=False)
 
 # Write artifact file for audit
-with open('sanitized.json', 'w', encoding='utf-8') as out:
-    json.dump(sanitized, out, ensure_ascii=False, indent=2)
+dump(sanitized, 'sanitized.json')
 
 INPUT_DATA = sanitized
 
@@ -202,7 +220,8 @@ Toute violation constitue une erreur critique.
    - Dans la première, intitulée "📋 Résumé de la revue", tu fais un résumé de haute niveau des objectifs de la pull request ainsi que sur sa qualité.
    - Dans la deuxème, intitulée "🔍 Synthèse de la revue", une liste point à point des observations générales, des points positifs, ou des points particuliers qui n'ont pas pu être mis sur les différents commentaires,
      Sur cette deuxième partie, garde-la bien concise, et ne repète pas ce qui est déjà mis dans les commentaires individuels.
-   La synthèse doit être dans un format permettant d'avoir un beau rendu dans le commentaire sur GitHub.
+   La synthèse doit être dans une string markdown prête à être publiée sur GitHub
+
 ---
 
 ## Format de sortie
