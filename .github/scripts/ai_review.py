@@ -25,6 +25,7 @@ def extract_json_from_markdown(text: str) -> dict:
     except json.JSONDecodeError as e:
         raise ValueError(f"JSON invalide: {e}\n\n{match.group(1)}")
 
+
 def redact(s):
     if s is None:
         return None
@@ -175,11 +176,18 @@ Toute violation constitue une erreur critique.
 5. **Exactitude contextuelle**
    Les numéros de lignes, l’indentation et le code proposé doivent correspondre
    **exactement** au code ciblé dans le diff.
+   Toute suggestion doit être proposée avec une correction du code et pas seulement une description de ce qu'il faudrait faire.
    Les suggestions de code doivent être directement applicables sans modification.
 
 6. **Sécurité des commandes shell**
    Lorsque tu proposes des commandes shell, tu ne dois jamais utiliser
    de substitution de commande (`$(...)`, `<(...)`, `>(...)`).
+
+7. **Synthèse de la revue**
+   Dans le commentaire général de la revue, tu le décomposes en deux parties.
+   - Dans la première, intitulée "📋 Résumé de la revue", tu fais un résumé de haute niveau des objectifs de la pull request ainsi que sur sa qualité.
+   - Dans la deuxème, intitulée "🔍 Synthèse de la revue", une liste point à point des observations générales, des points positifs, ou des points particuliers qui n'ont pas pu être mis sur les différents commentaires,
+     Sur cette deuxième partie, garde-la bien concise, et ne repète pas ce qui est déjà mis dans les commentaires individuels.
 
 ---
 
@@ -212,7 +220,7 @@ headers = {
 }
 payload = {
     "model": "mistral-small-latest",
-    "response_format": { "type": "json_object" },
+    "response_format": {"type": "json_object"},
     "messages": [
         {
             "role": "user",
@@ -273,11 +281,14 @@ for c in review["comments"]:
 
 if fallback_comments:
     github_api(
-        f"/repos/{REPO}/pulls/{PR_NUMBER}/reviews/{review_id}/comments",
+        f"/repos/{REPO}/pulls/{PR_NUMBER}/reviews",
         "POST",
         {
-            "body": "### ⚠️ Commentaires non positionnables automatiquement\n\n"
-                    + "\n\n".join(fallback_comments)
+            "event": "COMMENT",
+            "body": (
+                "### ⚠️ Commentaires non positionnables automatiquement\n\n"
+                + "\n\n".join(fallback_comments)
+            ),
         },
     )
 
