@@ -196,7 +196,7 @@ Toute violation constitue une erreur critique.
    - Dans la première, intitulée "📋 Résumé de la revue", tu fais un résumé de haute niveau des objectifs de la pull request ainsi que sur sa qualité.
    - Dans la deuxème, intitulée "🔍 Synthèse de la revue", une liste point à point des observations générales, des points positifs, ou des points particuliers qui n'ont pas pu être mis sur les différents commentaires,
      Sur cette deuxième partie, garde-la bien concise, et ne repète pas ce qui est déjà mis dans les commentaires individuels.
-
+   La synthèse doit être dans un format permettant d'avoir un beau rendu dans le commentaire sur GitHub.
 ---
 
 ## Format de sortie
