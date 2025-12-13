@@ -170,7 +170,7 @@ Le retour doit être au format json avec comme attributs :
 - summary : pour le résumé de la revue
 - comments : tableau pour chaque commentaire.
 Chaque commentaire doit être au format json également avec comme attributs :
-- body : le commentaire
+- body : le détail de la revue de ce commentaire avec l'éventuelle suggestion de code
 - file : fichier concerné par le commentaire
 - line : pour le numéro de ligne
 
@@ -203,12 +203,9 @@ payload = {
 
 r = requests.post(API_URL, headers=headers, json=payload)
 raw_content = r.json()["choices"][0]["message"]["content"]
-if "summary" in raw_content and "comments" in raw_content:
-    review = raw_content
-else:
-    review = {"summary" : raw_content if "summary" not in raw_content else raw_content["summary"],
-              "comments" : [] if "comments" not in raw_content else raw_content["comments"]}
-print(review)
+print(f"Retour de la revue de code : {raw_content}")
+review = {"summary" : raw_content if "summary" not in raw_content else raw_content["summary"],
+          "comments" : [] if "comments" not in raw_content else raw_content["comments"]}
 
 # 4) Crée la review principale
 review_id = github_api(
