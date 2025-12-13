@@ -39,16 +39,18 @@ def extract_json_from_markdown(text: str) -> dict:
 
 
 def normalize_summary(summary):
+    # Par defaut si vide
     if summary is None:
         return "📋 Revue automatique\n\nAucun résumé fourni."
 
-    # Cas 1 : déjà une string simple
+    # Cas 1 : déjà une string simple donc pas de formatage
     if isinstance(summary, str):
         return summary.strip()
 
-    # Cas 2 : un dict a reformater
+    # Cas 2 : un dict a reformater pour pouvoir avoir un beau commentaire
     if isinstance(summary, dict):
         sections = []
+        # on décompose les clefs/valeurs pour faire des titres / contenus
         for content in summary:
             sections.append(content.strip())
             sections.append("\n")
@@ -57,11 +59,12 @@ def normalize_summary(summary):
                 sections.append(f"-{detail.strip()}")
             elif isinstance(detail, list) and detail:
                 sections.append("\n".join(f"- {item.strip()}" for item in detail if isinstance(item, str)))
-
+        # On concataine le tout
         if sections:
             return "\n".join(sections)
-
+        # par defaut, on prendre le dump
         return json.dumps(summary, ensure_ascii=False, indent=2)
+    # si pas une liste, deja un text brut, on le renvoie
     return str(summary).strip()
 
 
