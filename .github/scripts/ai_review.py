@@ -173,6 +173,7 @@ Chaque commentaire doit être au format json également avec comme attributs :
 - body : le détail de la revue de ce commentaire avec l'éventuelle suggestion de code
 - file : fichier concerné par le commentaire
 - line : pour le numéro de ligne
+Ce retour doit être directement le flux JSON sans annotation de la forme ```json ... ``` ou équivalent.
 
 ---
 
