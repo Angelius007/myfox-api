@@ -297,9 +297,9 @@ Le retour doit être au format JSON avec comme attributs :
 Chaque commentaire doit être au format JSON également avec comme attributs :
 - body : le détail de la revue de ce commentaire
 - file : le fichier concerné par le commentaire
-- line : le numéro de la ligne dans le fichier concerné par la revue de ce commentaire (lorsqu'une seule ligne est concernée)
-- start_line : première ligne lorsque de la revue concerne plusieurs lignes dans le fichier concerné par la revue de ce commentaire
-- end_line : dernière ligne concernée par la revue lorsque celle-ci concerne plusieurs lignes du fichier
+- line : le numéro de la ligne dans le fichier source concerné par la revue de ce commentaire (lorsqu'une seule ligne est concernée)
+- start_line : première ligne lorsque de la revue concerne plusieurs lignes dans le fichier source concerné par la revue de ce commentaire
+- end_line : dernière ligne concernée par la revue lorsque celle-ci concerne plusieurs lignes du fichier source
 - suggestion : la suggestion de code à modifier
 
 ---
@@ -380,12 +380,14 @@ for c in review["comments"]:
         "path": c["file"],
         "side": "RIGHT",
     }
-
+    lignes_infos = ""
     if "start_line" in c and "end_line" in c:
         payload["start_line"] = c["start_line"]
         payload["end_line"] = c["end_line"]
+        lignes_infos = f"{c["start_line"]}..{c["end_line"]}"
     else:
         payload["line"] = c["line"]
+        lignes_infos = f"{c["line"]}"
 
     res = github_api(
         f"/repos/{REPO}/pulls/{PR_NUMBER}/comments",
@@ -394,7 +396,7 @@ for c in review["comments"]:
     )
 
     if res is None:
-        print(f"⚠️ Commentaire inline refusé pour {c['file']}:{c['line']} → fallback")
+        print(f"⚠️ Commentaire inline refusé pour {c['file']}:{lignes_infos} → fallback")
         fallback_comments.append(
             f"**{c['file']}:{c['line']}**\n{comment_body}"
         )
