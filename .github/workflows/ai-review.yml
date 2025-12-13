@@ -1,0 +1,83 @@
+name: AI Code Review (OpenSource)
+
+permissions:
+  pull-requests: write
+  contents: read
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.state == 'open' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Verify PR is from same repo (defense-in-depth)
+        run: |
+          HEAD_REPO="${{ github.event.pull_request.head.repo.full_name }}"
+          echo "head repo = $HEAD_REPO"
+          if [ "$HEAD_REPO" != "${{ github.repository }}" ]; then
+            echo "PR originates from a fork or external repo. Skipping automated Copilot review."
+            exit 78
+          fi
+        shell: bash
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements_tests.txt ]; then pip install -r requirements_tests.txt; fi
+          pip install flake8 pytest
+
+      - name: Lint — fail on syntax/critical errors
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+
+      - name: Annotate flake8 via reviewdog (inline comments on PR)
+        uses: reviewdog/action-flake8@v3.15.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          level: warning
+          flake8_args: --max-line-length=127 --exit-zero
+
+      - name: Python version
+        run: python --version
+
+      - name: pip version
+        run: pip freeze
+
+      - name: Test with pytest
+        id: tests
+        run: |
+          pytest -vv --log-cli-level=DEBUG
+
+
+      - name: Install requests
+        run: pip install requests
+
+      - name: Run AI Review
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: |
+          python .github/scripts/ai_review.py
