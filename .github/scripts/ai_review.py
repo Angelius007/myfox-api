@@ -263,8 +263,8 @@ Toute violation constitue une erreur critique.
    Les numéros de lignes, l'indentation et le code proposé doivent correspondre
    **exactement** au code ciblé par le fichier source concerné par le diff.
    Attention, les numéros de lignes sont bien celles de chaque fichier source, et pas celle du fichier diff.
-   (Exemple : Si c'est la ligne 124 du fichier source, mais la ligne 7 du diff, c'est bien 124 qu'on attend 
-   (124 et 7 sont ici seulement des exemples et sont bien à remplacer par les vraies valeurs))
+   (Exemple : Si c'est la ligne 120 du fichier source, mais la ligne 7 du diff, c'est bien 120 qu'on attend :
+   120 et 7 sont ici seulement des exemples et sont bien à remplacer par les vraies valeurs de chaque suggestion)
    Toute suggestion doit être proposée avec une correction du code et pas seulement une description de ce qu'il faut faire.
    Les suggestions de code doivent être directement applicables sans modification.
 
@@ -275,12 +275,15 @@ Lorsqu'une correction de code est proposée, tu dois ajouter un attribut 'sugges
    - sans explication
    - strictement limité au bloc modifié
    - destiné à être inséré tel quel dans une suggestion GitHub
+Lorsqu'une suggestion de code vise à remplacer une seule ligne du fichier source :
+   - tu dois fournir obligatoirement un attribut 'line'
+   - l'attribut 'line' doit correspondre exactement à la ligne modifiée du fichier source et non du diff
+   - la suggestion doit remplacer intégralement cette ligne
 Lorsqu'une suggestion de code vise à remplacer plusieurs lignes du fichier source :
-   - tu dois fournir start_line et end_line
-   - ces lignes doivent correspondre exactement aux lignes modifiées du fichier source dans le diff
+   - tu dois fournir obligatoirement les attributs 'start_line' et 'end_line'
+   - l'attribut 'start_line' doit correspondre exactement à la première ligne du bloc modifié du fichier source et non du diff
+   - l'attribut 'end_line' doit correspondre exactement à la dernière ligne du bloc modifié du fichier source et non du diff
    - la suggestion doit remplacer intégralement ce bloc
-Lorsque la suggestion vise à remplacer plusieurs lignes du fichier source, les champs 'start_line' et 'end_line' sont obligatoires.
-Lorsque la suggestion vise à remplacer une seule ligne du fichier source, seul le champ 'line' est obligatoire.
 Il est strictement interdit de fournir le code original.
 
 7. **Sécurité des commandes shell**
@@ -304,9 +307,9 @@ Le retour doit être au format JSON avec comme attributs :
 Chaque commentaire doit être au format JSON avec comme attributs :
 - body : le commentaire de la revue
 - file : le fichier concerné par le commentaire
-- line : le numéro de la ligne du fichier source concerné par ce commentaire (lorsqu'une seule ligne est concernée)
-- start_line : le numéro de la première ligne du fichier source concerné par ce commentaire (lorsque plusieurs lignes sont concernées)
-- end_line : le numéro de la dernière ligne du fichier source concerné par ce commentaire (lorsque plusieurs lignes sont concernées)
+- line : le numéro de la ligne à modifier (lorsqu'une seule ligne est concernée)
+- start_line : le numéro de la première ligne à modifier (lorsque plusieurs lignes sont concernées)
+- end_line : le numéro de la dernière ligne à modifier (lorsque plusieurs lignes sont concernées)
 - suggestion : la suggestion de code modifié
 
 ---
@@ -320,6 +323,7 @@ Les données d'entrée sont fournies au format JSON et contiennent :
 
 ```json
 {INPUT_DATA}
+```
 
 """
 headers = {
