@@ -13,18 +13,29 @@ API_URL = "https://api.mistral.ai/v1/chat/completions"
 
 def extract_json_from_markdown(text: str) -> dict:
     """
-    Extrait et parse un bloc JSON éventuellement entouré de ```json ... ```
+    Extrait et parse un bloc JSON
     """
     text = text.strip()
-    # On cherche le flux json dans le texte
-    match = re.search(r'(\{[\s\S]*?\})', text, re.DOTALL)
-    if not match:
-        raise ValueError("Aucun objet JSON détecté dans la réponse IA")
-    # Puis on le parse
-    try:
-        return json.loads(match.group(1))
-    except json.JSONDecodeError as e:
-        raise ValueError(f"JSON invalide: {e}\n\n{match.group(1)}")
+    # Recherche debut du json
+    start = text.find("{")
+    if start == -1:
+        # pas un json, on formate
+        return {"summary" : text,
+                "comments" : []}
+    # on s'assure que le json est coherent
+    depth = 0
+    for i in range(start, len(text)):
+        if text[i] == "{":
+            depth += 1
+        elif text[i] == "}":
+            depth -= 1
+            if depth == 0:
+                json_str = text[start:i + 1]
+                try:
+                    return json.loads(json_str)
+                except json.JSONDecodeError as e:
+                    raise ValueError(f"JSON invalide: {e}\n\n{json_str}")
+    raise ValueError("JSON incomplet ou mal formé")
 
 
 def normalize_summary(summary):
@@ -109,6 +120,7 @@ def dump(data, filename) :
             ghout.write(f"{filename}<<EOF\n")
             ghout.write(compact + "\n")
             ghout.write("EOF\n")
+
 
 # 1) Récupère le diff complet
 json_output = github_api(f"/repos/{REPO}/pulls/{PR_NUMBER}", "GET")
