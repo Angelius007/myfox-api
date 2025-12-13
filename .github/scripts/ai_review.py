@@ -26,6 +26,14 @@ def extract_json_from_markdown(text: str) -> dict:
         raise ValueError(f"JSON invalide: {e}\n\n{match.group(1)}")
 
 
+def normalize_summary(summary):
+    if summary is None:
+        return "📋 Revue automatique\n\nAucun résumé fourni."
+    if isinstance(summary, dict):
+        return json.dumps(summary, ensure_ascii=False, indent=2)
+    return str(summary).strip()
+
+
 def redact(s):
     if s is None:
         return None
@@ -239,9 +247,13 @@ try:
     if "summary" not in review or "comments" not in review:
         review = {"summary" : review if "summary" not in review else review.get("summary"),
                   "comments" : [] if "comments" not in review else review.get("comments")}
+    if not review["summary"]:
+        review["summary"] = "📋 Revue automatique\n\nRésumé non disponible."
 except ValueError:
     print("❌ Impossible de parser la réponse IA en JSON")
     raise
+
+review["summary"] = normalize_summary(review.get("summary"))
 
 # 4) Crée la review principale
 review_response = github_api(
