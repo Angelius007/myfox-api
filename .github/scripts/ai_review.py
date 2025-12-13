@@ -10,6 +10,25 @@ MISTRAL_API_KEY = os.environ["MISTRAL_API_KEY"]  # clé open-source LLM
 API_URL = "https://api.mistral.ai/v1/chat/completions"
 
 
+def extract_json_from_markdown(text: str) -> dict:
+    """
+    Extrait et parse un bloc JSON éventuellement entouré de ```json ... ```
+    """
+    text = text.strip()
+
+    # Cas 1 : réponse entourée par ```json ... ```
+    if text.startswith("```"):
+        match = re.search(r"```(?:json)?\s*(\{.*\})\s*```", text, re.DOTALL)
+        if not match:
+            raise ValueError("Bloc ```json``` détecté mais JSON introuvable")
+        text = match.group(1)
+
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError as e:
+        raise ValueError(f"JSON invalide après nettoyage: {e}\n\n{text}")
+
+
 def redact(s):
     if s is None:
         return None
@@ -207,11 +226,11 @@ print(f"Retour de la revue de code : {r_json}")
 raw_content = r_json["choices"][0]["message"]["content"]
 
 try:
-    review = json.loads(raw_content)
+    review = extract_json_from_markdown(raw_content)
     if "summary" not in review or "comments" not in review:
         review = {"summary" : review if "summary" not in review else review.get("summary"),
                   "comments" : [] if "comments" not in review else review.get("comments")}
-except json.JSONDecodeError:
+except ValueError:
     print("❌ Impossible de parser la réponse IA en JSON")
     raise
 
