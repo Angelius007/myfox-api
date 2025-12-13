@@ -73,6 +73,12 @@ def github_api(path, method="GET", data=None):
         return None
 
 
+def dump(data, filename) :
+    # Write artifact file for audit
+    with open(filename, 'w', encoding='utf-8') as out:
+        json.dump(data, out, ensure_ascii=False, indent=2)
+
+
 # 1) Récupère le diff complet
 json_output = github_api(f"/repos/{REPO}/pulls/{PR_NUMBER}", "GET")
 
@@ -205,9 +211,9 @@ Le retour doit être au format JSON avec comme attributs :
 - summary : pour le résumé de la revue
 - comments : tableau pour chaque commentaire.
 Chaque commentaire doit être au format json également avec comme attributs :
-- body : le détail de la revue de ce commentaire avec l'éventuelle suggestion de code
-- file : fichier concerné par le commentaire
-- line : pour le numéro de ligne
+- body : le détail de la revue de ce commentaire avec la suggestion de code
+- file : le fichier concerné par le commentaire
+- line : pour le numéro de ligne dans le fichier concerné par le commentaire
 
 ---
 
@@ -240,6 +246,7 @@ payload = {
 r = requests.post(API_URL, headers=headers, json=payload)
 r_json = r.json()
 print(f"Retour de la revue de code : {r_json}")
+dump(r_json, 'revue.json')
 raw_content = r_json["choices"][0]["message"]["content"]
 
 try:
