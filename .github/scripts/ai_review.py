@@ -20,8 +20,7 @@ def extract_json_from_markdown(text: str) -> dict:
     start = text.find("{")
     if start == -1:
         # pas un json, on formate
-        return {"summary" : text,
-                "comments" : []}
+        return {"summary" : text, "comments" : []}
     # on s'assure que le json est coherent
     depth = 0
     for i in range(start, len(text)):
@@ -56,11 +55,11 @@ def normalize_summary(summary):
             sections.append("\n")
             detail = summary.get(content)
             if isinstance(detail, str) and detail:
-                sections.append(f"- {detail.strip()}")
+                sections.append(f"{detail.strip()}")
             elif isinstance(detail, list) and detail:
                 sections.append("\n".join(f"- {item.strip()}" for item in detail if isinstance(item, str)))
         # On concataine le tout
-        return "\n".join(sections)
+        return "\n\n".join(sections)
     # si pas une liste, deja un text brut, on le renvoie
     return str(summary).strip()
 
