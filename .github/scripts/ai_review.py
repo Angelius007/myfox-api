@@ -56,14 +56,11 @@ def normalize_summary(summary):
             sections.append("\n")
             detail = summary.get(content)
             if isinstance(detail, str) and detail:
-                sections.append(f"-{detail.strip()}")
+                sections.append(f"- {detail.strip()}")
             elif isinstance(detail, list) and detail:
                 sections.append("\n".join(f"- {item.strip()}" for item in detail if isinstance(item, str)))
         # On concataine le tout
-        if sections:
-            return "\n".join(sections)
-        # par defaut, on prendre le dump
-        return json.dumps(summary, ensure_ascii=False, indent=2)
+        return "\n".join(sections)
     # si pas une liste, deja un text brut, on le renvoie
     return str(summary).strip()
 
