@@ -35,11 +35,10 @@ def github_api(path, method="GET", data=None):
     }
     try:
         if method == "POST":
-            response = requests.post(url, headers=headers, json=data).json()
-            response.raise_for_status()
+            response = requests.post(url, headers=headers, json=data)
         else :
-            response = requests.get(url, headers=headers).json()
-            response.raise_for_status()
+            response = requests.get(url, headers=headers)
+        response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
         print(f"API request failed: {e} for url {url}")
@@ -170,7 +169,7 @@ Toute violation constitue une erreur critique.
 Le retour doit être au format json avec comme attributs :
 - summary : pour le résumé de la revue
 - comments : tableau pour chaque commentaire.
-Chaque commentaire doit être au format json également avec comme attributs : 
+Chaque commentaire doit être au format json également avec comme attributs :
 - body : le commentaire
 - file : fichier concerné par le commentaire
 - line : pour le numéro de ligne
@@ -203,7 +202,7 @@ payload = {
 }
 
 r = requests.post(API_URL, headers=headers, json=payload)
-r_json =  r.json()
+r_json = r.json()
 print(r_json)
 raw_content = r_json["choices"][0]["message"]["content"]
 review = {"summary" : "Revue incompète. Vérifier les logs", "comments" : []}
@@ -212,7 +211,7 @@ try:
 except json.JSONDecodeError:
     print("❌ Impossible de parser la réponse IA en JSON")
     print(raw_content)
-    review = { "summary" : raw_content, "comments" : [] }
+    review = {"summary" : raw_content, "comments" : []}
 
 # 4) Crée la review principale
 review_id = github_api(
