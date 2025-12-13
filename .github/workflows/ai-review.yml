@@ -74,7 +74,16 @@ jobs:
       - name: Test with pytest
         id: tests
         run: |
-           pytest -vv --log-cli-level=DEBUG --cov=./ --cov-report=term-missing
+          pytest -vv \
+          --log-cli-level=DEBUG \
+          --cov=./ \
+          --cov-report=term-missing \
+          | tee pytest.log
+
+      - name: Export test status
+        if: always()
+        run: |
+          echo "TEST_STATUS=${{ steps.tests.outcome }}" >> $GITHUB_ENV
 
       - name: Run AI Review
         if: always()

@@ -121,6 +121,23 @@ def dump(data, filename) :
             ghout.write("EOF\n")
 
 
+def read_file_safe(path, max_len=6000):
+    try:
+        with open(path, "r", encoding="utf-8", errors="ignore") as f:
+            content = f.read()
+            return content[:max_len] + ("\n...[TRUNCATED]" if len(content) > max_len else "")
+    except FileNotFoundError:
+        return None
+
+
+def is_valid_suggestion(code: str) -> bool:
+    return (
+        isinstance(code, str)
+        and code.strip()
+        and "```" not in code
+    )
+
+
 # 1) Récupère le diff complet
 json_output = github_api(f"/repos/{REPO}/pulls/{PR_NUMBER}", "GET")
 
@@ -137,6 +154,16 @@ sanitized = {
     "repository": REPO,
     "files": []
 }
+
+# 1 bis) Récupère le résulstat des tests
+test_status = os.environ.get("TEST_STATUS")
+test_logs = read_file_safe("pytest.log")
+
+sanitized["tests"] = {
+    "status": test_status,
+    "logs": trunc(redact(test_logs), 6000)
+}
+
 # 2) Récupère les fichiers
 MAX_FILES = 8
 MAX_PATCH_LEN = 2000  # chars per file
@@ -181,8 +208,9 @@ Ton analyse est rigoureuse, factuelle et précise.
 Tes retours sont constructifs, exploitables et strictement conformes aux consignes.
 Tu es chargé de réaliser la revue complète d’une Pull Request GitHub.
 
-Lorsque l’étape GitHub Actions **tests** a échoué, tu analyses les logs de test fournis
-et proposes des corrections concrètes et pertinentes.
+Si l’attribut 'tests.status' vaut 'failure', tu dois impérativement analyser 
+les logs de test fournis et produire au moins un commentaire expliquant la cause 
+probable de l’échec et proposer une solution constructive, concrète pour réparer le test.
 
 ---
 
@@ -225,24 +253,33 @@ Toute violation constitue une erreur critique.
    - une amélioration technique concrète et justifiable.
 
    Il est interdit :
-   - de demander à l’auteur de « vérifier » ou « confirmer » quelque chose,
+   - de demander à l’auteur de 'vérifier' ou 'confirmer' quelque chose,
    - d’expliquer simplement ce que fait le code sans proposer d’amélioration.
 
 5. **Exactitude contextuelle**
    Les numéros de lignes, l’indentation et le code proposé doivent correspondre
    **exactement** au code ciblé dans le diff.
-   Toute suggestion doit être proposée avec une correction du code et pas seulement une description de ce qu'il faudrait faire.
+   Toute suggestion doit être proposée avec une correction du code et pas seulement une description de ce qu'il faut faire.
    Les suggestions de code doivent être directement applicables sans modification.
 
-6. **Sécurité des commandes shell**
+6. **Proposition de code**
+Lorsqu’une correction de code est proposée, tu dois ajouter un attribut 'suggestion' contenant :
+   - le code final corrigé
+   - sans commentaire
+   - sans explication
+   - strictement limité au bloc modifié
+   - destiné à être inséré tel quel dans une suggestion GitHub
+Il est strictement interdit de fournir le code original.
+
+7. **Sécurité des commandes shell**
    Lorsque tu proposes des commandes shell, tu ne dois jamais utiliser
    de substitution de commande (`$(...)`, `<(...)`, `>(...)`).
 
-7. **Synthèse de la revue**
+8. **Synthèse de la revue**
    Dans le commentaire général de la revue, tu le décomposes en deux parties.
    - Dans la première, intitulée "📋 Résumé de la revue", tu fais un résumé de haute niveau des objectifs de la pull request ainsi que sur sa qualité.
-   - Dans la deuxème, intitulée "🔍 Synthèse de la revue", une liste point à point des observations générales, des points positifs, ou des points particuliers qui n'ont pas pu être mis sur les différents commentaires,
-     Sur cette deuxième partie, garde-la bien concise, et ne repète pas ce qui est déjà mis dans les commentaires individuels.
+   - Dans la deuxème, intitulée "🔍 Synthèse de la revue", tu produits une liste point à point des observations générales, des points positifs, ou des points particuliers qui n'ont pas pu être mis sur les différents commentaires,
+     Sur cette deuxième partie, garde-la bien concise, et ne répète pas ce qui est déjà mis dans les commentaires individuels.
    La synthèse doit être dans une string markdown prête à être publiée sur GitHub
 
 ---
@@ -250,12 +287,13 @@ Toute violation constitue une erreur critique.
 ## Format de sortie
 
 Le retour doit être au format JSON avec comme attributs :
-- summary : pour le résumé de la revue
+- summary : pour le résumé de la revue à stocker dans un champ string unique au format markdown prêt à être publié sur GitHub.
 - comments : tableau pour chaque commentaire.
-Chaque commentaire doit être au format json également avec comme attributs :
-- body : le détail de la revue de ce commentaire avec la suggestion de code
+Chaque commentaire doit être au format JSON également avec comme attributs :
+- body : le détail de la revue de ce commentaire
 - file : le fichier concerné par le commentaire
-- line : pour le numéro de ligne dans le fichier concerné par le commentaire
+- line : le numéro de ligne dans le fichier concerné par la revue de ce commentaire
+- suggestion : la suggestion de code à modifier
 
 ---
 
@@ -264,7 +302,7 @@ Chaque commentaire doit être au format json également avec comme attributs :
 Les données d’entrée sont fournies au format JSON et contiennent :
 - le diff de la Pull Request,
 - les fichiers modifiés,
-- les logs éventuels de l’étape **tests**.
+- les logs et le statut de l’étape **tests**.
 
 ```json
 {INPUT_DATA}
@@ -320,8 +358,17 @@ review_id = review_response["id"]
 # 5) Ajoute les commentaires inline
 fallback_comments = []
 for c in review["comments"]:
+    comment_body = c["body"].strip()
+    # en cas de suggestion de code
+    suggestion = c.get("suggestion")
+    if suggestion and is_valid_suggestion(suggestion):
+        comment_body += (
+            "\n\n```suggestion\n"
+            f"{suggestion.rstrip()}\n"
+            "```"
+        )
     payload = {
-        "body": c["body"],
+        "body": comment_body,
         "commit_id": sanitized["head_sha"],
         "path": c["file"],
         "line": c["line"],
