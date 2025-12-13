@@ -272,7 +272,7 @@ Lorsqu’une correction de code est proposée, tu dois ajouter un attribut 'sugg
    - destiné à être inséré tel quel dans une suggestion GitHub
 Lorsqu’une suggestion de code contient plusieurs lignes :
    - tu dois fournir start_line et end_line
-   - ces lignes doivent correspondre exactement aux lignes modifiées dans le diff
+   - ces lignes doivent correspondre exactement aux lignes modifiées du fichier source dans le diff
    - la suggestion doit remplacer intégralement ce bloc
 Il est strictement interdit de fournir le code original.
 
@@ -297,9 +297,9 @@ Le retour doit être au format JSON avec comme attributs :
 Chaque commentaire doit être au format JSON également avec comme attributs :
 - body : le détail de la revue de ce commentaire
 - file : le fichier concerné par le commentaire
-- line : le numéro de la ligne dans le fichier source concerné par la revue de ce commentaire (lorsqu'une seule ligne est concernée)
-- start_line : première ligne lorsque de la revue concerne plusieurs lignes dans le fichier source concerné par la revue de ce commentaire
-- end_line : dernière ligne concernée par la revue lorsque celle-ci concerne plusieurs lignes du fichier source
+- line : le vrai numéro de la ligne dans le fichier source concerné par la revue de ce commentaire (lorsqu'une seule ligne est concernée)
+- start_line : le vrai numéro de la première ligne dans le fichier source concerné par la revue de ce commentaire lorsque de la revue concerne plusieurs lignes
+- end_line : le vrai numéro de la dernière ligne concernée par la revue lorsque celle-ci concerne plusieurs lignes du fichier source
 - suggestion : la suggestion de code à modifier
 
 ---
@@ -398,7 +398,7 @@ for c in review["comments"]:
     if res is None:
         print(f"⚠️ Commentaire inline refusé pour {c['file']}:{lignes_infos} → fallback")
         fallback_comments.append(
-            f"**{c['file']}:{c['line']}**\n{comment_body}"
+            f"**{c['file']}:{lignes_infos}**\n{comment_body}"
         )
 
 if fallback_comments:
