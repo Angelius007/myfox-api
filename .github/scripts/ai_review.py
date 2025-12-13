@@ -166,7 +166,7 @@ Toute violation constitue une erreur critique.
 
 ## Format de sortie
 
-Le retour doit être au format json avec comme attributs :
+Le retour doit être au format JSON avec comme attributs :
 - summary : pour le résumé de la revue
 - comments : tableau pour chaque commentaire.
 Chaque commentaire doit être au format json également avec comme attributs :
@@ -202,8 +202,9 @@ payload = {
 }
 
 r = requests.post(API_URL, headers=headers, json=payload)
-raw_content = r.json()["choices"][0]["message"]["content"]
-print(f"Retour de la revue de code : {raw_content}")
+r_json = r.json()
+print(f"Retour de la revue de code : {r_json}")
+raw_content = r_json["choices"][0]["message"]["content"]
 review = {"summary" : raw_content if "summary" not in raw_content else raw_content["summary"],
           "comments" : [] if "comments" not in raw_content else raw_content["comments"]}
 
