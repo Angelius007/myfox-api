@@ -15,19 +15,15 @@ def extract_json_from_markdown(text: str) -> dict:
     Extrait et parse un bloc JSON éventuellement entouré de ```json ... ```
     """
     text = text.strip()
-
-    # Cas 1 : réponse entourée par ```json ... ```
-    if text.startswith("```"):
-        match = re.search(r"```(?:json)?\s*(\{.*\})\s*```", text, re.DOTALL)
-        if not match:
-            raise ValueError("Bloc ```json``` détecté mais JSON introuvable")
-        text = match.group(1)
-
+    # On cherche le flux json dans le texte
+    match = re.search(r"(\{[\s\S]*\})", text)
+    if not match:
+        raise ValueError("Aucun objet JSON détecté dans la réponse IA")
+    # Puis on le parse
     try:
-        return json.loads(text)
+        return json.loads(match.group(1))
     except json.JSONDecodeError as e:
-        raise ValueError(f"JSON invalide après nettoyage: {e}\n\n{text}")
-
+        raise ValueError(f"JSON invalide: {e}\n\n{match.group(1)}")
 
 def redact(s):
     if s is None:
@@ -57,6 +53,10 @@ def github_api(path, method="GET", data=None):
             response = requests.post(url, headers=headers, json=data)
         else :
             response = requests.get(url, headers=headers)
+
+        if response.status_code == 204:
+            return {}
+
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
@@ -212,6 +212,7 @@ headers = {
 }
 payload = {
     "model": "mistral-small-latest",
+    "response_format": { "type": "json_object" },
     "messages": [
         {
             "role": "user",
@@ -235,22 +236,48 @@ except ValueError:
     raise
 
 # 4) Crée la review principale
-review_id = github_api(
+review_response = github_api(
     f"/repos/{REPO}/pulls/{PR_NUMBER}/reviews",
     "POST",
     {"body": review["summary"], "event": "COMMENT"}
-)["id"]
+)
+
+if not review_response or "id" not in review_response:
+    print("❌ Impossible de créer la review GitHub")
+    exit(967)
+
+review_id = review_response["id"]
 
 # 5) Ajoute les commentaires inline
+fallback_comments = []
 for c in review["comments"]:
-    github_api(
+    payload = {
+        "body": c["body"],
+        "commit_id": sanitized["head_sha"],
+        "path": c["file"],
+        "line": c["line"],
+        "side": "RIGHT",
+    }
+
+    res = github_api(
         f"/repos/{REPO}/pulls/{PR_NUMBER}/comments",
         "POST",
+        payload,
+    )
+
+    if res is None:
+        print(f"⚠️ Commentaire inline refusé pour {c['file']}:{c['line']} → fallback")
+        fallback_comments.append(
+            f"**{c['file']}:{c['line']}**\n{c['body']}"
+        )
+
+if fallback_comments:
+    github_api(
+        f"/repos/{REPO}/pulls/{PR_NUMBER}/reviews/{review_id}/comments",
+        "POST",
         {
-            "body": c["body"],
-            "path": c["file"],
-            "line": c["line"],
-            "side": "RIGHT",
+            "body": "### ⚠️ Commentaires non positionnables automatiquement\n\n"
+                    + "\n\n".join(fallback_comments)
         },
     )
 
