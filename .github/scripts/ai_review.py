@@ -14,7 +14,7 @@ def redact(s):
     if s is None:
         return None
     s = re.sub(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}', '[REDACTED_EMAIL]', s)
-    s = re.sub(r'https?://[^\s]+', '[REDACTED_URL]', s)
+    s = re.sub(r'https?://[^\s/$.?#]+', '[REDACTED_URL]', s)
     # remove long sequences of whitespace
     s = re.sub(r'\s+', ' ', s).strip()
     return s
@@ -27,18 +27,22 @@ def trunc(s, n=1000):
 
 
 def github_api(path, method="GET", data=None):
+    url = f"https://api.github.com{path}"
+    headers = {
+        "Authorization": f"Bearer {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github+json",
+        "User-Agent": "ai-review-script"
+    }
     try:
-        url = f"https://api.github.com{path}"
-        headers = {
-            "Authorization": f"Bearer {GITHUB_TOKEN}",
-            "Accept": "application/vnd.github+json",
-            "User-Agent": "ai-review-script"
-        }
         if method == "POST":
-            return requests.post(url, headers=headers, json=data).json()
-        return requests.get(url, headers=headers).json()
+            response = requests.post(url, headers=headers, json=data).json()
+            response.raise_for_status()
+        else :
+            response = requests.get(url, headers=headers).json()
+            response.raise_for_status()
+        return response.json()
     except requests.exceptions.RequestException as e:
-        print(f"API request failed: {e}")
+        print(f"API request failed: {e} for url {url}")
         return None
 
 
@@ -161,6 +165,18 @@ Toute violation constitue une erreur critique.
 
 ---
 
+## Format de sortie
+
+Le retour doit être au format json avec comme attributs :
+- summary : pour le résumé de la revue
+- comments : tableau pour chaque commentaire.
+Chaque commentaire doit être au format json également avec comme attributs : 
+- body : le commentaire
+- file : fichier concerné par le commentaire
+- line : pour le numéro de ligne
+
+---
+
 ## Données d’entrée
 
 Les données d’entrée sont fournies au format JSON et contiennent :
@@ -187,15 +203,16 @@ payload = {
 }
 
 r = requests.post(API_URL, headers=headers, json=payload)
-raw_content = r.json()["choices"][0]["message"]["content"]
-
+r_json =  r.json()
+print(r_json)
+raw_content = r_json["choices"][0]["message"]["content"]
+review = {"summary" : "Revue incompète. Vérifier les logs", "comments" : []}
 try:
-    print(raw_content)
     review = json.loads(raw_content)
 except json.JSONDecodeError:
     print("❌ Impossible de parser la réponse IA en JSON")
     print(raw_content)
-    raise
+    review = { "summary" : raw_content, "comments" : [] }
 
 # 4) Crée la review principale
 review_id = github_api(
