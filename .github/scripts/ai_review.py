@@ -1,7 +1,8 @@
+import json
 import os
 import re
-import json
 import requests
+import sys
 
 GITHUB_TOKEN = os.environ["GITHUB_TOKEN"]
 REPO = os.environ["GITHUB_REPOSITORY"]
@@ -16,7 +17,7 @@ def extract_json_from_markdown(text: str) -> dict:
     """
     text = text.strip()
     # On cherche le flux json dans le texte
-    match = re.search(r"(\{[\s\S]*\})", text)
+    match = re.search(r'(\{[\s\S]*?\})', text, re.DOTALL)
     if not match:
         raise ValueError("Aucun objet JSON détecté dans la réponse IA")
     # Puis on le parse
@@ -41,10 +42,10 @@ def normalize_summary(summary):
             sections.append(content.strip())
             sections.append("\n")
             detail = summary.get(content)
-            if isinstance(detail, list) and detail:
+            if isinstance(detail, str) and detail:
+                sections.append(f"-{detail.strip()}")
+            elif isinstance(detail, list) and detail:
                 sections.append("\n".join(f"- {item.strip()}" for item in detail if isinstance(item, str)))
-            elif isinstance(detail, str) and detail:
-                sections.append("\n".join(f"- {detail.strip()}"))
 
         if sections:
             return "\n".join(sections)
@@ -88,15 +89,26 @@ def github_api(path, method="GET", data=None):
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
-        print(f"API request failed: {e} for url {url}")
+        print(f"Failed to connect to GitHub API: {e}", file=sys.stderr)
         return None
 
 
 def dump(data, filename) :
-    # Write artifact file for audit
+    #     # Write artifat file for audit
     with open(filename, 'w', encoding='utf-8') as out:
         json.dump(data, out, ensure_ascii=False, indent=2)
 
+    # Emit as output for GitHub Actions
+    compact = json.dumps(data, ensure_ascii=False)
+    github_output = os.environ.get('GITHUB_OUTPUT')
+    if not github_output:
+        print("GITHUB_OUTPUT not found", file=sys.stderr)
+        print(compact)
+    else:
+        with open(github_output, 'a', encoding='utf-8') as ghout:
+            ghout.write(f"{filename}<<EOF\n")
+            ghout.write(compact + "\n")
+            ghout.write("EOF\n")
 
 # 1) Récupère le diff complet
 json_output = github_api(f"/repos/{REPO}/pulls/{PR_NUMBER}", "GET")
