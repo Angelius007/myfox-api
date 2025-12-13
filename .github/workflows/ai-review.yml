@@ -44,7 +44,7 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           if [ -f requirements_tests.txt ]; then pip install -r requirements_tests.txt; fi
-          pip install flake8 pytest
+          pip install flake8 pytest requests
 
       - name: Lint — fail on syntax/critical errors
         run: |
@@ -69,11 +69,8 @@ jobs:
         run: |
           pytest -vv --log-cli-level=DEBUG
 
-
-      - name: Install requests
-        run: pip install requests
-
       - name: Run AI Review
+        if: always()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
