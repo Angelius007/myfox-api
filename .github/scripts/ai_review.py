@@ -126,7 +126,7 @@ def read_file_safe(path, max_len=6000):
         with open(path, "r", encoding="utf-8", errors="ignore") as f:
             content = f.read()
             return content[:max_len] + ("\n...[TRUNCATED]" if len(content) > max_len else "")
-    except (FileNotFoundError, PermissionError, UnicodeDecodeError):
+    except (FileNotFoundError, PermissionError, UnicodeDecodeError, IOError):
         return None
 
 
@@ -277,12 +277,12 @@ Lorsqu'une correction de code est proposée, tu dois ajouter un attribut 'sugges
    - destiné à être inséré tel quel dans une suggestion GitHub
 Lorsqu'une suggestion de code vise à remplacer une seule ligne du fichier source :
    - tu dois fournir obligatoirement un attribut 'line'
-   - l'attribut 'line' doit correspondre exactement à la ligne modifiée du fichier source et non du diff
+   - l'attribut 'line' doit correspondre exactement à la ligne à modifier du fichier source et non du diff
    - la suggestion doit remplacer intégralement cette ligne
 Lorsqu'une suggestion de code vise à remplacer plusieurs lignes du fichier source :
    - tu dois fournir obligatoirement les attributs 'start_line' et 'end_line'
-   - l'attribut 'start_line' doit correspondre exactement à la première ligne du bloc modifié du fichier source et non du diff
-   - l'attribut 'end_line' doit correspondre exactement à la dernière ligne du bloc modifié du fichier source et non du diff
+   - l'attribut 'start_line' doit correspondre exactement à la première ligne à modifier du fichier source et non du diff
+   - l'attribut 'end_line' doit correspondre exactement à la dernière ligne à modifier du fichier source et non du diff
    - la suggestion doit remplacer intégralement ce bloc
 Il est strictement interdit de fournir le code original.
 

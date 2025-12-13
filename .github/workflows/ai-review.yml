@@ -78,13 +78,18 @@ jobs:
           --log-cli-level=DEBUG \
           --cov=./ \
           --cov-report=term-missing \
+          --cov-report=xml:coverage.xml \
           --color=auto \
           | tee pytest.log
 
       - name: Export test status
         if: always()
         run: |
-          echo "TEST_STATUS=${{ steps.tests.outcome }}" >> $GITHUB_ENV
+          if [ -z "${{ steps.tests.outcome }}" ]; then
+            echo "TEST_STATUS=unknown" >> $GITHUB_ENV
+          else
+            echo "TEST_STATUS=${{ steps.tests.outcome }}" >> $GITHUB_ENV
+          fi
 
       - name: Run AI Review
         if: always()
