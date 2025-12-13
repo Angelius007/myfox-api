@@ -135,6 +135,7 @@ def is_valid_suggestion(code: str) -> bool:
         isinstance(code, str)
         and code.strip()
         and "```" not in code
+        and len(code.splitlines()) <= 20
     )
 
 
@@ -161,12 +162,12 @@ test_logs = read_file_safe("pytest.log")
 
 sanitized["tests"] = {
     "status": test_status,
-    "logs": trunc(redact(test_logs), 6000)
+    "logs": trunc(redact(test_logs), 10000)
 }
 
 # 2) Récupère les fichiers
 MAX_FILES = 8
-MAX_PATCH_LEN = 2000  # chars per file
+MAX_PATCH_LEN = 10000  # chars per file
 included = 0
 files = github_api(f"/repos/{REPO}/pulls/{PR_NUMBER}/files", "GET")
 if not files:
@@ -208,8 +209,8 @@ Ton analyse est rigoureuse, factuelle et précise.
 Tes retours sont constructifs, exploitables et strictement conformes aux consignes.
 Tu es chargé de réaliser la revue complète d’une Pull Request GitHub.
 
-Si l’attribut 'tests.status' vaut 'failure', tu dois impérativement analyser 
-les logs de test fournis et produire au moins un commentaire expliquant la cause 
+Si l’attribut 'tests.status' vaut 'failure', tu dois impérativement analyser
+les logs de test fournis et produire au moins un commentaire expliquant la cause
 probable de l’échec et proposer une solution constructive, concrète pour réparer le test.
 
 ---
@@ -269,6 +270,10 @@ Lorsqu’une correction de code est proposée, tu dois ajouter un attribut 'sugg
    - sans explication
    - strictement limité au bloc modifié
    - destiné à être inséré tel quel dans une suggestion GitHub
+Lorsqu’une suggestion de code contient plusieurs lignes :
+   - tu dois fournir start_line et end_line
+   - ces lignes doivent correspondre exactement aux lignes modifiées dans le diff
+   - la suggestion doit remplacer intégralement ce bloc
 Il est strictement interdit de fournir le code original.
 
 7. **Sécurité des commandes shell**
@@ -292,7 +297,9 @@ Le retour doit être au format JSON avec comme attributs :
 Chaque commentaire doit être au format JSON également avec comme attributs :
 - body : le détail de la revue de ce commentaire
 - file : le fichier concerné par le commentaire
-- line : le numéro de ligne dans le fichier concerné par la revue de ce commentaire
+- line : le numéro de la ligne dans le fichier concerné par la revue de ce commentaire (lorsqu'une seule ligne est concernée)
+- start_line : première ligne lorsque de la revue concerne plusieurs lignes dans le fichier concerné par la revue de ce commentaire
+- end_line : dernière ligne concernée par la revue lorsque celle-ci concerne plusieurs lignes du fichier
 - suggestion : la suggestion de code à modifier
 
 ---
@@ -371,9 +378,14 @@ for c in review["comments"]:
         "body": comment_body,
         "commit_id": sanitized["head_sha"],
         "path": c["file"],
-        "line": c["line"],
         "side": "RIGHT",
     }
+
+    if "start_line" in c and "end_line" in c:
+        payload["start_line"] = c["start_line"]
+        payload["end_line"] = c["end_line"]
+    else:
+        payload["line"] = c["line"]
 
     res = github_api(
         f"/repos/{REPO}/pulls/{PR_NUMBER}/comments",
@@ -384,7 +396,7 @@ for c in review["comments"]:
     if res is None:
         print(f"⚠️ Commentaire inline refusé pour {c['file']}:{c['line']} → fallback")
         fallback_comments.append(
-            f"**{c['file']}:{c['line']}**\n{c['body']}"
+            f"**{c['file']}:{c['line']}**\n{comment_body}"
         )
 
 if fallback_comments:
