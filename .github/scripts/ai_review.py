@@ -126,7 +126,7 @@ def read_file_safe(path, max_len=6000):
         with open(path, "r", encoding="utf-8", errors="ignore") as f:
             content = f.read()
             return content[:max_len] + ("\n...[TRUNCATED]" if len(content) > max_len else "")
-    except (FileNotFoundError, PermissionError):
+    except (FileNotFoundError, PermissionError, UnicodeDecodeError):
         return None
 
 
@@ -157,14 +157,15 @@ sanitized = {
 }
 
 # 1 bis) Récupère le résulstat des tests
-test_status = os.environ.get("TEST_STATUS")
-test_logs = read_file_safe("pytest.log")
+if os.path.exists("pytest.log"):
+    test_status = os.environ.get("TEST_STATUS")
+    test_logs = read_file_safe("pytest.log")
 
-if test_logs :
-    sanitized["tests"] = {
-        "status": test_status,
-        "logs": trunc(redact(test_logs), 10000)
-    }
+    if test_logs :
+        sanitized["tests"] = {
+            "status": test_status,
+            "logs": trunc(redact(test_logs), 10000)
+        }
 
 # 2) Récupère les fichiers
 MAX_FILES = 8
@@ -273,10 +274,12 @@ Lorsqu'une correction de code est proposée, tu dois ajouter un attribut 'sugges
    - sans explication
    - strictement limité au bloc modifié
    - destiné à être inséré tel quel dans une suggestion GitHub
-Lorsqu'une suggestion de code contient plusieurs lignes :
+Lorsqu'une suggestion de code vise à remplacer plusieurs lignes du fchier source :
    - tu dois fournir start_line et end_line
    - ces lignes doivent correspondre exactement aux lignes modifiées du fichier source dans le diff
    - la suggestion doit remplacer intégralement ce bloc
+Lorsque la suggestion vise à remplacer plusieurs lignes du fichier source, les champs 'start_line' et 'end_line' sont obligatoires.
+Lorsque la suggestion vise à remplacer une seule ligne du fichier source, seul le champ 'line' est obligatoire.
 Il est strictement interdit de fournir le code original.
 
 7. **Sécurité des commandes shell**
@@ -296,13 +299,13 @@ Il est strictement interdit de fournir le code original.
 
 Le retour doit être au format JSON avec comme attributs :
 - summary : pour le résumé de la revue à stocker dans un champ string unique au format markdown prêt à être publié sur GitHub.
-- comments : tableau pour chaque commentaire.
-Chaque commentaire doit être au format JSON également avec comme attributs :
-- body : le détail de la revue de ce commentaire
-- file : le fichier concerné par le commentaire
-- line : le vrai numéro de la ligne dans le fichier source concerné par la revue de ce commentaire (lorsqu'une seule ligne est concernée)
-- start_line : le vrai numéro de la première ligne dans le fichier source concerné par la revue de ce commentaire lorsque de la revue concerne plusieurs lignes
-- end_line : le vrai numéro de la dernière ligne concernée par la revue lorsque celle-ci concerne plusieurs lignes du fichier source
+- comments : tableau pour chaque commentaire de revue.
+Chaque commentaire doit être au format JSON avec comme attributs :
+- body : le commentaire de la revue
+- file : le fichier concerné par le commentaire de cette revue
+- line : le vrai numéro de la ligne du fichier source concerné par ce commentaire de revue (lorsqu'une seule ligne est concernée)
+- start_line : le vrai numéro de la première ligne du fichier source concerné par ce commentaire de revue (lorsque plusieurs lignes sont concernées)
+- end_line : le vrai numéro de la dernière ligne du fichier source concerné par ce commentaire de revue (lorsque plusieurs lignes sont concernées)
 - suggestion : la suggestion de code à modifier
 
 ---

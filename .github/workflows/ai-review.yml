@@ -78,6 +78,7 @@ jobs:
           --log-cli-level=DEBUG \
           --cov=./ \
           --cov-report=term-missing \
+          --color=auto \
           | tee pytest.log
 
       - name: Export test status
