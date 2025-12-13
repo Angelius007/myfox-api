@@ -34,7 +34,7 @@ pr = event.get('pull_request', {})
 def redact(s):
     if s is None:
         return None
-    s = re.sub(r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}', '[REDACTED_EMAIL]', s)
+    s = re.sub(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}', '[REDACTED_EMAIL]', s)
     s = re.sub(r'https?://[^\s]+', '[REDACTED_URL]', s)
     # remove long sequences of whitespace
     s = re.sub(r'\s+', ' ', s).strip()

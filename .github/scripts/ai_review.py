@@ -13,7 +13,7 @@ API_URL = "https://api.mistral.ai/v1/chat/completions"
 def redact(s):
     if s is None:
         return None
-    s = re.sub(r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}', '[REDACTED_EMAIL]', s)
+    s = re.sub(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}', '[REDACTED_EMAIL]', s)
     s = re.sub(r'https?://[^\s]+', '[REDACTED_URL]', s)
     # remove long sequences of whitespace
     s = re.sub(r'\s+', ' ', s).strip()
@@ -27,15 +27,19 @@ def trunc(s, n=1000):
 
 
 def github_api(path, method="GET", data=None):
-    url = f"https://api.github.com{path}"
-    headers = {
-        "Authorization": f"Bearer {GITHUB_TOKEN}",
-        "Accept": "application/vnd.github+json",
-        "User-Agent": "ai-review-script"
-    }
-    if method == "POST":
-        return requests.post(url, headers=headers, json=data).json()
-    return requests.get(url, headers=headers).json()
+    try:
+        url = f"https://api.github.com{path}"
+        headers = {
+            "Authorization": f"Bearer {GITHUB_TOKEN}",
+            "Accept": "application/vnd.github+json",
+            "User-Agent": "ai-review-script"
+        }
+        if method == "POST":
+            return requests.post(url, headers=headers, json=data).json()
+        return requests.get(url, headers=headers).json()
+    except requests.exceptions.RequestException as e:
+        print(f"API request failed: {e}")
+        return None
 
 
 # 1) Récupère le diff complet
@@ -59,6 +63,9 @@ MAX_FILES = 8
 MAX_PATCH_LEN = 2000  # chars per file
 included = 0
 files = github_api(f"/repos/{REPO}/pulls/{PR_NUMBER}/files", "GET")
+if not files:
+    print("Failed to fetch files from GitHub API")
+    exit(965)
 for f in files:
     if included >= MAX_FILES:
         break
@@ -183,6 +190,7 @@ r = requests.post(API_URL, headers=headers, json=payload)
 raw_content = r.json()["choices"][0]["message"]["content"]
 
 try:
+    print(raw_content)
     review = json.loads(raw_content)
 except json.JSONDecodeError:
     print("❌ Impossible de parser la réponse IA en JSON")

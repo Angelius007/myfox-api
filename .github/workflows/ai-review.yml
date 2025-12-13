@@ -20,8 +20,12 @@ jobs:
         run: |
           HEAD_REPO="${{ github.event.pull_request.head.repo.full_name }}"
           echo "head repo = $HEAD_REPO"
+          if [ -z "$HEAD_REPO" ]; then
+            echo "HEAD_REPO is empty"
+            exit 78
+          fi
           if [ "$HEAD_REPO" != "${{ github.repository }}" ]; then
-            echo "PR originates from a fork or external repo. Skipping automated Copilot review."
+            echo "PR originates from a fork or external repo. Skipping automated review."
             exit 78
           fi
         shell: bash
@@ -42,8 +46,20 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          if [ -f requirements_tests.txt ]; then pip install -r requirements_tests.txt; fi
+          if [ -f requirements.txt ]; then
+            if [ -s requirements.txt ]; then
+              pip install -r requirements.txt
+            else
+              echo "requirements.txt is empty"
+            fi
+          fi
+          if [ -f requirements_tests.txt ]; then
+            if [ -s requirements_tests.txt ]; then
+              pip install -r requirements_tests.txt
+            else
+              echo "requirements_tests.txt is empty"
+            fi
+          fi
           pip install flake8 pytest requests
 
       - name: Lint — fail on syntax/critical errors
