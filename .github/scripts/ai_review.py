@@ -202,16 +202,13 @@ payload = {
 }
 
 r = requests.post(API_URL, headers=headers, json=payload)
-r_json = r.json()
-print(r_json)
-raw_content = r_json["choices"][0]["message"]["content"]
-review = {"summary" : "Revue incompète. Vérifier les logs", "comments" : []}
-try:
-    review = json.loads(raw_content)
-except json.JSONDecodeError:
-    print("❌ Impossible de parser la réponse IA en JSON")
-    print(raw_content)
-    review = {"summary" : raw_content, "comments" : []}
+raw_content = r.json()["choices"][0]["message"]["content"]
+if "summary" in raw_content and "comments" in raw_content:
+    review = raw_content
+else:
+    review = {"summary" : raw_content if "summary" not in raw_content else raw_content["summary"],
+              "comments" : [] if "comments" not in raw_content else raw_content["comments"]}
+print(review)
 
 # 4) Crée la review principale
 review_id = github_api(
