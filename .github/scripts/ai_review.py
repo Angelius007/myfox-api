@@ -162,7 +162,7 @@ Les données d’entrée sont fournies au format JSON et contiennent :
 - les logs éventuels de l’étape **tests**.
 
 ```json
-{{INPUT_DATA}}
+{INPUT_DATA}
 
 """
 headers = {
@@ -180,7 +180,14 @@ payload = {
 }
 
 r = requests.post(API_URL, headers=headers, json=payload)
-review = r.json()["choices"][0]["message"]["content"]
+raw_content = r.json()["choices"][0]["message"]["content"]
+
+try:
+    review = json.loads(raw_content)
+except json.JSONDecodeError:
+    print("❌ Impossible de parser la réponse IA en JSON")
+    print(raw_content)
+    raise
 
 # 4) Crée la review principale
 review_id = github_api(
