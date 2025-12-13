@@ -173,7 +173,6 @@ Chaque commentaire doit être au format json également avec comme attributs :
 - body : le détail de la revue de ce commentaire avec l'éventuelle suggestion de code
 - file : fichier concerné par le commentaire
 - line : pour le numéro de ligne
-Ce retour doit être directement le flux JSON sans annotation de la forme ```json ... ``` ou équivalent.
 
 ---
 
@@ -206,8 +205,15 @@ r = requests.post(API_URL, headers=headers, json=payload)
 r_json = r.json()
 print(f"Retour de la revue de code : {r_json}")
 raw_content = r_json["choices"][0]["message"]["content"]
-review = {"summary" : raw_content if "summary" not in raw_content else raw_content["summary"],
-          "comments" : [] if "comments" not in raw_content else raw_content["comments"]}
+
+try:
+    review = json.loads(raw_content)
+    if "summary" not in review or "comments" not in review:
+        review = {"summary" : review if "summary" not in review else review.get("summary"),
+                  "comments" : [] if "comments" not in review else review.get("comments")}
+except json.JSONDecodeError:
+    print("❌ Impossible de parser la réponse IA en JSON")
+    raise
 
 # 4) Crée la review principale
 review_id = github_api(
