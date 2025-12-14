@@ -126,7 +126,8 @@ def read_file_safe(path, max_len=6000):
         with open(path, "r", encoding="utf-8", errors="ignore") as f:
             content = f.read()
             return content[:max_len] + ("\n...[TRUNCATED]" if len(content) > max_len else "")
-    except (FileNotFoundError, PermissionError, UnicodeDecodeError, IOError):
+    except (FileNotFoundError, PermissionError, UnicodeDecodeError, IOError) as e:
+        print(f"Error reading file {path}: {e}")
         return None
 
 
@@ -169,7 +170,7 @@ if os.path.exists("pytest.log"):
 
 # 2) Récupère les fichiers
 MAX_FILES = 8
-MAX_PATCH_LEN = 10000  # chars per file
+MAX_LOG_LENGTH = 10000  # chars per file
 included = 0
 files = github_api(f"/repos/{REPO}/pulls/{PR_NUMBER}/files", "GET")
 if not files:
@@ -183,8 +184,8 @@ for f in files:
     # Keep only added/removed lines to reduce user-controlled content
     only_changes = '\n'.join([ln for ln in patch.splitlines() if ln and (ln.startswith('+') or ln.startswith('-'))])
     only_changes = redact(only_changes)
-    if len(only_changes) > MAX_PATCH_LEN:
-        only_changes = only_changes[:MAX_PATCH_LEN] + '\n...[TRUNCATED]'
+    if len(only_changes) > MAX_LOG_LENGTH:
+        only_changes = only_changes[:MAX_LOG_LENGTH] + '\n...[TRUNCATED]'
     sanitized["files"].append({
         "filename": filename,
         "status": f.get('status'),
@@ -340,6 +341,7 @@ prompt = f""" |
         - line : line number of the matching code to replace by code suggestion when there only one line to replace
         - start_line : first line number of the matching code to replace by code suggestion where there is multiline code to replace
         - end_line : last line number of the matching code to replace by code suggestion where there is multiline code to replace
+        Be careful for the line numbers : They must match the real source file line number where the code have to be replaced.
         The json format template is : 
             {{
               "summary" : "{{SUMMARY_TEMPLATE}}",
