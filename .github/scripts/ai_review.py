@@ -337,9 +337,9 @@ prompt = f""" |
         Each comment have to be build in JSON format with attributes :
         - body : detail of the review of this comment with code suggestion
         - file : analyzed file
-        - line : line number of the code in the analyzed file when there only one line to replace
-        - start_line : first line number of the code of the analyzed file where there is multiline code to replace
-        - end_line : last line number of the code of the analyzed file where there is multiline code to replace
+        - line : line number of the matching the code to replace when there only one line to replace
+        - start_line : first line number of the matching the code to replace where there is multiline code to replace
+        - end_line : last line number of the matching the code to replace where there is multiline code to replace
         The json format template is : 
             {{
               "summary" : "{{SUMMARY_TEMPLATE}}",
@@ -348,7 +348,7 @@ prompt = f""" |
 
     2. **Structure the Final Review:** The review summary have to be structured with a summary comment in the summary parameter. The summary comment **MUST** use this exact markdown format:
 
-        <SUMMARY>
+        "
         ## 📋 Review Summary
 
         A brief, high-level assessment of the Pull Request's objective and quality (2-3 sentences).
@@ -357,8 +357,7 @@ prompt = f""" |
 
         - A bulleted list of general observations, positive highlights, or recurring patterns not suitable for inline comments.
         - Keep this section concise and do not repeat details already covered in inline comments.
-        </SUMMARY>
-
+        "
     
     3. **Add Comments and Suggestions:** Each formulated review comment is part of the comments tab parameter. Each comment **MUST** use this exact markdown format in JSON:
 
