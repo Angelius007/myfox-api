@@ -7,6 +7,9 @@ attrs>=23.2.0
 jsonpath>=0.82.2
 orjson>=3.10.6
 
+# tmp / fix CVE-2025-68146
+filelock>=3.20.1
+
 # Tests
 pytest-homeassistant-custom-component>=0.13.191
 
